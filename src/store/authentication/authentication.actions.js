@@ -10,9 +10,7 @@ export default {
   login: async ({ commit, dispatch }, firebaseAuthUser) => {
     const userFromFirebase = await new UsersDB().read(firebaseAuthUser.uid)
 
-    const user = isNil(userFromFirebase)
-      ? await createNewUserFromFirebaseAuthUser(firebaseAuthUser)
-      : userFromFirebase
+    const user = isNil(userFromFirebase) ? await createNewUserFromFirebaseAuthUser(firebaseAuthUser) : userFromFirebase
 
     commit('setUser', user)
     dispatch('products/getUserProducts', null, { root: true })
@@ -29,5 +27,5 @@ export default {
     if (!(currentRouter.meta && currentRouter.meta.authNotRequired)) {
       router.push('/login')
     }
-  }
+  },
 }

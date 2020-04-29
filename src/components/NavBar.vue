@@ -13,22 +13,13 @@
         <div v-if="!isUserLoggedIn && networkOnLine" class="nav-item">
           <router-link to="/login">Login</router-link>
         </div>
-        <div
-          v-if="isUserLoggedIn && networkOnLine"
-          class="nav-item logout-item"
-          @click="logout"
-        >
+        <div v-if="isUserLoggedIn && networkOnLine" class="nav-item logout-item" @click="logout">
           <a>Logout</a>
         </div>
         <div v-if="!networkOnLine" class="nav-item offline-label">Offline</div>
       </nav>
 
-      <img
-        v-if="isUserLoggedIn && networkOnLine"
-        class="user-picture can-hide"
-        :src="user.photoURL"
-        alt="Avatar"
-      />
+      <img v-if="isUserLoggedIn && networkOnLine" class="user-picture can-hide" :src="user.photoURL" alt="Avatar" />
     </div>
   </header>
 </template>
@@ -41,13 +32,13 @@ export default {
   computed: {
     ...mapGetters('authentication', ['isUserLoggedIn']),
     ...mapState('authentication', ['user']),
-    ...mapState('app', ['networkOnLine', 'appTitle', 'appShortTitle'])
+    ...mapState('app', ['networkOnLine', 'appTitle', 'appShortTitle']),
   },
   methods: {
     async logout() {
       await firebase.auth().signOut()
-    }
-  }
+    },
+  },
 }
 </script>
 

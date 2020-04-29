@@ -6,17 +6,14 @@
         <img class="app-logo" src="@/assets/logo.png" />
         <h3 class="title">Install {{ appTitle }}</h3>
         <p class="description">
-          Install this application to your home screen for quickly and easy
-          access when you're on the go.
+          Install this application to your home screen for quickly and easy access when you're on the go.
         </p>
       </div>
 
       <div class="footer">
         Just tap
-        <img
-          class="apple-navigation-action-img"
-          src="@/assets/img/apple-navigation-action.png"
-        />then 'Add to Home Screen'
+        <img class="apple-navigation-action-img" src="@/assets/img/apple-navigation-action.png" />then 'Add to Home
+        Screen'
       </div>
     </div>
   </div>
@@ -26,7 +23,7 @@
 import { mapState } from 'vuex'
 
 export default {
-  computed: mapState('app', ['appTitle'])
+  computed: mapState('app', ['appTitle']),
 }
 </script>
 

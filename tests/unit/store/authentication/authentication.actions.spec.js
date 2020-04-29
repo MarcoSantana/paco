@@ -3,11 +3,9 @@ import actions from '@/store/authentication/authentication.actions'
 import router from '@/router'
 
 const mockUsersDbRead = jest.fn()
-jest.mock('@/firebase/users-db', () =>
-  jest.fn().mockImplementation(() => ({ read: mockUsersDbRead }))
-)
+jest.mock('@/firebase/users-db', () => jest.fn().mockImplementation(() => ({ read: mockUsersDbRead })))
 jest.mock('@/misc/helpers', () => ({
-  createNewUserFromFirebaseAuthUser: jest.fn()
+  createNewUserFromFirebaseAuthUser: jest.fn(),
 }))
 
 const commit = jest.fn()
@@ -15,7 +13,7 @@ const dispatch = jest.fn()
 const user = {
   displayName: 'Robert Bob',
   photoUrl: 'https://my-awesome-photo.com',
-  email: 'robert.bob@mail.com'
+  email: 'robert.bob@mail.com',
 }
 
 afterEach(() => {
@@ -39,9 +37,7 @@ describe('authentication module action', () => {
     it('should set user with a new created user', async () => {
       const newCreatedUser = { id: 1 }
       mockUsersDbRead.mockResolvedValue(Promise.resolve(undefined))
-      createNewUserFromFirebaseAuthUser.mockImplementation(() =>
-        Promise.resolve(newCreatedUser)
-      )
+      createNewUserFromFirebaseAuthUser.mockImplementation(() => Promise.resolve(newCreatedUser))
 
       await actions.login({ commit, dispatch }, firebaseUser)
 
@@ -54,7 +50,7 @@ describe('authentication module action', () => {
       await actions.login({ commit, dispatch }, firebaseUser)
 
       expect(dispatch).toHaveBeenCalledWith('products/getUserProducts', null, {
-        root: true
+        root: true,
       })
     })
   })
@@ -80,7 +76,7 @@ describe('authentication module action', () => {
       await actions.logout({ commit, dispatch })
 
       expect(commit).toHaveBeenCalledWith('products/setProducts', null, {
-        root: true
+        root: true,
       })
     })
 

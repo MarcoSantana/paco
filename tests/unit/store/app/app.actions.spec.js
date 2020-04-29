@@ -10,10 +10,7 @@ describe('app module action', () => {
   describe('closeAddToHomeScreenModalForApple', () => {
     it('should set the state of the modal as closed', () => {
       actions.closeAddToHomeScreenModalForApple({ commit })
-      expect(commit).toHaveBeenCalledWith(
-        'setShowAddToHomeScreenModalForApple',
-        false
-      )
+      expect(commit).toHaveBeenCalledWith('setShowAddToHomeScreenModalForApple', false)
     })
   })
 
@@ -22,22 +19,20 @@ describe('app module action', () => {
       const state = {
         SWRegistrationForNewContent: {
           waiting: {
-            postMessage: jest.fn()
-          }
-        }
+            postMessage: jest.fn(),
+          },
+        },
       }
 
       actions.serviceWorkerSkipWaiting({ commit, state })
 
       expect(commit).toHaveBeenCalledWith('setRefreshingApp', true)
-      expect(
-        state.SWRegistrationForNewContent.waiting.postMessage
-      ).toHaveBeenCalledWith('skipWaiting')
+      expect(state.SWRegistrationForNewContent.waiting.postMessage).toHaveBeenCalledWith('skipWaiting')
     })
 
     it('should not set app refreshing status and call sw postMessage with skipWaiting', () => {
       const state = {
-        SWRegistrationForNewContent: null
+        SWRegistrationForNewContent: null,
       }
 
       actions.serviceWorkerSkipWaiting({ commit, state })

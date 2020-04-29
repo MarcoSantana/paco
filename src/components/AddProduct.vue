@@ -8,11 +8,7 @@
       @input="setProductNameToCreate($event.target.value)"
       @keypress.enter="triggerAddProductAction"
     />
-    <div
-      :class="{ disabled: productCreationPending }"
-      class="create-product-btn"
-      @click="triggerAddProductAction"
-    >
+    <div :class="{ disabled: productCreationPending }" class="create-product-btn" @click="triggerAddProductAction">
       add product
     </div>
   </div>
@@ -22,14 +18,11 @@
 import { mapMutations, mapState, mapActions } from 'vuex'
 
 export default {
-  computed: mapState('products', [
-    'productNameToCreate',
-    'productCreationPending'
-  ]),
+  computed: mapState('products', ['productNameToCreate', 'productCreationPending']),
   methods: {
     ...mapMutations('products', ['setProductNameToCreate']),
-    ...mapActions('products', ['triggerAddProductAction'])
-  }
+    ...mapActions('products', ['triggerAddProductAction']),
+  },
 }
 </script>
 

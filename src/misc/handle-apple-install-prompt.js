@@ -1,16 +1,12 @@
 import store from '@/store'
 import { isNil } from 'lodash'
 
-const isIosOnBrowser =
-  ['iPhone', 'iPad', 'iPod'].includes(navigator.platform) &&
-  !window.navigator.standalone
+const isIosOnBrowser = ['iPhone', 'iPad', 'iPod'].includes(navigator.platform) && !window.navigator.standalone
 
 if (isIosOnBrowser) {
   const now = Date.now()
   let limitDate = null
-  const addToHomeIosPromptLastDate = localStorage.getItem(
-    'addToHomeIosPromptLastDate'
-  )
+  const addToHomeIosPromptLastDate = localStorage.getItem('addToHomeIosPromptLastDate')
 
   if (!isNil(addToHomeIosPromptLastDate)) {
     limitDate = new Date(parseInt(addToHomeIosPromptLastDate, 10))

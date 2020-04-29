@@ -8,26 +8,26 @@ const defaultStoreStructure = {
     app: {
       namespaced: true,
       state: {
-        networkOnLine: true
-      }
+        networkOnLine: true,
+      },
     },
     authentication: {
       namespaced: true,
       state: {
-        user: undefined
+        user: undefined,
       },
       mutations: {
-        setUser: jest.fn()
-      }
-    }
-  }
+        setUser: jest.fn(),
+      },
+    },
+  },
 }
 
 const localVue = createLocalVue()
 localVue.use(Vuex)
 
 const $router = {
-  push: jest.fn()
+  push: jest.fn(),
 }
 
 describe('LoginView', () => {
@@ -49,11 +49,11 @@ describe('LoginView', () => {
           mocks: {
             $route: {
               query: {
-                redirectUrl
-              }
+                redirectUrl,
+              },
             },
-            $router
-          }
+            $router,
+          },
         })
         expect($router.push).toHaveBeenCalledWith(redirectUrl)
       })
@@ -67,10 +67,10 @@ describe('LoginView', () => {
           localVue,
           mocks: {
             $route: {
-              query: {}
+              query: {},
             },
-            $router
-          }
+            $router,
+          },
         })
         expect($router.push).toHaveBeenCalledWith('/products')
       })
@@ -101,9 +101,7 @@ describe('LoginView', () => {
     it('should not display offline message', () => {
       const store = new Vuex.Store(storeStructure)
       const wrapper = shallowMount(LoginView, { store, localVue })
-      const offlineInstruction = wrapper.find(
-        '[data-test="offline-instruction"]'
-      )
+      const offlineInstruction = wrapper.find('[data-test="offline-instruction"]')
       expect(offlineInstruction.isVisible()).toBeFalsy()
     })
 
@@ -122,9 +120,7 @@ describe('LoginView', () => {
       it('should display offline message', () => {
         const store = new Vuex.Store(storeStructure)
         const wrapper = shallowMount(LoginView, { store, localVue })
-        const offlineInstruction = wrapper.find(
-          '[data-test="offline-instruction"]'
-        )
+        const offlineInstruction = wrapper.find('[data-test="offline-instruction"]')
         expect(offlineInstruction.isVisible()).toBeTruthy()
       })
     })
@@ -148,9 +144,7 @@ describe('LoginView', () => {
     it('should not display offline message', () => {
       const store = new Vuex.Store(defaultStoreStructure)
       const wrapper = shallowMount(LoginView, { store, localVue })
-      const offlineInstruction = wrapper.find(
-        '[data-test="offline-instruction"]'
-      )
+      const offlineInstruction = wrapper.find('[data-test="offline-instruction"]')
       expect(offlineInstruction.isVisible()).toBeFalsy()
     })
   })

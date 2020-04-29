@@ -12,14 +12,14 @@ import 'firebase/auth'
 // }
 
 const config = {
-  apiKey: "AIzaSyAge4gR03bNsbvhOtyRSuw4qtGBgE4pX_U",
-  authDomain: "paco-1a08b.firebaseapp.com",
-  databaseURL: "https://paco-1a08b.firebaseio.com",
-  projectId: "paco-1a08b",
-  storageBucket: "paco-1a08b.appspot.com",
-  messagingSenderId: "381096701412",
-  appId: "1:381096701412:web:042c016b369cfb651debf1",
-  measurementId: "G-2KQDTHZKH7"
-};
+  apiKey: 'AIzaSyAge4gR03bNsbvhOtyRSuw4qtGBgE4pX_U',
+  authDomain: 'paco-1a08b.firebaseapp.com',
+  databaseURL: 'https://paco-1a08b.firebaseio.com',
+  projectId: 'paco-1a08b',
+  storageBucket: 'paco-1a08b.appspot.com',
+  messagingSenderId: '381096701412',
+  appId: '1:381096701412:web:042c016b369cfb651debf1',
+  measurementId: 'G-2KQDTHZKH7',
+}
 
 firebase.initializeApp(config)

@@ -11,7 +11,7 @@ Vue.use(Router)
 /* If you don't know about VueHead, please refer to https://github.com/ktquez/vue-head */
 
 Vue.use(Head, {
-  complement: process.env.VUE_APP_TITLE
+  complement: process.env.VUE_APP_TITLE,
 })
 
 /* If you don't know about VueRouter, please refer to https://router.vuejs.org/ */
@@ -25,41 +25,38 @@ const router = new Router({
       name: 'home',
       component: Home,
       meta: {
-        authNotRequired: true
-      }
+        authNotRequired: true,
+      },
     },
     {
       path: '/check-login',
       name: 'check-login',
       component: CheckLogin,
       meta: {
-        authNotRequired: true
-      }
+        authNotRequired: true,
+      },
     },
     {
       path: '/login',
       name: 'login',
-      component: () =>
-        import(/* webpackChunkName: "client-chunk-login" */ '@/views/Login.vue'),
+      component: () => import(/* webpackChunkName: "client-chunk-login" */ '@/views/Login.vue'),
       meta: {
-        authNotRequired: true
-      }
+        authNotRequired: true,
+      },
     },
     {
       path: '/products',
       name: 'products',
-      component: () =>
-        import(/* webpackChunkName: "client-chunk-products" */ '@/views/Products.vue')
+      component: () => import(/* webpackChunkName: "client-chunk-products" */ '@/views/Products.vue'),
     },
     {
       path: '/products/:id',
       name: 'product',
       props: true,
-      component: () =>
-        import(/* webpackChunkName: "client-chunk-product-details" */ '@/views/Product.vue')
+      component: () => import(/* webpackChunkName: "client-chunk-product-details" */ '@/views/Product.vue'),
     },
-    { path: '*', redirect: '/home' }
-  ]
+    { path: '*', redirect: '/home' },
+  ],
 })
 
 /**
@@ -67,12 +64,8 @@ const router = new Router({
  */
 // eslint-disable-next-line consistent-return
 router.beforeEach((to, from, next) => {
-  if (
-    !(to.meta && to.meta.authNotRequired) &&
-    isNil(store.state.authentication.user)
-  ) {
-    const path =
-      store.state.authentication.user === null ? '/login' : '/check-login'
+  if (!(to.meta && to.meta.authNotRequired) && isNil(store.state.authentication.user)) {
+    const path = store.state.authentication.user === null ? '/login' : '/check-login'
     return next(`${path}?redirectUrl=${to.path}`)
   }
   next()

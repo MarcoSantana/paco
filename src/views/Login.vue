@@ -12,12 +12,7 @@
 
     <p v-if="loginError">{{ loginError }}</p>
     <!-- Auth UI -->
-    <div
-      v-show="user !== undefined && !user && networkOnLine"
-      data-test="login-btn"
-      class="login-btn"
-      @click="login"
-    >
+    <div v-show="user !== undefined && !user && networkOnLine" data-test="login-btn" class="login-btn" @click="login">
       Login with google
     </div>
   </div>
@@ -34,33 +29,31 @@ export default {
   head() {
     return {
       title: {
-        inner: 'Login'
+        inner: 'Login',
       },
       meta: [
         {
           name: 'description',
           content: `Sign in or sign up to ${this.appTitle}`,
-          id: 'desc'
-        }
-      ]
+          id: 'desc',
+        },
+      ],
     }
   },
   computed: {
     ...mapState('authentication', ['user']),
-    ...mapState('app', ['networkOnLine', 'appTitle'])
+    ...mapState('app', ['networkOnLine', 'appTitle']),
   },
   watch: {
     user: {
       handler(user) {
         if (!isNil(user)) {
-          const redirectUrl = isNil(this.$route.query.redirectUrl)
-            ? '/products'
-            : this.$route.query.redirectUrl
+          const redirectUrl = isNil(this.$route.query.redirectUrl) ? '/products' : this.$route.query.redirectUrl
           this.$router.push(redirectUrl)
         }
       },
-      immediate: true
-    }
+      immediate: true,
+    },
   },
   methods: {
     ...mapMutations('authentication', ['setUser']),
@@ -81,8 +74,8 @@ export default {
         this.loginError = err
         this.setUser(null)
       }
-    }
-  }
+    },
+  },
 }
 </script>
 

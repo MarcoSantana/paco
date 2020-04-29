@@ -3,11 +3,7 @@
     <h1 class="home-page-title">{{ appTitle }}</h1>
     <img alt="logo-bento" class="logo" src="@/assets/img/bento-starter.svg" />
 
-    <a
-      rel="noopener"
-      class="documentation-link"
-      target="_blank"
-      href="https://bento-starter.netlify.com/"
+    <a rel="noopener" class="documentation-link" target="_blank" href="https://bento-starter.netlify.com/"
       >Documentation →</a
     >
   </div>
@@ -20,18 +16,18 @@ export default {
   head() {
     return {
       title: {
-        inner: 'Home'
+        inner: 'Home',
       },
       meta: [
         {
           name: 'description',
           content: `${this.appTitle} home page`,
-          id: 'desc'
-        }
-      ]
+          id: 'desc',
+        },
+      ],
     }
   },
-  computed: mapState('app', ['appTitle'])
+  computed: mapState('app', ['appTitle']),
 }
 </script>
 
