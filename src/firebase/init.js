@@ -11,7 +11,7 @@ import 'firebase/auth'
 //   messagingSenderId: '458464977217'
 // }
 
-const firebaseConfig = {
+const config = {
   apiKey: "AIzaSyAge4gR03bNsbvhOtyRSuw4qtGBgE4pX_U",
   authDomain: "paco-1a08b.firebaseapp.com",
   databaseURL: "https://paco-1a08b.firebaseio.com",
@@ -23,13 +23,3 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(config)
-
-// <!-- The core Firebase JS SDK is always required and must be listed first -->
-// <script src="/__/firebase/7.14.2/firebase-app.js"></script>
-
-// <!-- TODO: Add SDKs for Firebase products that you want to use
-//      https://firebase.google.com/docs/web/setup#available-libraries -->
-// <script src="/__/firebase/7.14.2/firebase-analytics.js"></script>
-
-// <!-- Initialize Firebase -->
-// <script src="/__/firebase/init.js"></script>
