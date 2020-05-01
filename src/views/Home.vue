@@ -1,8 +1,8 @@
 <template>
   <div class="page-wrapper">
-    <h1 class="home-page-title">{{ appTitle }}</h1>
     <img alt="logo-bento" class="logo" src="@/assets/img/logo.png" />
-    <h2>{{ clientName }}</h2>
+    <h1 class="home-page-title">{{ appTitle }}</h1>
+    <h2 class="home-page-title">{{ clientName }}</h2>
 
     <!-- <a rel="noopener" class="documentation-link" target="_blank" href="https://bento-starter.netlify.com/"
       >Documentation →</a
@@ -47,6 +47,7 @@ export default {
 
   .home-page-title {
     text-align: center;
+    color: $main;
   }
 
   .documentation-link {
