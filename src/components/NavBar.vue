@@ -18,7 +18,7 @@
           <router-link to="/login">Ingreso</router-link>
         </div>
         <div v-if="isUserLoggedIn && networkOnLine" class="nav-item logout-item" @click="logout">
-          <a>Logout</a>
+          <a>Salir</a>
         </div>
         <div v-if="!networkOnLine" class="nav-item offline-label">Sin conexión</div>
       </nav>
