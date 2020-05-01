@@ -1,11 +1,12 @@
 <template>
   <div class="page-wrapper">
+    <img alt="logo-bento" class="logo" src="@/assets/img/logo.png" />
     <h1 class="home-page-title">{{ appTitle }}</h1>
-    <img alt="logo-bento" class="logo" src="@/assets/img/bento-starter.svg" />
+    <h2 class="home-page-title">{{ clientName }}</h2>
 
-    <a rel="noopener" class="documentation-link" target="_blank" href="https://bento-starter.netlify.com/"
+    <!-- <a rel="noopener" class="documentation-link" target="_blank" href="https://bento-starter.netlify.com/"
       >Documentation →</a
-    >
+    > -->
   </div>
 </template>
 
@@ -27,7 +28,7 @@ export default {
       ],
     }
   },
-  computed: mapState('app', ['appTitle']),
+  computed: mapState('app', ['appTitle', 'clientName']),
 }
 </script>
 
@@ -46,6 +47,7 @@ export default {
 
   .home-page-title {
     text-align: center;
+    color: $main;
   }
 
   .documentation-link {

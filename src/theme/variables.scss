@@ -1,3 +1,8 @@
+/* Main colors */
+$main: #0C466D;
+$secondary: #2596C7;
+$dark: #222222;
+$light-accent: #BFDFEE;
 /* Misc */
 
 $vue-color: #46bd87; //TODO refactor to a better name
@@ -6,6 +11,8 @@ $danger-color: #ea4d46;
 /* Navbar */
 
 $navbar-height: 3.6rem;
-$navbar-color: #fff;
+// $navbar-color: #fff;
+$navbar-color: $main;
 $navbar-offline-color: #333;
-$navbar-link-color: #2c3e50;
+// $navbar-link-color: #2c3e50;
+$navbar-link-color: $light-accent;
