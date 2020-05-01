@@ -20,7 +20,7 @@
         <div v-if="isUserLoggedIn && networkOnLine" class="nav-item logout-item" @click="logout">
           <a>Logout</a>
         </div>
-        <div v-if="!networkOnLine" class="nav-item offline-label">Offline</div>
+        <div v-if="!networkOnLine" class="nav-item offline-label">Sin conexión</div>
       </nav>
 
       <img v-if="isUserLoggedIn && networkOnLine" class="user-picture can-hide" :src="user.photoURL" alt="Avatar" />
