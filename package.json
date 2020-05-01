@@ -1,5 +1,5 @@
 {
-  "name": "plataforma-administradora-de-consejo",
+  "name": "plataforma-administradora-de-documentos",
   "version": "1.0.0",
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -59,8 +59,7 @@
     "webpack-bundle-analyzer": "^3.7.0",
     "webpack-merge": "^4.2.2"
   },
-  "bundlesize": [
-    {
+  "bundlesize": [{
       "path": "./dist/js/chunk-vendors*.js",
       "maxSize": "125 kB"
     },
@@ -128,5 +127,5 @@
     ]
   },
   "readme": "ERROR: No README data found!",
-  "_id": "plataforma-administradora-de-consejo@1.0.0"
+  "_id": "plataforma-administradora-de-documentos@1.0.0"
 }

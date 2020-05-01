@@ -1,20 +1,21 @@
 <template>
   <header class="navbar" :class="{ offline: !networkOnLine }">
     <router-link to="/home">
-      <img alt="logo-bento" class="logo" src="@/assets/img/bento-starter.svg" />
+      <!-- <img alt="logo-bento" class="logo" src="@/assets/img/bento-starter.svg" /> -->
+      <img alt="logo-bento" class="logo" src="@/assets/img/logo.png" />
       <span class="site-name title-desktop">{{ appTitle }}</span>
       <span class="site-name title-mobile">{{ appShortTitle }}</span>
     </router-link>
     <div class="links">
       <nav class="nav-links">
         <div class="nav-item">
-          <router-link to="/products">Products</router-link>
+          <router-link to="/products">Productos</router-link>
         </div>
         <div class="nav-item">
-          <router-link to="/documents">Documents</router-link>
+          <router-link to="/documents">Documentos</router-link>
         </div>
         <div v-if="!isUserLoggedIn && networkOnLine" class="nav-item">
-          <router-link to="/login">Login</router-link>
+          <router-link to="/login">Ingreso</router-link>
         </div>
         <div v-if="isUserLoggedIn && networkOnLine" class="nav-item logout-item" @click="logout">
           <a>Logout</a>
@@ -22,12 +23,7 @@
         <div v-if="!networkOnLine" class="nav-item offline-label">Offline</div>
       </nav>
 
-      <img
-        v-if="isUserLoggedIn && networkOnLine"
-        class="user-picture can-hide"
-        :src="user.photoURL"
-        alt="Avatar"
-      />
+      <img v-if="isUserLoggedIn && networkOnLine" class="user-picture can-hide" :src="user.photoURL" alt="Avatar" />
     </div>
   </header>
 </template>
@@ -98,7 +94,8 @@ export default {
   .site-name {
     font-size: 1.3rem;
     font-weight: 600;
-    color: #2c3e50;
+    color: $light-accent;
+    // text-shadow: 1px 1px $secondary;
     position: relative;
   }
 
@@ -137,7 +134,7 @@ export default {
           font-size: 0.9rem;
           text-decoration: none;
           color: $navbar-link-color;
-          border-color: #2c3e50;
+          border-color: $light-accent;
           line-height: 1.4rem;
           display: inline-block;
           cursor: pointer;
@@ -145,7 +142,7 @@ export default {
 
         @mixin activatedLink() {
           margin-bottom: -2px;
-          border-bottom: 2px solid $vue-color;
+          border-bottom: 2px solid $secondary;
         }
 
         .router-link-active {
