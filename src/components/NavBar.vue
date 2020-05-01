@@ -10,6 +10,9 @@
         <div class="nav-item">
           <router-link to="/products">Products</router-link>
         </div>
+        <div class="nav-item">
+          <router-link to="/documents">Documents</router-link>
+        </div>
         <div v-if="!isUserLoggedIn && networkOnLine" class="nav-item">
           <router-link to="/login">Login</router-link>
         </div>
@@ -19,7 +22,12 @@
         <div v-if="!networkOnLine" class="nav-item offline-label">Offline</div>
       </nav>
 
-      <img v-if="isUserLoggedIn && networkOnLine" class="user-picture can-hide" :src="user.photoURL" alt="Avatar" />
+      <img
+        v-if="isUserLoggedIn && networkOnLine"
+        class="user-picture can-hide"
+        :src="user.photoURL"
+        alt="Avatar"
+      />
     </div>
   </header>
 </template>
