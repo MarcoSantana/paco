@@ -4,11 +4,13 @@
   "editor.codeActionsOnSave": {
     "source.fixAll": true
   },
-  "eslint.options": { "extensions": [".html", ".js", ".vue", ".scss"] },
+  "eslint.options": {
+    "extensions": [".html", ".js", ".vue", ".scss"]
+  },
   "eslint.validate": ["javascript", "vue"],
 
   "javascript.validate.enable": false,
-  "javascript.format.enable": false,
+  "javascript.format.enable": true,
 
   "[scss]": {
     "editor.formatOnSave": true
