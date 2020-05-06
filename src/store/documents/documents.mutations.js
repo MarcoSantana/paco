@@ -1,22 +1,29 @@
+//  _______ _______
+//  |  |  | |______
+//  |  |  | ______|
+// author: mSantana
+// createdAt 2020-05-06 07:21
+// Stardate: 202005.06
+// fileName: documents/documents.mutations.js
 export default {
-  /* Product input name */
-  setProductNameToCreate: (state, productNameToCreate) => (state.productNameToCreate = productNameToCreate),
+  /* Document input name */
+  setDocumentNameToCreate: (state, documentNameToCreate) => (state.documentNameToCreate = documentNameToCreate),
 
-  /* Products */
-  setProducts: (state, documents) => (state.documents = documents),
-  addProduct: (state, product) => state.documents.push(product),
-  removeProductById: (state, productId) => {
-    const index = state.documents.findIndex(product => product.id === productId)
+  /* Documents */
+  setDocuments: (state, documents) => (state.documents = documents),
+  addDocument: (state, document) => state.documents.push(document),
+  removeDocumentById: (state, documentId) => {
+    const index = state.documents.findIndex(document => document.id === documentId)
     state.documents.splice(index, 1)
   },
 
-  /* Products deletion */
-  addProductDeletionPending: (state, productId) => state.productDeletionPending.push(productId),
-  removeProductDeletionPending: (state, productId) => {
-    const index = state.documents.findIndex(product => product.id === productId)
-    state.productDeletionPending.splice(index, 1)
+  /* Documents deletion */
+  addDocumentDeletionPending: (state, documentId) => state.documentDeletionPending.push(documentId),
+  removeDocumentDeletionPending: (state, documentId) => {
+    const index = state.documents.findIndex(document => document.id === documentId)
+    state.documentDeletionPending.splice(index, 1)
   },
 
-  /* Product creation */
-  setProductCreationPending: (state, value) => (state.productCreationPending = value),
+  /* Document creation */
+  setDocumentCreationPending: (state, value) => (state.documentCreationPending = value),
 }
