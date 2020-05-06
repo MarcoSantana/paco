@@ -1,4 +1,9 @@
-// https://docs.cypress.io/api/introduction/api.html
+//  _______ _______
+//  |  |  | |______
+//  |  |  | ______|
+// author: mSantana
+// createdAt 2020-05-05 10:37
+// fileName: specs/test.js
 
 describe('My First Test', () => {
   it('Visits the app root url', () => {
