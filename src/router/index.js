@@ -60,6 +60,12 @@ const router = new Router({
       props: true,
       component: () => import(/* webpackChunkName: "client-chunk-product-details" */ '@/views/Product.vue'),
     },
+    {
+      path: '/documents/:id',
+      name: 'document',
+      props: true,
+      component: () => import(/* webpackChunkName: "client-chunk-documents-details" */ '@/views/Document.vue'),
+    },
     { path: '*', redirect: '/home' },
   ],
 })
