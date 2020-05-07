@@ -3,16 +3,23 @@ service cloud.firestore {
   function authenticated() { return request.auth.uid != null }
   
     match /users/{userId} {
-       allow get: if authenticated() && request.auth.uid == userId;
-       allow create: if authenticated() && request.auth.uid == userId;
-       allow update, delete: if authenticated() && request.auth.uid == userId;
+      allow get: if authenticated() && request.auth.uid == userId;
+      allow create: if authenticated() && request.auth.uid == userId;
+      allow update, delete: if authenticated() && request.auth.uid == userId;
     }
 
     match /users/{userId}/products/{productId} {
       allow get: if authenticated() && request.auth.uid == userId;
 			allow list: if authenticated() && request.auth.uid == userId;
       allow create: if authenticated() && request.auth.uid == userId;
-      allow update, delete: if authenticated() && request.auth.uid == userId;
+      allow update: delete: if authenticated() && request.auth.uid == userId;
+    }
+
+    match /users/{userId}/documents/{documentId} {
+      allow get: if authenticated() && request.auth.uid == userId;
+      allow list: if authenticated() && request.auth.uid == userId;
+      allow create: if authenticated() && request.auth.uid == userId;
+      allow update: if authenticated() && request.auth.uid == userId;
     }
   }
 }

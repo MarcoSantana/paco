@@ -6,15 +6,19 @@
     <div v-show="user === undefined" data-test="loader">Authenticating...</div>
 
     <!-- Offline instruction -->
-    <div v-show="!networkOnLine" data-test="offline-instruction">
-      Please check your connection, login feature is not available offline.
-    </div>
+    <div
+      v-show="!networkOnLine"
+      data-test="offline-instruction"
+    >Please check your connection, login feature is not available offline.</div>
 
     <p v-if="loginError">{{ loginError }}</p>
     <!-- Auth UI -->
-    <div v-show="user !== undefined && !user && networkOnLine" data-test="login-btn" class="login-btn" @click="login">
-      Login with google
-    </div>
+    <div
+      v-show="user !== undefined && !user && networkOnLine"
+      data-test="login-btn"
+      class="login-btn"
+      @click="login"
+    >Login with google</div>
   </div>
 </template>
 
@@ -48,7 +52,7 @@ export default {
     user: {
       handler(user) {
         if (!isNil(user)) {
-          const redirectUrl = isNil(this.$route.query.redirectUrl) ? '/products' : this.$route.query.redirectUrl
+          const redirectUrl = isNil(this.$route.query.redirectUrl) ? '/documents' : this.$route.query.redirectUrl
           this.$router.push(redirectUrl)
         }
       },
