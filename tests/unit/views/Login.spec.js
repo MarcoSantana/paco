@@ -60,7 +60,7 @@ describe('LoginView', () => {
     })
 
     describe('but redirectUrl not defined', () => {
-      it('should redirect to /products', () => {
+      it('should redirect to /documents', () => {
         const store = new Vuex.Store(storeStructure)
         shallowMount(LoginView, {
           store,
@@ -72,7 +72,7 @@ describe('LoginView', () => {
             $router,
           },
         })
-        expect($router.push).toHaveBeenCalledWith('/products')
+        expect($router.push).toHaveBeenCalledWith('/documents')
       })
     })
   })
