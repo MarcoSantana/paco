@@ -1,34 +1,32 @@
 <template>
   <div>
-    <p v-if="products === null" class="infos-label">Loading...</p>
-    <p v-if="products && !products.length" class="infos-label">
-      You don't have any product yet
-    </p>
-    <product-item
-      v-for="(product, index) in products"
-      :key="product.id"
-      class="product-row"
+    <p v-if="documents === null" class="infos-label">Loading...</p>
+    <p v-if="documents && !documents.length" class="infos-label">You don't have any document yet</p>
+    <document-item
+      v-for="(document, index) in documents"
+      :key="document.id"
+      class="document-row"
       :index="index"
-      :is-product-deletion-pending="isProductDeletionPending(product.id)"
+      :is-document-deletion-pending="isDocumentDeletionPending(document.id)"
       :disable-actions="!networkOnLine"
-      :data="product"
-      @deleteProduct="deleteUserProduct"
-    ></product-item>
+      :data="document"
+      @deleteDocument="deleteUserDocument"
+    ></document-item>
   </div>
 </template>
 
 <script>
-import ProductItem from '@/components/ProductItem'
+import DocumentItem from '@/components/DocumentItem'
 import { mapState, mapActions, mapGetters } from 'vuex'
 
 export default {
-  components: { ProductItem },
+  components: { DocumentItem },
   computed: {
-    ...mapGetters('products', ['isProductDeletionPending']),
-    ...mapState('products', ['products']),
+    ...mapGetters('documents', ['isDocumentDeletionPending']),
+    ...mapState('documents', ['documents']),
     ...mapState('app', ['networkOnLine']),
   },
-  methods: mapActions('products', ['deleteUserProduct']),
+  methods: mapActions('documents', ['deleteUserDocument']),
 }
 </script>
 
@@ -39,7 +37,7 @@ export default {
   text-align: center;
 }
 
-.product-row {
+.document-row {
   display: flex;
   align-items: center;
   width: 100%;

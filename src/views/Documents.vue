@@ -1,7 +1,7 @@
 <template>
   <div class="page-wrapper">
     <h1 class="document-page-title">Documents page</h1>
-    <document-list class="product-list"></document-list>
+    <document-list class="document-list"></document-list>
     <add-document v-if="networkOnLine"></add-document>
   </div>
 </template>
@@ -25,7 +25,7 @@ export default {
   margin-bottom: 60px;
 }
 
-.product-list {
+.document-list {
   margin: 20px 0;
 }
 </style>
