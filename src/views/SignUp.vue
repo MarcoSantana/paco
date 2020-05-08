@@ -15,10 +15,10 @@
     <!-- Auth UI -->
     <div
       v-show="user !== undefined && !user && networkOnLine"
-      data-test="login-btn"
-      class="login-btn"
-      @click="login"
-    >Formulario de registro</div>
+      data-test="signup-form-container"
+    >
+
+    </div> <!-- signup-form-container -->
   </div>
 </template>
 
