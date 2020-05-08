@@ -1,14 +1,11 @@
 <template>
   <div class="document-item">
-    <router-link
-      class="document-link"
-      :to="{ name: 'document', params: { id: data.id } }"
-    >#{{ index }} {{ data.name }}</router-link>
-    <div
-      v-if="!disableActions"
-      class="delete-btn"
-      @click="$emit('deleteDocument', data.id)"
-    >{{ isDocumentDeletionPending ? 'delete in progress...' : 'delete' }}</div>
+    <router-link class="document-link" :to="{ name: 'document', params: { id: data.id } }"
+      >#{{ index }} {{ data.name }}</router-link
+    >
+    <div v-if="!disableActions" class="delete-btn" @click="$emit('deleteDocument', data.id)">
+      {{ isDocumentDeletionPending ? 'delete in progress...' : 'delete' }}
+    </div>
   </div>
 </template>
 
