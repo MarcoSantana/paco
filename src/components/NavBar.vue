@@ -1,7 +1,6 @@
 <template>
   <header class="navbar" :class="{ offline: !networkOnLine }">
     <router-link to="/home">
-      <!-- <img alt="logo-bento" class="logo" src="@/assets/img/bento-starter.svg" /> -->
       <img alt="logo-bento" class="logo" src="@/assets/img/logo.png" />
       <span class="site-name title-desktop">{{ appTitle }}</span>
       <span class="site-name title-mobile">{{ appShortTitle }}</span>
@@ -17,13 +16,21 @@
         <div v-if="!isUserLoggedIn && networkOnLine" class="nav-item">
           <router-link to="/login">Ingreso</router-link>
         </div>
+        <div v-if="!isUserLoggedIn && networkOnLine" class="nav-item">
+          <router-link to="/signUp">Crear cuenta</router-link>
+        </div>
         <div v-if="isUserLoggedIn && networkOnLine" class="nav-item logout-item" @click="logout">
           <a>Salir</a>
         </div>
         <div v-if="!networkOnLine" class="nav-item offline-label">Sin conexión</div>
       </nav>
 
-      <img v-if="isUserLoggedIn && networkOnLine" class="user-picture can-hide" :src="user.photoURL" alt="Avatar" />
+      <img
+        v-if="isUserLoggedIn && networkOnLine"
+        class="user-picture can-hide"
+        :src="user.photoURL"
+        alt="Avatar"
+      />
     </div>
   </header>
 </template>
