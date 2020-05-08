@@ -45,6 +45,14 @@ const router = new Router({
       },
     },
     {
+      path: '/signup',
+      name: 'signup',
+      component: () => import(/* webpackChunkName: "client-chunk-login"! */ '@/views/SignUp.vue'),
+      meta: {
+        authNotRequired: true,
+      },
+    },
+    {
       path: '/products',
       name: 'products',
       component: () => import(/* webpackChunkName: "client-chunk-products" */ '@/views/Products.vue'),
