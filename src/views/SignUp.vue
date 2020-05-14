@@ -13,48 +13,60 @@
     <!-- Auth UI -->
     <div
       v-show="user !== undefined && !user && networkOnLine"
-      class="signup-form-container"
       id="signup-form-container"
+      class="signup-form-container"
       data-test="signup-form-container"
     >
       <div id="login-box">
         <div class="left">
           <h1>Registrarse</h1>
-
-          <input type="text" name="email" placeholder="E-mail" id="registration-email" data-test="registration-email" />
+          <input id="registration-email" type="text" name="email" placeholder="E-mail" data-test="registration-email" />
           <input
+            id="registration-email-confirmation"
             type="text"
             name="email"
             placeholder="Confirme su e-mail"
-            id="registration-email-confirmation"
             data-test="registration-email-confirmation"
           />
           <input
+            id="registration-name"
             type="text"
             name="name"
             placeholder="Nombres (ej. Juan Carlos)"
-            id="registration-name"
             data-test="registration-name"
+            :value="registrationName"
           />
           <input
-            type="text"
-            name="registration-lastname"
-            placeholder="Apellido Paterno (ej. González)"
             id="registration-lastname-1"
+            type="text"
+            name="registrationLastname"
+            placeholder="Apellido Paterno (ej. González)"
             data-test="registration-lastname-1"
+            :value="registrationLastname1"
+          />
+          <input
+            id="registration-lastname-2"
+            type="text"
+            name="registrationLastname"
+            placeholder="Apellido Materno (ej. Silveti)"
+            data-test="registration-lastname-2"
+            :value="registrationLastname2"
           />
           <input type="password" name="password" placeholder="Contraseña" />
           <input type="password" name="password2" placeholder="Confirme su contraseña" />
 
           <input
+            id="registration-license"
+            v-model="license"
             type="text"
             name="license"
             placeholder="Cédula profesional de licenciatura en medicina"
-            id="registration-license"
-            disabled="disabled"
+            @keyup="documentAPI"
           />
+          <p>License {{ license }}</p>
+          <p>Name {{ registrationName }}</p>
 
-          <input type="submit" name="signup_submit" value="Sign me up" />
+          <input type="submit" name="signup_submit" value="Sign me up" @click="documentAPI" />
         </div>
 
         <div class="right">
@@ -79,7 +91,15 @@ import firebase from 'firebase/app'
 import { desktop as isDekstop } from 'is_js'
 
 export default {
-  data: () => ({ loginError: null, apiError: null }),
+  data: () => ({
+    loginError: null,
+    apiError: null,
+    registrationName: null,
+    registrationLastname1: null,
+    registrationLastname2: null,
+    license: null,
+    // license: 4273560,
+  }),
   head() {
     return {
       title: {
@@ -110,7 +130,7 @@ export default {
     },
   },
   mounted() {
-    this.documentAPI()
+    // this.documentAPI()
   },
   methods: {
     ...mapMutations('authentication', ['setUser']),
@@ -133,14 +153,27 @@ export default {
       }
     }, // login
     async documentAPI() {
-      fetch(
-        `https://cors-anywhere.herokuapp.com/http://search.sep.gob.mx/solr/cedulasCore/select?fl=%2A%2Cscore&q=danelia+gonzalez+camnpuzano&start=0&rows=10&facet=true&indent=on&wt=json`
-      )
-        .then(function(response) {
+      this.loading = true
+      const sepAPI = `http://search.sep.gob.mx/solr/cedulasCore/select?fl=%2A%2Cscore&q=${this.license}&start=0&rows=10&facet=true&indent=on&wt=json`
+
+      await fetch(`https://cors-anywhere.herokuapp.com/${sepAPI}`)
+        .then(response => {
+          console.log(
+            'rest',
+            `https://cors-anywhere.herokuapp.com/http://search.sep.gob.mx/solr/cedulasCore/select?fl=%2A%2Cscore&q=${this.license}&start=0&rows=10&facet=true&indent=on&wt=json`
+          )
+
           return response.json()
         })
-        .then(function(myJson) {
-          console.log('docs', myJson.response.docs)
+        .then(myJson => {
+          const data = myJson.response.docs[0]
+          console.log('result data', data)
+          console.log('Paterno', data.paterno)
+
+          this.registrationLastname1 = data.paterno
+          this.registrationLastname2 = data.materno
+          this.registrationName = data.nombre
+          console.log(this.license)
         })
         .catch(error => {
           console.log(error)
