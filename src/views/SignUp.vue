@@ -63,25 +63,12 @@
             placeholder="Cédula profesional de licenciatura en medicina"
             @input="documentAPI"
           />
-          <p v-if="typing">You are typing</p>
-          <p v-if="message">Your typed {{ message }}</p>
+          <p>Loading: {{ loading }}</p>
           <p>License {{ license | zeroPad }}</p>
           <p>Name {{ registrationName }}</p>
 
           <input type="submit" name="signup_submit" value="Sign me up" @click="documentAPI" />
         </div>
-
-        <div class="right">
-          <span class="loginwith">
-            Registrarse con
-            <br />redes sociales
-          </span>
-
-          <button class="social-signin facebook">Log in with facebook</button>
-          <button class="social-signin twitter">Log in with Twitter</button>
-          <button class="social-signin google">Log in with Google+</button>
-        </div>
-        <div class="or">O</div>
       </div>
     </div>
     <!-- signup-form-container -->
@@ -127,7 +114,7 @@ export default {
   },
   computed: {
     ...mapState('authentication', ['user']),
-    ...mapState('app', ['networkOnLine', 'appTitle']),
+    ...mapState('app', ['networkOnLine', 'appTitle', 'loading']),
   },
   watch: {
     user: {
@@ -145,6 +132,7 @@ export default {
   },
   methods: {
     ...mapMutations('authentication', ['setUser']),
+    ...mapMutations('app', ['setLoading', 'unsetLoading']),
     async login() {
       this.loginError = null
       const provider = new firebase.auth.GoogleAuthProvider()
@@ -165,11 +153,12 @@ export default {
     }, // login
     async documentAPI() {
       this.loading = true
+      this.apiError = null
       clearTimeout(this.debounce)
       if (this.license.toString().length >= 6) {
         this.debounce = setTimeout(async () => {
           const sepAPI = `http://search.sep.gob.mx/solr/cedulasCore/select?fl=%2A%2Cscore&q=${this.license}&start=0&rows=10&facet=true&indent=on&wt=json`
-
+          this.setLoading()
           await fetch(`https://cors-anywhere.herokuapp.com/${sepAPI}`)
             .then(response => {
               console.log(
@@ -192,6 +181,9 @@ export default {
             .catch(error => {
               console.log(error)
               this.apiError = error
+            })
+            .finally(() => {
+              this.unsetLoading()
             })
         })
       }
@@ -223,19 +215,18 @@ body {
   position: relative;
   box-sizing: border-box;
   margin: 5% 100px 5% 100px;
-  width: 600px;
-  height: 800px;
+  width: 100%;
+  height: 100%;
   border-radius: 2px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
 }
 
 .left {
-  position: absolute;
   top: 0;
   left: 0;
   box-sizing: border-box;
   padding: 40px;
-  width: 300px;
+  width: 100%;
   // height: 400px;
   height: auto;
 }
@@ -252,8 +243,24 @@ input[type='password'] {
   box-sizing: border-box;
   margin-bottom: 20px;
   padding: 4px;
-  width: 220px;
   height: 32px;
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid #aaa;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  transition: 0.2s ease;
+}
+
+input[type='text'],
+input[name='license'] {
+  display: block;
+  box-sizing: border-box;
+  margin-bottom: 20px;
+  padding: 4px;
+  height: 32px;
+  width: 100%;
   border: none;
   border-bottom: 1px solid #aaa;
   font-family: 'Roboto', sans-serif;
@@ -264,23 +271,24 @@ input[type='password'] {
 
 input[type='text']:focus,
 input[type='password']:focus {
-  border-bottom: 2px solid #16a085; //Cahnge me
-  color: #16a085;
-  transition: 0.2s ease;
+  border-bottom: 2px solid $secondary; //Cahnge me
+  color: $main;
+  transition: 0.4s ease;
 }
 
 input[type='submit'] {
   margin-top: 28px;
   width: 120px;
   height: 32px;
-  background: #16a085;
+  // background: #16a085;
+  background: $main;
   border: none;
-  border-radius: 2px;
-  color: #fff;
+  border-radius: 8px;
+  color: $light-accent;
   font-family: 'Roboto', sans-serif; // Change me
   font-weight: 500;
   text-transform: uppercase;
-  transition: 0.1s ease;
+  transition: 0.5s ease;
   cursor: pointer;
 }
 
@@ -288,86 +296,12 @@ input[type='submit']:hover,
 input[type='submit']:focus {
   opacity: 0.8;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-  transition: 0.1s ease;
+  transition: 0.2s ease;
 }
 
 input[type='submit']:active {
   opacity: 1;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
   transition: 0.1s ease;
-}
-
-.or {
-  position: absolute;
-  top: 180px;
-  left: 280px;
-  width: 40px;
-  height: 40px;
-  background: $navbar-color;
-  color: $light-accent;
-  border-radius: 50%;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-  line-height: 40px;
-  text-align: center;
-}
-
-.right {
-  position: absolute;
-  top: 0;
-  right: 0;
-  box-sizing: border-box;
-  padding: 40px;
-  width: 300px;
-  height: 400px;
-  // background: url('https://picsum.photos/200/300');
-  background: url('https://images.unsplash.com/photo-1535930749574-1399327ce78f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=676&q=80');
-  background-size: cover;
-  background-position: center;
-  border-radius: 0 2px 2px 0;
-}
-
-.right .loginwith {
-  display: block;
-  margin-bottom: 40px;
-  font-size: 28px;
-  color: $light-accent;
-  text-shadow: 2px 2px $navbar-color;
-  text-align: center;
-}
-
-button.social-signin {
-  margin-bottom: 20px;
-  width: 220px;
-  height: 36px;
-  border: none;
-  border-radius: 2px;
-  color: #fff;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 500;
-  transition: 0.2s ease;
-  cursor: pointer;
-}
-
-button.social-signin:hover,
-button.social-signin:focus {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-  transition: 0.2s ease;
-}
-
-button.social-signin:active {
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-  transition: 0.2s ease;
-}
-
-button.social-signin.facebook {
-  background: #32508e;
-}
-
-button.social-signin.twitter {
-  background: #55acee;
-}
-
-button.social-signin.google {
-  background: #dd4b39;
 }
 </style>
