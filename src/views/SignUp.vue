@@ -20,6 +20,21 @@
       <div id="login-box">
         <div class="left">
           <h1>Registrarse</h1>
+          <div class="input-container">
+            <i class="fa fa-user icon"></i>
+            <input class="input-field" type="text" placeholder="Username" name="usrnm" />
+            <span class="tip">TIP {{ license }}</span>
+          </div>
+          <input
+            id="registration-license"
+            v-model="license"
+            data-test="registration-license"
+            type="text"
+            name="license"
+            placeholder="Cédula profesional de licenciatura en medicina"
+            @input="documentAPI"
+          />
+          <span class="tip">TIP {{ license }}</span>
           <input id="registration-email" type="text" name="email" placeholder="E-mail" data-test="registration-email" />
           <input
             id="registration-email-confirmation"
@@ -55,14 +70,6 @@
           <input type="password" name="password" placeholder="Contraseña" />
           <input type="password" name="password2" placeholder="Confirme su contraseña" />
 
-          <input
-            id="registration-license"
-            v-model="license"
-            type="text"
-            name="license"
-            placeholder="Cédula profesional de licenciatura en medicina"
-            @input="documentAPI"
-          />
           <p>Loading: {{ loading }}</p>
           <p>License {{ license | zeroPad }}</p>
           <p>Name {{ registrationName }}</p>
@@ -303,5 +310,15 @@ input[type='submit']:active {
   opacity: 1;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
   transition: 0.1s ease;
+}
+
+.tip {
+  margin-top: 0;
+  padding-top: 0;
+  margin-top: 0;
+  margin-bottom: 0.8rem;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-size: 0.8rem;
+  color: $light-accent;
 }
 </style>
