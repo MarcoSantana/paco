@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <loading v-if="loading"></loading>
     <nav-bar></nav-bar>
     <div class="main-wrapper">
       <router-view />
@@ -23,13 +24,14 @@
 import NavBar from '@/components/NavBar'
 import NewContentAvailableToastr from '@/components/NewContentAvailableToastr'
 import AppleAddToHomeScreenModal from '@/components/AppleAddToHomeScreenModal'
+import Loading from '@/views/Loading'
 import { mapState, mapActions, mapGetters } from 'vuex'
 
 export default {
-  components: { NavBar, NewContentAvailableToastr, AppleAddToHomeScreenModal },
+  components: { Loading, NavBar, NewContentAvailableToastr, AppleAddToHomeScreenModal },
   computed: {
-    ...mapGetters('app', ['newContentAvailable']),
-    ...mapState('app', ['showAddToHomeScreenModalForApple', 'refreshingApp']),
+    ...mapGetters('app', ['newContentAvailable', 'loading']),
+    ...mapState('app', ['showAddToHomeScreenModalForApple', 'refreshingApp', 'loading']),
   },
   methods: mapActions('app', ['closeAddToHomeScreenModalForApple', 'serviceWorkerSkipWaiting']),
 }
