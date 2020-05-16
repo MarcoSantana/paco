@@ -61,16 +61,21 @@
             type="text"
             name="license"
             placeholder="Cédula profesional de licenciatura en medicina"
-            @keyup="documentAPI"
+            @input="documentAPI"
           />
-          <p>License {{ license }}</p>
+          <p v-if="typing">You are typing</p>
+          <p v-if="message">Your typed {{ message }}</p>
+          <p>License {{ license | zeroPad }}</p>
           <p>Name {{ registrationName }}</p>
 
           <input type="submit" name="signup_submit" value="Sign me up" @click="documentAPI" />
         </div>
 
         <div class="right">
-          <span class="loginwith">Registrarse con <br />redes sociales</span>
+          <span class="loginwith">
+            Registrarse con
+            <br />redes sociales
+          </span>
 
           <button class="social-signin facebook">Log in with facebook</button>
           <button class="social-signin twitter">Log in with Twitter</button>
@@ -87,17 +92,23 @@
 <script>
 import { mapState, mapMutations } from 'vuex'
 import { isNil } from 'lodash'
+
 import firebase from 'firebase/app'
 import { desktop as isDekstop } from 'is_js'
 
 export default {
+  filters: {
+    zeroPad: value => {
+      return value.toString().padStart(8, '0')
+    },
+  },
   data: () => ({
     loginError: null,
     apiError: null,
     registrationName: null,
     registrationLastname1: null,
     registrationLastname2: null,
-    license: null,
+    license: '',
     // license: 4273560,
   }),
   head() {
@@ -154,31 +165,36 @@ export default {
     }, // login
     async documentAPI() {
       this.loading = true
-      const sepAPI = `http://search.sep.gob.mx/solr/cedulasCore/select?fl=%2A%2Cscore&q=${this.license}&start=0&rows=10&facet=true&indent=on&wt=json`
+      clearTimeout(this.debounce)
+      if (this.license.toString().length >= 6) {
+        this.debounce = setTimeout(async () => {
+          const sepAPI = `http://search.sep.gob.mx/solr/cedulasCore/select?fl=%2A%2Cscore&q=${this.license}&start=0&rows=10&facet=true&indent=on&wt=json`
 
-      await fetch(`https://cors-anywhere.herokuapp.com/${sepAPI}`)
-        .then(response => {
-          console.log(
-            'rest',
-            `https://cors-anywhere.herokuapp.com/http://search.sep.gob.mx/solr/cedulasCore/select?fl=%2A%2Cscore&q=${this.license}&start=0&rows=10&facet=true&indent=on&wt=json`
-          )
+          await fetch(`https://cors-anywhere.herokuapp.com/${sepAPI}`)
+            .then(response => {
+              console.log(
+                'rest',
+                `https://cors-anywhere.herokuapp.com/http://search.sep.gob.mx/solr/cedulasCore/select?fl=%2A%2Cscore&q=${this.license}&start=0&rows=10&facet=true&indent=on&wt=json`
+              )
 
-          return response.json()
-        })
-        .then(myJson => {
-          const data = myJson.response.docs[0]
-          console.log('result data', data)
-          console.log('Paterno', data.paterno)
+              return response.json()
+            })
+            .then(myJson => {
+              const data = myJson.response.docs[0]
+              console.log('result data', data)
+              console.log('Paterno', data.paterno)
 
-          this.registrationLastname1 = data.paterno
-          this.registrationLastname2 = data.materno
-          this.registrationName = data.nombre
-          console.log(this.license)
+              this.registrationLastname1 = data.paterno
+              this.registrationLastname2 = data.materno
+              this.registrationName = data.nombre
+              console.log(this.license)
+            })
+            .catch(error => {
+              console.log(error)
+              this.apiError = error
+            })
         })
-        .catch(error => {
-          console.log(error)
-          this.apiError = error
-        })
+      }
     },
   },
 }
