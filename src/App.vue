@@ -74,7 +74,8 @@ body {
 
     .main-wrapper {
       margin-top: 3.6rem;
-      padding: 20px;
+      padding: 0px;
+      max-width: 80vw;
 
       .page-wrapper {
         width: 60%;

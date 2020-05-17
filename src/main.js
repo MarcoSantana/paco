@@ -1,3 +1,13 @@
+//  _______ _______
+//  |  |  | |______
+//  |  |  | ______|
+// author: mSantana
+// createdAt 2020-05-16 12:30
+// Stardate: 202005.16
+// fileName: src/main.js
+
+import '@mdi/font/css/materialdesignicons.css'
+
 import Vue from 'vue'
 
 import App from './App.vue'

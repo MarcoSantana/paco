@@ -4,9 +4,10 @@
     <div v-show="user === undefined" data-test="loader">Authenticating...</div>
 
     <!-- Offline instruction -->
-    <div v-show="!networkOnLine" data-test="offline-instruction">
-      Please check your connection, login feature is not available offline.
-    </div>
+    <div
+      v-show="!networkOnLine"
+      data-test="offline-instruction"
+    >Please check your connection, login feature is not available offline.</div>
 
     <p v-if="loginError">{{ loginError }}</p>
     <p v-if="apiError">{{ apiError }}</p>
@@ -20,55 +21,89 @@
       <div id="login-box">
         <div class="left">
           <h1>Registrarse</h1>
+          <label for="license" class="tip">License tip</label>
           <div class="input-container">
-            <i class="fa fa-user icon"></i>
-            <input class="input-field" type="text" placeholder="Username" name="usrnm" />
-            <span class="tip">TIP {{ license }}</span>
+            <i class="mdi mdi-badge-account icon"></i>
+            <input
+              id="registration-license"
+              v-model="license"
+              data-test="registration-license"
+              type="text"
+              name="license"
+              placeholder="Cédula profesional de licenciatura en medicina"
+              @input="documentAPI"
+            />
           </div>
-          <input
-            id="registration-license"
-            v-model="license"
-            data-test="registration-license"
-            type="text"
-            name="license"
-            placeholder="Cédula profesional de licenciatura en medicina"
-            @input="documentAPI"
-          />
-          <span class="tip">TIP {{ license }}</span>
-          <input id="registration-email" type="text" name="email" placeholder="E-mail" data-test="registration-email" />
-          <input
-            id="registration-email-confirmation"
-            type="text"
-            name="email"
-            placeholder="Confirme su e-mail"
-            data-test="registration-email-confirmation"
-          />
-          <input
-            id="registration-name"
-            type="text"
-            name="name"
-            placeholder="Nombres (ej. Juan Carlos)"
-            data-test="registration-name"
-            :value="registrationName"
-          />
-          <input
-            id="registration-lastname-1"
-            type="text"
-            name="registrationLastname"
-            placeholder="Apellido Paterno (ej. González)"
-            data-test="registration-lastname-1"
-            :value="registrationLastname1"
-          />
-          <input
-            id="registration-lastname-2"
-            type="text"
-            name="registrationLastname"
-            placeholder="Apellido Materno (ej. Silveti)"
-            data-test="registration-lastname-2"
-            :value="registrationLastname2"
-          />
-          <input type="password" name="password" placeholder="Contraseña" />
-          <input type="password" name="password2" placeholder="Confirme su contraseña" />
+          <label for="email" class="tip">Email tip:</label>
+          <div class="input-container">
+            <i class="mdi mdi-email icon"></i>
+            <input
+              type="text"
+              id="registration-email"
+              v-model="email"
+              name="email"
+              placeholder="E-mail"
+              data-test="registration-email"
+            />
+          </div>
+          <label for="email-confirmation" class="tip">Email:</label>
+          <div class="input-container">
+            <i class="mdi mdi-email icon"></i>
+            <input
+              type="text"
+              id="registration-email-confirmation"
+              v-model="email"
+              name="email-confirmation"
+              placeholder="Confirme su e-mail"
+              data-test="registration-email-confirmation"
+            />
+          </div>
+          <label for="name" class="tip">Nombre:</label>
+          <div class="input-container">
+            <i class="mdi mdi-face icon"></i>
+            <input
+              id="registration-name"
+              type="text"
+              name="name"
+              placeholder="Nombres (ej. Juan Carlos)"
+              data-test="registration-name"
+              :value="registrationName"
+            />
+          </div>
+          <label for="registration-lastname" class="tip">Apellido:</label>
+          <div class="input-container">
+            <i class="mdi mdi-form-textbox icon"></i>
+            <input
+              id="registration-lastname-1"
+              type="text"
+              name="registrationLastname"
+              placeholder="Apellido Paterno (ej. González)"
+              data-test="registration-lastname-1"
+              :value="registrationLastname1"
+            />
+          </div>
+          <label for="registration-lastname-2" class="tip">Apellido Materno:</label>
+          <div class="input-container">
+            <i class="mdi mdi-form-textbox icon"></i>
+            <input
+              id="registration-lastname-2"
+              type="text"
+              name="registrationLastname"
+              placeholder="Apellido Materno (ej. Silveti)"
+              data-test="registration-lastname-2"
+              :value="registrationLastname2"
+            />
+          </div>
+          <label for="password" class="tip">Contraseña</label>
+          <div class="input-container">
+            <i class="mdi mdi-form-textbox-password icon"></i>
+            <input type="password" name="password" placeholder="Contraseña" />
+          </div>
+          <label for="password-2" class="tip">Contraseña</label>
+          <div class="input-container">
+            <i class="mdi mdi-form-textbox-password icon"></i>
+            <input type="password" name="password-2" placeholder="Confirme su contraseña" />
+          </div>
 
           <p>Loading: {{ loading }}</p>
           <p>License {{ license | zeroPad }}</p>
@@ -201,6 +236,10 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/theme/variables.scss';
+* {
+  margin: 0%;
+  padding: 0%;
+}
 
 *:focus {
   outline: none;
@@ -243,10 +282,25 @@ h1 {
   font-weight: 300;
   font-size: 28px;
 }
+/* Style the input container */
+.input-container {
+  display: flex;
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+/* Style the form icons */
+.icon {
+  padding: 5px;
+  color: $main;
+  min-width: 50px;
+  text-align: center;
+  font-size: 1.5rem;
+}
 
 input[type='text'],
 input[type='password'] {
-  display: block;
+  // display: block;
   box-sizing: border-box;
   margin-bottom: 20px;
   padding: 4px;
@@ -314,7 +368,7 @@ input[type='submit']:active {
 
 .tip {
   margin-top: 0;
-  padding-top: 0;
+  padding-top: 0.5rem;
   margin-top: 0;
   margin-bottom: 0.8rem;
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
