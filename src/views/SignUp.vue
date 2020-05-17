@@ -4,10 +4,9 @@
     <div v-show="user === undefined" data-test="loader">Authenticating...</div>
 
     <!-- Offline instruction -->
-    <div
-      v-show="!networkOnLine"
-      data-test="offline-instruction"
-    >Please check your connection, login feature is not available offline.</div>
+    <div v-show="!networkOnLine" data-test="offline-instruction">
+      Please check your connection, login feature is not available offline.
+    </div>
 
     <p v-if="loginError">{{ loginError }}</p>
     <p v-if="apiError">{{ apiError }}</p>
@@ -52,7 +51,7 @@
             <input
               type="text"
               id="registration-email-confirmation"
-              v-model="email"
+              v-model="emailConfirmation"
               name="email-confirmation"
               placeholder="Confirme su e-mail"
               data-test="registration-email-confirmation"
@@ -94,6 +93,13 @@
               :value="registrationLastname2"
             />
           </div>
+
+          <label v-if="gender" for="gender" class="tip">Sexo</label>
+          <div v-if="gender" class="input-container">
+            <i v-show="gender == 1" class="mdi mdi-gender-male icon"></i>
+            <i v-show="gender == 2" class="mdi mdi-gender-female icon"></i>
+            <p>{{ gender | genderize }}</p>
+          </div>
           <label for="password" class="tip">Contraseña</label>
           <div class="input-container">
             <i class="mdi mdi-form-textbox-password icon"></i>
@@ -130,6 +136,19 @@ export default {
     zeroPad: value => {
       return value.toString().padStart(8, '0')
     },
+    genderize: value => {
+      let gender = null
+      if (!isNil(value)) {
+        if (value.toString() === '1') {
+          gender = 'Hombre'
+        }
+        if (value.toString() === '2') {
+          gender = 'Mujer'
+        }
+        return gender
+      }
+      return value
+    },
   },
   data: () => ({
     loginError: null,
@@ -138,7 +157,11 @@ export default {
     registrationLastname1: null,
     registrationLastname2: null,
     license: '',
+    email: null,
+    emailConfirmation: null,
+
     // license: 4273560,
+    gender: null,
   }),
   head() {
     return {
@@ -194,7 +217,6 @@ export default {
       }
     }, // login
     async documentAPI() {
-      this.loading = true
       this.apiError = null
       clearTimeout(this.debounce)
       if (this.license.toString().length >= 6) {
@@ -219,6 +241,7 @@ export default {
               this.registrationLastname2 = data.materno
               this.registrationName = data.nombre
               console.log(this.license)
+              this.gender = data.genero
             })
             .catch(error => {
               console.log(error)
