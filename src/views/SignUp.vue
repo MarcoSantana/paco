@@ -1,12 +1,22 @@
+/** 
+//  _______ _______
+//  |  |  | |______
+//  |  |  | ______|
+// author: mSantana
+// createdAt 2020-05-17 13:56
+// Stardate: 202005.17 13.56
+// fileName: views/SignUp.vue
+*/
 <template>
   <div class="page-wrapper" background-color="primary">
     <!-- Loader -->
     <div v-show="user === undefined" data-test="loader">Authenticating...</div>
 
     <!-- Offline instruction -->
-    <div v-show="!networkOnLine" data-test="offline-instruction">
-      Please check your connection, login feature is not available offline.
-    </div>
+    <div
+      v-show="!networkOnLine"
+      data-test="offline-instruction"
+    >Please check your connection, login feature is not available offline.</div>
 
     <p v-if="loginError">{{ loginError }}</p>
     <p v-if="apiError">{{ apiError }}</p>
@@ -18,9 +28,9 @@
       data-test="signup-form-container"
     >
       <div id="login-box">
-        <div class="left">
-          <h1>Registrarse</h1>
-          <label for="license" class="tip">License tip</label>
+        <h1>Registrarse</h1>
+        <span name="registration-license-span">
+          <label for="license" class="tip">Cédula profesional</label>
           <div class="input-container">
             <i class="mdi mdi-badge-account icon"></i>
             <input
@@ -30,34 +40,16 @@
               type="text"
               name="license"
               placeholder="Cédula profesional de licenciatura en medicina"
-              @input="documentAPI"
             />
+            <button class="button" @click="documentAPI">
+              <i class="mdi mdi-magnify"></i>
+            </button>
           </div>
-          <label for="email" class="tip">Email tip:</label>
-          <div class="input-container">
-            <i class="mdi mdi-email icon"></i>
-            <input
-              type="text"
-              id="registration-email"
-              v-model="email"
-              name="email"
-              placeholder="E-mail"
-              data-test="registration-email"
-            />
-          </div>
-          <label for="email-confirmation" class="tip">Email:</label>
-          <div class="input-container">
-            <i class="mdi mdi-email icon"></i>
-            <input
-              type="text"
-              id="registration-email-confirmation"
-              v-model="emailConfirmation"
-              name="email-confirmation"
-              placeholder="Confirme su e-mail"
-              data-test="registration-email-confirmation"
-            />
-          </div>
-          <label for="name" class="tip">Nombre:</label>
+        </span>
+        <!-- license -->
+
+        <span name="registration-name-span">
+          <label for="name" class="tip">Nombre</label>
           <div class="input-container">
             <i class="mdi mdi-face icon"></i>
             <input
@@ -69,54 +61,143 @@
               :value="registrationName"
             />
           </div>
-          <label for="registration-lastname" class="tip">Apellido:</label>
+        </span>
+        <!-- name -->
+
+        <span name="registration-lastname-1-span">
+          <label for="lastname-1" class="tip">Apellido Paterno</label>
           <div class="input-container">
             <i class="mdi mdi-form-textbox icon"></i>
             <input
               id="registration-lastname-1"
               type="text"
-              name="registrationLastname"
+              name="lastname-1"
               placeholder="Apellido Paterno (ej. González)"
               data-test="registration-lastname-1"
               :value="registrationLastname1"
             />
           </div>
-          <label for="registration-lastname-2" class="tip">Apellido Materno:</label>
+        </span>
+        <!-- lastname-1 -->
+
+        <span name="registration-lastname-2-span">
+          <label for="lastname-2" class="tip">Apellido Materno</label>
           <div class="input-container">
             <i class="mdi mdi-form-textbox icon"></i>
             <input
               id="registration-lastname-2"
               type="text"
-              name="registrationLastname"
+              name="lastname-2"
               placeholder="Apellido Materno (ej. Silveti)"
               data-test="registration-lastname-2"
               :value="registrationLastname2"
             />
           </div>
+        </span>
+        <!-- lastname-2 -->
 
-          <label v-if="gender" for="gender" class="tip">Sexo</label>
-          <div v-if="gender" class="input-container">
+        <span v-if="gender" name="registration-gender-span">
+          <label for="gender" class="tip">Sexo</label>
+          <div class="input-container">
             <i v-show="gender == 1" class="mdi mdi-gender-male icon"></i>
             <i v-show="gender == 2" class="mdi mdi-gender-female icon"></i>
-            <p>{{ gender | genderize }}</p>
+            <p
+              id="registration-gender"
+              name="gender"
+              data-test="registration-gender"
+            >{{ gender | genderize }}</p>
           </div>
+        </span>
+        <!--gender-->
+
+        <span v-if="college" name="registration-college-span">
+          <label for="college" class="tip">Universidad</label>
+          <div class="input-container">
+            <i class="mdi mdi-school icon"></i>
+            <p
+              id="registration-college"
+              name="college"
+              data-test="registration-college"
+            >{{ college }}</p>
+          </div>
+        </span>
+        <!-- college -->
+
+        <span v-if="degree" name="registration-degree-span">
+          <label for="degree" class="tip">Título</label>
+          <div class="input-container">
+            <i class="mdi mdi-certificate icon"></i>
+            <p id="registration-degree" name="degree" data-test="registration-degree">{{ degree }}</p>
+          </div>
+        </span>
+        <!-- degree -->
+
+        <span name="registration-email-span">
+          <label for="email" class="tip">Email</label>
+          <div class="input-container">
+            <i class="mdi mdi-email icon"></i>
+            <input
+              id="registration-email"
+              v-model="email"
+              type="text"
+              name="email"
+              placeholder="E-mail (ej. correoejemplo@dominio.com)"
+              data-test="registration-email"
+            />
+          </div>
+        </span>
+        <!-- email -->
+
+        <span name="registration-email-confirmation-span">
+          <label for="email-confirmation" class="tip">Confirmación de e-mail</label>
+          <div class="input-container">
+            <i class="mdi mdi-email icon"></i>
+            <input
+              id="registration-email-confirmation"
+              v-model="emailConfirmation"
+              type="text"
+              name="email-confirmation"
+              placeholder="Confirme su e-mail (ej. correoejemplo@dominio.com)"
+              data-test="registration-email-confirmation"
+            />
+          </div>
+        </span>
+        <!-- email-confirmation -->
+
+        <span name="registrartion-pasword-span">
           <label for="password" class="tip">Contraseña</label>
           <div class="input-container">
             <i class="mdi mdi-form-textbox-password icon"></i>
-            <input type="password" name="password" placeholder="Contraseña" />
+            <input
+              id="registration-password"
+              v-model="password"
+              type="password"
+              name="password"
+              placeholder="Contraseña"
+              data-test="registration-password"
+            />
           </div>
-          <label for="password-2" class="tip">Contraseña</label>
+        </span>
+        <!-- password -->
+
+        <span name="registration-password-confirmation-span">
+          <label for="password-confirmation" class="tip">Contraseña</label>
           <div class="input-container">
             <i class="mdi mdi-form-textbox-password icon"></i>
-            <input type="password" name="password-2" placeholder="Confirme su contraseña" />
+            <input
+              id="registration-password-confirmation"
+              v-model="passwordConfirmation"
+              type="password"
+              name="password-confirmation"
+              placeholder="Confirme su contraseña"
+              data-test="registration-password-confirmation"
+            />
           </div>
+        </span>
+        <!-- password-confirmation -->
 
-          <p>Loading: {{ loading }}</p>
-          <p>License {{ license | zeroPad }}</p>
-          <p>Name {{ registrationName }}</p>
-
-          <input type="submit" name="signup_submit" value="Sign me up" @click="documentAPI" />
-        </div>
+        <input type="submit" name="signup_submit" value="Sign me up" @click="documentAPI" />
+        <!-- TODO -->
       </div>
     </div>
     <!-- signup-form-container -->
@@ -159,9 +240,11 @@ export default {
     license: '',
     email: null,
     emailConfirmation: null,
-
-    // license: 4273560,
+    password: null,
+    passwordConfirmation: null,
     gender: null,
+    college: null,
+    degree: null,
   }),
   head() {
     return {
@@ -235,13 +318,13 @@ export default {
             .then(myJson => {
               const data = myJson.response.docs[0]
               console.log('result data', data)
-              console.log('Paterno', data.paterno)
 
               this.registrationLastname1 = data.paterno
               this.registrationLastname2 = data.materno
               this.registrationName = data.nombre
-              console.log(this.license)
               this.gender = data.genero
+              this.college = data.institucion
+              this.degree = data.titulo
             })
             .catch(error => {
               console.log(error)
@@ -283,21 +366,12 @@ body {
 #login-box {
   position: relative;
   box-sizing: border-box;
-  margin: 5% 100px 5% 100px;
+  margin: 5% 10% 5% 10%;
   width: 100%;
   height: 100%;
+  padding: 1.5rem;
   border-radius: 2px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-}
-
-.left {
-  top: 0;
-  left: 0;
-  box-sizing: border-box;
-  padding: 40px;
-  width: 100%;
-  // height: 400px;
-  height: auto;
 }
 
 h1 {
@@ -323,22 +397,6 @@ h1 {
 
 input[type='text'],
 input[type='password'] {
-  // display: block;
-  box-sizing: border-box;
-  margin-bottom: 20px;
-  padding: 4px;
-  height: 32px;
-  width: 100%;
-  border: none;
-  border-bottom: 1px solid #aaa;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 400;
-  font-size: 15px;
-  transition: 0.2s ease;
-}
-
-input[type='text'],
-input[name='license'] {
   display: block;
   box-sizing: border-box;
   margin-bottom: 20px;
@@ -356,8 +414,16 @@ input[name='license'] {
 input[type='text']:focus,
 input[type='password']:focus {
   border-bottom: 2px solid $secondary; //Cahnge me
+  background-color: lighten($color: $secondary, $amount: 50%);
   color: $main;
-  transition: 0.4s ease;
+  transition: 0.8s ease;
+  box-shadow: 2px 1px rgba(0, 0, 0, 0.4);
+}
+
+input[type='text']:hover,
+input[type='password']:hover {
+  border-bottom: 2px solid $secondary;
+  transition: 0.8s ease;
 }
 
 input[type='submit'] {
@@ -374,6 +440,24 @@ input[type='submit'] {
   text-transform: uppercase;
   transition: 0.5s ease;
   cursor: pointer;
+}
+
+.button {
+  border-radius: 20%;
+  background-color: $main;
+  color: $light-accent;
+  padding: 0.5rem;
+  font-size: 1.5rem;
+  text-align: center;
+  display: inline-block;
+  transition-duration: 0.5s;
+  transition: 0.2s ease;
+}
+
+.button:hover {
+  background-color: $light-accent;
+  color: $main;
+  opacity: 0.8;
 }
 
 input[type='submit']:hover,
