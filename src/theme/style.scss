@@ -1,1 +1,24 @@
-// @import url()
+//  _______ _______
+//  |  |  | |______
+//  |  |  | ______|
+// author: mSantana
+// createdAt 2020-05-18 08:58
+// Stardate: 202005.18 08.58
+// fileName: theme/style.scss
+
+@import 'variables.scss';
+
+//Tooltips as in https://www.w3schools.com/css/css_tooltip.asp
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: $main;
+  color: $light-accent;
+  padding: 5px 0;
+  border-radius: 20px;
+}
