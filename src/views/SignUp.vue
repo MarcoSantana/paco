@@ -29,8 +29,8 @@
     >
       <div id="login-box">
         <h1>Registrarse</h1>
-        <span name="registration-license-span">
-          <label for="license" class="tip">Cédula profesional</label>
+        <span name="registration-license-span" v-bind:class="{error: errors.license }">
+          <label for="license" class="tip">Cédula profesional {{error.license}}</label>
           <div class="input-container">
             <i class="mdi mdi-badge-account icon"></i>
             <input
@@ -74,7 +74,7 @@
               name="lastname-1"
               placeholder="Apellido Paterno (ej. González)"
               data-test="registration-lastname-1"
-              :value="registrationLastname1"
+              :value="lastname1"
             />
           </div>
         </span>
@@ -90,7 +90,7 @@
               name="lastname-2"
               placeholder="Apellido Materno (ej. Silveti)"
               data-test="registration-lastname-2"
-              :value="registrationLastname2"
+              :value="lastname2"
             />
           </div>
         </span>
@@ -195,8 +195,13 @@
           </div>
         </span>
         <!-- password-confirmation -->
+        <ul>
+          <span :key="key" v-for="(error, key) in errors">
+            <li v-if="error">{{error}}</li>
+          </span>
+        </ul>
 
-        <input type="submit" name="signup_submit" value="Sign me up" @click="documentAPI" />
+        <input type="submit" name="signup_submit" value="Sign me up" @click="checkForm" />
         <!-- TODO -->
       </div>
     </div>
@@ -232,12 +237,15 @@ export default {
     },
   },
   data: () => ({
+    // Errors
+    error: {},
     loginError: null,
     apiError: null,
+    // Form values
     registrationName: null,
-    registrationLastname1: null,
-    registrationLastname2: null,
-    license: '',
+    lastname1: null,
+    lastname2: null,
+    license: '', // TODO Why isn't null
     email: null,
     emailConfirmation: null,
     password: null,
@@ -245,6 +253,8 @@ export default {
     gender: null,
     college: null,
     degree: null,
+    // Validation
+    errors: [],
   }),
   head() {
     return {
@@ -334,6 +344,19 @@ export default {
               this.unsetLoading()
             })
         })
+      }
+    }, // documentAPI
+    checkForm() {
+      this.errors = {
+        license: null,
+        name: null,
+        registrationLastname1: null,
+        registrationLastname2: null,
+        email: null,
+        emailConfirmation: null,
+      }
+      if (!this.license) {
+        this.errors.license = 'El numero de cédula profesional es obligatorio'
       }
     },
   },
@@ -481,5 +504,18 @@ input[type='submit']:active {
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
   font-size: 0.8rem;
   color: $light-accent;
+}
+
+// Validation
+
+.error {
+  .icon {
+    color: $danger-color;
+  }
+  input {
+    background-color: lighten($color: $danger-color, $amount: 20%);
+    opacity: 0.6;
+    border-radius: 10px;
+  }
 }
 </style>
