@@ -30,7 +30,7 @@
       <div id="login-box">
         <h1>Registrarse</h1>
         <span name="registration-license-span" v-bind:class="{error: errors.license }">
-          <label for="license" class="tip">Cédula profesional {{error.license}}</label>
+          <label for="license" class="tip">Cédula profesional</label>
           <div class="input-container">
             <i class="mdi mdi-badge-account icon"></i>
             <input
@@ -45,6 +45,7 @@
               <i class="mdi mdi-magnify"></i>
             </button>
           </div>
+          <div class="error info">{{errors.license}}</div>
         </span>
         <!-- license -->
 
@@ -516,6 +517,10 @@ input[type='submit']:active {
     background-color: lighten($color: $danger-color, $amount: 20%);
     opacity: 0.6;
     border-radius: 10px;
+  }
+  .info {
+    color: $danger-color;
+    margin-top: 0%;
   }
 }
 </style>
