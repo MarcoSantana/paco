@@ -1,22 +1,20 @@
-/** 
+<template>
+  <!--
 //  _______ _______
 //  |  |  | |______
 //  |  |  | ______|
 // author: mSantana
 // createdAt 2020-05-17 13:56
-// Stardate: 202005.17 13.56
-// fileName: views/SignUp.vue
-*/
-<template>
+// Stardate: 202005.17 13:56
+// fileName: views/SignUp.vue -->
   <div class="page-wrapper" background-color="primary">
     <!-- Loader -->
     <div v-show="user === undefined" data-test="loader">Authenticating...</div>
 
     <!-- Offline instruction -->
-    <div
-      v-show="!networkOnLine"
-      data-test="offline-instruction"
-    >Please check your connection, login feature is not available offline.</div>
+    <div v-show="!networkOnLine" data-test="offline-instruction">
+      Please check your connection, login feature is not available offline.
+    </div>
 
     <p v-if="loginError">{{ loginError }}</p>
     <p v-if="apiError">{{ apiError }}</p>
@@ -29,56 +27,64 @@
     >
       <div id="login-box">
         <h1>Registrarse</h1>
-        <span name="registration-license-span" v-bind:class="{error: errors.license }">
-          <label for="license" class="tip">Cédula profesional</label>
-          <div class="input-container">
-            <i class="mdi mdi-badge-account icon"></i>
-            <input
-              id="registration-license"
-              v-model="license"
-              data-test="registration-license"
-              type="text"
-              name="license"
-              placeholder="Cédula profesional de licenciatura en medicina"
-            />
-            <button class="button" @click="documentAPI">
-              <i class="mdi mdi-magnify"></i>
-            </button>
-          </div>
-          <div class="error info">{{errors.license}}</div>
-        </span>
+        <ValidationProvider v-slot="{ errors }" rules="length:3,30|required|numeric">
+          <span name="registration-license-span" :class="{ error: errors[0] }">
+            <label for="license" class="tip">Cédula profesional</label>
+            <div class="input-container">
+              <i class="mdi mdi-badge-account icon"></i>
+              <input
+                id="registration-license"
+                v-model="license"
+                data-test="registration-license"
+                type="text"
+                name="license"
+                placeholder="Cédula profesional de licenciatura en medicina"
+              />
+              <button class="button" @click="documentAPI">
+                <i class="mdi mdi-magnify"></i>
+              </button>
+            </div>
+            <div class="error info">{{ errors[0] }}</div>
+          </span>
+        </ValidationProvider>
         <!-- license -->
 
-        <span name="registration-name-span">
-          <label for="name" class="tip">Nombre</label>
-          <div class="input-container">
-            <i class="mdi mdi-face icon"></i>
-            <input
-              id="registration-name"
-              type="text"
-              name="name"
-              placeholder="Nombres (ej. Juan Carlos)"
-              data-test="registration-name"
-              :value="registrationName"
-            />
-          </div>
-        </span>
+        <ValidationProvider v-slot="{ errors }" rules="required|length:3,30">
+          <span name="registration-name-span" :class="{ error: errors[0] }">
+            <label for="name" class="tip">Nombre</label>
+            <div class="input-container">
+              <span>{{ errors[0] }}</span>
+              <i class="mdi mdi-face icon"></i>
+              <input
+                id="registration-name"
+                v-model="registrationName"
+                type="text"
+                name="name"
+                placeholder="Nombres (ej. Juan Carlos)"
+                data-test="registration-name"
+              />
+            </div>
+          </span>
+        </ValidationProvider>
         <!-- name -->
 
-        <span name="registration-lastname-1-span">
-          <label for="lastname-1" class="tip">Apellido Paterno</label>
-          <div class="input-container">
-            <i class="mdi mdi-form-textbox icon"></i>
-            <input
-              id="registration-lastname-1"
-              type="text"
-              name="lastname-1"
-              placeholder="Apellido Paterno (ej. González)"
-              data-test="registration-lastname-1"
-              :value="lastname1"
-            />
-          </div>
-        </span>
+        <ValidationProvider v-slot="{ errors }" rules="required|length:3,30">
+          <span name="registration-lastname-1-span" :class="{ error: errors[0] }">
+            <label for="lastname-1" class="tip">Apellido Paterno</label>
+            <div class="input-container">
+              <span>{{ errors[0] }}</span>
+              <i class="mdi mdi-form-textbox icon"></i>
+              <input
+                id="registration-lastname-1"
+                type="text"
+                name="lastname-1"
+                placeholder="Apellido Paterno (ej. González)"
+                data-test="registration-lastname-1"
+                :value="lastname1"
+              />
+            </div>
+          </span>
+        </ValidationProvider>
         <!-- lastname-1 -->
 
         <span name="registration-lastname-2-span">
@@ -102,11 +108,7 @@
           <div class="input-container">
             <i v-show="gender == 1" class="mdi mdi-gender-male icon"></i>
             <i v-show="gender == 2" class="mdi mdi-gender-female icon"></i>
-            <p
-              id="registration-gender"
-              name="gender"
-              data-test="registration-gender"
-            >{{ gender | genderize }}</p>
+            <p id="registration-gender" name="gender" data-test="registration-gender">{{ gender | genderize }}</p>
           </div>
         </span>
         <!--gender-->
@@ -115,11 +117,7 @@
           <label for="college" class="tip">Universidad</label>
           <div class="input-container">
             <i class="mdi mdi-school icon"></i>
-            <p
-              id="registration-college"
-              name="college"
-              data-test="registration-college"
-            >{{ college }}</p>
+            <p id="registration-college" name="college" data-test="registration-college">{{ college }}</p>
           </div>
         </span>
         <!-- college -->
@@ -133,36 +131,40 @@
         </span>
         <!-- degree -->
 
-        <span name="registration-email-span">
-          <label for="email" class="tip">Email</label>
-          <div class="input-container">
-            <i class="mdi mdi-email icon"></i>
-            <input
-              id="registration-email"
-              v-model="email"
-              type="text"
-              name="email"
-              placeholder="E-mail (ej. correoejemplo@dominio.com)"
-              data-test="registration-email"
-            />
-          </div>
-        </span>
+        <ValidationProvider v-slot="{ errors }" rules="email|required|confirmed:emailConfirmation">
+          <span name="registration-email-span" :class="{ error: errors[0] }">
+            <label for="email" class="tip">Email</label>
+            <div class="input-container">
+              <span>{{ errors[0] }}</span>
+              <i class="mdi mdi-email icon"></i>
+              <input
+                id="registration-email"
+                v-model="email"
+                type="text"
+                name="email"
+                placeholder="E-mail (ej. correoejemplo@dominio.com)"
+                data-test="registration-email"
+              />
+            </div>
+          </span>
+        </ValidationProvider>
         <!-- email -->
-
-        <span name="registration-email-confirmation-span">
-          <label for="email-confirmation" class="tip">Confirmación de e-mail</label>
-          <div class="input-container">
-            <i class="mdi mdi-email icon"></i>
-            <input
-              id="registration-email-confirmation"
-              v-model="emailConfirmation"
-              type="text"
-              name="email-confirmation"
-              placeholder="Confirme su e-mail (ej. correoejemplo@dominio.com)"
-              data-test="registration-email-confirmation"
-            />
-          </div>
-        </span>
+        <ValidationProvider v-slot="{ errors }" rules="email|required" vid="emailConfirmation">
+          <span name="registration-email-confirmation-span">
+            <label for="email-confirmation" class="tip">Confirmación de e-mail</label>
+            <div class="input-container">
+              <i class="mdi mdi-email icon"></i>
+              <input
+                id="registration-email-confirmation"
+                v-model="emailConfirmation"
+                type="text"
+                name="email-confirmation"
+                placeholder="Confirme su e-mail (ej. correoejemplo@dominio.com)"
+                data-test="registration-email-confirmation"
+              />
+            </div>
+          </span>
+        </ValidationProvider>
         <!-- email-confirmation -->
 
         <span name="registrartion-pasword-span">
@@ -197,8 +199,8 @@
         </span>
         <!-- password-confirmation -->
         <ul>
-          <span :key="key" v-for="(error, key) in errors">
-            <li v-if="error">{{error}}</li>
+          <span v-for="(error, key) in errors" :key="key">
+            <li v-if="error">{{ error }}</li>
           </span>
         </ul>
 
@@ -217,8 +219,13 @@ import { isNil } from 'lodash'
 
 import firebase from 'firebase/app'
 import { desktop as isDekstop } from 'is_js'
+import { ValidationProvider } from 'vee-validate'
+import '@/misc/validation'
 
 export default {
+  components: {
+    ValidationProvider,
+  },
   filters: {
     zeroPad: value => {
       return value.toString().padStart(8, '0')
@@ -242,6 +249,7 @@ export default {
     error: {},
     loginError: null,
     apiError: null,
+    // Move all these to an object
     // Form values
     registrationName: null,
     lastname1: null,
@@ -513,14 +521,17 @@ input[type='submit']:active {
   .icon {
     color: $danger-color;
   }
+  .info {
+    color: $danger-color;
+    margin-top: 0%;
+  }
   input {
     background-color: lighten($color: $danger-color, $amount: 20%);
     opacity: 0.6;
     border-radius: 10px;
   }
-  .info {
+  span {
     color: $danger-color;
-    margin-top: 0%;
   }
 }
 </style>
