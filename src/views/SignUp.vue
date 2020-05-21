@@ -1,12 +1,13 @@
 <template>
   <!--
-//  _______ _______
-//  |  |  | |______
-//  |  |  | ______|
-// author: mSantana
-// createdAt 2020-05-17 13:56
-// Stardate: 202005.17 13:56
-// fileName: views/SignUp.vue -->
+  _______ _______
+  |  |  | |______
+  |  |  | ______|
+author: mSantana
+createdAt 2020-05-17 13:56
+Stardate: 202005.17 13:56
+fileName: views/SignUp.vue -->
+
   <div class="page-wrapper" background-color="primary">
     <!-- Loader -->
     <div v-show="user === undefined" data-test="loader">Authenticating...</div>
@@ -27,7 +28,7 @@
     >
       <div id="login-box">
         <h1>Registrarse</h1>
-        <ValidationProvider v-slot="{ errors }" rules="length:3,30|required|numeric">
+        <validation-provider v-slot="{ errors }" rules="length:3,30|required|numeric">
           <span name="registration-license-span" :class="{ error: errors[0] }">
             <label for="license" class="tip">Cédula profesional</label>
             <div class="input-container">
@@ -46,10 +47,10 @@
             </div>
             <div class="error info">{{ errors[0] }}</div>
           </span>
-        </ValidationProvider>
+        </validation-provider>
         <!-- license -->
 
-        <ValidationProvider v-slot="{ errors }" rules="required|length:3,30">
+        <validation-provider v-slot="{ errors }" rules="required|length:3,30">
           <span name="registration-name-span" :class="{ error: errors[0] }">
             <label for="name" class="tip">Nombre</label>
             <div class="input-container">
@@ -65,10 +66,10 @@
               />
             </div>
           </span>
-        </ValidationProvider>
+        </validation-provider>
         <!-- name -->
 
-        <ValidationProvider v-slot="{ errors }" rules="required|length:3,30">
+        <validation-provider v-slot="{ errors }" rules="required|length:3,30">
           <span name="registration-lastname-1-span" :class="{ error: errors[0] }">
             <label for="lastname-1" class="tip">Apellido Paterno</label>
             <div class="input-container">
@@ -76,31 +77,34 @@
               <i class="mdi mdi-form-textbox icon"></i>
               <input
                 id="registration-lastname-1"
+                v-model="lastname1"
                 type="text"
                 name="lastname-1"
                 placeholder="Apellido Paterno (ej. González)"
                 data-test="registration-lastname-1"
-                :value="lastname1"
               />
             </div>
           </span>
-        </ValidationProvider>
+        </validation-provider>
         <!-- lastname-1 -->
 
-        <span name="registration-lastname-2-span">
-          <label for="lastname-2" class="tip">Apellido Materno</label>
-          <div class="input-container">
-            <i class="mdi mdi-form-textbox icon"></i>
-            <input
-              id="registration-lastname-2"
-              type="text"
-              name="lastname-2"
-              placeholder="Apellido Materno (ej. Silveti)"
-              data-test="registration-lastname-2"
-              :value="lastname2"
-            />
-          </div>
-        </span>
+        <validation-provider v-slot="{ errors }" rules="required">
+          <span name="regsitration-lastname-2-span" :class="{ error: errors[0] }">
+            <label for="lastname-2" class="tip">Apellido Materno</label>
+            <div class="input-container">
+              <span>{{ errors[0] }}</span>
+              <i class="mdi mdi-form-textbox icon"></i>
+              <input
+                id="registration-lastname-2"
+                v-model="lastname2"
+                type="text"
+                name="lastname2"
+                placeholder="Apellido Materno (ej. Silveti)"
+                data-test="registration-lastname-2"
+              />
+            </div>
+          </span>
+        </validation-provider>
         <!-- lastname-2 -->
 
         <span v-if="gender" name="registration-gender-span">
@@ -131,7 +135,7 @@
         </span>
         <!-- degree -->
 
-        <ValidationProvider v-slot="{ errors }" rules="email|required|confirmed:emailConfirmation">
+        <validation-provider v-slot="{ errors }" rules="email|required|confirmed:emailConfirmation">
           <span name="registration-email-span" :class="{ error: errors[0] }">
             <label for="email" class="tip">Email</label>
             <div class="input-container">
@@ -147,9 +151,9 @@
               />
             </div>
           </span>
-        </ValidationProvider>
+        </validation-provider>
         <!-- email -->
-        <ValidationProvider v-slot="{ errors }" rules="email|required" vid="emailConfirmation">
+        <validation-provider v-slot="{ errors }" rules="email|required" vid="emailConfirmation">
           <span name="registration-email-confirmation-span">
             <label for="email-confirmation" class="tip">Confirmación de e-mail</label>
             <div class="input-container">
@@ -164,45 +168,46 @@
               />
             </div>
           </span>
-        </ValidationProvider>
+        </validation-provider>
         <!-- email-confirmation -->
 
-        <span name="registrartion-pasword-span">
-          <label for="password" class="tip">Contraseña</label>
-          <div class="input-container">
-            <i class="mdi mdi-form-textbox-password icon"></i>
-            <input
-              id="registration-password"
-              v-model="password"
-              type="password"
-              name="password"
-              placeholder="Contraseña"
-              data-test="registration-password"
-            />
-          </div>
-        </span>
+        <validation-provider v-slot="{ errors }" rules="required|length:8,16|strong_password">
+          <span name="registration-password-span" :class="{ error: errors[0] }">
+            <label for="password" class="tip">Contraseña</label>
+            <div class="input-container">
+              <span>{{ errors[0] }}</span>
+              <i class="mdi mdi-form-textbox-password icon"></i>
+              <input
+                id="registration-password"
+                v-model="password"
+                type="password"
+                name="password"
+                placeholder="Contraseña"
+                data-test="registration-password"
+              />
+            </div>
+          </span>
+        </validation-provider>
         <!-- password -->
 
-        <span name="registration-password-confirmation-span">
-          <label for="password-confirmation" class="tip">Contraseña</label>
-          <div class="input-container">
-            <i class="mdi mdi-form-textbox-password icon"></i>
-            <input
-              id="registration-password-confirmation"
-              v-model="passwordConfirmation"
-              type="password"
-              name="password-confirmation"
-              placeholder="Confirme su contraseña"
-              data-test="registration-password-confirmation"
-            />
-          </div>
-        </span>
-        <!-- password-confirmation -->
-        <ul>
-          <span v-for="(error, key) in errors" :key="key">
-            <li v-if="error">{{ error }}</li>
+        <validation-provider v-slot="{ errors }" rules="confirmed">
+          <span name="registration-password-span" :class="{ error: errors[0] }"
+            ><span>{{ errors[0] }}</span>
+            <label for="password-confirmation" class="tip">Contraseña</label>
+            <div class="input-container">
+              <i class="mdi mdi-form-textbox-password icon"></i>
+              <input
+                id="registration-password-confirmation"
+                v-model="passwordConfirmation"
+                type="password"
+                name="password-confirmation"
+                placeholder="Confirme su contraseña"
+                data-test="registration-password-confirmation"
+              />
+            </div>
           </span>
-        </ul>
+        </validation-provider>
+        <!-- password-confirmation -->
 
         <input type="submit" name="signup_submit" value="Sign me up" @click="checkForm" />
         <!-- TODO -->
@@ -219,17 +224,13 @@ import { isNil } from 'lodash'
 
 import firebase from 'firebase/app'
 import { desktop as isDekstop } from 'is_js'
-import { ValidationProvider } from 'vee-validate'
-import '@/misc/validation'
 
 export default {
-  components: {
-    ValidationProvider,
-  },
   filters: {
     zeroPad: value => {
       return value.toString().padStart(8, '0')
     },
+    // Returns the string for each gender based on the REST API
     genderize: value => {
       let gender = null
       if (!isNil(value)) {
@@ -271,6 +272,7 @@ export default {
         inner: 'Login',
       },
       meta: [
+        // TODO translate anad adjust
         {
           name: 'description',
           content: `Sign in or sign up to ${this.appTitle}`,
@@ -296,11 +298,13 @@ export default {
   },
   mounted() {
     // this.documentAPI()
+    console.clear()
   },
   methods: {
     ...mapMutations('authentication', ['setUser']),
     ...mapMutations('app', ['setLoading', 'unsetLoading']),
     async login() {
+      // TODO must remove scince it will be qith email/password login
       this.loginError = null
       const provider = new firebase.auth.GoogleAuthProvider()
       this.setUser(undefined)
