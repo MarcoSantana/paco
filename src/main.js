@@ -10,6 +10,11 @@ import '@mdi/font/css/materialdesignicons.css'
 
 import Vue from 'vue'
 
+// Validation
+import es from 'vee-validate/dist/locale/es'
+import '@/misc/validation'
+import * as VeeValidate from 'vee-validate'
+
 import App from './App.vue'
 import router from './router'
 import store from './store'
@@ -21,12 +26,18 @@ import '@/misc/handle-apple-install-prompt'
 import 'pwacompat'
 
 Vue.config.productionTip = false
+Vue.use(VeeValidate)
 
 new Vue({
   router,
   store,
+  VeeValidate,
   render: h => h(App),
 }).$mount('#app')
+
+// Validator.localize('es', es)
+Vue.component('validation-provider', VeeValidate.ValidationProvider)
+VeeValidate.localize('es', es)
 
 // eslint-disable-next-line no-console
 console.info(`
