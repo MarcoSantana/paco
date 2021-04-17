@@ -28,7 +28,7 @@ fileName: views/SignUp.vue -->
     >
       <div id="login-box">
         <h1>Registrarse</h1>
-        <validation-provider v-slot="{ errors }" rules="length:3,30|required|numeric">
+        <validation-provider v-slot="{ errors }" rules="numeric|length:3,30|required">
           <span name="registration-license-span" :class="{ error: errors[0] }">
             <label for="license" class="tip">Cédula profesional</label>
             <div class="input-container">
@@ -41,9 +41,6 @@ fileName: views/SignUp.vue -->
                 name="license"
                 placeholder="Cédula profesional de licenciatura en medicina"
               />
-              <button class="button" @click="documentAPI">
-                <i class="mdi mdi-magnify"></i>
-              </button>
             </div>
             <div class="error info">{{ errors[0] }}</div>
           </span>
@@ -322,43 +319,6 @@ export default {
         this.setUser(null)
       }
     }, // login
-    async documentAPI() {
-      this.apiError = null
-      clearTimeout(this.debounce)
-      if (this.license.toString().length >= 6) {
-        this.debounce = setTimeout(async () => {
-          const sepAPI = `http://search.sep.gob.mx/solr/cedulasCore/select?fl=%2A%2Cscore&q=${this.license}&start=0&rows=10&facet=true&indent=on&wt=json`
-          this.setLoading()
-          await fetch(`https://cors-anywhere.herokuapp.com/${sepAPI}`)
-            .then(response => {
-              console.log(
-                'rest',
-                `https://cors-anywhere.herokuapp.com/http://search.sep.gob.mx/solr/cedulasCore/select?fl=%2A%2Cscore&q=${this.license}&start=0&rows=10&facet=true&indent=on&wt=json`
-              )
-
-              return response.json()
-            })
-            .then(myJson => {
-              const data = myJson.response.docs[0]
-              console.log('result data', data)
-
-              this.registrationLastname1 = data.paterno
-              this.registrationLastname2 = data.materno
-              this.registrationName = data.nombre
-              this.gender = data.genero
-              this.college = data.institucion
-              this.degree = data.titulo
-            })
-            .catch(error => {
-              console.log(error)
-              this.apiError = error
-            })
-            .finally(() => {
-              this.unsetLoading()
-            })
-        })
-      }
-    }, // documentAPI
     checkForm() {
       this.errors = {
         license: null,
