@@ -190,7 +190,7 @@ fileName: views/SignUp.vue -->
         <validation-provider v-slot="{ errors }" rules="confirmed">
           <span name="registration-password-span" :class="{ error: errors[0] }"
             ><span>{{ errors[0] }}</span>
-            <label for="password-confirmation" class="tip">Contraseña</label>
+            <label for="password-confirmation" class="tip">Confirmación de contraseña</label>
             <div class="input-container">
               <i class="mdi mdi-form-textbox-password icon"></i>
               <input
@@ -206,7 +206,7 @@ fileName: views/SignUp.vue -->
         </validation-provider>
         <!-- password-confirmation -->
 
-        <input type="submit" name="signup_submit" value="Sign me up" @click="checkForm" />
+        <input type="submit" name="signup_submit" value="Registrarse" data-test="signup-submit" @click="checkForm" />
         <!-- TODO -->
       </div>
     </div>
