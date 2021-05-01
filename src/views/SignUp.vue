@@ -29,14 +29,14 @@ fileName: views/SignUp.vue -->
       <div id="login-box">
         <h1>Registrarse</h1>
         <validation-provider v-slot="{ errors }" rules="numeric|length:3,30|required">
-          <span name="registration-license-span" :class="{ error: errors[0] }">
+          <span id="registration-license-span" :class="{ error: errors[0] }">
             <label for="license" class="tip">Cédula profesional</label>
             <div class="input-container">
               <i class="mdi mdi-badge-account icon"></i>
               <input
                 id="registration-license"
                 v-model="license"
-                data-test="registration-license"
+                data-test="license"
                 type="text"
                 name="license"
                 placeholder="Cédula profesional de licenciatura en medicina"
@@ -132,7 +132,7 @@ fileName: views/SignUp.vue -->
         </span>
         <!-- degree -->
 
-        <validation-provider v-slot="{ errors }" rules="email|required|confirmed:emailConfirmation">
+        <validation-provider v-slot="{ errors }" rules="email|required" name="register-email-valitator">
           <span name="registration-email-span" :class="{ error: errors[0] }">
             <label for="email" class="tip">Email</label>
             <div class="input-container">
@@ -150,8 +150,9 @@ fileName: views/SignUp.vue -->
           </span>
         </validation-provider>
         <!-- email -->
-        <validation-provider v-slot="{ errors }" rules="email|required" vid="emailConfirmation">
-          <span name="registration-email-confirmation-span">
+        <validation-provider v-slot="{ errors }" rules="confirmed:register-email-validator">
+          <span name="registration-email-confirmation-span" :class="{ error: errors[0] }"
+            ><span>{{ errors[0] }}</span>
             <label for="email-confirmation" class="tip">Confirmación de e-mail</label>
             <div class="input-container">
               <i class="mdi mdi-email icon"></i>
@@ -168,7 +169,7 @@ fileName: views/SignUp.vue -->
         </validation-provider>
         <!-- email-confirmation -->
 
-        <validation-provider v-slot="{ errors }" rules="required|length:8,16|strong_password">
+        <validation-provider v-slot="{ errors }" rules="required|length:8,16|strong_password" name="password-validator">
           <span name="registration-password-span" :class="{ error: errors[0] }">
             <label for="password" class="tip">Contraseña</label>
             <div class="input-container">
@@ -187,7 +188,7 @@ fileName: views/SignUp.vue -->
         </validation-provider>
         <!-- password -->
 
-        <validation-provider v-slot="{ errors }" rules="confirmed">
+        <validation-provider v-slot="{ errors }" rules="confirmed:password-validator">
           <span name="registration-password-span" :class="{ error: errors[0] }"
             ><span>{{ errors[0] }}</span>
             <label for="password-confirmation" class="tip">Confirmación de contraseña</label>
