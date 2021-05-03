@@ -107,7 +107,7 @@ fileName: views/SignUp.vue -->
             <!-- lastname-2 -->
 
             <validation-provider v-slot="{ errors }" rules="required">
-              <span v-if="genders" name="registration-gender-span">
+              <span v-if="genders" name="registration-gender-span" :class="{ error: errors[0] }">
                 <label for="gender" class="tip">Género</label>
                 <div class="input-container">
                   <span>{{ errors[0] }}</span>
