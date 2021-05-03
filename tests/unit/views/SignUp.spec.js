@@ -1,5 +1,5 @@
 import Vuex from 'vuex'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, wrap } from 'lodash'
 import { createLocalVue, shallowMount, mount } from '@vue/test-utils'
 import SignUpView from '@/views/SignUp.vue'
 
@@ -64,26 +64,12 @@ describe('SignUpView', () => {
   })
 
   describe('registration', () => {
-    it('should show validation errors', async () => {
-      const storeStructure = cloneDeep(defaultStoreStructure)
-      const store = new Vuex.Store(storeStructure)
-      const wrapper = mount(SignUpView, {
-        stubs: ['validation-provider'],
-        store,
-        localVue,
-      })
-      expect(wrapper.find('#login-box').exists()).toBe(true)
-
-      console.log('wrapper.vm.$validator :>> ', wrapper.vm.$validator)
-      //   await wrapper.vm.$validator.validate()
-
-      //   expect(wrapper.vm.$validator.errors.any()).toBe(true)
+    const storeStructure = cloneDeep(defaultStoreStructure)
+    const store = new Vuex.Store(storeStructure)
+    const wrapper = mount(SignUpView, {
+      stubs: ['validation-provider'],
+      store,
+      localVue,
     })
-  })
-
-  describe('a test', () => {
-    it('should be true', () => {
-      expect(true).toBe(true)
-    })
-  })
+  }) // registration
 })
