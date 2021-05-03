@@ -15,6 +15,10 @@ export default {
       handler(user) {
         if (user === undefined) return
 
+        if (isNil(user.emailConfirmed)) {
+          this.$router.push('/verifyEmail')
+        }
+
         if (this.$route.query.redirectUrl === this.$route.path) {
           this.$router.push('/')
         }
