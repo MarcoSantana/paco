@@ -27,187 +27,188 @@ fileName: views/SignUp.vue -->
       data-test="signup-form-container"
     >
       <div id="login-box">
-        <h1>Registrarse</h1>
-        <validation-provider v-slot="{ errors }" rules="numeric|length:3,30|required">
-          <span name="registration-license-span" :class="{ error: errors[0] }">
-            <label for="license" class="tip">Cédula profesional</label>
-            <div class="input-container">
-              <i class="mdi mdi-badge-account icon"></i>
-              <input
-                id="registration-license"
-                v-model="license"
-                data-test="registration-license"
-                type="text"
-                name="license"
-                placeholder="Cédula profesional de licenciatura en medicina"
-              />
-            </div>
-            <div class="error info">{{ errors[0] }}</div>
-          </span>
-        </validation-provider>
-        <!-- license -->
+        <validation-observer v-slot="{ invalid }">
+          <form @submit.prevent="onSubmit">
+            <h1>Registrarse</h1>
+            <validation-provider v-slot="{ errors }" rules="numeric|length:3,30|required">
+              <span id="registration-license-span" :class="{ error: errors[0] }">
+                <label for="license" class="tip">Cédula profesional</label>
+                <div class="input-container">
+                  <i class="mdi mdi-badge-account icon"></i>
+                  <input
+                    id="registration-license"
+                    v-model="registrationData.license"
+                    data-test="license"
+                    type="text"
+                    name="license"
+                    placeholder="Cédula profesional de licenciatura en medicina"
+                  />
+                </div>
+                <div class="error info">{{ errors[0] }}</div>
+              </span>
+            </validation-provider>
+            <!-- license -->
 
-        <validation-provider v-slot="{ errors }" rules="required|length:3,30">
-          <span name="registration-name-span" :class="{ error: errors[0] }">
-            <label for="name" class="tip">Nombre</label>
-            <div class="input-container">
-              <span>{{ errors[0] }}</span>
-              <i class="mdi mdi-face icon"></i>
-              <input
-                id="registration-name"
-                v-model="registrationName"
-                type="text"
-                name="name"
-                placeholder="Nombres (ej. Juan Carlos)"
-                data-test="registration-name"
-              />
-            </div>
-          </span>
-        </validation-provider>
-        <!-- name -->
+            <validation-provider v-slot="{ errors }" rules="required|length:3,30">
+              <span name="registration-name-span" :class="{ error: errors[0] }">
+                <label for="name" class="tip">Nombre</label>
+                <div class="input-container">
+                  <span>{{ errors[0] }}</span>
+                  <i class="mdi mdi-face icon"></i>
+                  <input
+                    id="registration-name"
+                    v-model="registrationData.registrationName"
+                    type="text"
+                    name="name"
+                    placeholder="Nombres (ej. Juan Carlos)"
+                    data-test="registration-name"
+                  />
+                </div>
+              </span>
+            </validation-provider>
+            <!-- name -->
 
-        <validation-provider v-slot="{ errors }" rules="required|length:3,30">
-          <span name="registration-lastname-1-span" :class="{ error: errors[0] }">
-            <label for="lastname-1" class="tip">Apellido Paterno</label>
-            <div class="input-container">
-              <span>{{ errors[0] }}</span>
-              <i class="mdi mdi-form-textbox icon"></i>
-              <input
-                id="registration-lastname-1"
-                v-model="lastname1"
-                type="text"
-                name="lastname-1"
-                placeholder="Apellido Paterno (ej. González)"
-                data-test="registration-lastname-1"
-              />
-            </div>
-          </span>
-        </validation-provider>
-        <!-- lastname-1 -->
+            <validation-provider v-slot="{ errors }" rules="required|length:3,30">
+              <span name="registration-lastname-1-span" :class="{ error: errors[0] }">
+                <label for="lastname-1" class="tip">Apellido Paterno</label>
+                <div class="input-container">
+                  <span>{{ errors[0] }}</span>
+                  <i class="mdi mdi-form-textbox icon"></i>
+                  <input
+                    id="registration-lastname-1"
+                    v-model="registrationData.lastname1"
+                    type="text"
+                    name="lastname-1"
+                    placeholder="Apellido Paterno (ej. González)"
+                    data-test="registration-lastname-1"
+                  />
+                </div>
+              </span>
+            </validation-provider>
+            <!-- lastname-1 -->
 
-        <validation-provider v-slot="{ errors }" rules="required">
-          <span name="regsitration-lastname-2-span" :class="{ error: errors[0] }">
-            <label for="lastname-2" class="tip">Apellido Materno</label>
-            <div class="input-container">
-              <span>{{ errors[0] }}</span>
-              <i class="mdi mdi-form-textbox icon"></i>
-              <input
-                id="registration-lastname-2"
-                v-model="lastname2"
-                type="text"
-                name="lastname2"
-                placeholder="Apellido Materno (ej. Silveti)"
-                data-test="registration-lastname-2"
-              />
-            </div>
-          </span>
-        </validation-provider>
-        <!-- lastname-2 -->
+            <validation-provider v-slot="{ errors }" rules="required">
+              <span name="regsitration-lastname-2-span" :class="{ error: errors[0] }">
+                <label for="lastname-2" class="tip">Apellido Materno</label>
+                <div class="input-container">
+                  <span>{{ errors[0] }}</span>
+                  <i class="mdi mdi-form-textbox icon"></i>
+                  <input
+                    id="registration-lastname-2"
+                    v-model="registrationData.lastname2"
+                    type="text"
+                    name="lastname2"
+                    placeholder="Apellido Materno (ej. Silveti)"
+                    data-test="registration-lastname-2"
+                  />
+                </div>
+              </span>
+            </validation-provider>
+            <!-- lastname-2 -->
 
-        <span v-if="gender" name="registration-gender-span">
-          <label for="gender" class="tip">Sexo</label>
-          <div class="input-container">
-            <i v-show="gender == 1" class="mdi mdi-gender-male icon"></i>
-            <i v-show="gender == 2" class="mdi mdi-gender-female icon"></i>
-            <p id="registration-gender" name="gender" data-test="registration-gender">{{ gender | genderize }}</p>
-          </div>
-        </span>
-        <!--gender-->
+            <validation-provider v-slot="{ errors }" rules="required">
+              <span v-if="genders" name="registration-gender-span">
+                <label for="gender" class="tip">Género</label>
+                <div class="input-container">
+                  <span>{{ errors[0] }}</span>
+                  <i class="mdi mdi-gender-male-female icon"></i>
+                  <select v-model="registrationData.gender" data-test="registration-gender">
+                    <option v-for="item in genders" :key="item.text" :value="item.value" :selected="item.selected"
+                      >{{ item.text }}
+                    </option>
+                  </select>
+                  <i v-if="registrationData.gender" :class="$options.filters.genderize(registrationData.gender)"></i>
+                </div>
+              </span>
+            </validation-provider>
+            <!--gender-->
 
-        <span v-if="college" name="registration-college-span">
-          <label for="college" class="tip">Universidad</label>
-          <div class="input-container">
-            <i class="mdi mdi-school icon"></i>
-            <p id="registration-college" name="college" data-test="registration-college">{{ college }}</p>
-          </div>
-        </span>
-        <!-- college -->
+            <validation-provider v-slot="{ errors }" rules="email|required" name="register-email-valitator">
+              <span name="registration-email-span" :class="{ error: errors[0] }">
+                <label for="email" class="tip">Email</label>
+                <div class="input-container">
+                  <span>{{ errors[0] }}</span>
+                  <i class="mdi mdi-email icon"></i>
+                  <input
+                    id="registration-email"
+                    v-model="registrationData.email"
+                    type="text"
+                    name="email"
+                    placeholder="E-mail (ej. correoejemplo@dominio.com)"
+                    data-test="registration-email"
+                  />
+                </div>
+              </span>
+            </validation-provider>
+            <!-- email -->
+            <validation-provider v-slot="{ errors }" rules="confirmed:register-email-valitator">
+              <span name="registration-email-confirmation-span" :class="{ error: errors[0] }"
+                ><span>{{ errors[0] }}</span>
+                <label for="email-confirmation" class="tip">Confirmación de e-mail</label>
+                <div class="input-container">
+                  <i class="mdi mdi-email icon"></i>
+                  <input
+                    id="registration-email-confirmation"
+                    v-model="registrationData.emailConfirmation"
+                    type="text"
+                    name="email-confirmation"
+                    placeholder="Confirme su e-mail (ej. correoejemplo@dominio.com)"
+                    data-test="registration-email-confirmation"
+                  />
+                </div>
+              </span>
+            </validation-provider>
+            <!-- email-confirmation -->
 
-        <span v-if="degree" name="registration-degree-span">
-          <label for="degree" class="tip">Título</label>
-          <div class="input-container">
-            <i class="mdi mdi-certificate icon"></i>
-            <p id="registration-degree" name="degree" data-test="registration-degree">{{ degree }}</p>
-          </div>
-        </span>
-        <!-- degree -->
+            <validation-provider
+              v-slot="{ errors }"
+              rules="required|length:8,16|strong_password"
+              name="password-validator"
+            >
+              <span name="registration-password-span" :class="{ error: errors[0] }">
+                <label for="password" class="tip">Contraseña</label>
+                <div class="input-container">
+                  <span>{{ errors[0] }}</span>
+                  <i class="mdi mdi-form-textbox-password icon"></i>
+                  <input
+                    id="registration-password"
+                    v-model="registrationData.password"
+                    type="password"
+                    name="password"
+                    placeholder="Contraseña"
+                    data-test="registration-password"
+                  />
+                </div>
+              </span>
+            </validation-provider>
+            <!-- password -->
 
-        <validation-provider v-slot="{ errors }" rules="email|required|confirmed:emailConfirmation">
-          <span name="registration-email-span" :class="{ error: errors[0] }">
-            <label for="email" class="tip">Email</label>
-            <div class="input-container">
-              <span>{{ errors[0] }}</span>
-              <i class="mdi mdi-email icon"></i>
-              <input
-                id="registration-email"
-                v-model="email"
-                type="text"
-                name="email"
-                placeholder="E-mail (ej. correoejemplo@dominio.com)"
-                data-test="registration-email"
-              />
-            </div>
-          </span>
-        </validation-provider>
-        <!-- email -->
-        <validation-provider v-slot="{ errors }" rules="email|required" vid="emailConfirmation">
-          <span name="registration-email-confirmation-span">
-            <label for="email-confirmation" class="tip">Confirmación de e-mail</label>
-            <div class="input-container">
-              <i class="mdi mdi-email icon"></i>
-              <input
-                id="registration-email-confirmation"
-                v-model="emailConfirmation"
-                type="text"
-                name="email-confirmation"
-                placeholder="Confirme su e-mail (ej. correoejemplo@dominio.com)"
-                data-test="registration-email-confirmation"
-              />
-            </div>
-          </span>
-        </validation-provider>
-        <!-- email-confirmation -->
+            <validation-provider v-slot="{ errors }" rules="confirmed:password-validator">
+              <span name="registration-password-span" :class="{ error: errors[0] }"
+                ><span>{{ errors[0] }}</span>
+                <label for="password-confirmation" class="tip">Confirmación de contraseña</label>
+                <div class="input-container">
+                  <i class="mdi mdi-form-textbox-password icon"></i>
+                  <input
+                    id="registration-password-confirmation"
+                    v-model="registrationData.passwordConfirmation"
+                    type="password"
+                    name="password-confirmation"
+                    placeholder="Confirme su contraseña"
+                    data-test="registration-password-confirmation"
+                  />
+                </div>
+              </span>
+            </validation-provider>
+            <!-- password-confirmation -->
 
-        <validation-provider v-slot="{ errors }" rules="required|length:8,16|strong_password">
-          <span name="registration-password-span" :class="{ error: errors[0] }">
-            <label for="password" class="tip">Contraseña</label>
-            <div class="input-container">
-              <span>{{ errors[0] }}</span>
-              <i class="mdi mdi-form-textbox-password icon"></i>
-              <input
-                id="registration-password"
-                v-model="password"
-                type="password"
-                name="password"
-                placeholder="Contraseña"
-                data-test="registration-password"
-              />
-            </div>
-          </span>
-        </validation-provider>
-        <!-- password -->
+            <button type="submit" name="signup_submit" :disabled="invalid" data-test="signup-submit">
+              Registrarse
+            </button>
 
-        <validation-provider v-slot="{ errors }" rules="confirmed">
-          <span name="registration-password-span" :class="{ error: errors[0] }"
-            ><span>{{ errors[0] }}</span>
-            <label for="password-confirmation" class="tip">Confirmación de contraseña</label>
-            <div class="input-container">
-              <i class="mdi mdi-form-textbox-password icon"></i>
-              <input
-                id="registration-password-confirmation"
-                v-model="passwordConfirmation"
-                type="password"
-                name="password-confirmation"
-                placeholder="Confirme su contraseña"
-                data-test="registration-password-confirmation"
-              />
-            </div>
-          </span>
-        </validation-provider>
-        <!-- password-confirmation -->
-
-        <input type="submit" name="signup_submit" value="Registrarse" data-test="signup-submit" @click="checkForm" />
-        <!-- TODO -->
+            <!-- TODO -->
+          </form>
+        </validation-observer>
       </div>
     </div>
     <!-- signup-form-container -->
@@ -232,10 +233,10 @@ export default {
       let gender = null
       if (!isNil(value)) {
         if (value.toString() === '1') {
-          gender = 'Hombre'
+          gender = 'mdi mdi-gender-male icon'
         }
         if (value.toString() === '2') {
-          gender = 'Mujer'
+          gender = 'mdi mdi-gender-female icon'
         }
         return gender
       }
@@ -248,20 +249,26 @@ export default {
     loginError: null,
     apiError: null,
     // Move all these to an object
+    registrationData: {
+      name: null,
+      lastname1: null,
+      lastname2: null,
+      license: '',
+      email: null,
+      emailConfirmation: null,
+      password: null,
+      passwordConfirmation: null,
+      gender: null,
+    },
     // Form values
-    registrationName: null,
-    lastname1: null,
-    lastname2: null,
-    license: '', // TODO Why isn't null
-    email: null,
-    emailConfirmation: null,
-    password: null,
-    passwordConfirmation: null,
-    gender: null,
-    college: null,
-    degree: null,
     // Validation
     errors: [],
+    // Genders
+    genders: [
+      { text: 'Seleccione uno por favor', value: null, selected: true },
+      { text: 'Hombre', value: 1 },
+      { text: 'Mujer', value: 2 },
+    ],
   }),
   head() {
     return {
@@ -272,7 +279,7 @@ export default {
         // TODO translate anad adjust
         {
           name: 'description',
-          content: `Sign in or sign up to ${this.appTitle}`,
+          content: `Regístrese o ingrese a ${this.appTitle}`,
           id: 'desc',
         },
       ],
@@ -281,6 +288,25 @@ export default {
   computed: {
     ...mapState('authentication', ['user']),
     ...mapState('app', ['networkOnLine', 'appTitle', 'loading']),
+
+    isFormValid() {
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+      // this.errors = {
+      //   license: this.registrationData.license,
+      //   name: this.registrationData.name,
+      //   registrationLastname1: this.registrationData.lastname1,
+      //   registrationLastname2: this.registrationData.lastname2,
+      //   email: this.registrationData.email,
+      //   emailConfirmation: this.registrationData.emailConfirmation,
+      //   gender: this.registrationData.gender,
+      // }
+
+      // if (!this.errors.license) {
+      //   this.errors.license = 'El numero de cédula profesional es obligatorio'
+      // }
+      const isEmpty = Object.values(this.errors).some(x => x !== null && x !== '')
+      return isEmpty
+    },
   },
   watch: {
     user: {
@@ -319,18 +345,25 @@ export default {
         this.setUser(null)
       }
     }, // login
-    checkForm() {
-      this.errors = {
-        license: null,
-        name: null,
-        registrationLastname1: null,
-        registrationLastname2: null,
-        email: null,
-        emailConfirmation: null,
-      }
-      if (!this.license) {
-        this.errors.license = 'El numero de cédula profesional es obligatorio'
-      }
+    async createAccount() {
+      const data = this.registrationData
+      // Check if the registration data is complete
+      // Use the resgistration data to create a new account via firebase auth
+      await firebase
+        .auth()
+        .createUserWithEmailAndPassword(data.email, data.password)
+        .then(userCredentials => {
+          const { user } = userCredentials
+          console.log('user :>> ', user)
+          // TODO store this user to vuex 202105.02-09.21
+        })
+    },
+    onSubmit() {
+      // Submit values to API...
+      // eslint-disable-next-line no-alert
+      // alert(JSON.stringify(values, null, 2))
+      // console.log('values :>> ', values)
+      this.createAccount()
     },
   },
 }
@@ -390,7 +423,7 @@ h1 {
   text-align: center;
   font-size: 1.5rem;
 }
-
+select,
 input[type='text'],
 input[type='password'] {
   display: block;
@@ -422,11 +455,10 @@ input[type='password']:hover {
   transition: 0.8s ease;
 }
 
-input[type='submit'] {
+button[type='submit'] {
   margin-top: 28px;
   width: 120px;
   height: 32px;
-  // background: #16a085;
   background: $main;
   border: none;
   border-radius: 8px;
@@ -436,6 +468,12 @@ input[type='submit'] {
   text-transform: uppercase;
   transition: 0.5s ease;
   cursor: pointer;
+}
+
+button[type='submit']:disabled {
+  cursor: not-allowed;
+  color: $main;
+  background: $light-accent;
 }
 
 .button {

@@ -1,7 +1,9 @@
 import Vuex from 'vuex'
-import { cloneDeep } from 'lodash'
-import { createLocalVue, shallowMount } from '@vue/test-utils'
+import { cloneDeep, wrap } from 'lodash'
+import { createLocalVue, shallowMount, mount } from '@vue/test-utils'
 import SignUpView from '@/views/SignUp.vue'
+
+import * as VeeValidate from 'vee-validate'
 
 const defaultStoreStructure = {
   modules: {
@@ -25,7 +27,8 @@ const defaultStoreStructure = {
 
 const localVue = createLocalVue()
 localVue.use(Vuex)
-
+localVue.use(VeeValidate)
+localVue.component('validation-provider', VeeValidate.ValidationProvider)
 const $router = {
   push: jest.fn(),
 }
@@ -59,4 +62,14 @@ describe('SignUpView', () => {
       })
     }) // and redirectUrl is defined
   })
+
+  describe('registration', () => {
+    const storeStructure = cloneDeep(defaultStoreStructure)
+    const store = new Vuex.Store(storeStructure)
+    const wrapper = mount(SignUpView, {
+      stubs: ['validation-provider'],
+      store,
+      localVue,
+    })
+  }) // registration
 })
