@@ -1,6 +1,6 @@
 <template>
   <h1 class="loading-title">
-    Loading...
+    Cargando...
   </h1>
 </template>
 
@@ -14,6 +14,10 @@ export default {
     user: {
       handler(user) {
         if (user === undefined) return
+
+        if (isNil(user.emailConfirmed)) {
+          this.$router.push('/verifyEmail')
+        }
 
         if (this.$route.query.redirectUrl === this.$route.path) {
           this.$router.push('/')

@@ -354,10 +354,9 @@ export default {
         .createUserWithEmailAndPassword(data.email, data.password)
         .then(userCredentials => {
           const { user } = userCredentials
-          console.log('user :>> ', user)
+          user.sendEmailVerification()
           // TODO store this user to vuex 202105.02-09.21
-        })
-    },
+        })    },
     onSubmit() {
       // Submit values to API...
       // eslint-disable-next-line no-alert
