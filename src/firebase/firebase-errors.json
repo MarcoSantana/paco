@@ -79,7 +79,7 @@
   "auth/missing-uid": "Se requiere un identificador para la operación actual",
   "auth/reserved-claims": "Una o más propiedades personalizadas proporcionaron palabras reservadas usadas",
   "auth/session-cookie-revoked": "La sesión COOKIE ha expirado",
-  "auth/uid-alread-exists": "El identificador proporcionado ya está en uso",
+  "auth/uid-already-exists": "El identificador proporcionado ya está en uso",
   "auth/email-already-exists": "El correo electrónico proporcionado ya está en uso",
   "auth/phone-number-already-exists": "El teléfono proporcionado ya está en uso",
   "auth/project-not-found": "No se encontraron proyectos",
