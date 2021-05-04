@@ -2,6 +2,7 @@ import Vuex from 'vuex'
 import { cloneDeep } from 'lodash'
 import { createLocalVue, shallowMount } from '@vue/test-utils'
 import LoginView from '@/views/Login.vue'
+import VerifyEmailView from '@/views/VerifyEmail.vue'
 
 const defaultStoreStructure = {
   modules: {
@@ -148,4 +149,31 @@ describe('LoginView', () => {
       expect(offlineInstruction.isVisible()).toBeFalsy()
     })
   })
+
+  // describe('and is not email verified', () => {
+  //   let storeStructure = cloneDeep(defaultStoreStructure)
+  //   storeStructure.modules.authentication.state.user.emailVerified = false
+  //   it('should display verify email message', () => {
+  //     beforeEach(() => {
+  //       storeStructure = cloneDeep(defaultStoreStructure)
+  //       storeStructure.modules.authentication.state.user = 'Evan'
+  //       storeStructure.modules.authentication.state.user.emailVerified = false
+  //     })
+  //     const store = new Vuex.Store(storeStructure)
+  //     const wrapper = shallowMount()
+  //     shallowMount(LoginView, {
+  //       store,
+  //       localVue,
+  //       mocks: {
+  //         $route: {
+  //           query: {
+  //             redirectUrl,
+  //           },
+  //         },
+  //         $router,
+  //       },
+  //     })
+  //     expect($router.push).toHaveBeenCalledWith(redirectUrl)
+  //   })
+  // })
 })

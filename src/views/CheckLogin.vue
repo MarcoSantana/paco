@@ -1,6 +1,6 @@
 <template>
   <h1 class="loading-title">
-    Loading...
+    Cargando...
   </h1>
 </template>
 
