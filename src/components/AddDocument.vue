@@ -1,6 +1,66 @@
 <template>
-  <div class="document-action-bar">
-    <input
+  <div class="box">
+    <!--
+          <h2>TODO</h2>
+       <div>
+      <ul>
+        <li>Add validation</li>
+        <li>
+          Add minimal fields
+          <ul>
+            <li>Image</li>
+            <li>Document type dropdown</li>
+          </ul>
+        </li>
+        <li>Add a catalog of valida documents in dropdown</li>
+        <li>Make upload image mechanism</li>
+        <li>preview image</li>
+        <li>Image resize</li>
+        <li>Reactive dropdowns depending of the document type</li>
+        <li>PDF?</li>
+        <li>Translate</li>
+        <li>Make proper button</li>
+        <li>Separate in partials as needed</li>
+      </ul>
+    </div> -->
+    <!-- todo -->
+    <validation-observer v-slot="{ invalid }">
+      <form @submit.prevent="onSubmit">
+        <form-wizard
+          shape="circle"
+          step-size="xs"
+          color="#2596c7"
+          title="Cargar nuevo documento"
+          subtitle="Pasos para cargar documento"
+          back-button-text="Atrás"
+          next-button-text="Adelante"
+          finish-button-text="Terminado"
+          @on-complete="onComplete"
+        >
+          <tab-content title="Tipo de documento" icon="ti-file">
+            <validation-provider rules="required">
+              <span id="create-document-type-span" class="{ error: errors[0] }">
+                <label for="document-type" class="tip">
+                  Tipo de documento
+                </label>
+                <select id="document-type" v-model="documentType" name="document-type">
+                  <option>Seleccione un documento</option>
+                  <option v-for="item in document" :key="item.name">{{ item.name }}</option>
+                </select>
+              </span>
+            </validation-provider>
+          </tab-content>
+          <tab-content :title="documentType == null ? 'Anexar documento' : 'Anexar ' + documentType" icon="ti-settings">
+            My second tab content
+          </tab-content>
+          <tab-content title="Vista previa" icon="ti-check">
+            <h1>Put here the preview</h1>
+            Maybe this is a component on its own
+          </tab-content>
+        </form-wizard>
+      </form>
+    </validation-observer>
+    <!-- <input
       placeholder="document name..."
       class="document-name-input"
       type="text"
@@ -10,59 +70,54 @@
     />
     <div :class="{ disabled: documentCreationPending }" class="create-document-btn" @click="triggerAddDocumentAction">
       add document
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
 import { mapMutations, mapState, mapActions } from 'vuex'
+import { FormWizard, TabContent, WizardButton } from 'vue-form-wizard'
+import 'vue-form-wizard/dist/vue-form-wizard.min.css'
 
 export default {
+  // eslint-disable-next-line vue/no-unused-components
+  components: { 'form-wizard': FormWizard, 'tab-content': TabContent, 'wizard-button': WizardButton },
+  data: () => ({
+    // documentType: null,
+    // TODO This is a model to list all the document types 202105.05-18.32
+    // at first will be hardcoded but later must come from a db catalog
+    document: [
+      {
+        name: 'Acta de nacimiento',
+        required: true,
+        points: 0,
+      },
+      {
+        name: 'Cédula profesional',
+        required: true,
+        points: 0,
+      },
+      {
+        name: 'Diploma de curso',
+        required: false,
+        points: 5,
+      },
+    ],
+    documentType: null,
+  }),
   computed: mapState('documents', ['documentNameToCreate', 'documentCreationPending']),
   methods: {
     ...mapMutations('documents', ['setDocumentNameToCreate']),
     ...mapActions('documents', ['triggerAddDocumentAction']),
+    onComplete() {
+      // eslint-disable-next-line no-alert
+      alert('Terminó la carga del documento')
+    },
   },
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+@import '@/theme/style.scss';
 @import '@/theme/variables.scss';
-
-.document-action-bar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  .document-name-input {
-    padding-left: 5px;
-    height: 30px;
-    width: 150px;
-    outline: none;
-    font: inherit;
-    border: 1px solid;
-    border-color: #2c3e50;
-    border-radius: 3px;
-  }
-
-  .create-document-btn {
-    cursor: pointer;
-    padding: 5px 10px;
-    border: 1px solid;
-    display: inline-block;
-    border-radius: 3px;
-    margin-left: 10px;
-    border-color: #2c3e50;
-
-    &.disabled {
-      pointer-events: none;
-      background-color: #aaa;
-    }
-
-    &:hover {
-      color: $vue-color;
-      border-color: $vue-color;
-    }
-  }
-}
 </style>
