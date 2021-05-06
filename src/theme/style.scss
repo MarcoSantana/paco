@@ -8,6 +8,17 @@
 
 @import 'variables.scss';
 
+// Main card
+.box {
+  box-sizing: border-box;
+  margin: 5% 5% 5% 5%;
+  width: auto;
+  height: 100%;
+  padding: 1.5rem;
+  border-radius: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
 //Tooltips as in https://www.w3schools.com/css/css_tooltip.asp
 .tooltip {
   position: relative;
@@ -21,4 +32,24 @@
   color: $light-accent;
   padding: 5px 0;
   border-radius: 20px;
+}
+
+// Errors
+
+.error {
+  .icon {
+    color: $danger-color;
+  }
+  .info {
+    color: $danger-color;
+    margin-top: 0%;
+  }
+  input {
+    background-color: lighten($color: $danger-color, $amount: 20%);
+    opacity: 0.6;
+    border-radius: 10px;
+  }
+  span {
+    color: $danger-color;
+  }
 }
