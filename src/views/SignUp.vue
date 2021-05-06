@@ -26,7 +26,7 @@ fileName: views/SignUp.vue -->
       class="signup-form-container"
       data-test="signup-form-container"
     >
-      <div id="login-box">
+      <div class="box">
         <validation-observer v-slot="{ invalid }">
           <form @submit.prevent="onSubmit">
             <h1>Registrarse</h1>
@@ -356,7 +356,8 @@ export default {
           const { user } = userCredentials
           user.sendEmailVerification()
           // TODO store this user to vuex 202105.02-09.21
-        })    },
+        })
+    },
     onSubmit() {
       // Submit values to API...
       // eslint-disable-next-line no-alert
@@ -369,6 +370,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/theme/style.scss';
 @import '@/theme/variables.scss';
 * {
   margin: 0%;
@@ -518,21 +520,21 @@ input[type='submit']:active {
 
 // Validation
 
-.error {
-  .icon {
-    color: $danger-color;
-  }
-  .info {
-    color: $danger-color;
-    margin-top: 0%;
-  }
-  input {
-    background-color: lighten($color: $danger-color, $amount: 20%);
-    opacity: 0.6;
-    border-radius: 10px;
-  }
-  span {
-    color: $danger-color;
-  }
-}
+// .error {
+//   .icon {
+//     color: $danger-color;
+//   }
+//   .info {
+//     color: $danger-color;
+//     margin-top: 0%;
+//   }
+//   input {
+//     background-color: lighten($color: $danger-color, $amount: 20%);
+//     opacity: 0.6;
+//     border-radius: 10px;
+//   }
+//   span {
+//     color: $danger-color;
+//   }
+// }
 </style>

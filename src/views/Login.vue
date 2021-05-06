@@ -9,7 +9,7 @@
     </div>
 
     <!-- Auth UI -->
-    <div id="login-box">
+    <div class="box">
       <validation-observer v-slot="{ invalid }">
         <form @submit.prevent="onSubmit">
           <h1>Ingreso al sistema de administración de documentos</h1>
@@ -156,6 +156,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/theme/style.scss';
 @import '@/theme/variables.scss';
 * {
   margin: 0%;
