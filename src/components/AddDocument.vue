@@ -51,7 +51,11 @@
             </validation-provider>
           </tab-content>
           <tab-content :title="documentType == null ? 'Anexar documento' : 'Anexar ' + documentType" icon="ti-settings">
-            My second tab content
+            Formulario para anexar {{ documentType }}
+            <template>
+              <vue-form-json-schema v-model="model" :schema="schema" :ui-schema="uiSchema"> </vue-form-json-schema>
+            </template>
+            Model: {{ model }}
           </tab-content>
           <tab-content title="Vista previa" icon="ti-check">
             <h1>Put here the preview</h1>
@@ -76,14 +80,45 @@
 
 <script>
 import { mapMutations, mapState, mapActions } from 'vuex'
-import { FormWizard, TabContent, WizardButton } from 'vue-form-wizard'
+import { FormWizard, TabContent } from 'vue-form-wizard'
 import 'vue-form-wizard/dist/vue-form-wizard.min.css'
+import VueFormJsonSchema from 'vue-form-json-schema'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { 'form-wizard': FormWizard, 'tab-content': TabContent, 'wizard-button': WizardButton },
+  components: {
+    'form-wizard': FormWizard,
+    'tab-content': TabContent,
+    'vue-form-json-schema': VueFormJsonSchema,
+  },
   data: () => ({
     // documentType: null,
+    // An object which holds the form values
+    model: {},
+    // A valid JSON Schema object
+    schema: {
+      type: 'object',
+      properties: {
+        firstName: {
+          type: 'string',
+        },
+      },
+    },
+    // Array of HTML elements or Vue components
+    uiSchema: [
+      {
+        component: 'input',
+        model: 'firstName',
+        // Same API as [Vue's render functions](https://vuejs.org/v2/guide/render-function.html#The-Data-Object-In-Depth)
+        fieldOptions: {
+          class: ['form-control'],
+          on: ['input'],
+          attrs: {
+            placeholder: 'Please enter your first name',
+          },
+        },
+      },
+    ],
     // TODO This is a model to list all the document types 202105.05-18.32
     // at first will be hardcoded but later must come from a db catalog
     document: [
