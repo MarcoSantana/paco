@@ -3,6 +3,7 @@ $main: #0c466d;
 $secondary: #2596c7;
 $dark: #222222;
 $light-accent: #bfdfee;
+$light-accent-1: lighten($light-accent, 10%);
 /* Misc */
 
 $vue-color: #46bd87; //TODO refactor to a better name
