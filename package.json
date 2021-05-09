@@ -28,7 +28,7 @@
     "register-service-worker": "^1.7.1",
     "vee-validate": "^3.3.0",
     "vue": "^2.6.11",
-    "vue-form-json-schema": "^2.9.4",
+    "vue-form-generator": "^2.3.4",
     "vue-form-wizard": "^0.8.4",
     "vue-head": "^2.2.0",
     "vue-router": "^3.1.6",
