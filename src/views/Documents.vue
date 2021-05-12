@@ -1,6 +1,6 @@
 <template>
   <div class="page-wrapper">
-    <h1 class="document-page-title">Documents page</h1>
+    <h1 class="document-page-title">Página de Documentos</h1>
     <document-list class="document-list"></document-list>
     <add-document v-if="networkOnLine"></add-document>
   </div>

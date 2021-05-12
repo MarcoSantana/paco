@@ -16,6 +16,11 @@ import es from 'vee-validate/dist/locale/es'
 import '@/misc/validation'
 import * as veeValidate from 'vee-validate'
 
+// Form generator
+
+import VueFormGenerator from 'vue-form-generator'
+// import 'vue-form-generator/dist/vfg.css'
+
 import App from './App.vue'
 import router from './router'
 import store from './store'
@@ -32,12 +37,15 @@ Vue.config.productionTip = false
 new Vue({
   router,
   store,
+  components: { App },
   render: h => h(App),
 }).$mount('#app')
 
 Vue.component('validation-provider', veeValidate.ValidationProvider)
 Vue.component('validation-observer', veeValidate.ValidationObserver)
 veeValidate.localize('es', es)
+
+Vue.use(VueFormGenerator)
 
 // eslint-disable-next-line no-console
 console.info(`
