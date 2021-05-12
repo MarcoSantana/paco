@@ -24,47 +24,51 @@
       </ul>
     </div> -->
     <!-- todo -->
+
     <form-wizard
       shape="circle"
       step-size="xs"
       color="#2596c7"
+      error-color="#e74c3c"
       title="Cargar nuevo documento"
       subtitle="Pasos para cargar documento"
-      back-button-text="Atrás"
-      next-button-text="Adelante"
       finish-button-text="Terminado"
       @on-complete="onComplete"
+      @on-loading="setLoading"
+      @on-validate="handleValidation"
+      @on-error="handleErrorMessage"
     >
-      <tab-content title="Tipo de documento" icon="ti-file">
-        <validation-provider rules="required">
-          <span id="create-document-type-span" class="{ error: errors[0] }">
-            <label for="document-type" class="tip">
-              Tipo de documento
-            </label>
-            <select id="document-type" v-model="documentType" name="document-type">
-              <option>Seleccione un documento</option>
-              <option v-for="item in document" :key="item.name" :value="item">{{ item.name }}</option>
-            </select>
-          </span>
-        </validation-provider>
+      <tab-content title="Tipo de documento" :before-change="validateAsync" icon="ti-file">
+        <span id="create-document-type-span" class="{ error: errors[0] }">
+          <label for="document-type" class="tip"> Tipo de documento </label>
+          <select id="document-type" v-model="documentType" name="document-type">
+            <option>Seleccione un documento</option>
+            <option v-for="item in documents" :key="item.name" :value="item">{{ item.name }}</option>
+          </select>
+        </span>
       </tab-content>
       <tab-content
         :title="documentType == null ? 'Anexar documento' : 'Anexar ' + documentType.name"
         icon="ti-settings"
       >
         <span v-if="documentType">
-          <validation-observer v-slot="{ invalid }">
-            <form @submit.prevent="onSubmit">
-              <h2 v-if="documentType">Formulario para anexar {{ documentType.name }}</h2>
-              <vue-form-generator :schema="schema" :model="model" :options="formOptions"> </vue-form-generator>
-            </form>
-          </validation-observer>
+          <h2 v-if="documentType">Formulario para anexar {{ documentType.name }}</h2>
+          <vue-form-generator :schema="documentType.schema" :model="formModel" :options="formOptions">
+          </vue-form-generator>
+          Form Model {{ formModel }}
         </span>
       </tab-content>
       <tab-content title="Vista previa" icon="ti-check">
         <h1>Revise su documento</h1>
         Aquí se presenta el documento terminado
       </tab-content>
+      <div v-if="loadingWizard" class="loader"></div>
+      <div v-if="errorMsg">
+        <span class="error">{{ errorMsg }}</span>
+      </div>
+      <button slot="prev" class="form-wizard-button">Atrás</button>
+      <button slot="next" class="form-wizard-button">Adelante</button>
+      <button slot="finish" class="form-wizard-button">Guardar</button>
     </form-wizard>
   </div>
 </template>
@@ -73,7 +77,8 @@
 import { mapMutations, mapState, mapActions } from 'vuex'
 import { FormWizard, TabContent } from 'vue-form-wizard'
 import 'vue-form-wizard/dist/vue-form-wizard.min.css'
-// import UploadFile from '@/components/UploadFile'
+import FormSchema from '@/components/FormsSchema'
+import { isNil } from 'lodash'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -82,132 +87,20 @@ export default {
     'tab-content': TabContent,
     // 'upload-file': UploadFile,
   },
+  mixins: [FormSchema],
   data: () => ({
     // documentType: null,
     // An object which holds the form values
+    loadingWizard: false,
+    errorMsg: null,
     fileURL: null,
-    model: {
-      id: 1,
-      name: 'John Doe',
-      password: 'J0hnD03!x4',
-      skills: ['Javascript', 'VueJS'],
-      email: 'john.doe@gmail.com',
-      status: true,
-    },
-
-    schema: {
-      groups: [
-        {
-          legend: 'User Details',
-          fields: [
-            {
-              type: 'input',
-              inputType: 'text',
-              label: 'ID (disabled text field)',
-              model: 'id',
-              readonly: true,
-              disabled: true,
-              styleClasses: 'document-form',
-            },
-            {
-              type: 'input',
-              inputType: 'text',
-              label: 'Name',
-              model: 'name',
-              id: 'user_name',
-              placeholder: 'Your name',
-              featured: true,
-              required: true,
-              styleClasses: 'document-form',
-            },
-            {
-              type: 'input',
-              inputType: 'email',
-              label: 'E-mail',
-              model: 'email',
-              placeholder: "User's e-mail address",
-              styleClasses: 'document-form',
-            },
-            {
-              type: 'input',
-              inputType: 'password',
-              label: 'Password',
-              model: 'password',
-              min: 6,
-              required: true,
-              hint: 'Minimum 6 characters',
-              validator: 'string',
-              styleClasses: 'document-form',
-            },
-          ],
-        },
-        // {
-        //   legend: 'Skills & Status',
-        //   fields: [
-        //     {
-        //       type: 'select',
-        //       label: 'Skills',
-        //       model: 'skills',
-        //       values: ['Javascript', 'VueJS', 'CSS3', 'HTML5'],
-        //       styleClasses: 'document-form',
-        //     },
-        //     {
-        //       type: 'checkbox',
-        //       label: 'Status',
-        //       model: 'status',
-        //       default: true,
-        //       styleClasses: 'document-form',
-        //     },
-        //   ],
-        // },
-        {
-          legend: 'Carga de archivos',
-          fields: [
-            {
-              type: 'upload',
-              inputType: 'file',
-              label: 'Click para cargar el anverso',
-              required: true,
-              model: document.front,
-              styleClasses: 'file-upload',
-            },
-            {
-              type: 'upload',
-              inputType: 'file',
-              label: 'Click para cargar el reverso',
-              required: true,
-              model: document.back,
-              styleClasses: 'file-upload',
-            }
-          ],
-        },
-      ],
-    },
+    formModel: {},
 
     formOptions: {
       validateAfterLoad: true,
       validateAfterChanged: true,
       validateAsync: true,
     },
-    // TODO This is a model to list all the document types 202105.05-18.32
-    // at first will be hardcoded but later must come from a db catalog
-    document: [
-      {
-        name: 'Acta de nacimiento',
-        required: true,
-        points: 0,
-      },
-      {
-        name: 'Cédula profesional',
-        required: true,
-        points: 0,
-      },
-      {
-        name: 'Diploma de curso',
-        required: false,
-        points: 5,
-      },
-    ],
     documentType: null,
   }),
   computed: mapState('documents', ['documentNameToCreate', 'documentCreationPending']),
@@ -227,14 +120,100 @@ export default {
       this.fileURL = URL.createObjectURL(event.target.files[0])
       console.log('this.fileURL :>> ', this.fileURL)
     },
+    // vue-form-wizard validation
+    setLoading(value) {
+      this.loadingWizard = value
+    },
+    handleValidation(isValid, tabIndex) {
+      console.log(`Tab: ${tabIndex} valid: ${isValid}`)
+    },
+    handleErrorMessage(errorMsg) {
+      this.errorMsg = errorMsg
+    },
+    validateAsync() {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          if (isNil(this.documentType)) {
+            this.count += 1
+            // eslint-disable-next-line prefer-promise-reject-errors
+            reject('Debe elegir un tipo de documento')
+          } else {
+            this.count = 0
+            resolve(true)
+          }
+        }, 500)
+      })
+    },
   },
 }
 </script>
 
-
 <style lang="scss">
 @import '@/theme/style.scss';
 @import '@/theme/variables.scss';
+// TODO move the loader to a more global scope
+.loader,
+.loader:after {
+  border-radius: 75%;
+  width: 10em;
+  height: 10em;
+}
+.loader {
+  margin: 60px auto;
+  font-size: 10px;
+  position: relative;
+  text-indent: -9999em;
+  border-top: 1.1em solid rgba(255, 255, 255, 0.2);
+  border-right: 1.1em solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1.1em solid rgba(255, 255, 255, 0.2);
+  border-left: 1.1em solid $secondary;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-animation: load8 1.1s infinite linear;
+  animation: load8 1.1s infinite linear;
+}
+@-webkit-keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+.form-wizard-button {
+  &:hover {
+    font-weight: bold;
+    background: $main;
+    color: $light-accent;
+  }
+  margin-top: 28px;
+  width: 100px;
+  height: 32px;
+  background: $light-accent;
+  border: none;
+  border-radius: 8px;
+  color: $main;
+  font-family: 'Roboto', sans-serif; // Change me
+  font-weight: 500;
+  text-transform: uppercase;
+  transition: 0.5s ease;
+  cursor: pointer;
+}
+
 .document-form {
   background-color: transparent;
   border: none;
@@ -266,6 +245,11 @@ export default {
     transition: 0.8s ease;
     box-shadow: 2px 1px rgba(0, 0, 0, 0.4);
   }
+
+  .hint {
+    margin-bottom: 1.2rem;
+    margin-top: 0;
+  }
 }
 
 .file-upload {
@@ -273,72 +257,39 @@ export default {
     :hover {
       background: $light-accent;
     }
-    opacity: 0.8;
+  }
+  label {
+    opacity: 0.8; // This makes visible the label wich is behind
     outline: 2px dashed grey; /* the dash box */
     outline-offset: -10px;
     background: $light-accent-1;
     color: $main;
-    min-height: 200px; /* minimum height */
+    min-height: 80px; /* minimum height */
+    cursor: pointer;
     position: relative;
     cursor: pointer;
-    width: 100%;
-    height: 200px;
-    position: relative;
-    cursor: pointer;
-  }
-  label {
-    span {
-      font-size: 1.2em;
-      padding-left: 1rem;
+    font-size: 1.2em;
+    display: grid;
+    place-items: center;
+    margin-top: 3.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    & span {
+      margin-left: 1rem;
       margin-right: 1rem;
-      padding: 0 2rem;
-      position: absolute;
-      margin-top: 3.2rem;
-      padding-bottom: 1em;
     }
-  }
-}
 
-// File upload dropzone
-.test-class {
-  // background-color: lighten($light-accent, 10%);
-  min-height: 50px;
+    @include respond(tablet) {
+      // responsive code for tablet viewport i.e. 600px
+      max-height: 50px;
+      width: 100%;
+    }
 
-  outline: 2px dashed grey; /* the dash box */
-  outline-offset: -2rem;
-  // background: $light-accent-1;
-  color: $main;
-  min-height: 200px; /* minimum height */
-  position: relative;
-  cursor: pointer;
-  :hover {
-    background-color: $light-accent;
-  }
-  input[type='file'] {
-    opacity: 0; /* invisible but it's there! */
-    width: 100%;
-    height: 200px;
-    position: absolute;
-    cursor: pointer;
-  }
-  label {
-    color: red;
-    padding-bottom: 2rem;
-    margin-bottom: 2rem;
-  }
-}
-.dz {
-  // background-color: $light-accent-1;
-  color: $main;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  &--drag {
-    @extend .dz;
-    background: green;
-  }
-  .is-dragging {
-    background-color: $vue-color;
+    @include respond(mobile) {
+      // responsive code for mobile viewport i.e. 480px
+      font-size: 0.8rem;
+    }
   }
 }
 
