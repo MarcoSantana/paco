@@ -253,11 +253,9 @@ export default {
 }
 
 .file-upload {
-  div {
     :hover {
       background: $light-accent;
     }
-  }
   label {
     opacity: 0.8; // This makes visible the label wich is behind
     outline: 2px dashed grey; /* the dash box */
