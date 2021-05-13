@@ -55,7 +55,8 @@
           <h2 v-if="documentType">Formulario para anexar {{ documentType.name }}</h2>
           <vue-form-generator :schema="documentType.schema" :model="formModel" :options="formOptions">
           </vue-form-generator>
-          Form Model {{ formModel }}
+          <!-- <pdf v-if="formModel.document" :src="formModel.document.front"></pdf> -->
+          <!-- <img v-if="formModel.document" :src="formModel.document.front" alt="frente del documento" /> -->
         </span>
       </tab-content>
       <tab-content title="Vista previa" icon="ti-check">
@@ -77,14 +78,21 @@
 import { mapMutations, mapState, mapActions } from 'vuex'
 import { FormWizard, TabContent } from 'vue-form-wizard'
 import 'vue-form-wizard/dist/vue-form-wizard.min.css'
+import 'vue-form-generator/dist/vfg'
 import FormSchema from '@/components/FormsSchema'
 import { isNil } from 'lodash'
+// import pdf from 'vue-pdf'
+/*
+   TODO
+   add a button which deletes the model for the picture and add some validation in the form wizard and or the form generator
+*/
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
   components: {
     'form-wizard': FormWizard,
     'tab-content': TabContent,
+    // pdf,
     // 'upload-file': UploadFile,
   },
   mixins: [FormSchema],
@@ -151,6 +159,36 @@ export default {
 <style lang="scss">
 @import '@/theme/style.scss';
 @import '@/theme/variables.scss';
+
+// TODO clean me 202105.12-16.28
+.vue-form-generator .field-image .preview {
+  position: relative;
+  margin-top: 5px;
+  height: 100px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: 50%;
+  border-radius: 0.75rem;
+  box-sizing: border-box;
+  // margin: 5% 5% 5% 5%;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.vue-form-generator .field-image .form-control {
+  position: relative;
+  margin-top: 5px;
+  // height: 100px;
+  height: auto;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: 50%;
+  border-radius: 0.75rem;
+  box-sizing: border-box;
+  // margin: 5% 5% 5% 5%;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
 // TODO move the loader to a more global scope
 .loader,
 .loader:after {
@@ -214,6 +252,13 @@ export default {
   cursor: pointer;
 }
 
+fieldset {
+  border-style: dotted;
+  border-color: $light-accent;
+}
+.field-wrap {
+  color: red;
+}
 .document-form {
   background-color: transparent;
   border: none;
@@ -253,9 +298,10 @@ export default {
 }
 
 .file-upload {
-    :hover {
-      background: $light-accent;
-    }
+  :hover {
+    background: $light-accent;
+  }
+
   label {
     opacity: 0.8; // This makes visible the label wich is behind
     outline: 2px dashed grey; /* the dash box */
@@ -291,24 +337,24 @@ export default {
   }
 }
 
-.vue-form-generator {
-  // background-color: $light-accent-1;
-  @extend .box;
-  color: $main;
-  border-radius: 1.5rem;
-  // padding: 0.75rem;
-  margin: -1.5rem;
-  margin-top: 0;
-  margin-bottom: 0;
-  fieldset {
-    border: none;
-  }
-  input[type='file'] {
-    opacity: 0; /* invisible but it's there! */
-    width: 100%;
-    height: 200px;
-    position: absolute;
-    cursor: pointer;
-  }
-}
+// .vue-form-generator {
+//   // background-color: $light-accent-1;
+//   // @extend .box;
+//   color: $main;
+//   border-radius: 1.5rem;
+//   // padding: 0.75rem;
+//   margin: -1.5rem;
+//   margin-top: 0;
+//   margin-bottom: 0;
+//   fieldset {
+//     border: orange;
+//   }
+// input[type='file'] {
+//   opacity: 0; /* invisible but it's there! */
+//   width: 100%;
+//   height: 200px;
+//   position: absolute;
+//   cursor: pointer;
+// }
+// }
 </style>
