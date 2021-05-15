@@ -53,20 +53,11 @@ export default {
               fields: [
                 {
                   type: 'pdf',
-                  label: 'PDF',
+                  label: 'Cargar documento PDF',
                   hideInput: true,
                   browse: true,
                   preview: true,
                   model: 'document.front',
-                },
-                {
-                  type: 'pdf',
-                  label: 'Cargar reverso del documento',
-                  hideInput: true,
-                  browse: true,
-                  preview: true,
-                  model: 'document.back',
-                  styleClasses: 'document-form',
                 },
               ],
             },

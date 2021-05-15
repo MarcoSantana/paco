@@ -11,16 +11,14 @@
       :readonly="schema.readonly"
     /><input
       v-if="schema.browse !== false"
-      class="form-control file"
+      class=" file"
       type="file"
       :disabled="disabled"
       :name="schema.inputName"
       @change="fileChanged"
     />
-    <div>
-      <input v-model.number="page" type="number" style="width: 5em" /> /{{ numPages }}
-      <button @click="rotate += 90">&#x27F3;</button>
-      <button @click="rotate -= 90">&#x27F2;</button>
+    <div class="document-container">
+      <input v-model.number="page" type="number" style="width: 5em" :min="1" :max="numPages" /> /{{ numPages }}
       <div class="document-container">
         <div
           v-if="loadedRatio > 0 && loadedRatio < 1"
@@ -32,20 +30,17 @@
         <pdf
           v-if="show"
           ref="pdf"
-          style="border: 1px solid red"
           :src="value"
           :page="page"
           @progress="loadedRatio = $event"
           @num-pages="numPages = $event"
           @link-clicked="page = $event"
         ></pdf>
+        <div class="preview" :style="previewStyle">
+          <div class="remove" title="Remover" @click="remove"></div>
+        </div>
       </div>
-      <div v-if="value">{{ currentPage }} / {{ pageCount }}</div>
-      <pdf :src="value" @num-pages="pageCount = $event" @page-loaded="currentPage = $event"></pdf>
     </div>
-    <!-- <div class="preview" :style="previewStyle">
-      <div class="remove" title="Remove image" @click="remove"></div>
-    </div> -->
   </div>
 </template>
 <script>
@@ -122,14 +117,57 @@ export default {
 <style lang="scss">
 @import '@/theme/style.scss';
 @import '@/theme/variables.scss';
+.wrapper {
+  // width: 100%;
+  // height: auto;
+}
+
+.preview {
+  position: relative;
+  margin-top: 1.5rem;
+  // height: 100px;
+  height: auto;
+  // background-repeat: no-repeat;
+  // background-size: contain;
+  // background-position: center center;
+  // border: 1px solid #ccc;
+  // border-radius: 3px;
+  // box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  .remove {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAXUlEQVR42u2SwQoAIAhD88vVLy8KBlaS0i1oJwP3piGVg0Skmpq8HjqZrWl9uwCbGAmwKYGZs/6iqgMyAdJuM8W2QmYKpLt/0AG9ASCv/oAnANd3AEjmAlFT1BypAV+PnRH5YehvAAAAAElFTkSuQmCC');
+    background-repeat: no-repeat;
+    width: 16px;
+    height: 16px;
+    font-size: 1.2em;
+    position: absolute;
+    right: 0.2em;
+    bottom: 0.2em;
+    opacity: 0.6;
+    border-radius: 25%;
+    opacity: 80%;
+    &:hover {
+      opacity: 1;
+      cursor: pointer;
+    }
+  }
+}
 .document-container {
   border: 0;
+  // width: auto;
+  // height: auto;
   & span {
-    border: 1px dotted $main;
+    border: 1px dashed $light-accent;
   }
-  & .field-wrap {
-    border: 0;
-    color: green;
+  @include respond(tablet) {
+    // responsive code for tablet viewport i.e. 600px
+    max-height: 50px;
+    width: 100%;
+  }
+
+  @include respond(mobile) {
+    // responsive code for mobile viewport i.e. 480px
+    font-size: 0.8rem;
+    max-height: 50px;
   }
 }
 .vue-form-generator .field-image {
