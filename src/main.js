@@ -17,9 +17,9 @@ import '@/misc/validation'
 import * as veeValidate from 'vee-validate'
 
 // Form generator
-
 import VueFormGenerator from 'vue-form-generator'
-// import 'vue-form-generator/dist/vfg.css'
+import fieldPdf from '@/components/forms/fieldPdf'
+import 'vue-form-generator/dist/vfg.css'
 
 import App from './App.vue'
 import router from './router'
@@ -47,6 +47,7 @@ veeValidate.localize('es', es)
 
 Vue.use(VueFormGenerator)
 
+Vue.component('field-pdf', fieldPdf)
 // eslint-disable-next-line no-console
 console.info(`
 🍱 This app was bootstrapped with bento-starter 🍱
