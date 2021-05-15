@@ -1,25 +1,9 @@
 <template>
   <div class="wrapper">
-    <input
-      v-show="schema.hideInput !== true"
-      v-model="wrappedValue"
-      class="form-control link"
-      type="text"
-      :autocomplete="schema.autocomplete"
-      :disabled="disabled"
-      :placeholder="schema.placeholder"
-      :readonly="schema.readonly"
-    /><input
-      v-if="schema.browse !== false"
-      class=" file"
-      type="file"
-      :disabled="disabled"
-      :name="schema.inputName"
-      @change="fileChanged"
-    />
-    <div class="document-container">
-      <input v-model.number="page" type="number" style="width: 5em" :min="1" :max="numPages" /> /{{ numPages }}
-      <div class="document-container">
+    <div v-if="value">
+      <input v-model="show" type="checkbox" />
+      <input v-model.number="page" type="number" style="width: 5em" :max="numPages" min="1" /> /{{ numPages }}
+      <div style="width: 50%">
         <div
           v-if="loadedRatio > 0 && loadedRatio < 1"
           style="background-color: green; color: white; text-align: center"
@@ -28,11 +12,12 @@
           {{ Math.floor(loadedRatio * 100) }}%
         </div>
         <pdf
-          v-if="show"
           ref="pdf"
           :src="value"
           :page="page"
+          @password="password"
           @progress="loadedRatio = $event"
+          @error="error"
           @num-pages="numPages = $event"
           @link-clicked="page = $event"
         ></pdf>
@@ -41,6 +26,22 @@
         </div>
       </div>
     </div>
+    <input
+      v-if="!value"
+      type="button"
+      class="file-button"
+      onclick="document.getElementById('getFile').click()"
+      value="Cargar documento"
+    />
+    <input
+      id="getFile"
+      class="file"
+      :disabled="disabled"
+      :name="schema.inputName"
+      type="file"
+      style="display:none"
+      @change="fileChanged"
+    />
   </div>
 </template>
 <script>
@@ -118,8 +119,8 @@ export default {
 @import '@/theme/style.scss';
 @import '@/theme/variables.scss';
 .wrapper {
-  // width: 100%;
-  // height: auto;
+  width: 100%;
+  height: auto;
 }
 
 .preview {
@@ -155,6 +156,7 @@ export default {
   border: 0;
   // width: auto;
   // height: auto;
+  max-height: 200px;
   & span {
     border: 1px dashed $light-accent;
   }
@@ -173,6 +175,7 @@ export default {
 .vue-form-generator .field-image {
   .wrapper {
     width: 100%;
+    max-height: 25%;
   }
   .preview {
     position: relative;
@@ -199,5 +202,9 @@ export default {
       }
     }
   }
+}
+.file-button {
+  @extend .form-wizard-button;
+  width: 100%;
 }
 </style>

@@ -232,26 +232,6 @@ export default {
   }
 }
 
-.form-wizard-button {
-  &:hover {
-    font-weight: bold;
-    background: $main;
-    color: $light-accent;
-  }
-  margin-top: 28px;
-  width: 100px;
-  height: 32px;
-  background: $light-accent;
-  border: none;
-  border-radius: 8px;
-  color: $main;
-  font-family: 'Roboto', sans-serif; // Change me
-  font-weight: 500;
-  text-transform: uppercase;
-  transition: 0.5s ease;
-  cursor: pointer;
-}
-
 fieldset {
   border-style: dotted;
   border-color: $light-accent;
