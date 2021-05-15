@@ -53,7 +53,7 @@ export default {
               fields: [
                 {
                   type: 'pdf',
-                  label: 'Cargar documento PDF',
+                  label: 'Cargar documento',
                   hideInput: true,
                   browse: true,
                   preview: true,

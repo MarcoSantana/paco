@@ -1,9 +1,16 @@
 <template>
   <div class="wrapper">
     <div v-if="value">
-      <input v-model="show" type="checkbox" />
-      <input v-model.number="page" type="number" style="width: 5em" :max="numPages" min="1" /> /{{ numPages }}
-      <div style="width: 50%">
+      <div v-if="fileType == 'pdf'">
+        <input
+          v-if="fileType == 'pdf'"
+          v-model.number="page"
+          type="number"
+          style="width: 5em"
+          :max="numPages"
+          min="1"
+        />
+        /{{ numPages }}
         <div
           v-if="loadedRatio > 0 && loadedRatio < 1"
           style="background-color: green; color: white; text-align: center"
@@ -11,17 +18,19 @@
         >
           {{ Math.floor(loadedRatio * 100) }}%
         </div>
+      </div>
+      <div style="width: 50%">
         <pdf
-          ref="pdf"
+          ref="myPdf"
           :src="value"
           :page="page"
-          @password="password"
           @progress="loadedRatio = $event"
           @error="error"
           @num-pages="numPages = $event"
           @link-clicked="page = $event"
         ></pdf>
-        <div class="preview" :style="previewStyle">
+        <div class="preview">
+          <img v-if="fileType == 'jpeg' || fileType == 'png'" class="" :src="value" alt="" />
           <div class="remove" title="Remover" @click="remove"></div>
         </div>
       </div>
@@ -36,6 +45,7 @@
     <input
       id="getFile"
       class="file"
+      accept="image/png, image/jpeg, .pdf"
       :disabled="disabled"
       :name="schema.inputName"
       type="file"
@@ -45,11 +55,11 @@
   </div>
 </template>
 <script>
-// import { abstractField } from 'vue-form-generator/'
 import { abstractField } from 'vue-form-generator'
 import pdf from 'vue-pdf'
 
 export default {
+  // TODO change name to DocumentField 202105.15-18.03
   name: 'FieldPdf',
   components: {
     pdf,
@@ -64,6 +74,7 @@ export default {
       page: 1,
       numPages: 0,
       loadedRatio: 0,
+      mimeType: null,
     }
   },
   computed: {
@@ -89,6 +100,12 @@ export default {
         }
       },
     },
+    fileType() {
+      const myRe = /data:(\w+)\/(\w+)/g
+      const myArray = myRe.exec(this.value)
+      console.log('myArray :>> ', myArray)
+      return myArray[2]
+    },
   },
   watch: {
     model() {
@@ -98,14 +115,26 @@ export default {
       }
     },
   },
+  mounted() {
+    console.log('this.$refs :>> ', this.$refs)
+    console.log('this.$refs.foo :>> ', this.$refs.foo)
+  },
   methods: {
     remove() {
       this.value = ''
     },
+    error(e) {
+      console.log('error :>> ', e)
+    },
     fileChanged(event) {
+      // TODO Add file validation 202105.15-16.58
+      // TODO add file type case 202105.15-16.58
+      // TODO add variable to hide show according to image or pdf 202105.15-16.58
+      // TODO Add schema option to enforce only pdf  202105.15-16.59
       const reader = new FileReader()
       reader.onload = e => {
         this.value = e.target.result
+        console.log('this.value :>> ', this.value)
       }
       if (event.target.files && event.target.files.length > 0) {
         reader.readAsDataURL(event.target.files[0])
@@ -128,7 +157,7 @@ export default {
   margin-top: 1.5rem;
   // height: 100px;
   height: auto;
-  // background-repeat: no-repeat;
+  background-repeat: no-repeat;
   // background-size: contain;
   // background-position: center center;
   // border: 1px solid #ccc;
@@ -150,6 +179,11 @@ export default {
       opacity: 1;
       cursor: pointer;
     }
+  }
+  img {
+    width: 250px;
+    height: auto;
+    margin-bottom: 1.5rem;
   }
 }
 .document-container {
