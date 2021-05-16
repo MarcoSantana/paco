@@ -19,6 +19,7 @@ import * as veeValidate from 'vee-validate'
 // Form generator
 import VueFormGenerator from 'vue-form-generator'
 import fieldPdf from '@/components/forms/fieldPdf'
+import fieldDate from '@/components/forms/fieldDate'
 import 'vue-form-generator/dist/vfg.css'
 
 import App from './App.vue'
@@ -48,6 +49,7 @@ veeValidate.localize('es', es)
 Vue.use(VueFormGenerator)
 
 Vue.component('field-pdf', fieldPdf)
+Vue.component('field-date', fieldDate)
 // eslint-disable-next-line no-console
 console.info(`
 🍱 This app was bootstrapped with bento-starter 🍱

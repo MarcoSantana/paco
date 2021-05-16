@@ -1,10 +1,12 @@
 <template>
   <div class="wrapper">
-    <div class="document-container"></div>
+    <div class="document-container">
+      Here be the date picker
+    </div>
   </div>
 </template>
 <script>
-import { abstractField } from '@/node_modules/vue-form-generator'
+import { abstractField } from 'vue-form-generator'
 
 export default {
   name: 'FieldDate',
