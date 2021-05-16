@@ -1,16 +1,49 @@
 <template>
   <div class="wrapper">
     <div class="document-container">
-      Here be the date picker
+      <datetime
+        v-model="datetimeEmpty"
+        input-class="my-class"
+        value-zone="America/Mexico_City"
+        :format="{
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        }"
+        :phrases="{ ok: 'Continuar', cancel: 'Salir' }"
+        :week-start="7"
+        use12-hour
+        title="Some title"
+        auto
+      ></datetime>
+      <input id="age" type="text" name="age" value="18" />
+    </div>
+    <h2>
+      TODO
+    </h2>
+    <div>
+      <ul>
+        <li>Add age option from schema</li>
+        <li>Add time option from schema</li>
+        <li>Manage timezone</li>
+        <li>Add style for time picker</li>
+        <li>Add style to align age if active alongside date</li>
+        <li>Add placeholder via $refs if needed</li>
+      </ul>
     </div>
   </div>
 </template>
 <script>
 import { abstractField } from 'vue-form-generator'
+import { Datetime } from 'vue-datetime'
+import 'vue-datetime/dist/vue-datetime.css'
+import { Settings } from 'luxon'
+
+Settings.defaultLocale = 'es'
 
 export default {
   name: 'FieldDate',
-  components: {},
+  components: { Datetime },
   mixins: [abstractField],
   data() {
     return {
@@ -50,10 +83,6 @@ export default {
 <style lang="scss">
 @import '@/theme/style.scss';
 @import '@/theme/variables.scss';
-.wrapper {
-  // width: 100%;
-  // height: auto;
-}
 
 .preview {
   position: relative;
