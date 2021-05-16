@@ -89,6 +89,7 @@ export default {
         display: 'none',
       }
     },
+    // TODO remove this var
     wrappedValue: {
       get() {
         if (this.value && this.value.indexOf('data') === 0) return '<inline base64 pdf>'
@@ -114,10 +115,6 @@ export default {
         el.value = ''
       }
     },
-  },
-  mounted() {
-    console.log('this.$refs :>> ', this.$refs)
-    console.log('this.$refs.foo :>> ', this.$refs.foo)
   },
   methods: {
     remove() {
