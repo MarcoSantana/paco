@@ -127,9 +127,6 @@ export default {
       console.log('error :>> ', e)
     },
     fileChanged(event) {
-      // TODO Add file validation 202105.15-16.58
-      // TODO add file type case 202105.15-16.58
-      // TODO add variable to hide show according to image or pdf 202105.15-16.58
       // TODO Add schema option to enforce only pdf  202105.15-16.59
       const reader = new FileReader()
       reader.onload = e => {
