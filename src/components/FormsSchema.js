@@ -1,8 +1,85 @@
+// import { required } from 'vee-validate/dist/rules'
 import { validators } from 'vue-form-generator'
 
 export default {
   data: () => ({
     documents: [
+      {
+        name: 'Curriculum Vitae',
+        required: true,
+        point: 0,
+        schema: {
+          groups: [
+            // User details
+            {
+              legend: 'Datos personales',
+              fields: [
+                // Names
+                {
+                  type: 'input',
+                  inputType: 'text',
+                  label: 'Nombre (s)',
+                  model: 'user.firstName',
+                  readonly: false,
+                  disabled: false,
+                  styleClasses: 'document-form',
+                  validator: ['required', 'regexp'],
+                  pattern: "^[ a-zA-ZáéíóúÁÉÍÓÚÄËÏÖÜäëïöü'-]+$",
+                },
+                {
+                  type: 'input',
+                  inputType: 'text',
+                  label: 'Apellido paterno',
+                  model: 'user.lastName1',
+                  readonly: false,
+                  disabled: false,
+                  styleClasses: 'document-form',
+                  validator: ['regexp', 'required'],
+                  pattern: "^[ a-zA-ZáéíóúÁÉÍÓÚÄËÏÖÜäëïöü'-]+$",
+                },
+                {
+                  type: 'input',
+                  inputType: 'text',
+                  label: 'Apellido Materno',
+                  required: false,
+                  model: 'user.lastName2',
+                  visibility: 'true',
+                  styleClasses: 'document-form',
+                },
+                {
+                  type: 'input',
+                  inputType: 'text',
+                  label: 'RFC',
+                  hint: 'Registro federal de contribuyentes',
+                  model: 'user.rfc',
+                  visibility: 'true',
+                  styleClasses: 'document-form',
+                  validator: ['required', 'regexp'],
+                  pattern: '^[a-zA-Z]{4}[0-9]{6}[A-Za-z0-9_]{3}$',
+                },
+                {
+                  type: 'input',
+                  inputType: 'text',
+                  label: 'CURP',
+                  hint: 'Clave única de registro de población',
+                  model: 'user.curp',
+                  visibility: 'true',
+                  styleClasses: 'document-form',
+                  validator: ['required', 'regexp'],
+                  pattern:
+                    '^[A-Z]{1}[AEIOU]{1}[A-Z]{2}[0-9]{2}(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|3[0-1])[HM]{1}(AS|BC|BS|CC|CS|CH|CL|CM|DF|DG|GT|GR|HG|JC|MC|MN|MS|NT|NL|OC|PL|QT|QR|SP|SL|SR|TC|TS|TL|VZ|YN|ZS|NE)[B-DF-HJ-NP-TV-Z]{3}[0-9A-Z]{1}[0-9]{1}$',
+                },
+                // Address
+                {
+                  type: 'googleAddress',
+                  styleClasses: 'document-form',
+                  placeholder: 'Dirección',
+                },
+              ],
+            },
+          ],
+        },
+      },
       {
         name: 'Credencial INE',
         required: true,
