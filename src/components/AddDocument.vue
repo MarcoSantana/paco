@@ -1,15 +1,12 @@
 <template>
   <div class="box">
-          <h2>TODO</h2>
-       <div>
+    <h2>TODO</h2>
+    <div>
       <ul>
         <li>Make upload image mechanism</li>
       </ul>
     </div>
     <!-- todo -->
-    <form-wizard v-if="value">
-        {{ value  }}
-    </form-wizard>
     <form-wizard
       shape="circle"
       step-size="xs"
@@ -50,8 +47,8 @@
       <div v-if="errorMsg">
         <span class="error">{{ errorMsg }}</span>
       </div>
-      <button slot="prev" class="form-wizard-button">Atrás</button>
-      <button slot="next" class="form-wizard-button">Adelante</button>
+      <button slot="prev" class="form-wizard-button" data-test="document-prev-btn">Atrás</button>
+      <button slot="next" class="form-wizard-button" data-test="document-next-btn">Adelante</button>
       <button slot="finish" class="form-wizard-button">Guardar</button>
     </form-wizard>
   </div>
@@ -244,5 +241,4 @@ fieldset {
     }
   }
 }
-
 </style>

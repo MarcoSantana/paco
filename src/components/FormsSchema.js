@@ -20,6 +20,9 @@ export default {
                   inputType: 'text',
                   label: 'Nombre (s)',
                   model: 'user.firstName',
+                  attributes: {
+                    input: { 'data-test': 'curriculum-user-firstName' },
+                  },
                   readonly: false,
                   disabled: false,
                   styleClasses: 'document-form',
@@ -31,6 +34,9 @@ export default {
                   inputType: 'text',
                   label: 'Apellido paterno',
                   model: 'user.lastName1',
+                  attributes: {
+                    input: { 'data-test': 'curriculum-user-lastName1' },
+                  },
                   readonly: false,
                   disabled: false,
                   styleClasses: 'document-form',
@@ -43,8 +49,13 @@ export default {
                   label: 'Apellido Materno',
                   required: false,
                   model: 'user.lastName2',
+                  attributes: {
+                    input: { 'data-test': 'curriculum-user-lastName2' },
+                  },
                   visibility: 'true',
                   styleClasses: 'document-form',
+                  validator: ['regexp'],
+                  pattern: "^[ a-zA-ZáéíóúÁÉÍÓÚÄËÏÖÜäëïöü'-]+$",
                 },
                 {
                   type: 'input',
@@ -52,6 +63,9 @@ export default {
                   label: 'RFC',
                   hint: 'Registro federal de contribuyentes',
                   model: 'user.rfc',
+                  attributes: {
+                    input: { 'data-test': 'curriculum-user-rfc' },
+                  },
                   visibility: 'true',
                   styleClasses: 'document-form',
                   validator: ['required', 'regexp'],
@@ -63,6 +77,9 @@ export default {
                   label: 'CURP',
                   hint: 'Clave única de registro de población',
                   model: 'user.curp',
+                  attributes: {
+                    input: { 'data-test': 'curriculum-user-curp' },
+                  },
                   visibility: 'true',
                   styleClasses: 'document-form',
                   validator: ['required', 'regexp'],
@@ -72,8 +89,13 @@ export default {
                 // Address
                 {
                   type: 'googleAddress',
+                  label: 'Dirección actual',
                   styleClasses: 'document-form',
                   placeholder: 'Dirección',
+                  model: 'user-googleAddress',
+                  attributes: {
+                    input: { 'data-test': 'curriculum-user-googleAddress' },
+                  },
                 },
               ],
             },
