@@ -1,22 +1,29 @@
 <template>
   <div class="wrapper">
     <div class="document-container">
-      <datetime
-        v-model="datetimeEmpty"
-        input-class="my-class"
-        value-zone="America/Mexico_City"
-        :format="{
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        }"
-        :phrases="{ ok: 'Continuar', cancel: 'Salir' }"
-        :week-start="7"
-        use12-hour
-        title="Some title"
-        auto
-      ></datetime>
-      <input id="age" type="text" name="age" value="18" />
+      <div>
+        <datetime
+          ref="datetime"
+          v-model="dateTime"
+          input-class="my-class"
+          value-zone="America/Mexico_City"
+          :format="{
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          }"
+          :phrases="{ ok: 'Continuar', cancel: 'Salir' }"
+          :week-start="1"
+          use12-hour
+          title="Some title"
+          auto
+        ></datetime>
+        <div v-if="age">Edad: {{ age }}</div>
+      </div>
+      <!-- <div>
+        <label for="age">Edad</label>
+        <input id="age" type="text" name="age" value="18" readonly />
+      </div> -->
     </div>
     <h2>
       TODO
@@ -24,11 +31,11 @@
     <div>
       <ul>
         <li>Add age option from schema</li>
+        <li>Add 'age field' name option from schema</li>
         <li>Add time option from schema</li>
         <li>Manage timezone</li>
         <li>Add style for time picker</li>
         <li>Add style to align age if active alongside date</li>
-        <li>Add placeholder via $refs if needed</li>
       </ul>
     </div>
   </div>
@@ -48,6 +55,8 @@ export default {
   data() {
     return {
       show: true,
+      dateTime: null,
+      age: 18,
     }
   },
   computed: {
@@ -71,6 +80,9 @@ export default {
         el.value = ''
       }
     },
+  },
+  mounted() {
+    document.querySelector('.vdatetime-input').placeholder = 'Clic para ingresar fecha'
   },
   methods: {
     //    remove() {
