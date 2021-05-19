@@ -1,3 +1,4 @@
+// / <reference types="cypress"> />
 /* 
  author 🥋: mSantana 
  directory 📁: ~/development/paco/paco/tests/e2e/specs 
@@ -7,10 +8,12 @@
 describe('Curriculum', () => {
   beforeEach(() => {
     cy.visit('/login')
-    cy.get('[data-test=login-email]').type('marco.santana@gmail.com')
-    cy.get('[data-test=login-password]').type('A12345678a')
-    cy.get('[data-test=signup-submit]').click()
-    cy.wait(2000) // wait for 2 seconds
+    // cy.login('marco.santana@gmail.com', 'A12345678a')
+    cy.login('ardilla@ardilla.com', 'ardilla')
+    // cy.get('[data-test=login-email]').type('marco.santana@gmail.com')
+    // cy.get('[data-test=login-password]').type('A12345678a')
+    // cy.get('[data-test=signup-submit]').click()
+    // cy.wait(2000) // wait for 2 seconds
   })
 
   it('should create a valid curriculum', () => {
