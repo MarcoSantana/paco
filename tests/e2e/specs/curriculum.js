@@ -9,7 +9,7 @@ describe('Curriculum', () => {
   beforeEach(() => {
     cy.visit('/login')
     // cy.login('marco.santana@gmail.com', 'A12345678a')
-    cy.login('ardilla@ardilla.com', 'ardilla')
+    cy.login()
     // cy.get('[data-test=login-email]').type('marco.santana@gmail.com')
     // cy.get('[data-test=login-password]').type('A12345678a')
     // cy.get('[data-test=signup-submit]').click()

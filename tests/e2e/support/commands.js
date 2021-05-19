@@ -57,7 +57,7 @@ firebase.firestore().settings({
   ssl: false,
 })
 // Programatically log in
-Cypress.Commands.add('login', (email = 'ardilla@ardilla.com', password = 'ardilla') => {
+Cypress.Commands.add('login', (email = 'marco.santana@gmail.com', password = 'A12345678a') => {
   firebase.functions().useFunctionsEmulator('http://localhost:9099')
   // As in so https://stackoverflow.com/questions/64811285/firebase-auth-useemulator-is-not-a-function
   return auth.signInWithEmailAndPassword(email, password)
