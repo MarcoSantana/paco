@@ -20,6 +20,7 @@ import * as veeValidate from 'vee-validate'
 import VueFormGenerator from 'vue-form-generator'
 import fieldPdf from '@/components/forms/fieldPdf'
 import 'vue-form-generator/dist/vfg.css'
+import VueGoogleAutocomplete from 'vue-google-autocomplete'
 
 import App from './App.vue'
 import router from './router'
@@ -46,6 +47,7 @@ Vue.component('validation-observer', veeValidate.ValidationObserver)
 veeValidate.localize('es', es)
 
 Vue.use(VueFormGenerator)
+Vue.use(VueGoogleAutocomplete)
 
 Vue.component('field-pdf', fieldPdf)
 // eslint-disable-next-line no-console

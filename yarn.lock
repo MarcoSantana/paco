@@ -14244,6 +14244,11 @@ vue-form-wizard@^0.8.4:
   resolved "https://registry.npmjs.org/vue-form-wizard/-/vue-form-wizard-0.8.4.tgz"
   integrity sha512-/Zk1+B7bz7qHFJ16mwu021lpPXWf/9Tlr2mTNG3J7M0Hdy3rgA802lWsbKYySns0B0qtsD8BYGjQ2Wyxgg+4uw==
 
+vue-google-autocomplete@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/vue-google-autocomplete/-/vue-google-autocomplete-1.1.1.tgz#2d10d3cc13640c698e44540a3d5a7aca2445b7db"
+  integrity sha512-zYh4J+GmKLf8Sni/zNR9YzsTxAXo9p6N/D4eTpK8MtCHqtMKuVJXsHe7nHiYxMl9O+CjtifAUYvDnWBBqex+gg==
+
 vue-head@^2.2.0:
   version "2.2.0"
   resolved "https://registry.npmjs.org/vue-head/-/vue-head-2.2.0.tgz"

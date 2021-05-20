@@ -91,7 +91,12 @@ export default {
                   type: 'googleAddress',
                   label: 'Residencia',
                   hint: 'Lugar de residencia actual',
-                  model: 'user.address',
+                  model: {
+                    address: {
+                      lat: 40,
+                      lng: 30,
+                    },
+                  },
                   attributes: {
                     input: { 'data-test': 'curriculum-user-googleAddress' },
                   },
