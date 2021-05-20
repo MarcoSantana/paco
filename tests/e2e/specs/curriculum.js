@@ -5,6 +5,10 @@
  filename 📄: curriculum.js 
  stardate 🚀: 202105.17-19.45 
  */
+import Chance from 'chance'
+
+const chance = new Chance()
+
 describe('Curriculum', () => {
   beforeEach(() => {
     cy.logout()
@@ -32,7 +36,7 @@ describe('Curriculum', () => {
     context('first name', () => {
       cy.get('[data-test=curriculum-user-firstName]').should('exist')
       cy.get('[data-test=curriculum-user-firstName]').as('firstName')
-      cy.get('@firstName').type('1234')
+      cy.get('@firstName').type(chance.string())
       cy.get('.errors > span').should('contain', 'Formato inválido')
       cy.focused().clear() // Clear focused input/textarea
       cy.get('.errors > span').should('not.contain', 'Formato inválido')
@@ -43,7 +47,7 @@ describe('Curriculum', () => {
     // Last Name 1
     context('last name 1', () => {
       cy.get('[data-test=curriculum-user-lastName1]').as('lastName1')
-      cy.get('@lastName1').type('1234')
+      cy.get('@lastName1').type(chance.string())
       cy.get('.errors > span').should('contain', 'Formato inválido')
       cy.focused().clear() // Clear focused input/textarea
       cy.get('.errors > span').should('not.contain', 'Formato inválido')
@@ -54,7 +58,7 @@ describe('Curriculum', () => {
     // Last Name 2
     context('last name 2', () => {
       cy.get('[data-test=curriculum-user-lastName2]').as('lastName2')
-      cy.get('@lastName2').type('1234')
+      cy.get('@lastName2').type(chance.string())
       cy.get('.errors > span').should('contain', 'Formato inválido')
       cy.focused().clear() // Clear focused input/textarea
       cy.get('.errors > span').should('not.contain', 'Formato inválido')
@@ -66,7 +70,7 @@ describe('Curriculum', () => {
     // TODO Add a faker lib to type random string to test really the regxp validation 202105.18-09.18
     context('rfc', () => {
       cy.get('[data-test=curriculum-user-rfc]').as('rfc')
-      cy.get('@rfc').type('12')
+      cy.get('@rfc').type(chance.string())
       cy.get('.errors > span')
         .as('error')
         .should('exist')
@@ -78,7 +82,7 @@ describe('Curriculum', () => {
 
     context('curp', () => {
       cy.get('[data-test=curriculum-user-curp]').as('curp')
-      cy.get('@curp').type('12')
+      cy.get('@curp').type(chance.string())
       cy.get('.errors > span')
         .as('error')
         .should('exist')
