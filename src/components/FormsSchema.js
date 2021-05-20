@@ -89,13 +89,14 @@ export default {
                 // Address
                 {
                   type: 'googleAddress',
-                  label: 'Dirección actual',
-                  styleClasses: 'document-form',
-                  placeholder: 'Dirección',
-                  model: 'user-googleAddress',
+                  label: 'Residencia',
+                  hint: 'Lugar de residencia actual',
+                  model: 'user.address',
                   attributes: {
                     input: { 'data-test': 'curriculum-user-googleAddress' },
                   },
+                  visibility: 'true',
+                  styleClasses: 'document-form',
                 },
               ],
             },

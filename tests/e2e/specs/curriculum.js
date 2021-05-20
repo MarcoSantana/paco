@@ -7,6 +7,7 @@
  */
 describe('Curriculum', () => {
   beforeEach(() => {
+    cy.logout()
     cy.visit('/login')
     // cy.login('marco.santana@gmail.com', 'A12345678a')
     cy.login()
@@ -86,6 +87,10 @@ describe('Curriculum', () => {
       cy.get('@curp').clear()
       cy.get('@curp').type('BOMP551218MDFRRR01')
       cy.get('@error').should('not.contain', 'Formato inválido')
+    })
+
+    context('address', () => {
+      cy.get('#residencia').as('address')
     })
   })
 })
