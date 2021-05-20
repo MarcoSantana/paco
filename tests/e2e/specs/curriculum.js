@@ -94,7 +94,19 @@ describe('Curriculum', () => {
     })
 
     context('address', () => {
-      cy.get('#residencia').as('address')
+      cy.get('#residencia')
+        .as('address')
+        .should('exist')
+      // TODO complete me 202105.20-16.00
+    })
+
+    context('email', () => {
+      cy.get('[data-test=curriculum-user-email]').as('email')
+      cy.get('@email').type(chance.string())
+      cy.get('.errors > span').should('exist')
+      cy.get('.errors > span')
+        .should('be.visible')
+        .should('contain', 'Dirección de correo electrónico inválida')
     })
   })
 })

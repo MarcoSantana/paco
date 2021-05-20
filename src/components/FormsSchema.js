@@ -91,17 +91,33 @@ export default {
                   type: 'googleAddress',
                   label: 'Residencia',
                   hint: 'Lugar de residencia actual',
-                  model: {
-                    address: {
-                      lat: 40,
-                      lng: 30,
-                    },
-                  },
+                  model: 'user.address',
                   attributes: {
                     input: { 'data-test': 'curriculum-user-googleAddress' },
                   },
                   visibility: 'true',
                   styleClasses: 'document-form',
+                  onPlaceChanged: (value, place, rawPlace, model, schema) => {
+                    console.log('value :>> ', value)
+                    console.log('place :>> ', place)
+                    console.log('rawPlace :>> ', rawPlace)
+                    console.log('model :>> ', model)
+                    console.log('schema :>> ', schema)
+                  },
+                },
+                // email
+                {
+                  type: 'input',
+                  inputType: 'email',
+                  label: 'Correo electrónico',
+                  hint: 'Una dirección de correo válida',
+                  model: 'user.email',
+                  attributes: {
+                    input: { 'data-test': 'curriculum-user-email' },
+                  },
+                  styleClasses: 'document-form',
+                  visibility: 'true',
+                  validator: ['email'],
                 },
               ],
             },
