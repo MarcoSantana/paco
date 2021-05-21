@@ -107,6 +107,8 @@ describe('Curriculum', () => {
       cy.get('.errors > span')
         .should('be.visible')
         .should('contain', 'Dirección de correo electrónico inválida')
+      cy.get('@email').type(chance.email())
+      cy.get('.error > span').should('not.contain', 'Dirección de correo electrónico inválida')
     })
   })
 })
