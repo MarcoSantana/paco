@@ -110,5 +110,11 @@ describe('Curriculum', () => {
       cy.get('@email').type(chance.email())
       cy.get('.error > span').should('not.contain', 'Dirección de correo electrónico inválida')
     })
+
+    context('university', () => {
+      cy.get('[data-test=curriculum-user-university]').as('university')
+      cy.get('@university').should('exist')
+      cy.get('fieldset > .valid').should('contain', 'Universidad de pregrado (Licenciatura)')
+    })
   })
 })

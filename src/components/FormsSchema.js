@@ -119,6 +119,20 @@ export default {
                   visibility: 'true',
                   validator: ['email'],
                 },
+                // university
+                // TODO
+                {
+                  type: 'university',
+                  label: 'Universidad de pregrado (Licenciatura)',
+                  hint: 'Una dirección de correo válida',
+                  model: 'user.university',
+                  attributes: {
+                    input: { 'data-test': 'curriculum-user-university' },
+                  },
+                  styleClasses: 'document-form',
+                  visibility: 'true',
+                  // validator: ['email'],
+                },
               ],
             },
           ],

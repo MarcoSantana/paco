@@ -19,6 +19,7 @@ import * as veeValidate from 'vee-validate'
 // Form generator
 import VueFormGenerator from 'vue-form-generator'
 import fieldPdf from '@/components/forms/fieldPdf'
+import fieldUniversity from '@/components/forms/fieldUniversity'
 import 'vue-form-generator/dist/vfg.css'
 import VueGoogleAutocomplete from 'vue-google-autocomplete'
 
@@ -50,6 +51,7 @@ Vue.use(VueFormGenerator)
 Vue.use(VueGoogleAutocomplete)
 
 Vue.component('field-pdf', fieldPdf)
+Vue.component('field-university', fieldUniversity)
 // eslint-disable-next-line no-console
 console.info(`
 🍱 This app was bootstrapped with bento-starter 🍱
