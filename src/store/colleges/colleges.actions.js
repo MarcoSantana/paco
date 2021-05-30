@@ -1,10 +1,29 @@
 import CollegesDB from '@/firebase/colleges-db'
+import CollegeCampiDB from '@/firebase/college-campi-db'
 
 export default {
-  getColleges: async ({ rootState, commit }) => {
+    /**
+       |--------------------------------------------------
+       | Fetch all the aviable colleges
+       |--------------------------------------------------
+    */
+    getColleges: async ({ rootState, commit }) => {
     const collegesDb = new CollegesDB(rootState.authentication.user.id)
     const colleges = await collegesDb.readAll()
     commit('setColleges', colleges)
+  },
+    /**
+        |--------------------------------------------------
+        | Fetch campi for the selected college
+        | @param collegeId
+        |--------------------------------------------------
+     */
+    // Not sure if rootState or should pass explicitly the college instance and /or id
+    getCollegeCampi: async ({ commit }, collegeId) => {
+    const collegeCampiDB = new CollegeCampiDB(collegeId)
+    const campi = await collegeCampiDB.readAll()
+    // TODO create the campi state
+    commit('setCampi', campi)
   },
   // /**
   //  * Fetch products of current logged-in user

@@ -4,6 +4,7 @@ export default {
 
   /* Colleges */
   setColleges: (state, colleges) => (state.colleges = colleges),
+  setCampi: (state, campi) => (state.campi = campi),
   addCollege: (state, college) => state.colleges.push(college),
   removeCollegeById: (state, collegeId) => {
     const index = state.colleges.findIndex(college => college.id === collegeId)

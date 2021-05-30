@@ -20,11 +20,12 @@
         </optgroup>
         <option v-if="!item.group" :key="getItemValue(item)" :value="getItemValue(item)">
           {{ getItemName(item) }}
-        </option> </template
-      >
+        </option>
+      </template>
     </select>
     <select id="university-campi" v-attributes="'input'" name="campi"> </select>
     <h1>Log</h1>
+    <div>{{ collegeCampi }}</div>
     <div>Select model {{ value }}</div>
     <h1>TODO</h1>
     <ul>
@@ -45,16 +46,36 @@ import { mapState } from 'vuex'
 export default {
   mixins: [abstractField],
   data() {
-    return {
-      // items: ['item1', 'item2'],
-    }
+    return {}
   },
   computed: {
-    ...mapState('colleges', ['colleges']),
+    ...mapState('colleges', ['colleges', 'campi']),
     ...mapState('products', ['products']),
     ...mapState('app', ['networkOnLine']),
     selectOptions() {
       return this.schema.selectOptions || this.colleges
+    },
+    collegeId() {
+      if (!isNil(this.value)) {
+        return this.value
+      }
+      return null
+    },
+    collegeCampi() {
+      // DONE get from the specific store/db collection based on the college ID
+      // TODO Use a getter
+      if (!isNil(this.collegeId)) {
+        console.log('this.collegeId: ', this.collegeId)
+        this.$store.dispatch('colleges/getCollegeCampi',this.collegeId)
+        return this.campi
+      }
+      return null
+    },
+    showCampi() {
+      if (isNil(this.collegeCampi)) {
+        return false
+      }
+      return true
     },
     // items() {
     //   // const { values } = this.schema
@@ -66,6 +87,7 @@ export default {
     // },
   },
   mounted() {
+    // Popullate colleges
     this.$store.dispatch('colleges/getColleges', null, { root: true })
   },
   methods: {
