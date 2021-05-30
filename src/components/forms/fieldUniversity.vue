@@ -12,7 +12,7 @@
       <option v-if="!selectOptions.hideNoneSelectedText" :disabled="schema.required" :value="null">
         {{ selectOptions.noneSelectedText || '&lt;Seleccione una universidad&gt;' }}
       </option>
-      <template v-for="item in items">
+      <template v-for="item in colleges">
         <optgroup v-if="item.group" :key="item" :label="getGroupName(item)">
           <span v-if="item.ops">
             <option v-for="i in item.ops" :key="getItemName(i)" :value="getItemValue(i)">{{ getItemName(i) }}</option>
@@ -23,7 +23,8 @@
         </option>
       </template>
     </select>
-    Value model {{ value }}
+    <h1>Log</h1>
+    <div>Select model {{ value }}</div>
     <h1>TODO</h1>
     <ul>
       <li>Add second dependant list for the campus</li>
@@ -33,17 +34,21 @@
 <script>
 import { isObject, isNil, find } from 'lodash'
 import { abstractField } from 'vue-form-generator'
+import { mapState } from 'vuex'
 
 export default {
   mixins: [abstractField],
   data() {
     return {
-      items: ['item1', 'item2'],
+      // items: ['item1', 'item2'],
     }
   },
   computed: {
+    ...mapState('colleges', ['colleges']),
+    ...mapState('products', ['products']),
+    ...mapState('app', ['networkOnLine']),
     selectOptions() {
-      return this.schema.selectOptions || {}
+      return this.schema.selectOptions || this.colleges
     },
     // items() {
     //   // const { values } = this.schema
@@ -53,6 +58,9 @@ export default {
     //   }
     //   return this.groupValues(values)
     // },
+  },
+  mounted() {
+    this.$store.dispatch('colleges/getColleges', null, { root: true })
   },
   methods: {
     formatValueToField(value) {

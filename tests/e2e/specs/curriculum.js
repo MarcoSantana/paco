@@ -115,6 +115,7 @@ describe('Curriculum', () => {
       cy.get('[data-test=curriculum-user-university]').as('university')
       cy.get('@university').should('exist')
       cy.get('fieldset > .valid').should('contain', 'Universidad de pregrado (Licenciatura)')
+      cy.get('fieldset > .valid').should('contain', '"colleges": null')
     })
   })
 })
