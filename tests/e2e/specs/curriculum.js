@@ -15,10 +15,6 @@ describe('Curriculum', () => {
     cy.visit('/login')
     // cy.login('marco.santana@gmail.com', 'A12345678a')
     cy.login()
-    // cy.get('[data-test=login-email]').type('marco.santana@gmail.com')
-    // cy.get('[data-test=login-password]').type('A12345678a')
-    // cy.get('[data-test=signup-submit]').click()
-    // cy.wait(2000) // wait for 2 seconds
   })
 
   it('should create a valid curriculum', () => {
@@ -114,8 +110,11 @@ describe('Curriculum', () => {
     context('university', () => {
       cy.get('[data-test=curriculum-user-university]').as('university')
       cy.get('@university').should('exist')
-      cy.get('fieldset > .valid').should('contain', 'Universidad de pregrado (Licenciatura)')
-      cy.get('fieldset > .valid').should('contain', '"colleges": null')
+      cy.get('@university')
+        .eq(0)
+        .select('Universidad Autónoma de Chiapas')
+      cy.get('#university-campi').as('campi')
+      cy.get('@campi').should('exist')
     })
   })
 })

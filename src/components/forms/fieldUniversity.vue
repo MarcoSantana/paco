@@ -12,7 +12,7 @@
       <option v-if="!selectOptions.hideNoneSelectedText" :disabled="schema.required" :value="null">
         {{ selectOptions.noneSelectedText || '&lt;Seleccione una universidad&gt;' }}
       </option>
-      <template v-for="item in colleges">
+      <template v-for="item in selectOptions">
         <optgroup v-if="item.group" :key="item" :label="getGroupName(item)">
           <span v-if="item.ops">
             <option v-for="i in item.ops" :key="getItemName(i)" :value="getItemValue(i)">{{ getItemName(i) }}</option>
@@ -20,14 +20,20 @@
         </optgroup>
         <option v-if="!item.group" :key="getItemValue(item)" :value="getItemValue(item)">
           {{ getItemName(item) }}
-        </option>
-      </template>
+        </option> </template
+      >
     </select>
+    <select id="university-campi" v-attributes="'input'" name="campi"> </select>
     <h1>Log</h1>
     <div>Select model {{ value }}</div>
     <h1>TODO</h1>
     <ul>
-      <li>Add second dependant list for the campus</li>
+      <li>
+        Add second dependant list for the campus
+        <ul>
+          <li>Do this querying the actual collge, you have to create a db relation separately</li>
+        </ul>
+      </li>
     </ul>
   </div>
 </template>
