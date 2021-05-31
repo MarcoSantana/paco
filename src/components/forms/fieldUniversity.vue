@@ -9,7 +9,7 @@
       :name="schema.inputName"
       :class="schema.fieldClasses"
     >
-      <option v-if="!selectOptions.hideNoneSelectedText" :disabled="schema.required" :value="null">
+      <option v-if="selectOptions && !selectOptions.hideNoneSelectedText" :disabled="schema.required" :value="null">
         {{ selectOptions.noneSelectedText || '&lt;Seleccione una universidad&gt;' }}
       </option>
       <template v-for="item in selectOptions">
@@ -23,19 +23,23 @@
         </option>
       </template>
     </select>
-    <select id="university-campi" v-attributes="'input'" name="campi"> </select>
-    <h1>Log</h1>
-    <div>{{ collegeCampi }}</div>
-    <div>Select model {{ value }}</div>
-    <h1>TODO</h1>
-    <ul>
-      <li>
-        Add second dependant list for the campus
-        <ul>
-          <li>Do this querying the actual collge, you have to create a db relation separately</li>
-        </ul>
-      </li>
-    </ul>
+    <!-- Campus select -->
+    <select v-if="campi" id="university-campi" v-attributes="'input'" v-model="campus" class="form-control" name="campi">
+      <option v-if="selectOptions && !selectOptions.hideNoneSelectedText" :disabled="schema.required" :value="null">
+        {{ selectOptions.noneSelectedText || '&lt;Seleccione un campus&gt;' }}
+      </option>
+      <template v-for="item in campi">
+        <optgroup v-if="item.group" :key="item" :label="getGroupName(item)">
+          <span v-if="item.ops">
+            <option v-for="i in item.ops" :key="getItemName(i)" :value="getItemValue(i)">{{ getItemName(i) }}</option>
+          </span>
+        </optgroup>
+        <option v-if="!item.group" :key="getItemValue(item)" :value="getItemValue(item)">
+          {{ getItemName(item) }}
+        </option>
+      </template>
+    </select>
+    <!-- / Campus select -->
   </div>
 </template>
 <script>
@@ -46,7 +50,9 @@ import { mapState } from 'vuex'
 export default {
   mixins: [abstractField],
   data() {
-    return {}
+    return {
+      campus:null
+    }
   },
   computed: {
     ...mapState('colleges', ['colleges', 'campi']),
@@ -61,30 +67,11 @@ export default {
       }
       return null
     },
-    collegeCampi() {
-      // DONE get from the specific store/db collection based on the college ID
-      // TODO Use a getter
-      if (!isNil(this.collegeId)) {
-        console.log('this.collegeId: ', this.collegeId)
-        this.$store.dispatch('colleges/getCollegeCampi',this.collegeId)
-        return this.campi
-      }
-      return null
+  },
+  watch: {
+    value(val, oldVal) {
+      this.$store.dispatch('colleges/getCollegeCampi', this.collegeId)
     },
-    showCampi() {
-      if (isNil(this.collegeCampi)) {
-        return false
-      }
-      return true
-    },
-    // items() {
-    //   // const { values } = this.schema
-    //   const { items } = this
-    //   if (typeof items === 'function') {
-    //     return this.groupValues(values.apply(this, [this.model, this.schema]))
-    //   }
-    //   return this.groupValues(values)
-    // },
   },
   mounted() {
     // Popullate colleges
