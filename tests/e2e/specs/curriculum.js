@@ -120,5 +120,15 @@ describe('Curriculum', () => {
         .eq(0)
         .select('Facultad de Medicina Ciudad Universitaria')
     })
+
+    context('hospital', () => {
+      cy.get('[data-test=curriculum-user-hospital]').as('hospital')
+      cy.get('@hospital').should('exist')
+      // TODO focus field
+      // TODO Type garabge and find nothing
+      // TODO Type some chars from a hospital name and get some results
+      // TODO Type the full name of the hospital and list only should show 1
+      // TODO Debug model shpuld show hospital data object
+    })
   })
 })

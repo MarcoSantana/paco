@@ -24,7 +24,14 @@
       </template>
     </select>
     <!-- Campus select -->
-    <select v-if="campi" id="university-campi" v-attributes="'input'" v-model="campus" class="form-control" name="campi">
+    <select
+      v-if="campi"
+      id="university-campi"
+      v-model="campus"
+      v-attributes="'input'"
+      class="form-control"
+      name="campi"
+    >
       <option v-if="selectOptions && !selectOptions.hideNoneSelectedText" :disabled="schema.required" :value="null">
         {{ selectOptions.noneSelectedText || '&lt;Seleccione un campus&gt;' }}
       </option>
@@ -51,7 +58,7 @@ export default {
   mixins: [abstractField],
   data() {
     return {
-      campus:null
+      campus: null,
     }
   },
   computed: {
@@ -69,7 +76,7 @@ export default {
     },
   },
   watch: {
-    value(val, oldVal) {
+    value() {
       this.$store.dispatch('colleges/getCollegeCampi', this.collegeId)
     },
   },
@@ -132,6 +139,7 @@ export default {
         'Group name is missing! https://icebob.gitbooks.io/vueformgenerator/content/fields/select.html#select-field-with-object-items'
       )
     },
+    // Refactor value to college
     getItemValue(item) {
       if (isObject(item)) {
         if (
