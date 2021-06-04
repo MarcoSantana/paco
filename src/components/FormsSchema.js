@@ -133,6 +133,16 @@ export default {
                   visibility: 'true',
                   // validator: ['email'],
                 },
+                // Hospital
+                {
+                  // type: 'hospital',
+                  type: 'hospital',
+                  label: 'Estudios de posgrado efectuados en:',
+                  model: 'user.hospital',
+                  attributes: {
+                    input: { 'data-test': 'curriculum-user-hospital' },
+                  },
+                },
               ],
             },
           ],
