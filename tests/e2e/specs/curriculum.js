@@ -124,6 +124,10 @@ describe('Curriculum', () => {
     context('hospital', () => {
       cy.get('[data-test=curriculum-user-hospital]').as('hospital')
       cy.get('@hospital').should('exist')
+      cy.get('@hospital').type('Hospital')
+      cy.get('[data-test=curriculum-user-hospital-list]').as('list')
+      cy.get('@hospital').should('be.visible').should('contain', 'Hospital')
+
       // TODO focus field
       // TODO Type garabge and find nothing
       // TODO Type some chars from a hospital name and get some results
