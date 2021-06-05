@@ -10,18 +10,32 @@
       :name="schema.inputName"
       :class="schema.fieldClasses"
       placeholder="Escriba el nombre del hospital"
+      @input="onChange"
     />
-    <ul data-test="curriculum-user-hospital-list">
-      <li>Cargando lista</li>
-      <li>Resultados</li>
-    </ul>
+    <div class="results" v-show="isOpen">
+      <ul v-show="isOpen" data-test="curriculum-user-hospital-list">
+        <li class="loading" v-if="isLoading">
+          Cargando lista
+        </li>
+        <li
+          v-else
+          v-for="(result, i) in results"
+          :key="i"
+          @click="setResult(result)"
+          class="result"
+        >
+          {{ result }}
+        </li>
+      </ul>
+    </div>
+    <!-- LOG -->
     <div>
       <ul>
         <h1>LOG</h1>
         <li>Model: {{ searchInput }}</li>
-        <li>Hospitals: {{ hospitals }}</li>
       </ul>
     </div>
+    <!-- log -->
   </div>
 </template>
 <script>
@@ -34,6 +48,10 @@ export default {
   data() {
     return {
       searchInput: null,
+      results: [],
+      isOpen: false,
+      isLoading: false,
+      result: null,
     }
   },
   computed: {
@@ -53,7 +71,7 @@ export default {
   mounted() {
     // Popullate hospitals
     this.$store.dispatch('hospitals/getHospitals', null, { root: true })
-  },
+  },  
   methods: {
     formatValueToField(value) {
       if (isNil(value)) {
@@ -109,7 +127,6 @@ export default {
         'Group name is missing! https://icebob.gitbooks.io/vueformgenerator/content/fields/select.html#select-field-with-object-items'
       )
     },
-    // Refactor value to college
     getItemValue(item) {
       if (isObject(item)) {
         if (
@@ -142,6 +159,28 @@ export default {
         )
       } else {
         return item
+      }
+    },
+    filterResults() {
+      const temp = Object.values(this.hospitals).map(item => item.name)
+      this.results = temp.filter(hospital => hospital.toLowerCase().indexOf(this.searchInput.toLowerCase()) > -1)
+    },
+    // Change the input text to the selected item from the list and close de the list
+    setResult(result) {
+      this.searchInput = result
+      this.isOpen = false
+    },
+    onChange() {
+      // Let's warn the parent that a change was made
+      this.$emit('input', this.search)
+
+      // Is the data given by an outside ajax request?
+      if (this.isAsync) {
+        this.isLoading = true
+      } else {
+        // Let's search our flat array
+        this.filterResults()
+        this.isOpen = true
       }
     },
   },
@@ -182,4 +221,21 @@ export default {
     max-height: 25%;
   }
 }
+
+.results {
+  padding: 1.5rem;
+  margin: 0%;
+  border: 1px dashed $light-accent;
+  max-width: 600px;
+  color: $main;
+}
+
+
+.result {
+  list-style: none;
+  text-align: left;
+  padding: 4px 2px;
+  cursor: pointer;
+}
+
 </style>
