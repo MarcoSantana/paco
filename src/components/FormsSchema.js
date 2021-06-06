@@ -120,7 +120,6 @@ export default {
                   validator: ['email'],
                 },
                 // university
-                // TODO
                 {
                   type: 'university',
                   label: 'Universidad de pregrado (Licenciatura)',
@@ -133,9 +132,13 @@ export default {
                   visibility: 'true',
                   // validator: ['email'],
                 },
+                // Graduation
+                {
+                  // TODO use a date picker
+                  // TODO model: user-college-graduation-date
+                },
                 // Hospital
                 {
-                  // type: 'hospital',
                   type: 'hospital',
                   label: 'Estudios de posgrado efectuados en:',
                   model: 'user.hospital',
