@@ -1,18 +1,62 @@
 <template>
   <div class="wrapper">
-    <div class="document-container"></div>
+    <div class="document-container">
+      <div>
+        <datetime
+          ref="datetime"
+          v-model="dateTime"
+          input-class="my-class"
+          value-zone="America/Mexico_City"
+          :format="{
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          }"
+          :phrases="{ ok: 'Continuar', cancel: 'Salir' }"
+          :week-start="1"
+          use12-hour
+          title="Some title"
+          auto
+        ></datetime>
+        <div v-if="age">Edad: {{ age }}</div>
+      </div>
+      <!-- <div>
+        <label for="age">Edad</label>
+        <input id="age" type="text" name="age" value="18" readonly />
+      </div> -->
+    </div>
+    <h2>
+      TODO
+    </h2>
+    <div>
+      <ul>
+        <li>Add age option from schema</li>
+        <li>Add 'age field' name option from schema</li>
+        <li>Add time option from schema</li>
+        <li>Manage timezone</li>
+        <li>Add style for time picker</li>
+        <li>Add style to align age if active alongside date</li>
+      </ul>
+    </div>
   </div>
 </template>
 <script>
-import { abstractField } from '@/node_modules/vue-form-generator'
+import { abstractField } from 'vue-form-generator'
+import { Datetime } from 'vue-datetime'
+import 'vue-datetime/dist/vue-datetime.css'
+import { Settings } from 'luxon'
+
+Settings.defaultLocale = 'es'
 
 export default {
   name: 'FieldDate',
-  components: {},
+  components: { Datetime },
   mixins: [abstractField],
   data() {
     return {
       show: true,
+      dateTime: null,
+      age: 18,
     }
   },
   computed: {
@@ -37,6 +81,9 @@ export default {
       }
     },
   },
+  mounted() {
+    document.querySelector('.vdatetime-input').placeholder = 'Clic para ingresar fecha'
+  },
   methods: {
     //    remove() {
     //      this.value = ''
@@ -48,10 +95,6 @@ export default {
 <style lang="scss">
 @import '@/theme/style.scss';
 @import '@/theme/variables.scss';
-.wrapper {
-  // width: 100%;
-  // height: auto;
-}
 
 .preview {
   position: relative;
