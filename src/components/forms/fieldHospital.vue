@@ -12,19 +12,13 @@
       placeholder="Escriba el nombre del hospital"
       @input="onChange"
     />
-    <div class="results" v-show="isOpen">
+    <div v-show="isOpen" class="results">
       <ul v-show="isOpen" data-test="curriculum-user-hospital-list">
-        <li class="loading" v-if="isLoading">
+        <li v-if="isLoading" class="loading">
           Cargando lista
         </li>
-        <li
-          v-else
-          v-for="(result, i) in results"
-          :key="i"
-          @click="setResult(result)"
-          class="result"
-        >
-          {{ result }}
+        <li v-for="(item, i) in results" v-else :key="i" class="result" @click="setResult(item)">
+          {{ item }}
         </li>
       </ul>
     </div>
@@ -71,7 +65,7 @@ export default {
   mounted() {
     // Popullate hospitals
     this.$store.dispatch('hospitals/getHospitals', null, { root: true })
-  },  
+  },
   methods: {
     formatValueToField(value) {
       if (isNil(value)) {
@@ -224,18 +218,27 @@ export default {
 
 .results {
   padding: 1.5rem;
-  margin: 0%;
+  margin-left: 5%;
+  margin-right: 5%;
   border: 1px dashed $light-accent;
-  max-width: 600px;
+  max-width: 90%;
   color: $main;
+
+  li:nth-child(even) {
+    background-color: lighten($main, 70%);
+  }
+  li:nth-child(even):hover {
+    background-color: $light-accent;
+  }
 }
-
-
 .result {
   list-style: none;
   text-align: left;
   padding: 4px 2px;
   cursor: pointer;
 }
-
+.result:hover {
+  background-color: $light-accent;
+  color: $main;
+}
 </style>
