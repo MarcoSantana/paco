@@ -36,5 +36,6 @@
     "revoked",
     "unsupported",
     "wrong"
-  ]
+  ],
+  "cSpell.enabled": false
 }

@@ -1,11 +1,15 @@
 <template>
   <div class="wrapper">
     <div class="document-container">
-      <div>
+      <div :id="getFieldID(schema)" :name="schema.inputName" :class="schema.fieldClasses">
         <datetime
+          :id="getFieldID(schema)"
           ref="datetime"
           v-model="dateTime"
-          input-class="my-class"
+          v-attributes="'input'"
+          class="form-control"
+          :name="schema.inputName"
+          :class="schema.fieldClasses"
           value-zone="America/Mexico_City"
           :format="{
             year: 'numeric',
@@ -15,8 +19,9 @@
           :phrases="{ ok: 'Continuar', cancel: 'Salir' }"
           :week-start="1"
           use12-hour
-          title="Some title"
+          :title="schema.title"
           auto
+          @input="onChange"
         ></datetime>
         <div v-if="age">Edad: {{ age }}</div>
       </div>
@@ -73,6 +78,7 @@ export default {
       },
     },
   },
+
   watch: {
     model() {
       const el = this.$el.querySelector('input.file')
@@ -83,6 +89,7 @@ export default {
   },
   mounted() {
     document.querySelector('.vdatetime-input').placeholder = 'Clic para ingresar fecha'
+    console.log('schema :>> ', this.schema)
   },
   methods: {
     //    remove() {

@@ -57,6 +57,20 @@ export default {
                   validator: ['regexp'],
                   pattern: "^[ a-zA-ZáéíóúÁÉÍÓÚÄËÏÖÜäëïöü'-]+$",
                 },
+                // DOB
+                {
+                  // TODO model: user-college-graduation-date
+                  type: 'date',
+                  label: 'Fecha de nacimiento',
+                  model: 'user.college.dob',
+                  title: 'Fecha de nacimiento',
+                  attributes: {
+                    input: { 'data-test': 'curriculum-user-dob' },
+                  },
+                  visibility: 'true',
+                  styleClasses: 'document-form',
+                },
+                // RFC
                 {
                   type: 'input',
                   inputType: 'text',
@@ -71,6 +85,7 @@ export default {
                   validator: ['required', 'regexp'],
                   pattern: '^[a-zA-Z]{4}[0-9]{6}[A-Za-z0-9_]{3}$',
                 },
+                // CURP
                 {
                   type: 'input',
                   inputType: 'text',
@@ -131,11 +146,6 @@ export default {
                   styleClasses: 'document-form',
                   visibility: 'true',
                   // validator: ['email'],
-                },
-                // Graduation
-                {
-                  // TODO use a date picker
-                  // TODO model: user-college-graduation-date
                 },
                 // Hospital
                 {

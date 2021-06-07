@@ -1,9 +1,9 @@
 // / <reference types="cypress"> />
-/* 
- author 🥋: mSantana 
- directory 📁: ~/development/paco/paco/tests/e2e/specs 
- filename 📄: curriculum.js 
- stardate 🚀: 202105.17-19.45 
+/*
+ author 🥋: mSantana
+ directory 📁: ~/development/paco/paco/tests/e2e/specs
+ filename 📄: curriculum.js
+ stardate 🚀: 202105.17-19.45
  */
 import Chance from 'chance'
 
@@ -61,9 +61,38 @@ describe('Curriculum', () => {
       cy.get('@lastName2').type('Borrego')
       cy.get('.errors > span').should('not.contain', 'Formato inválido')
     })
+    // DOB
+    context('dob', () => {
+      cy.get('[data-test=curriculum-user-dob]').as('dob')
+      cy.get('@dob').should('exist')
+      cy.get('@dob').click()
+      cy.get('.vdatetime-popup').as('popup')
+      cy.get('.vdatetime-popup__title').as('title')
+      cy.get('@title').should('contain', 'Fecha de nacimiento')
+      cy.get('.vdatetime-popup__year').as('year')
+      cy.get('@year').click()
+      cy.get('.vdatetime-year-picker__list > :nth-child(62)')
+        .should('contain', '1982')
+        .click()
+      cy.get('.vdatetime-popup__date')
+        .as('date')
+        .click()
+      cy.get('.vdatetime-month-picker')
+        .should('be.visible')
+        .should('contain', 'Junio')
+        .click()
+      cy.get('.vdatetime-calendar__month')
+        .should('be.visible')
+        .should('contain', '27')
+      cy.get(':nth-child(35) > :nth-child(1)').click()
+      // cy.get('.vdatetime-input').should('contain', '27 de junio de 1982')
+      cy.get('.vdatetime-input').should('have.value', '27 de junio de 1982')
+      // Close pop up
+      // cy.get('.vdatetime-popup__actions__button--cancel').as('cancelButton')
+      // cy.get('@cancelButton').click()
+    })
 
     // RFC
-    // TODO Add a faker lib to type random string to test really the regxp validation 202105.18-09.18
     context('rfc', () => {
       cy.get('[data-test=curriculum-user-rfc]').as('rfc')
       cy.get('@rfc').type(chance.string())
