@@ -155,7 +155,7 @@ export default {
                 // graduationDate
                 {
                   type: 'date',
-                  label: 'Fecha de emisión de título profesional',
+                  label: 'Fecha de expedicioń del título',
                   model: 'user.college.graduationDate',
                   title: 'Fecha de expedición del título',
                   age: false,
@@ -168,14 +168,14 @@ export default {
                 // degree emission place
                 {
                   type: 'googleAddress',
-                  label: 'Lugar de emisión del título',
+                  label: 'Lugar de expedición del título',
                   hint: 'Mty, CMDX, Gdl, etc.',
                   model: 'user.college.place',
                 },
                 // Hospital
                 {
                   type: 'hospital',
-                  label: 'Estudios de posgrado efectuados en:',
+                  label: 'Estudios de posgrado en pediatría efectuados en:',
                   model: 'user.hospital',
                   attributes: {
                     input: { 'data-test': 'curriculum-user-hospital' },

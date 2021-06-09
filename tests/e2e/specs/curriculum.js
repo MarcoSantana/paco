@@ -175,7 +175,7 @@ describe('Curriculum', () => {
 
     // Degree emission place
     context('graduationPlace', () => {
-      cy.get('#lugar-de-emisin-del-ttulo')
+      cy.get('#lugar-de-expedicin-del-ttulo')
         .as('degreeAddress')
         .should('exist')
       // TODO complete me 202105.20-16.00
