@@ -165,10 +165,20 @@ describe('Curriculum', () => {
       cy.get('.vdatetime-year-picker__list > :nth-child(100)')
         .should('contain', '2020')
         .click()
-      cy.get('.vdatetime-popup__date').as('date').click()
+      cy.get('.vdatetime-popup__date')
+        .as('date')
+        .click()
       cy.get('.vdatetime-month-picker__list > :nth-child(1)').click()
       cy.get(':nth-child(10) > :nth-child(1) > span').click()
       cy.get('[data-test=curriculum-user-graduationDate] > .vdatetime-input').should('have.value', '1 de enero de 2020')
+    })
+
+    // Degree emission place
+    context('graduationPlace', () => {
+      cy.get('#lugar-de-emisin-del-ttulo')
+        .as('degreeAddress')
+        .should('exist')
+      // TODO complete me 202105.20-16.00
     })
 
     context('hospital', () => {
@@ -179,8 +189,10 @@ describe('Curriculum', () => {
       cy.get('@list')
         .should('be.visible')
         .should('contain', 'Hospital General Ticomán')
-      cy.get('.result').should('contain', 'Hospital General Ticomán').click()
-      cy.get('@hospital').should('have.value', 'Hospital General Ticomán' )
+      cy.get('.result')
+        .should('contain', 'Hospital General Ticomán')
+        .click()
+      cy.get('@hospital').should('have.value', 'Hospital General Ticomán')
     })
   })
 })

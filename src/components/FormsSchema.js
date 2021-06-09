@@ -165,6 +165,13 @@ export default {
                   visibility: 'true',
                   styleClasses: 'document-form',
                 },
+                // degree emission place
+                {
+                  type: 'googleAddress',
+                  label: 'Lugar de emisión del título',
+                  hint: 'Mty, CMDX, Gdl, etc.',
+                  model: 'user.college.place',
+                },
                 // Hospital
                 {
                   type: 'hospital',
