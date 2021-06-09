@@ -85,8 +85,10 @@ describe('Curriculum', () => {
         .should('be.visible')
         .should('contain', '27')
       cy.get(':nth-child(35) > :nth-child(1)').click()
-      // cy.get('.vdatetime-input').should('contain', '27 de junio de 1982')
       cy.get('.vdatetime-input').should('have.value', '27 de junio de 1982')
+      cy.get('#age').as('age')
+      cy.get('@age').should('have.value', '38')
+
       // Close pop up
       // cy.get('.vdatetime-popup__actions__button--cancel').as('cancelButton')
       // cy.get('@cancelButton').click()
@@ -150,6 +152,12 @@ describe('Curriculum', () => {
         .select('Facultad de Medicina Ciudad Universitaria')
     })
 
+    // FECHA DE EXPEDICION DEL TÍTULO
+    // context('graduationDate', () => {
+    //   cy.get('[data-test=curriculum-user-graduationDate]').as('graduationDate')
+    //   cy.get('@graduationDate').should('exist')
+    // })
+
     context('hospital', () => {
       cy.get('[data-test=curriculum-user-hospital]').as('hospital')
       cy.get('@hospital').should('exist')
@@ -158,12 +166,6 @@ describe('Curriculum', () => {
       cy.get('@list')
         .should('be.visible')
         .should('contain', 'Hospital')
-
-      // DONE focus field
-      // TODO Type garabge and find nothing
-      // TODO Type some chars from a hospital name and get some results
-      // TODO Type the full name of the hospital and list only should show 1
-      // TODO Debug model shpuld show hospital data object
     })
   })
 })

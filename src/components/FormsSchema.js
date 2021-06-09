@@ -59,11 +59,11 @@ export default {
                 },
                 // DOB
                 {
-                  // TODO model: user-college-graduation-date
                   type: 'date',
                   label: 'Fecha de nacimiento',
                   model: 'user.college.dob',
                   title: 'Fecha de nacimiento',
+                  age: true,
                   attributes: {
                     input: { 'data-test': 'curriculum-user-dob' },
                   },

@@ -23,33 +23,22 @@
           auto
           @input="onChange"
         ></datetime>
-        <div v-if="age">Edad: {{ age }}</div>
       </div>
-      <!-- <div>
+      <div v-if="schema.age && age" class="form-control">
         <label for="age">Edad</label>
-        <input id="age" type="text" name="age" value="18" readonly />
-      </div> -->
+        <input id="age" v-model="age" type="text" name="age" readonly />
+      </div>
     </div>
     <h2>
       TODO
     </h2>
-    <div>
-      <ul>
-        <li>Add age option from schema</li>
-        <li>Add 'age field' name option from schema</li>
-        <li>Add time option from schema</li>
-        <li>Manage timezone</li>
-        <li>Add style for time picker</li>
-        <li>Add style to align age if active alongside date</li>
-      </ul>
-    </div>
   </div>
 </template>
 <script>
 import { abstractField } from 'vue-form-generator'
 import { Datetime } from 'vue-datetime'
 import 'vue-datetime/dist/vue-datetime.css'
-import { Settings } from 'luxon'
+import { Settings, DateTime } from 'luxon'
 
 Settings.defaultLocale = 'es'
 
@@ -61,41 +50,22 @@ export default {
     return {
       show: true,
       dateTime: null,
-      age: 18,
     }
   },
   computed: {
-    // TODO  investigate what is this for
-    wrappedValue: {
-      get() {
-        if (this.value && this.value.indexOf('data') === 0) return '<inline base64 pdf>'
-        return this.value
-      },
-      set(newValue) {
-        if (newValue && newValue.indexOf('http') === 0) {
-          this.value = newValue
-        }
-      },
+    age() {
+      const dob = DateTime.fromISO(this.dateTime)
+      return Math.floor(dob.diffNow('years').years * -1)
     },
   },
 
   watch: {
-    model() {
-      const el = this.$el.querySelector('input.file')
-      if (el) {
-        el.value = ''
-      }
-    },
+    // model() {},
   },
   mounted() {
     document.querySelector('.vdatetime-input').placeholder = 'Clic para ingresar fecha'
-    console.log('schema :>> ', this.schema)
   },
-  methods: {
-    //    remove() {
-    //      this.value = ''
-    //    },
-  },
+  methods: {},
 }
 </script>
 
