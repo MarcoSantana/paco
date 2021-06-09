@@ -104,8 +104,8 @@ export default {
                 // Address
                 {
                   type: 'googleAddress',
-                  label: 'Residencia',
-                  hint: 'Lugar de residencia actual',
+                  label: 'Domicilio permanente',
+                  hint: 'Domicilio actual',
                   model: 'user.address',
                   attributes: {
                     input: { 'data-test': 'curriculum-user-googleAddress' },
@@ -134,18 +134,36 @@ export default {
                   visibility: 'true',
                   validator: ['email'],
                 },
+              ],
+            },
+            // Studies
+            {
+              legend: 'Estudios profesionales',
+              fields: [
                 // university
                 {
                   type: 'university',
-                  label: 'Universidad de pregrado (Licenciatura)',
-                  hint: 'Una dirección de correo válida',
+                  label: 'Título de médico cirujano expedido por:',
+                  hint: 'Universidad formativa',
                   model: 'user.university',
                   attributes: {
                     input: { 'data-test': 'curriculum-user-university' },
                   },
                   styleClasses: 'document-form',
                   visibility: 'true',
-                  // validator: ['email'],
+                },
+                // graduationDate
+                {
+                  type: 'date',
+                  label: 'Fecha de emisión de título profesional',
+                  model: 'user.college.graduationDate',
+                  title: 'Fecha de expedición del título',
+                  age: false,
+                  attributes: {
+                    input: { 'data-test': 'curriculum-user-graduationDate' },
+                  },
+                  visibility: 'true',
+                  styleClasses: 'document-form',
                 },
                 // Hospital
                 {

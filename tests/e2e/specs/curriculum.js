@@ -121,7 +121,7 @@ describe('Curriculum', () => {
     })
 
     context('address', () => {
-      cy.get('#residencia')
+      cy.get('#domicilio-permanente')
         .as('address')
         .should('exist')
       // TODO complete me 202105.20-16.00
@@ -152,20 +152,35 @@ describe('Curriculum', () => {
         .select('Facultad de Medicina Ciudad Universitaria')
     })
 
-    // FECHA DE EXPEDICION DEL TÍTULO
-    // context('graduationDate', () => {
-    //   cy.get('[data-test=curriculum-user-graduationDate]').as('graduationDate')
-    //   cy.get('@graduationDate').should('exist')
-    // })
+    // Garduation date
+    context('graduationDate', () => {
+      cy.get('[data-test=curriculum-user-graduationDate]').as('graduationDate')
+      cy.get('@graduationDate').should('exist')
+      cy.get('@graduationDate').click()
+      cy.get('.vdatetime-popup').as('popup')
+      cy.get('.vdatetime-popup__title').as('title')
+      cy.get('@title').should('contain', 'Fecha de expedición del título')
+      cy.get('.vdatetime-popup__year').as('year')
+      cy.get('@year').click()
+      cy.get('.vdatetime-year-picker__list > :nth-child(100)')
+        .should('contain', '2020')
+        .click()
+      cy.get('.vdatetime-popup__date').as('date').click()
+      cy.get('.vdatetime-month-picker__list > :nth-child(1)').click()
+      cy.get(':nth-child(10) > :nth-child(1) > span').click()
+      cy.get('[data-test=curriculum-user-graduationDate] > .vdatetime-input').should('have.value', '1 de enero de 2020')
+    })
 
     context('hospital', () => {
       cy.get('[data-test=curriculum-user-hospital]').as('hospital')
       cy.get('@hospital').should('exist')
-      cy.get('@hospital').type('Hospital')
+      cy.get('@hospital').type('Hospital General Tic')
       cy.get('[data-test=curriculum-user-hospital-list]').as('list')
       cy.get('@list')
         .should('be.visible')
-        .should('contain', 'Hospital')
+        .should('contain', 'Hospital General Ticomán')
+      cy.get('.result').should('contain', 'Hospital General Ticomán').click()
+      cy.get('@hospital').should('have.value', 'Hospital General Ticomán' )
     })
   })
 })
