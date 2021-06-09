@@ -29,9 +29,6 @@
         <input id="age" v-model="age" type="text" name="age" readonly />
       </div>
     </div>
-    <h2>
-      TODO
-    </h2>
   </div>
 </template>
 <script>
