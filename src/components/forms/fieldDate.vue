@@ -21,7 +21,6 @@
           use12-hour
           :title="schema.title"
           auto
-          @input="onChange"
         ></datetime>
       </div>
       <div v-if="schema.age && age" class="form-control">
