@@ -1,50 +1,46 @@
 <template>
   <div class="wrapper">
-    <div class="document-container">
-      <div :id="getFieldID(schema)" :name="schema.inputName" :class="schema.fieldClasses">
-        <datetime
-          :id="`${getFieldID(schema)}-start`"
-          ref="datetime-start"
-          v-model="periodStart"
-          v-attributes="'input'"
-          class="form-control"
-          :name="schema.inputName"
-          :class="schema.fieldClasses"
-          value-zone="America/Mexico_City"
-          :format="{
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          }"
-          :phrases="{ ok: 'Continuar', cancel: 'Salir' }"
-          :week-start="1"
-          use12-hour
-          :title="schema.title"
-          auto
-          @input="onChange"
-        ></datetime>
-        <datetime
-          :id="`${getFieldID(schema)}-end`"
-          ref="datetime-end"
-          v-model="periodEnd"
-          v-attributes="'input'"
-          class="form-control"
-          :name="schema.inputName"
-          :class="schema.fieldClasses"
-          value-zone="America/Mexico_City"
-          :format="{
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          }"
-          :phrases="{ ok: 'Continuar', cancel: 'Salir' }"
-          :week-start="1"
-          use12-hour
-          :title="schema.title"
-          auto
-          @input="onChange"
-        ></datetime>
-      </div>
+    <div :id="getFieldID(schema)" v-attributes="'input'" :name="schema.inputName" :class="schema.fieldClasses">
+      Schema: {{ schema.attributes.input }} <br />
+      <datetime
+        :id="getFieldID(schema)"
+        ref="datetime-start"
+        v-model="periodStart"
+        v-attributes="'input'"
+        class="form-control"
+        :name="schema.inputName"
+        :class="schema.fieldClasses"
+        value-zone="America/Mexico_City"
+        :format="{
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        }"
+        :phrases="{ ok: 'Continuar', cancel: 'Salir' }"
+        :week-start="1"
+        use12-hour
+        :title="schema.title"
+        auto
+      ></datetime>
+      <datetime
+        ref="datetime-end"
+        v-model="periodEnd"
+        v-attributes="'input'"
+        class="form-control"
+        :name="schema.inputName"
+        :class="schema.fieldClasses"
+        value-zone="America/Mexico_City"
+        :format="{
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        }"
+        :phrases="{ ok: 'Continuar', cancel: 'Salir' }"
+        :week-start="1"
+        use12-hour
+        :title="schema.title"
+        auto
+      ></datetime>
     </div>
     <h2>TODO</h2>
     <ul>
@@ -71,12 +67,19 @@ export default {
     return {
       show: true,
       dateTime: null,
+      periodStart: null,
+      periodEnd: null,
     }
   },
   computed: {
     age() {
       const dob = DateTime.fromISO(this.dateTime)
       return Math.floor(dob.diffNow('years').years * -1)
+    },
+    dataTest() {
+      // const data = `${this.schema.attributes.input}`
+      const data = this.schema.attributes.input
+      return data
     },
   },
 

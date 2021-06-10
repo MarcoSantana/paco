@@ -22,6 +22,7 @@ import fieldPdf from '@/components/forms/fieldPdf'
 import fieldUniversity from '@/components/forms/fieldUniversity'
 import fieldHospital from '@/components/forms/fieldHospital'
 import fieldDate from '@/components/forms/fieldDate'
+import fieldPerdiod from '@/components/forms/fieldPeriod'
 import 'vue-form-generator/dist/vfg.css'
 import VueGoogleAutocomplete from 'vue-google-autocomplete'
 
@@ -56,6 +57,7 @@ Vue.component('field-pdf', fieldPdf)
 Vue.component('field-university', fieldUniversity)
 Vue.component('field-hospital', fieldHospital)
 Vue.component('field-date', fieldDate)
+Vue.component('field-period', fieldPerdiod)
 // eslint-disable-next-line no-console
 console.info(`
 🍱 This app was bootstrapped with bento-starter 🍱

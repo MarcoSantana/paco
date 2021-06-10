@@ -181,6 +181,19 @@ export default {
                     input: { 'data-test': 'curriculum-user-hospital' },
                   },
                 },
+                // Postgraduate studies
+                {
+                  type: 'period',
+                  label: 'Estudios realizados entre',
+                  model: 'user.postgraduatePeriod',
+                  attributes: {
+                    input: {
+                      'data-test': 'curriculum-user-postgraduatePeriod',
+                    },
+                    visibility: 'true',
+                    styleClasses: 'document-form',
+                  },
+                },
               ],
             },
           ],
