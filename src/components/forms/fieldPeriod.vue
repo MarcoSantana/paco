@@ -1,12 +1,11 @@
 <template>
   <div class="wrapper">
     <div :id="getFieldID(schema)" v-attributes="'input'" :name="schema.inputName" :class="schema.fieldClasses">
-      Schema: {{ schema.attributes.input }} <br />
+      <label for="`${schema.attributes.input.inputIdPrefix}-start`">Fecha de inicio</label>
       <datetime
-        :id="getFieldID(schema)"
-        ref="datetime-start"
         v-model="periodStart"
-        v-attributes="'input'"
+        :max-datetime="dateNow"
+        :input-id="`${schema.attributes.input.inputIdPrefix}-start`"
         class="form-control"
         :name="schema.inputName"
         :class="schema.fieldClasses"
@@ -19,32 +18,36 @@
         :phrases="{ ok: 'Continuar', cancel: 'Salir' }"
         :week-start="1"
         use12-hour
-        :title="schema.title"
+        :title="`Inicio de ${schema.title}`"
         auto
       ></datetime>
+      <label for="`${schema.attributes.input.inputIdPrefix}-end`">Fecha de terminación</label>
       <datetime
-        ref="datetime-end"
         v-model="periodEnd"
-        v-attributes="'input'"
+        :min-datetime="periodStart"
+        :input-id="`${schema.attributes.input.inputIdPrefix}-end`"
         class="form-control"
         :name="schema.inputName"
         :class="schema.fieldClasses"
         value-zone="America/Mexico_City"
         :format="{
-          year: 'numeric',
           month: 'long',
+          year: 'numeric',
           day: 'numeric',
         }"
         :phrases="{ ok: 'Continuar', cancel: 'Salir' }"
         :week-start="1"
         use12-hour
-        :title="schema.title"
+        :title="`Fin de ${schema.title}`"
         auto
       ></datetime>
     </div>
     <h2>TODO</h2>
     <ul>
-      <li>Add a second time component</li>
+      <li>Style to put inline the two dates</li>
+    </ul>
+    <h2>TODO</h2>
+    <ul>
       <li>Add a model (json) that reflects start and end</li>
       <li>Compute the time period</li>
       <li>show/hide time period from schema</li>
@@ -72,14 +75,12 @@ export default {
     }
   },
   computed: {
-    age() {
-      const dob = DateTime.fromISO(this.dateTime)
-      return Math.floor(dob.diffNow('years').years * -1)
+    dateNow() {
+      return DateTime.fromObject(Date.now())
     },
-    dataTest() {
-      // const data = `${this.schema.attributes.input}`
-      const data = this.schema.attributes.input
-      return data
+    startTitle() {
+      const startTitle = `${this.schema.title} inicio`
+      return startTitle
     },
   },
 

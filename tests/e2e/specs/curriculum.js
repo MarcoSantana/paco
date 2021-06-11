@@ -6,6 +6,7 @@
  stardate 🚀: 202105.17-19.45
  */
 import Chance from 'chance'
+import { DateTime } from 'luxon'
 
 // const chance = new Chance()
 
@@ -197,8 +198,56 @@ describe('Curriculum', () => {
     })
 
     context('postgraduate', () => {
-      cy.get('[data-test=curriculum-user-postgraduatePeriodStart]').as('postgraduateStart')
-      cy.get('[data-test=curriculum-user-postgraduatePeriodEnd]').as('postgraduateEnd')
+      cy.get('#postgraduatePeriod-start').as('postgraduateStart')
+      cy.get('@postgraduateStart').should('exist')
+      cy.get('#postgraduatePeriod-end').as('postgraduateEnd')
+      cy.get('@postgraduateEnd').should('exist')
+      cy.get('@postgraduateStart').click()
+      cy.get('.vdatetime-popup').as('popup')
+      cy.get('.vdatetime-popup__title').as('title')
+      cy.get('@title').should('contain', 'Inicio de Estudios de posgrado en pediatría')
+      cy.get('.vdatetime-popup__year').as('year')
+      cy.get('@year').click()
+      cy.get('.vdatetime-year-picker__list > :nth-child(97)').click()
+      cy.get('.vdatetime-popup__date')
+        .as('date')
+        .click()
+      cy.get('.vdatetime-month-picker__list > :nth-child(2)').click()
+      cy.get('.vdatetime-popup__actions__button--confirm').click()
+      cy.get('@postgraduateStart').should('have.value', '11 de febrero de 2017')
+      // End
+      cy.get('@postgraduateEnd').click()
+      cy.get('.vdatetime-popup').as('popup')
+      cy.get('.vdatetime-popup__title').as('title')
+      cy.get('@title').should('contain', 'Fin de Estudios de posgrado en pediatría')
+      cy.get('.vdatetime-popup__year').as('year')
+      cy.get('@year').click()
+      cy.get('.vdatetime-year-picker__list > :nth-child(101)').click()
+      cy.get('.vdatetime-popup__date')
+        .as('date')
+        .click()
+      cy.get('.vdatetime-month-picker__list > :nth-child(5)').click()
+      cy.get('.vdatetime-popup__actions__button--confirm').click()
+      // Compare dates
+      let startDate = null
+      let endDate = null
+      cy.get('@postgraduateStart')
+        .invoke('val')
+        .should(value => {
+          startDate = DateTime.fromISO(value)
+          console.log('startDate :>> ', startDate.ts)
+        })
+      cy.get('@postgraduateEnd')
+        .invoke('val')
+        .should(value => {
+          endDate = DateTime.fromISO(value)
+          console.log('endDate :>> ', endDate.ts)
+        })
+        .then(() => {
+          expect(startDate.ts).to.be.lessThan(endDate.ts)
+        })
+      console.log('startDate :>> ', startDate)
+      console.log('endDate :>> ', endDate)
     })
   })
 })

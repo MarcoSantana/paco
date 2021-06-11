@@ -186,9 +186,11 @@ export default {
                   type: 'period',
                   label: 'Estudios realizados entre',
                   model: 'user.postgraduatePeriod',
+                  title: 'Estudios de posgrado en pediatría',
                   attributes: {
                     input: {
                       'data-test': 'curriculum-user-postgraduatePeriod',
+                      inputIdPrefix: 'postgraduatePeriod',
                     },
                     visibility: 'true',
                     styleClasses: 'document-form',
