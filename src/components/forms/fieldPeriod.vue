@@ -3,7 +3,7 @@
     <div id="period-wrapper" v-attributes="'input'" :name="schema.inputName" :class="schema.fieldClasses">
       <label class="hint" for="`${schema.attributes.input.inputIdPrefix}-start`">Fecha de inicio</label>
       <datetime
-        v-model="periodStart"
+        v-model="model.periodStart"
         :max-datetime="dateNow"
         :input-id="`${schema.attributes.input.inputIdPrefix}-start`"
         class="form-control"
@@ -23,9 +23,9 @@
       ></datetime>
       <label class="hint" for="`${schema.attributes.input.inputIdPrefix}-end`">Fecha de terminación</label>
       <datetime
-        v-model="periodEnd"
-        :disabled="periodStart"
-        :min-datetime="periodStart"
+        v-model="model.periodEnd"
+        :disabled="!model.periodStart"
+        :min-datetime="model.periodStart"
         :input-id="`${schema.attributes.input.inputIdPrefix}-end`"
         class="form-control"
         :name="schema.inputName"
@@ -44,11 +44,9 @@
       ></datetime>
     </div>
     <h2>TODO</h2>
+    Model: {{ model }}
     <ul>
       <li>Style to put inline the two dates</li>
-    </ul>
-    <h2>TODO</h2>
-    <ul>
       <li>Add a model (json) that reflects start and end</li>
       <li>Compute the time period</li>
       <li>show/hide time period from schema</li>
@@ -71,8 +69,9 @@ export default {
     return {
       show: true,
       dateTime: null,
-      periodStart: null,
-      periodEnd: null,
+      model: { periodStart: null, periodEnd: null },
+      // periodStart: null,
+      // periodEnd: null,
     }
   },
   computed: {
