@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
-    <div :id="getFieldID(schema)" v-attributes="'input'" :name="schema.inputName" :class="schema.fieldClasses">
-      <label for="`${schema.attributes.input.inputIdPrefix}-start`">Fecha de inicio</label>
+    <div id="period-wrapper" v-attributes="'input'" :name="schema.inputName" :class="schema.fieldClasses">
+      <label class="hint" for="`${schema.attributes.input.inputIdPrefix}-start`">Fecha de inicio</label>
       <datetime
         v-model="periodStart"
         :max-datetime="dateNow"
@@ -21,9 +21,10 @@
         :title="`Inicio de ${schema.title}`"
         auto
       ></datetime>
-      <label for="`${schema.attributes.input.inputIdPrefix}-end`">Fecha de terminación</label>
+      <label class="hint" for="`${schema.attributes.input.inputIdPrefix}-end`">Fecha de terminación</label>
       <datetime
         v-model="periodEnd"
+        :disabled="periodStart"
         :min-datetime="periodStart"
         :input-id="`${schema.attributes.input.inputIdPrefix}-end`"
         class="form-control"
@@ -116,5 +117,8 @@ export default {
     font-size: 0.8rem;
     max-height: 50px;
   }
+}
+label {
+  color: $main;
 }
 </style>
