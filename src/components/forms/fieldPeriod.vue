@@ -43,14 +43,6 @@
         auto
       ></datetime>
     </div>
-    <h2>TODO</h2>
-    Model: {{ model }}
-    <ul>
-      <li>Style to put inline the two dates</li>
-      <li>Add a model (json) that reflects start and end</li>
-      <li>Compute the time period</li>
-      <li>show/hide time period from schema</li>
-    </ul>
   </div>
 </template>
 <script>

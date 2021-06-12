@@ -5,7 +5,7 @@
  filename 📄: curriculum.js
  stardate 🚀: 202105.17-19.45
  */
-import Chance from 'chance'
+// import Chance from 'chance'
 import { DateTime } from 'luxon'
 
 // const chance = new Chance()
