@@ -22,14 +22,6 @@
         </li>
       </ul>
     </div>
-    <!-- LOG -->
-    <div>
-      <ul>
-        <h1>LOG</h1>
-        <li>Model: {{ searchInput }}</li>
-      </ul>
-    </div>
-    <!-- log -->
   </div>
 </template>
 <script>

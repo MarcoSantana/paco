@@ -3,6 +3,7 @@
     <div id="period-wrapper" v-attributes="'input'" :name="schema.inputName" :class="schema.fieldClasses">
       <label class="hint" for="`${schema.attributes.input.inputIdPrefix}-start`">Fecha de inicio</label>
       <datetime
+        v-if="dateNow"
         v-model="model.periodStart"
         :max-datetime="dateNow"
         :input-id="`${schema.attributes.input.inputIdPrefix}-start`"
@@ -61,27 +62,18 @@ export default {
     return {
       show: true,
       dateTime: null,
-      model: { periodStart: null, periodEnd: null },
-      // periodStart: null,
-      // periodEnd: null,
     }
   },
   computed: {
     dateNow() {
-      return DateTime.fromObject(Date.now())
-    },
-    startTitle() {
-      const startTitle = `${this.schema.title} inicio`
-      return startTitle
+      return DateTime.now().toISO()
     },
   },
 
   watch: {
-    // model() {},
+    model() {},
   },
-  mounted() {
-    document.querySelector('.vdatetime-input').placeholder = 'Clic para ingresar fecha'
-  },
+  mounted() {},
   methods: {},
 }
 </script>

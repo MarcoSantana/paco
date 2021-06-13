@@ -3,11 +3,13 @@
     <div class="document-container">
       <div :id="getFieldID(schema)" :name="schema.inputName" :class="schema.fieldClasses">
         <datetime
+          v-if="dateNow"
           :id="getFieldID(schema)"
           ref="datetime"
           v-model="dateTime"
           v-attributes="'input'"
           class="form-control"
+          :max-datetime="dateNow"
           :name="schema.inputName"
           :class="schema.fieldClasses"
           value-zone="America/Mexico_City"
@@ -52,6 +54,10 @@ export default {
     age() {
       const dob = DateTime.fromISO(this.dateTime)
       return Math.floor(dob.diffNow('years').years * -1)
+    },
+    dateNow() {
+      return DateTime.now().toISO()
+      // return Date.now().toString()
     },
   },
 
