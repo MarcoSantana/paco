@@ -2,7 +2,7 @@ import Vuex from 'vuex'
 import { cloneDeep } from 'lodash'
 import { createLocalVue, shallowMount } from '@vue/test-utils'
 import LoginView from '@/views/Login.vue'
-import VerifyEmailView from '@/views/VerifyEmail.vue'
+// import VerifyEmailView from '@/views/VerifyEmail.vue'
 
 const defaultStoreStructure = {
   modules: {

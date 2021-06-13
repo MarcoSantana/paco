@@ -1,5 +1,5 @@
 import Vuex from 'vuex'
-import { cloneDeep, wrap } from 'lodash'
+import { cloneDeep } from 'lodash'
 import { createLocalVue, shallowMount, mount } from '@vue/test-utils'
 import SignUpView from '@/views/SignUp.vue'
 
@@ -71,5 +71,6 @@ describe('SignUpView', () => {
       store,
       localVue,
     })
+    console.log('wrapper: ', wrapper)
   }) // registration
 })
