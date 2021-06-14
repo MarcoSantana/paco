@@ -25,7 +25,7 @@
     </select>
     <!-- Campus select -->
     <select
-      v-if="campi"
+      v-if="campi && schema.campus"
       id="university-campi"
       v-model="campus"
       v-attributes="'input'"

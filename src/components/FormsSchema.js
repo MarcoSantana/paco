@@ -151,6 +151,7 @@ export default {
                   },
                   styleClasses: 'document-form',
                   visibility: 'true',
+                  campus: true,
                 },
                 // graduationDate
                 {
@@ -210,6 +211,18 @@ export default {
                     visibility: 'true',
                     styleClasses: 'document-form',
                   },
+                },
+                // Endorsing institution
+                {
+                  type: 'university',
+                  label: 'Curso avalado por',
+                  model: 'user.postgraduate.endorsing',
+                  attributes: {
+                    input: { 'data-test': 'curriculum-user-postgraduateEndorser' },
+                  },
+                  styleClasses: 'document-form',
+                  visibility: 'true',
+                  campus: false,
                 },
               ],
             },
