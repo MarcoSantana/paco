@@ -172,7 +172,7 @@ export default {
                   hint: 'Mty, CMDX, Gdl, etc.',
                   model: 'user.college.place',
                 },
-                // Hospital
+                // Hospital (postgraduate)
                 {
                   type: 'hospital',
                   label: 'Estudios de posgrado en pediatría efectuados en:',
@@ -191,6 +191,21 @@ export default {
                     input: {
                       'data-test': 'curriculum-user-postgraduatePeriod',
                       inputIdPrefix: 'postgraduatePeriod',
+                    },
+                    visibility: 'true',
+                    styleClasses: 'document-form',
+                  },
+                },
+                // Postgraduate studies place
+                {
+                  type: 'googleAddress',
+                  label: 'Ciudad',
+                  hint: 'Mty, CMDX, Gdl, etc.',
+                  model: 'user.postgradute.place',
+                  attributes: {
+                    input: {
+                      'data-test': 'curriculum-user-postgraduatePlace',
+                      inputIdPrefix: 'postgraduatePlace',
                     },
                     visibility: 'true',
                     styleClasses: 'document-form',
