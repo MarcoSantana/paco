@@ -34,6 +34,7 @@
         icon="ti-settings"
       >
         <span v-if="documentType">
+          Form model: {{ formModel }}
           <h2 v-if="documentType">Formulario para anexar {{ documentType.name }}</h2>
           <vue-form-generator :schema="documentType.schema" :model="formModel" :options="formOptions">
           </vue-form-generator>

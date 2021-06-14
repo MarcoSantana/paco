@@ -1,8 +1,9 @@
 <template>
   <div class="wrapper">
     <select
+      v-if="value"
       :id="getFieldID(schema)"
-      v-model="value"
+      v-model="college"
       v-attributes="'input'"
       class="form-control"
       :disabled="disabled"
@@ -58,6 +59,7 @@ export default {
   mixins: [abstractField],
   data() {
     return {
+      college: null,
       campus: null,
     }
   },
@@ -74,10 +76,17 @@ export default {
       }
       return null
     },
+    value() {
+      return 'foo'
+    },
   },
   watch: {
-    value() {
+    college() {
       this.$store.dispatch('colleges/getCollegeCampi', this.collegeId)
+      // this.value.college = this.college
+    },
+    campus() {
+      // this.value.campus = this.campus
     },
   },
   mounted() {

@@ -61,7 +61,7 @@ export default {
                 {
                   type: 'date',
                   label: 'Fecha de nacimiento',
-                  model: 'user.college.dob',
+                  model: 'user.dob',
                   title: 'Fecha de nacimiento',
                   age: true,
                   attributes: {
@@ -145,7 +145,7 @@ export default {
                   type: 'university',
                   label: 'Título de médico cirujano expedido por:',
                   hint: 'Universidad formativa',
-                  model: 'user.university',
+                  model: 'user.college',
                   attributes: {
                     input: { 'data-test': 'curriculum-user-university' },
                   },
@@ -226,6 +226,25 @@ export default {
                 },
               ],
             },
+            // Professional exercise
+            // {
+            //   legend: 'Ejercicio profesional en pediatria actual (lugar y fecha de ingreso)',
+            //   fields: [
+            //     {
+            //       type: 'input',
+            //       inputType: 'text',
+            //       label: 'Nombre del lugar',
+            //       model: 'user.professionalExercise.description',
+            //       hint: 'Ej. Consultorio privado, Hospital General No. 450, Durango',
+            //     },
+            //     {
+            //       type: 'googleAddress',
+            //       label: 'Lugar',
+            //       hint: 'Mty, CMDX, Gdl, etc.',
+            //       model: 'user.professionalExercise.location',
+            //     },
+            //   ],
+            // },
           ],
         },
       },
