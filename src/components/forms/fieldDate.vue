@@ -6,7 +6,7 @@
           v-if="dateNow"
           :id="getFieldID(schema)"
           ref="datetime"
-          v-model="dateTime"
+          v-model="value"
           v-attributes="'input'"
           class="form-control"
           :max-datetime="dateNow"
@@ -47,7 +47,7 @@ export default {
   data() {
     return {
       show: true,
-      dateTime: null,
+      // dateTime: null,
     }
   },
   computed: {
