@@ -71,15 +71,6 @@ export default {
     selectOptions() {
       return this.schema.selectOptions || this.colleges
     },
-    // value: {
-    //   get() {
-    //     console.log('this.model :>> ', this.model)
-    //     return { collegeId: this.college, campusId: this.campus }
-    //   },
-    //   set(newValue) {
-    //     console.log('newValue :>> ', newValue)
-    //   },
-    // },
   },
   watch: {
     value() {
