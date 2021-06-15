@@ -1,11 +1,8 @@
 <template>
   <div class="wrapper">
-    ID {{ getFieldID(schema) }} name {{ schema.name }}
     <div :id="getFieldID(schema)" :name="schema.inputName" :class="schema.fieldClasses">
       <select
-        v-if="value"
-        :id="`${getFieldID(schema)}-college`"
-        v-model="value.collegeId"
+        v-model="college.collegeId"
         v-attributes="'input'"
         class="form-control"
         :disabled="disabled"
@@ -28,9 +25,8 @@
       </select>
       <!-- Campus select -->
       <select
-        v-if="value && campi && schema.campus"
-        :id="`${getFieldID(schema)}-campus`"
-        v-model="value.campusId"
+        v-if="campi && schema.campus"
+        v-model="college.campusId"
         v-attributes="'input'"
         class="form-control"
         name="campi"
@@ -62,8 +58,9 @@ export default {
   mixins: [abstractField],
   data() {
     return {
-      college: null,
-      campus: null,
+      // collegeId: null,
+      // campusId: null,
+      college: { collegeId: null, campusId: null },
     }
   },
   computed: {
@@ -75,6 +72,13 @@ export default {
     },
   },
   watch: {
+    college: {
+      handler(newVal) {
+        this.value = newVal
+        this.$store.dispatch('colleges/getCollegeCampi', this.college.collegeId)
+      },
+      deep: true,
+    },
     value() {
       this.$store.dispatch('colleges/getCollegeCampi', this.value.collegeId)
     },
