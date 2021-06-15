@@ -1,53 +1,54 @@
 <template>
   <div class="wrapper">
-    <select
-      v-if="value"
-      :id="getFieldID(schema)"
-      v-model="college"
-      v-attributes="'input'"
-      class="form-control"
-      :disabled="disabled"
-      :name="schema.inputName"
-      :class="schema.fieldClasses"
-    >
-      <option v-if="selectOptions && !selectOptions.hideNoneSelectedText" :disabled="schema.required" :value="null">
-        {{ selectOptions.noneSelectedText || '&lt;Seleccione una universidad&gt;' }}
-      </option>
-      <template v-for="item in selectOptions">
-        <optgroup v-if="item.group" :key="item" :label="getGroupName(item)">
-          <span v-if="item.ops">
-            <option v-for="i in item.ops" :key="getItemName(i)" :value="getItemValue(i)">{{ getItemName(i) }}</option>
-          </span>
-        </optgroup>
-        <option v-if="!item.group" :key="getItemValue(item)" :value="getItemValue(item)">
-          {{ getItemName(item) }}
+    <div :id="getFieldID(schema)" :name="schema.inputName" :class="schema.fieldClasses">
+      <select
+        v-if="value"
+        v-model="value.collegeId"
+        v-attributes="'input'"
+        class="form-control"
+        :disabled="disabled"
+        :name="schema.inputName"
+        :class="schema.fieldClasses"
+      >
+        <option v-if="selectOptions && !selectOptions.hideNoneSelectedText" :disabled="schema.required" :value="null">
+          {{ selectOptions.noneSelectedText || '&lt;Seleccione una universidad&gt;' }}
         </option>
-      </template>
-    </select>
-    <!-- Campus select -->
-    <select
-      v-if="campi && schema.campus"
-      id="university-campi"
-      v-model="campus"
-      v-attributes="'input'"
-      class="form-control"
-      name="campi"
-    >
-      <option v-if="selectOptions && !selectOptions.hideNoneSelectedText" :disabled="schema.required" :value="null">
-        {{ selectOptions.noneSelectedText || '&lt;Seleccione un campus&gt;' }}
-      </option>
-      <template v-for="item in campi">
-        <optgroup v-if="item.group" :key="item" :label="getGroupName(item)">
-          <span v-if="item.ops">
-            <option v-for="i in item.ops" :key="getItemName(i)" :value="getItemValue(i)">{{ getItemName(i) }}</option>
-          </span>
-        </optgroup>
-        <option v-if="!item.group" :key="getItemValue(item)" :value="getItemValue(item)">
-          {{ getItemName(item) }}
+        <template v-for="item in selectOptions">
+          <optgroup v-if="item.group" :key="item" :label="getGroupName(item)">
+            <span v-if="item.ops">
+              <option v-for="i in item.ops" :key="getItemName(i)" :value="getItemValue(i)">{{ getItemName(i) }}</option>
+            </span>
+          </optgroup>
+          <option v-if="!item.group" :key="getItemValue(item)" :value="getItemValue(item)">
+            {{ getItemName(item) }}
+          </option>
+        </template>
+      </select>
+      <!-- Campus select -->
+      <select
+        v-if="value && campi && schema.campus"
+        id="university-campi"
+        v-model="value.campusId"
+        v-attributes="'input'"
+        class="form-control"
+        name="campi"
+      >
+        <option v-if="selectOptions && !selectOptions.hideNoneSelectedText" :disabled="schema.required" :value="null">
+          {{ selectOptions.noneSelectedText || '&lt;Seleccione un campus&gt;' }}
         </option>
-      </template>
-    </select>
-    <!-- / Campus select -->
+        <template v-for="item in campi">
+          <optgroup v-if="item.group" :key="item" :label="getGroupName(item)">
+            <span v-if="item.ops">
+              <option v-for="i in item.ops" :key="getItemName(i)" :value="getItemValue(i)">{{ getItemName(i) }}</option>
+            </span>
+          </optgroup>
+          <option v-if="!item.group" :key="getItemValue(item)" :value="getItemValue(item)">
+            {{ getItemName(item) }}
+          </option>
+        </template>
+      </select>
+      <!-- / Campus select -->
+    </div>
   </div>
 </template>
 <script>
@@ -70,23 +71,19 @@ export default {
     selectOptions() {
       return this.schema.selectOptions || this.colleges
     },
-    collegeId() {
-      if (!isNil(this.value)) {
-        return this.value
-      }
-      return null
-    },
-    value() {
-      return 'foo'
-    },
+    // value: {
+    //   get() {
+    //     console.log('this.model :>> ', this.model)
+    //     return { collegeId: this.college, campusId: this.campus }
+    //   },
+    //   set(newValue) {
+    //     console.log('newValue :>> ', newValue)
+    //   },
+    // },
   },
   watch: {
-    college() {
-      this.$store.dispatch('colleges/getCollegeCampi', this.collegeId)
-      // this.value.college = this.college
-    },
-    campus() {
-      // this.value.campus = this.campus
+    value() {
+      this.$store.dispatch('colleges/getCollegeCampi', this.value.collegeId)
     },
   },
   mounted() {
