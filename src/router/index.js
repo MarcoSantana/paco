@@ -53,6 +53,11 @@ const router = new Router({
       },
     },
     {
+      path: '/curriculum',
+      name: 'curriculum',
+      component: () => import(/* webpackChunkName: "client-chunk-login" */ '@/views/Curriculum.vue'),
+    },
+    {
       path: '/products',
       name: 'products',
       component: () => import(/* webpackChunkName: "client-chunk-products" */ '@/views/Products.vue'),

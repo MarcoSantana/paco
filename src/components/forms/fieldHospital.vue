@@ -53,7 +53,11 @@ export default {
       return null
     },
   },
-  watch: {},
+  watch: {
+    searchInput(newVal) {
+      this.value = newVal
+    },
+  },
   mounted() {
     // Popullate hospitals
     this.$store.dispatch('hospitals/getHospitals', null, { root: true })

@@ -14,6 +14,9 @@
         <div v-if="isUserLoggedIn && networkOnLine" class="nav-item ">
           <router-link to="/documents">Documentos</router-link>
         </div>
+        <div v-if="isUserLoggedIn && networkOnLine" class="nav-item ">
+          <router-link to="/curriculum">Curriculum</router-link>
+        </div>
         <div v-if="!isUserLoggedIn && networkOnLine" class="nav-item">
           <router-link to="/login">Ingreso</router-link>
         </div>

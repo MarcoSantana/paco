@@ -1,12 +1,16 @@
 <template>
   <div class="page-wrapper">
-    Here be curriculum
+    <h1 class="curriculum-page-title">Curriculum</h1>
+    <add-curriculum></add-curriculum>
   </div>
 </template>
 <script>
 // import { mapGetters } from 'vuex'
 // TODO import the component to show the rendered curriculum or the creation form
+import AddCurriculum from '@/components/AddCurriculum'
+
 export default {
+  components: { AddCurriculum },
   // TODO components Curriculum form
   computed: {
     // TODO curriculum/userDetails store
@@ -18,4 +22,11 @@ export default {
   },
 }
 </script>
+<style lang="scss" scoped>
+@import '@/theme/variables.scss';
 
+.curriculum-page-title {
+  text-align: center;
+  margin-bottom: 60px;
+}
+</style>
