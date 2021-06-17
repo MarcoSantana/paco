@@ -1,7 +1,7 @@
 <template>
   <div class="box">
-    form model: {{ formModel }}
-    <vue-form-generator :schema="schema" :model="formModel" :options="formOptions"> </vue-form-generator>
+    form model: {{ model }}
+    <vue-form-generator :schema="schema" :model="model" :options="formOptions"> </vue-form-generator>
   </div>
 </template>
 <script>
@@ -15,7 +15,7 @@ export default {
       validateAfterChanged: true,
       validateAsync: true,
     },
-    formModel: {},
+    model: {},
     schema: {
       groups: [
         // User details
@@ -192,7 +192,7 @@ export default {
             {
               type: 'hospital',
               label: 'Estudios de posgrado en pediatría efectuados en:',
-              model: 'postgradute.hospital',
+              model: 'postgraduate.hospital',
               attributes: {
                 input: { 'data-test': 'curriculum-user-hospital' },
               },
@@ -232,7 +232,7 @@ export default {
               type: 'googleAddress',
               label: 'Ciudad',
               hint: 'Mty, CMDX, Gdl, etc.',
-              model: 'postgradute.place',
+              model: 'postgraduate.place',
               attributes: {
                 input: {
                   'data-test': 'curriculum-user-postgraduatePlace',

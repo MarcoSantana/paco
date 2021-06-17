@@ -2,9 +2,10 @@
   <div class="wrapper">
     <div id="period-wrapper" v-attributes="'input'" :name="schema.inputName" :class="schema.fieldClasses">
       <label class="hint" for="`${schema.attributes.input.inputIdPrefix}-start`">Fecha de inicio</label>
+      Period>> {{ period }}
       <datetime
         v-if="dateNow"
-        v-model="model.periodStart"
+        v-model="period.start"
         :max-datetime="dateNow"
         :input-id="`${schema.attributes.input.inputIdPrefix}-start`"
         class="form-control"
@@ -24,9 +25,9 @@
       ></datetime>
       <label class="hint" for="`${schema.attributes.input.inputIdPrefix}-end`">Fecha de terminación</label>
       <datetime
-        v-model="model.periodEnd"
-        :disabled="!model.periodStart"
-        :min-datetime="model.periodStart"
+        v-model="period.end"
+        :disabled="!period.start"
+        :min-datetime="period.start"
         :input-id="`${schema.attributes.input.inputIdPrefix}-end`"
         class="form-control"
         :name="schema.inputName"
@@ -62,6 +63,7 @@ export default {
     return {
       show: true,
       dateTime: null,
+      period: { start: null, end: null },
     }
   },
   computed: {
@@ -71,7 +73,16 @@ export default {
   },
 
   watch: {
-    model() {},
+    period: {
+      handler(newVal) {
+        // do stuff
+        this.value = newVal
+      },
+      deep: true,
+    },
+    value(newVal) {
+      console.log('newVal :>> ', newVal)
+    },
   },
   mounted() {},
   methods: {},
