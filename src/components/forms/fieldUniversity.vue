@@ -1,8 +1,10 @@
 <template>
   <div class="wrapper">
+    ID {{ getFieldID(schema) }} name {{ schema.name }}
     <div :id="getFieldID(schema)" :name="schema.inputName" :class="schema.fieldClasses">
       <select
         v-if="value"
+        :id="`${getFieldID(schema)}-college`"
         v-model="value.collegeId"
         v-attributes="'input'"
         class="form-control"
@@ -27,7 +29,7 @@
       <!-- Campus select -->
       <select
         v-if="value && campi && schema.campus"
-        id="university-campi"
+        :id="`${getFieldID(schema)}-campus`"
         v-model="value.campusId"
         v-attributes="'input'"
         class="form-control"
