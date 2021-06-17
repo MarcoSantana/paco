@@ -25,7 +25,7 @@
           auto
         ></datetime>
       </div>
-      <div v-if="schema.age && age" class="form-control">
+      <div v-if="schema.age && age > 1" class="form-control">
         <label for="age">Edad</label>
         <input id="age" v-model="age" type="text" name="age" readonly />
       </div>
@@ -52,8 +52,12 @@ export default {
   },
   computed: {
     age() {
-      const dob = DateTime.fromISO(this.dateTime)
-      return Math.floor(dob.diffNow('years').years * -1)
+      // const dob = DateTime.fromISO(this.dateTime)
+      if (this.value) {
+        const dob = DateTime.fromISO(this.value)
+        return Math.floor(dob.diffNow('years').years * -1)
+      }
+      return null
     },
     dateNow() {
       return DateTime.now().toISO()
