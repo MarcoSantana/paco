@@ -1,17 +1,14 @@
 <template>
   <div class="box">
+    form model: {{ formModel }}
     <vue-form-generator :schema="schema" :model="formModel" :options="formOptions"> </vue-form-generator>
-    Model: {{ formModel }}
   </div>
 </template>
 <script>
 import 'vue-form-generator/dist/vfg'
-// import CurriculumSchema from '@/components/CurriculumSchema'
-// import FormSchema from '@/components/FormsSchema'
 
 export default {
   components: {},
-  //   mixins: [CurriculumSchema],
   data: () => ({
     formOptions: {
       validateAfterLoad: true,
@@ -134,7 +131,7 @@ export default {
             // email
             {
               type: 'input',
-              inputType: 'email',
+              inputType: 'user.email',
               label: 'Correo electrónico',
               hint: 'Una dirección de correo válida',
               model: 'user.email',
@@ -154,9 +151,10 @@ export default {
             // university
             {
               type: 'university',
+              id: 'college',
               label: 'Título de médico cirujano expedido por:',
               hint: 'Universidad formativa',
-              model: 'user.college',
+              model: 'college',
               attributes: {
                 input: { 'data-test': 'curriculum-user-university' },
               },
@@ -168,7 +166,7 @@ export default {
             {
               type: 'date',
               label: 'Fecha de expedicioń del título',
-              model: 'user.college.graduationDate',
+              model: 'college.graduationDate',
               title: 'Fecha de expedición del título',
               age: false,
               attributes: {
@@ -182,7 +180,7 @@ export default {
               type: 'googleAddress',
               label: 'Lugar de expedición del título',
               hint: 'Mty, CMDX, Gdl, etc.',
-              model: 'user.college.place',
+              model: 'college.place',
             },
           ],
         },
@@ -194,16 +192,31 @@ export default {
             {
               type: 'hospital',
               label: 'Estudios de posgrado en pediatría efectuados en:',
-              model: 'user.postgradute.hospital',
+              model: 'postgradute.hospital',
               attributes: {
                 input: { 'data-test': 'curriculum-user-hospital' },
               },
+            },
+            // Endorsing institution
+            {
+              type: 'university',
+              id: 'endorser',
+              name: 'foo',
+              label: 'Avalado por',
+              hint: 'Universidad',
+              model: 'postgraduate.college',
+              attributes: {
+                input: { 'data-test': 'curriculum-posgraduate-university' },
+              },
+              styleClasses: 'document-form',
+              visibility: 'true',
+              campus: false,
             },
             // Postgraduate studies
             {
               type: 'period',
               label: 'Estudios realizados entre',
-              model: 'user.postgraduate.period',
+              model: 'postgraduate.period',
               title: 'Estudios de posgrado en pediatría',
               attributes: {
                 input: {
@@ -219,7 +232,7 @@ export default {
               type: 'googleAddress',
               label: 'Ciudad',
               hint: 'Mty, CMDX, Gdl, etc.',
-              model: 'user.postgradute.place',
+              model: 'postgradute.place',
               attributes: {
                 input: {
                   'data-test': 'curriculum-user-postgraduatePlace',
@@ -229,40 +242,27 @@ export default {
                 styleClasses: 'document-form',
               },
             },
-            // Endorsing institution
-            //     {
-            //       type: 'university',
-            //       label: 'Título de médico cirujano expedido por:',
-            //       hint: 'Universidad formativa',
-            //       model: 'user.college',
-            //       attributes: {
-            //         input: { 'data-test': 'curriculum-user-university' },
-            //       },
-            //       styleClasses: 'document-form',
-            //       visibility: 'true',
-            //       campus: true,
-            //     },
           ],
         },
         // Professional exercise
-        // {
-        //   legend: 'Ejercicio profesional en pediatria actual (lugar y fecha de ingreso)',
-        //   fields: [
-        //     {
-        //       type: 'input',
-        //       inputType: 'text',
-        //       label: 'Nombre del lugar',
-        //       model: 'user.professionalExercise.description',
-        //       hint: 'Ej. Consultorio privado, Hospital General No. 450, Durango',
-        //     },
-        //     {
-        //       type: 'googleAddress',
-        //       label: 'Lugar',
-        //       hint: 'Mty, CMDX, Gdl, etc.',
-        //       model: 'user.professionalExercise.location',
-        //     },
-        //   ],
-        // },
+        {
+          legend: 'Ejercicio profesional en pediatria actual',
+          fields: [
+            {
+              type: 'input',
+              inputType: 'text',
+              label: 'Nombre del lugar',
+              model: 'professionalExercise.description',
+              hint: 'Ej. Consultorio privado, Hospital General No. 450, Durango',
+            },
+            {
+              type: 'googleAddress',
+              label: 'Lugar',
+              hint: 'Mty, CMDX, Gdl, etc.',
+              model: 'professionalExercise.location',
+            },
+          ],
+        },
       ],
     },
   }),
