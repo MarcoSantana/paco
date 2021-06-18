@@ -75,13 +75,9 @@ export default {
   watch: {
     period: {
       handler(newVal) {
-        // do stuff
         this.value = newVal
       },
       deep: true,
-    },
-    value(newVal) {
-      console.log('newVal :>> ', newVal)
     },
   },
   mounted() {},
