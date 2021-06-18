@@ -17,6 +17,10 @@
         <div v-if="isUserLoggedIn && networkOnLine" class="nav-item ">
           <router-link to="/curriculum">Curriculum</router-link>
         </div>
+        <!-- Must validate accoirding to date if the user can request certification, and or it has an active request -->
+        <div v-if="isUserLoggedIn && networkOnLine" class="nav-item ">
+          <router-link to="/request">Solicitud de examen</router-link>
+        </div>
         <div v-if="!isUserLoggedIn && networkOnLine" class="nav-item">
           <router-link to="/login">Ingreso</router-link>
         </div>

@@ -58,6 +58,11 @@ const router = new Router({
       component: () => import(/* webpackChunkName: "client-chunk-login" */ '@/views/Curriculum.vue'),
     },
     {
+      path: '/request',
+      name: 'request',
+      component: () => import(/* webpackChunkName: "client-chunk-login" */ '@/views/CertificationRequest.vue'),
+    },
+    {
       path: '/products',
       name: 'products',
       component: () => import(/* webpackChunkName: "client-chunk-products" */ '@/views/Products.vue'),
