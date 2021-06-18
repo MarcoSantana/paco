@@ -1,4 +1,4 @@
-// import { validators } from 'vue-form-generator'
+import { validators } from 'vue-form-generator'
 
 export default {
   data: () => ({
@@ -264,7 +264,7 @@ export default {
         // },
         // Postgraduate
         {
-          legend: 'Residencia',
+          legend: 'Estudios',
           fields: [
             // Hospital (postgraduate)
             {
@@ -273,22 +273,51 @@ export default {
               hint: 'Puede seleccionar uno de la lista',
               model: 'postgraduate.hospital',
               attributes: {
-                input: { 'data-test': 'curriculum-user-hospital' },
+                input: { 'data-test': 'postgraduate-hospital' },
               },
             },
             //         // university
             {
               type: 'university',
               id: 'college',
-              label: 'Título de médico cirujano expedido por:',
-              hint: 'Universidad formativa',
-              model: 'college',
+              label: 'Institución encargada del programa académico',
+              hint: 'Universidad',
+              model: 'postgraduate.college',
               attributes: {
-                input: { 'data-test': 'curriculum-user-university' },
+                input: { 'data-test': 'postgraduate-university' },
               },
               styleClasses: 'document-form',
               visibility: 'true',
-              campus: true,
+              campus: false,
+            },
+            // Graduation year
+            {
+              type: 'date',
+              label: 'Fecha de graduación',
+              model: 'postgraduate.graduationDate',
+              title: 'Fecha de graduación',
+              age: false,
+              attributes: {
+                input: { 'data-test': 'postgraduate-graduationDate' },
+              },
+              visibility: 'true',
+              styleClasses: 'document-form',
+            },
+            // Specialty
+            {
+              type: 'input',
+              inputType: 'text',
+              label: 'Especialidad realizada',
+              maxlength: 50,
+              model: 'postgraduate.specialty',
+              validator: ['required', 'regexp'],
+              pattern: '^[ a-zA-ZáéíóúÁÉÍÓÚÄËÏÖÜäëïöü-]+$',
+            },
+            // Previous exam
+            {
+              type: 'checkbox',
+              label: '¿Ha realizado previamente el examen?',
+              model: 'previousExam',
             },
             // Working hospital
             // Endorsing institution
@@ -307,53 +336,61 @@ export default {
             //   campus: false,
             // },
             // Postgraduate studies
-            {
-              type: 'period',
-              label: 'Estudios realizados entre',
-              model: 'postgraduate.period',
-              title: 'Estudios de posgrado en pediatría',
-              attributes: {
-                input: {
-                  'data-test': 'curriculum-user-postgraduatePeriod',
-                  inputIdPrefix: 'postgraduatePeriod',
-                },
-                visibility: 'true',
-                styleClasses: 'document-form',
-              },
-            },
+            // {
+            //   type: 'period',
+            //   label: 'Estudios realizados entre',
+            //   model: 'postgraduate.period',
+            //   title: 'Estudios de posgrado en pediatría',
+            //   attributes: {
+            //     input: {
+            //       'data-test': 'curriculum-user-postgraduatePeriod',
+            //       inputIdPrefix: 'postgraduatePeriod',
+            //     },
+            //     visibility: 'true',
+            //     styleClasses: 'document-form',
+            //   },
+            // },
             // Postgraduate studies place
-            {
-              type: 'googleAddress',
-              label: 'Ciudad',
-              hint: 'Mty, CMDX, Gdl, etc.',
-              model: 'postgraduate.place',
-              attributes: {
-                input: {
-                  'data-test': 'curriculum-user-postgraduatePlace',
-                  inputIdPrefix: 'postgraduatePlace',
-                },
-                visibility: 'true',
-                styleClasses: 'document-form',
-              },
-            },
+            // {
+            //   type: 'googleAddress',
+            //   label: 'Ciudad',
+            //   hint: 'Mty, CMDX, Gdl, etc.',
+            //   model: 'postgraduate.place',
+            //   attributes: {
+            //     input: {
+            //       'data-test': 'curriculum-user-postgraduatePlace',
+            //       inputIdPrefix: 'postgraduatePlace',
+            //     },
+            //     visibility: 'true',
+            //     styleClasses: 'document-form',
+            //   },
+            // },
           ],
         },
         // Professional exercise
         {
-          legend: 'Ejercicio profesional en pediatria actual',
+          legend: 'Ejercicio profesional actual',
           fields: [
             {
-              type: 'input',
-              inputType: 'text',
-              label: 'Nombre del lugar',
+              type: 'hospital',
+              label: 'Hospital donde labora',
               model: 'professionalExercise.description',
               hint: 'Ej. Consultorio privado, Hospital General No. 450, Durango',
             },
             {
               type: 'googleAddress',
-              label: 'Lugar',
-              hint: 'Mty, CMDX, Gdl, etc.',
+              label: 'Dirección del trabajo',
+              placeholder: 'Dirección',
               model: 'professionalExercise.location',
+            },
+            // Charge
+            {
+              type: 'input',
+              inputType: 'text',
+              label: 'Cargo',
+              model: 'professionalExercise.charge',
+              maxlength: 50,
+              placeholder: 'Describa brevemente',
             },
           ],
         },
@@ -455,4 +492,31 @@ export default {
     // ]}
     // }
   }),
+
+  created() {
+    const res = validators.resources
+    res.textTooSmall = 'No son suficientes caracteres'
+    res.fieldIsRequired = 'Este campo en requerido'
+    res.dateIsEarly = 'Esta fecha es muy pronto. Actual: {0}, Mínimo: {1}'
+    res.dateIsLate = 'Esta fecha es muy tarde. Actual: {0}, Máximo: {1}'
+    res.fieldIsRequired = 'Este campo en requerido'
+    res.invalidCard = 'Tarjeta inválida'
+    res.invalidCardNumber = 'Número de tarjeta inválido'
+    res.invalidDate = 'Fecha inválida'
+    res.invalidEmail = 'Dirección de correo electrónico inválida'
+    res.invalidFormat = 'Formato inválido'
+    res.invalidInteger = 'El valor no es un número entero'
+    res.invalidNumber = 'Número inválido'
+    res.invalidTextContainNumber = 'Texto inválido. No puede contener números ni caracteres especiales'
+    res.invalidTextContainSpec = 'Texto inválido. No puede contener caracteres especiales'
+    res.invalidURL = 'URL inválido'
+    res.numberTooBig = 'El número es muy grande. Máximo: {0}'
+    res.numberTooSmall = ' El número es muy pequeño. Mínimo: {0}'
+    res.selectMaxItems = 'Select maximum {0} items!'
+    res.selectMinItems = 'Select minimum {0} items!'
+    res.textTooBig = 'The length of text is too big! Current: {0}, Maximum: {1}'
+    res.textTooSmall = 'No son suficientes caracteres'
+    res.thisNotArray = 'No es un array'
+    res.thisNotText = 'No es texto'
+  },
 }

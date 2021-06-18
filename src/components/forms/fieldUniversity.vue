@@ -58,8 +58,6 @@ export default {
   mixins: [abstractField],
   data() {
     return {
-      // collegeId: null,
-      // campusId: null,
       college: { collegeId: null, campusId: null },
     }
   },
@@ -78,9 +76,6 @@ export default {
         this.$store.dispatch('colleges/getCollegeCampi', this.college.collegeId)
       },
       deep: true,
-    },
-    value() {
-      this.$store.dispatch('colleges/getCollegeCampi', this.value.collegeId)
     },
   },
   mounted() {

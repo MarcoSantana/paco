@@ -277,6 +277,7 @@ export default {
 
 fieldset {
   margin-top: 1.75rem;
+  border: none;
   legend {
     font-size: 1.5rem;
     color: $main;
