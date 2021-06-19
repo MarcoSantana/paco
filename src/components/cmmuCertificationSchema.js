@@ -45,7 +45,7 @@ export default {
               label: 'Nombre (s)',
               model: 'user.firstName',
               attributes: {
-                input: { 'data-test': 'curriculum-user-firstName' },
+                input: { 'data-test': 'request-firstName' },
               },
               readonly: false,
               disabled: false,
@@ -59,7 +59,7 @@ export default {
               label: 'Apellido paterno',
               model: 'user.lastName1',
               attributes: {
-                input: { 'data-test': 'curriculum-user-lastName1' },
+                input: { 'data-test': 'request-lastName1' },
               },
               readonly: false,
               disabled: false,
@@ -74,7 +74,7 @@ export default {
               required: false,
               model: 'user.lastName2',
               attributes: {
-                input: { 'data-test': 'curriculum-user-lastName2' },
+                input: { 'data-test': 'request-lastName2' },
               },
               visibility: 'true',
               styleClasses: 'document-form',
@@ -98,6 +98,9 @@ export default {
               type: 'radios',
               label: 'Sexo',
               model: 'user.gender',
+              attributes: {
+                input: { 'data-test': 'user-gender' },
+              },
               values: ['Hombre', 'Mujer'],
               styleClasses: 'document-form',
             },
@@ -109,7 +112,7 @@ export default {
               hint: 'Registro federal de contribuyentes',
               model: 'user.rfc',
               attributes: {
-                input: { 'data-test': 'curriculum-user-rfc' },
+                input: { 'data-test': 'user-rfc' },
               },
               visibility: 'true',
               styleClasses: 'document-form',
@@ -124,7 +127,7 @@ export default {
               hint: 'Clave única de registro de población',
               model: 'user.curp',
               attributes: {
-                input: { 'data-test': 'curriculum-user-curp' },
+                input: { 'data-test': 'user-curp' },
               },
               visibility: 'true',
               styleClasses: 'document-form',
@@ -137,9 +140,10 @@ export default {
               type: 'googleAddress',
               label: 'Domicilio permanente',
               hint: 'Domicilio actual',
+              placeholder: 'Busque su dirección',
               model: 'user.address',
               attributes: {
-                input: { 'data-test': 'curriculum-user-googleAddress' },
+                input: { 'data-test': 'user-permanent-address' },
               },
               visibility: 'true',
               styleClasses: 'document-form',
@@ -151,6 +155,7 @@ export default {
                 console.log('schema :>> ', schema)
               },
             },
+            // User nacionality
             {
               type: 'googleAddress',
               label: 'País de nacimiento',
@@ -172,7 +177,10 @@ export default {
               type: 'input',
               inputType: 'text',
               label: 'Teléfono con clave de larga distancia',
-              model: 'user.contact.telephone',
+              model: 'contact.telephone',
+              attributes: {
+                input: { 'data-test': 'contact-telephone' },
+              },
               maxlength: 50,
               placeholder:
                 'Ej. (123) 456-7890 +(123) 456-7890 +(123)-456-7890 +(123) - 456-7890 +(123) - 456-78-90 123-456-7890 1234567890 +31636363634 075-63546725',
@@ -186,6 +194,9 @@ export default {
               inputType: 'text',
               label: 'Fax con clave de larga distancia',
               model: 'user.contact.fax',
+              attributes: {
+                input: { 'data-test': 'contact-fax' },
+              },
               maxlength: 50,
               placeholder:
                 'Ej. (123) 456-7890 +(123) 456-7890 +(123)-456-7890 +(123) - 456-7890 +(123) - 456-78-90 123-456-7890 1234567890 +31636363634 075-63546725',
@@ -199,6 +210,9 @@ export default {
               inputType: 'text',
               label: 'Teléfono celular',
               model: 'user.contact.cellphone',
+              attributes: {
+                input: { 'data-test': 'contact-cellphone' },
+              },
               maxlength: 50,
               placeholder:
                 'Ej. (123) 456-7890 +(123) 456-7890 +(123)-456-7890 +(123) - 456-7890 +(123) - 456-78-90 123-456-7890 1234567890 +31636363634 075-63546725',
@@ -212,9 +226,9 @@ export default {
               inputType: 'user.email',
               label: 'Correo electrónico',
               hint: 'Una dirección de correo válida',
-              model: 'user.contact.email',
+              model: 'contact.email',
               attributes: {
-                input: { 'data-test': 'curriculum-user-email' },
+                input: { 'data-test': 'contact-email' },
               },
               styleClasses: 'document-form',
               visibility: 'true',
@@ -310,6 +324,9 @@ export default {
               label: 'Especialidad realizada',
               maxlength: 50,
               model: 'postgraduate.specialty',
+              attributes: {
+                input: { 'data-test': 'postgraduate-specialty' },
+              },
               validator: ['required', 'regexp'],
               pattern: '^[ a-zA-ZáéíóúÁÉÍÓÚÄËÏÖÜäëïöü-]+$',
             },
@@ -318,6 +335,9 @@ export default {
               type: 'checkbox',
               label: '¿Ha realizado previamente el examen?',
               model: 'previousExam',
+              attributes: {
+                input: { 'data-test': 'previousExam' },
+              },
             },
             // Working hospital
             // Endorsing institution

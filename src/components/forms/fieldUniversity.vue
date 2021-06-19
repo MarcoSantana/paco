@@ -26,6 +26,7 @@
       <!-- Campus select -->
       <select
         v-if="campi && schema.campus"
+        id="campi"
         v-model="college.campusId"
         v-attributes="'input'"
         class="form-control"

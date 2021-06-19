@@ -8,32 +8,45 @@
     </router-link>
     <div class="links">
       <nav class="nav-links">
-        <div v-if="isUserLoggedIn && networkOnLine" class="nav-item ">
-          <router-link to="/products">Productos</router-link>
+        <div v-if="isUserLoggedIn && networkOnLine" data-test="navbar-products" class="nav-item ">
+          <router-link to="/products" data-test="navbar-products-link">Productos</router-link>
         </div>
-        <div v-if="isUserLoggedIn && networkOnLine" class="nav-item ">
-          <router-link to="/documents">Documentos</router-link>
+        <div v-if="isUserLoggedIn && networkOnLine" data-test="navbar-item-documents" class="nav-item ">
+          <router-link to="/documents" data-test="navbar-documents-link">Documentos</router-link>
         </div>
-        <div v-if="isUserLoggedIn && networkOnLine" class="nav-item ">
-          <router-link to="/curriculum">Curriculum</router-link>
+        <div v-if="isUserLoggedIn && networkOnLine" data-test="navbar-item-curriculum" class="nav-item ">
+          <router-link to="/curriculum" data-test="navbar-curriculum-link">Curriculum</router-link>
         </div>
         <!-- Must validate accoirding to date if the user can request certification, and or it has an active request -->
-        <div v-if="isUserLoggedIn && networkOnLine" class="nav-item ">
-          <router-link to="/request">Solicitud de examen</router-link>
+        <div v-if="isUserLoggedIn && networkOnLine" data-test="navbar-item-request" class="nav-item ">
+          <router-link to="/request" data-test="navbar-request-link">Solicitud de examen</router-link>
         </div>
-        <div v-if="!isUserLoggedIn && networkOnLine" class="nav-item">
-          <router-link to="/login">Ingreso</router-link>
+        <div v-if="!isUserLoggedIn && networkOnLine" data-test="navbar-item-login" class="nav-item">
+          <router-link to="/login" data-test="navbar-login-link">Ingreso</router-link>
         </div>
-        <div v-if="!isUserLoggedIn && networkOnLine" class="nav-item">
-          <router-link to="/signUp">Crear cuenta</router-link>
+        <div v-if="!isUserLoggedIn && networkOnLine" data-test="navbar-item-signUp" class="nav-item">
+          <router-link to="/signUp" data-test="navbar-signUp-link">Crear cuenta</router-link>
         </div>
-        <div v-if="isUserLoggedIn && networkOnLine" class="nav-item logout-item" @click="logout">
+        <div
+          v-if="isUserLoggedIn && networkOnLine"
+          data-test="navbar-item-signUp"
+          class="nav-item logout-item"
+          @click="logout"
+        >
           <a>Salir</a>
         </div>
-        <div v-if="!networkOnLine" class="nav-item offline-label">Sin conexión</div>
+        <div v-if="!networkOnLine" data-test="navbar-item-offlineLabel" class="nav-item offline-label">
+          Sin conexión
+        </div>
       </nav>
 
-      <img v-if="isUserLoggedIn && networkOnLine" class="user-picture can-hide" :src="user.photoURL" alt="Avatar" />
+      <img
+        v-if="isUserLoggedIn && networkOnLine"
+        data-test="navbar-item-avatar"
+        class="user-picture can-hide"
+        :src="user.photoURL"
+        alt="Avatar"
+      />
     </div>
   </header>
 </template>

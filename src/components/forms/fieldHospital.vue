@@ -13,7 +13,7 @@
       @input="onChange"
     />
     <div v-show="isOpen" class="results">
-      <ul v-show="isOpen" data-test="curriculum-user-hospital-list">
+      <ul v-show="isOpen" data-test="hospital-list">
         <li v-if="isLoading" class="loading">
           Cargando lista
         </li>
