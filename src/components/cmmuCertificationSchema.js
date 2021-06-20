@@ -1,7 +1,13 @@
 import { validators } from 'vue-form-generator'
 
 export default {
+  methods: {
+    onValidated(isValid, errors) {
+      console.log('Validation result: ', isValid, ', Errors:', errors)
+    },
+  },
   data: () => ({
+    validated: null,
     schema: {
       groups: [
         {
@@ -363,10 +369,20 @@ export default {
             },
           ],
         },
+        // Submit
+        {
+          fields: [
+            {
+              type: 'submit',
+              onSubmit: () => {
+                console.log('Submited')
+              },
+            },
+          ],
+        },
       ],
     },
   }),
-
   created() {
     const res = validators.resources
     res.textTooSmall = 'No son suficientes caracteres'

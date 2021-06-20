@@ -1,6 +1,7 @@
 <template>
   <div class="box">
-    <vue-form-generator :schema="schema" :model="model" :options="formOptions"> </vue-form-generator>
+    <vue-form-generator :schema="schema" :model="model" :options="formOptions" @validated="onValidated">
+    </vue-form-generator>
   </div>
 </template>
 <script>
