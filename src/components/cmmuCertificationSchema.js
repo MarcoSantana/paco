@@ -6,8 +6,13 @@ export default {
       console.log('Validation result: ', isValid, ', Errors:', errors)
     },
   },
+  mounted() {
+    console.log('this :>> ', this)
+  },
   data: () => ({
     validated: null,
+    isValid: false,
+    that: this,
     schema: {
       groups: [
         {
@@ -410,3 +415,6 @@ export default {
     res.thisNotText = 'No es texto'
   },
 }
+/*
+on the validated callbck do an if against isValid i.e. !isValid to trigger the modal 
+*/
