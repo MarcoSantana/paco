@@ -18,6 +18,7 @@ export default {
               },
               visibility: 'true',
               styleClasses: 'document-form',
+              validator: ['required'],
             },
             // - [ ] Fecha de solicitud
             {
@@ -31,6 +32,7 @@ export default {
               },
               visibility: 'true',
               styleClasses: 'document-form',
+              validator: ['required'],
             },
           ],
         },
@@ -78,7 +80,7 @@ export default {
               },
               visibility: 'true',
               styleClasses: 'document-form',
-              validator: ['regexp'],
+              validator: ['regexp', 'required'],
               pattern: "^[ a-zA-ZáéíóúÁÉÍÓÚÄËÏÖÜäëïöü'-]+$",
             },
             // DOB
@@ -93,6 +95,7 @@ export default {
               },
               visibility: 'true',
               styleClasses: 'document-form',
+              validator: ['required'],
             },
             {
               type: 'radios',
@@ -103,6 +106,7 @@ export default {
               },
               values: ['Hombre', 'Mujer'],
               styleClasses: 'document-form',
+              validator: ['required'],
             },
             // RFC
             {
@@ -154,6 +158,7 @@ export default {
                 console.log('model :>> ', model)
                 console.log('schema :>> ', schema)
               },
+              validator: ['required'],
             },
             // User nacionality
             {
@@ -165,6 +170,7 @@ export default {
               attributes: {
                 input: { 'data-test': 'curriculum-user-googleNacionality' },
               },
+              validator: ['required'],
             },
           ],
         },
@@ -177,7 +183,7 @@ export default {
               type: 'input',
               inputType: 'text',
               label: 'Teléfono con clave de larga distancia',
-              model: 'contact.telephone',
+              model: 'user.contact.telephone',
               attributes: {
                 input: { 'data-test': 'contact-telephone' },
               },
@@ -226,56 +232,16 @@ export default {
               inputType: 'user.email',
               label: 'Correo electrónico',
               hint: 'Una dirección de correo válida',
-              model: 'contact.email',
+              model: 'user.contact.email',
               attributes: {
                 input: { 'data-test': 'contact-email' },
               },
               styleClasses: 'document-form',
               visibility: 'true',
-              validator: ['email'],
+              validator: ['email', 'required'],
             },
           ],
         },
-        // Studies
-        // {
-        //   legend: 'Estudios profesionales',
-        //   fields: [
-        //     // university
-        //     {
-        //       type: 'university',
-        //       id: 'college',
-        //       label: 'Título de médico cirujano expedido por:',
-        //       hint: 'Universidad formativa',
-        //       model: 'college',
-        //       attributes: {
-        //         input: { 'data-test': 'curriculum-user-university' },
-        //       },
-        //       styleClasses: 'document-form',
-        //       visibility: 'true',
-        //       campus: true,
-        //     },
-        //     // graduationDate
-        //     {
-        //       type: 'date',
-        //       label: 'Fecha de expedicioń del título',
-        //       model: 'college.graduationDate',
-        //       title: 'Fecha de expedición del título',
-        //       age: false,
-        //       attributes: {
-        //         input: { 'data-test': 'curriculum-user-graduationDate' },
-        //       },
-        //       visibility: 'true',
-        //       styleClasses: 'document-form',
-        //     },
-        //     // degree emission place
-        //     {
-        //       type: 'googleAddress',
-        //       label: 'Lugar de expedición del título',
-        //       hint: 'Mty, CMDX, Gdl, etc.',
-        //       model: 'college.place',
-        //     },
-        //   ],
-        // },
         // Postgraduate
         {
           legend: 'Estudios',
@@ -285,10 +251,11 @@ export default {
               type: 'hospital',
               label: 'Hospital donde realizó la residencia',
               hint: 'Puede seleccionar uno de la lista',
-              model: 'postgraduate.hospital',
+              model: 'request.postgraduate.hospital',
               attributes: {
                 input: { 'data-test': 'postgraduate-hospital' },
               },
+              validator: ['required'],
             },
             //         // university
             {
@@ -296,19 +263,20 @@ export default {
               id: 'college',
               label: 'Institución encargada del programa académico',
               hint: 'Universidad',
-              model: 'postgraduate.college',
+              model: 'request.postgraduate.college',
               attributes: {
                 input: { 'data-test': 'postgraduate-university' },
               },
               styleClasses: 'document-form',
               visibility: 'true',
               campus: false,
+              validator: ['required'],
             },
             // Graduation year
             {
               type: 'date',
               label: 'Fecha de graduación',
-              model: 'postgraduate.graduationDate',
+              model: 'request.postgraduate.graduationDate',
               title: 'Fecha de graduación',
               age: false,
               attributes: {
@@ -316,75 +284,37 @@ export default {
               },
               visibility: 'true',
               styleClasses: 'document-form',
+              validator: ['required'],
             },
             // Specialty
             {
-              type: 'input',
-              inputType: 'text',
+              type: 'select',
               label: 'Especialidad realizada',
-              maxlength: 50,
-              model: 'postgraduate.specialty',
+              model: 'request.postgraduate.specialty',
               attributes: {
                 input: { 'data-test': 'postgraduate-specialty' },
               },
-              validator: ['required', 'regexp'],
-              pattern: '^[ a-zA-ZáéíóúÁÉÍÓÚÄËÏÖÜäëïöü-]+$',
+              values: ['Urgencias médico quirúrgicas', 'Medicina de urgencias', 'Urgencias Pediatricas'],
+              validator: ['required'],
             },
             // Previous exam
             {
               type: 'checkbox',
               label: '¿Ha realizado previamente el examen?',
-              model: 'previousExam',
+              model: 'request.previousExam',
               attributes: {
                 input: { 'data-test': 'previousExam' },
               },
             },
-            // Working hospital
-            // Endorsing institution
-            // {
-            //   type: 'university',
-            //   id: 'endorser',
-            //   name: 'foo',
-            //   label: 'Avalado por',
-            //   hint: 'Universidad',
-            //   model: 'postgraduate.college',
-            //   attributes: {
-            //     input: { 'data-test': 'curriculum-posgraduate-university' },
-            //   },
-            //   styleClasses: 'document-form',
-            //   visibility: 'true',
-            //   campus: false,
-            // },
-            // Postgraduate studies
-            // {
-            //   type: 'period',
-            //   label: 'Estudios realizados entre',
-            //   model: 'postgraduate.period',
-            //   title: 'Estudios de posgrado en pediatría',
-            //   attributes: {
-            //     input: {
-            //       'data-test': 'curriculum-user-postgraduatePeriod',
-            //       inputIdPrefix: 'postgraduatePeriod',
-            //     },
-            //     visibility: 'true',
-            //     styleClasses: 'document-form',
-            //   },
-            // },
-            // Postgraduate studies place
-            // {
-            //   type: 'googleAddress',
-            //   label: 'Ciudad',
-            //   hint: 'Mty, CMDX, Gdl, etc.',
-            //   model: 'postgraduate.place',
-            //   attributes: {
-            //     input: {
-            //       'data-test': 'curriculum-user-postgraduatePlace',
-            //       inputIdPrefix: 'postgraduatePlace',
-            //     },
-            //     visibility: 'true',
-            //     styleClasses: 'document-form',
-            //   },
-            // },
+            // professional license
+            {
+              type: 'input',
+              inputType: 'text',
+              label: 'Cédula profesional',
+              model: 'request.postgraduate.license',
+              validator: ['regexp'],
+              pattern: '^[0-9]{8}([0-9]{7})?$',
+            },
           ],
         },
         // Professional exercise
@@ -394,123 +324,47 @@ export default {
             {
               type: 'hospital',
               label: 'Hospital donde labora',
-              model: 'professionalExercise.description',
+              model: 'request.professionalExercise.description',
               hint: 'Ej. Consultorio privado, Hospital General No. 450, Durango',
+              validator: ['required'],
             },
             {
               type: 'googleAddress',
               label: 'Dirección del trabajo',
               placeholder: 'Dirección',
-              model: 'professionalExercise.location',
+              model: 'request.professionalExercise.location',
+              validator: ['required'],
             },
             // Charge
             {
               type: 'input',
               inputType: 'text',
               label: 'Cargo',
-              model: 'professionalExercise.charge',
+              model: 'request.professionalExercise.charge',
               maxlength: 50,
               placeholder: 'Describa brevemente',
+              validator: ['required'],
+            },
+          ],
+        },
+        // Payment
+        {
+          legend: 'Comprobante de pago',
+          fields: [
+            // Payment voucher
+            {
+              type: 'pdf',
+              label: 'Cargar comprobante de pago',
+              hideInput: true,
+              browse: true,
+              preview: true,
+              model: 'request.voucher',
+              validator: ['required'],
             },
           ],
         },
       ],
     },
-    // schema: {
-    // "groups" :[
-    //   {
-    //     legend: "Solicitud",
-    //     fields: [
-    //       // Lugar de solicitud
-    //       {
-    //         type: "googleAddress",
-    //         label: "Lugar de solicitud",
-    //         hint: "CDMX, Mty, Oax, Gdl",
-    //         model: "request.address",
-    //         attributes: {
-    //           input: { "data-test": "request-googleAddress" },
-    //         },
-    //         visibility: "true",
-    //         styleClasses: "document-form",
-    //       },
-    //       // - [ ] Fecha de solicitud
-    //       {
-    //         type: "date",
-    //         label: "Fecha de solicitud",
-    //         model: "request.date",
-    //         title: "Fecha de solicitud",
-    //         age: false,
-    //         attributes: {
-    //           input: { "data-test": "request-date" },
-    //         },
-    //         visibility: "true",
-    //         styleClasses: "document-form",
-    //       },
-    //     ],
-    //   },
-    //   {
-    //     legend: "Datos personales",
-    //     fields: [
-    //       // Names
-    //       {
-    //         type: "input",
-    //         inputType: "text",
-    //         label: "Nombre (s)",
-    //         model: "user.firstName",
-    //         attributes: {
-    //           input: { "data-test": "curriculum-user-firstName" },
-    //         },
-    //         readonly: false,
-    //         disabled: false,
-    //         styleClasses: "document-form",
-    //         validator: ["required", "regexp"],
-    //         pattern: "^[ a-zA-ZáéíóúÁÉÍÓÚÄËÏÖÜäëïöü"-]+$",
-    //       },
-    //       {
-    //         type: "input",
-    //         inputType: "text",
-    //         label: "Apellido paterno",
-    //         model: "user.lastName1",
-    //         attributes: {
-    //           input: { "data-test": "curriculum-user-lastName1" },
-    //         },
-    //         readonly: false,
-    //         disabled: false,
-    //         styleClasses: "document-form",
-    //         validator: ["regexp", "required"],
-    //         pattern: "^[ a-zA-ZáéíóúÁÉÍÓÚÄËÏÖÜäëïöü"-]+$",
-    //       },
-    //       {
-    //         type: "input",
-    //         inputType: "text",
-    //         label: "Apellido Materno",
-    //         required: false,
-    //         model: "user.lastName2",
-    //         attributes: {
-    //           input: { "data-test": "curriculum-user-lastName2" },
-    //         },
-    //         visibility: "true",
-    //         styleClasses: "document-form",
-    //         validator: ['regexp'],
-    //         pattern: "^[ a-zA-ZáéíóúÁÉÍÓÚÄËÏÖÜäëïöü'-]+$",
-    //       },
-    //       // DOB
-    //       {
-    //         type: 'date',
-    //         label: 'Fecha de nacimiento',
-    //         model: 'user.dob',
-    //         title: 'Fecha de nacimiento',
-    //         age: true,
-    //         attributes: {
-    //           input: { 'data-test': 'curriculum-user-dob' },
-    //         },
-    //         visibility: 'true',
-    //         styleClasses: 'document-form',
-    //       },
-    //     ],
-    //   },
-    // ]}
-    // }
   }),
 
   created() {
