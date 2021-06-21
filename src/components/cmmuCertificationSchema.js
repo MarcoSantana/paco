@@ -35,6 +35,7 @@ export default {
               visibility: 'true',
               styleClasses: 'document-form',
               required: true,
+              validator: validators.required,
             },
             // - [ ] Fecha de solicitud
             {
@@ -125,6 +126,7 @@ export default {
               values: ['Hombre', 'Mujer'],
               styleClasses: 'document-form',
               required: true,
+              validator: validators.required,
             },
             // RFC
             {
@@ -179,6 +181,7 @@ export default {
                 console.log('schema :>> ', schema)
               },
               required: true,
+              validator: validators.required,
             },
             // User nacionality
             {
@@ -191,6 +194,7 @@ export default {
                 input: { 'data-test': 'curriculum-user-googleNacionality' },
               },
               required: true,
+              validator: validators.required,
             },
           ],
         },
@@ -295,6 +299,7 @@ export default {
               visibility: 'true',
               campus: false,
               required: true,
+              validator: validators.required,
             },
             // Graduation year
             {
@@ -319,13 +324,16 @@ export default {
                 input: { 'data-test': 'postgraduate-specialty' },
               },
               values: ['Urgencias médico quirúrgicas', 'Medicina de urgencias', 'Urgencias Pediatricas'],
+              noneSelectedText: 'Seleccione una especialidad',
+              validator: validators.required,
               required: true,
             },
             // Previous exam
             {
-              type: 'checkbox',
+              type: 'radios',
               label: '¿Ha realizado previamente el examen?',
               model: 'request.previousExam',
+              values: ['Si', 'No'],
               attributes: {
                 input: { 'data-test': 'request-previousExam' },
               },
@@ -369,6 +377,7 @@ export default {
                 input: { 'data-test': 'request-professionalExercise-location' },
               },
               required: true,
+              validator: validators.required,
             },
             // Charge
             {
@@ -382,6 +391,7 @@ export default {
               maxlength: 50,
               placeholder: 'Describa brevemente',
               required: true,
+              validator: validators.required,
             },
           ],
         },
