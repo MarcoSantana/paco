@@ -1,9 +1,14 @@
+import { isNil } from 'lodash'
 import { validators } from 'vue-form-generator'
 
 export default {
   methods: {
     onValidated(isValid, errors) {
       console.log('Validation result: ', isValid, ', Errors:', errors)
+      if (isNil(isValid)) {
+        // eslint-disable-next-line no-alert
+        alert('Invalid form')
+      }
     },
   },
   mounted() {
@@ -29,7 +34,7 @@ export default {
               },
               visibility: 'true',
               styleClasses: 'document-form',
-              validator: ['required'],
+              required: true,
             },
             // - [ ] Fecha de solicitud
             {
@@ -43,7 +48,7 @@ export default {
               },
               visibility: 'true',
               styleClasses: 'document-form',
-              validator: ['required'],
+              required: true,
             },
           ],
         },
@@ -63,7 +68,8 @@ export default {
               readonly: false,
               disabled: false,
               styleClasses: 'document-form',
-              validator: ['required', 'regexp'],
+              required: true,
+              validator: ['regexp'],
               pattern: "^[ a-zA-ZáéíóúÁÉÍÓÚÄËÏÖÜäëïöü'-]+$",
             },
             {
@@ -77,7 +83,8 @@ export default {
               readonly: false,
               disabled: false,
               styleClasses: 'document-form',
-              validator: ['regexp', 'required'],
+              required: true,
+              validator: ['regexp'],
               pattern: "^[ a-zA-ZáéíóúÁÉÍÓÚÄËÏÖÜäëïöü'-]+$",
             },
             {
@@ -91,7 +98,7 @@ export default {
               },
               visibility: 'true',
               styleClasses: 'document-form',
-              validator: ['regexp', 'required'],
+              validator: ['regexp'],
               pattern: "^[ a-zA-ZáéíóúÁÉÍÓÚÄËÏÖÜäëïöü'-]+$",
             },
             // DOB
@@ -106,7 +113,7 @@ export default {
               },
               visibility: 'true',
               styleClasses: 'document-form',
-              validator: ['required'],
+              required: true,
             },
             {
               type: 'radios',
@@ -117,7 +124,7 @@ export default {
               },
               values: ['Hombre', 'Mujer'],
               styleClasses: 'document-form',
-              validator: ['required'],
+              required: true,
             },
             // RFC
             {
@@ -131,7 +138,8 @@ export default {
               },
               visibility: 'true',
               styleClasses: 'document-form',
-              validator: ['required', 'regexp'],
+              required: true,
+              validator: ['regexp'],
               pattern: '^[a-zA-Z]{4}[0-9]{6}[A-Za-z0-9_]{3}$',
             },
             // CURP
@@ -146,7 +154,8 @@ export default {
               },
               visibility: 'true',
               styleClasses: 'document-form',
-              validator: ['required', 'regexp'],
+              required: true,
+              validator: ['regexp'],
               pattern:
                 '^[A-Z]{1}[AEIOU]{1}[A-Z]{2}[0-9]{2}(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|3[0-1])[HM]{1}(AS|BC|BS|CC|CS|CH|CL|CM|DF|DG|GT|GR|HG|JC|MC|MN|MS|NT|NL|OC|PL|QT|QR|SP|SL|SR|TC|TS|TL|VZ|YN|ZS|NE)[B-DF-HJ-NP-TV-Z]{3}[0-9A-Z]{1}[0-9]{1}$',
             },
@@ -169,7 +178,7 @@ export default {
                 console.log('model :>> ', model)
                 console.log('schema :>> ', schema)
               },
-              validator: ['required'],
+              required: true,
             },
             // User nacionality
             {
@@ -181,7 +190,7 @@ export default {
               attributes: {
                 input: { 'data-test': 'curriculum-user-googleNacionality' },
               },
-              validator: ['required'],
+              required: true,
             },
           ],
         },
@@ -201,7 +210,8 @@ export default {
               maxlength: 50,
               placeholder:
                 'Ej. (123) 456-7890 +(123) 456-7890 +(123)-456-7890 +(123) - 456-7890 +(123) - 456-78-90 123-456-7890 1234567890 +31636363634 075-63546725',
-              validator: ['required', 'regexp'],
+              required: true,
+              validator: ['regexp'],
               // eslint-disable-next-line
               pattern: '^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\ /0-9]*$',
             },
@@ -217,7 +227,8 @@ export default {
               maxlength: 50,
               placeholder:
                 'Ej. (123) 456-7890 +(123) 456-7890 +(123)-456-7890 +(123) - 456-7890 +(123) - 456-78-90 123-456-7890 1234567890 +31636363634 075-63546725',
-              validator: ['required', 'regexp'],
+              required: true,
+              validator: ['regexp'],
               // eslint-disable-next-line
               pattern: '^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\ /0-9]*$',
             },
@@ -233,7 +244,8 @@ export default {
               maxlength: 50,
               placeholder:
                 'Ej. (123) 456-7890 +(123) 456-7890 +(123)-456-7890 +(123) - 456-7890 +(123) - 456-78-90 123-456-7890 1234567890 +31636363634 075-63546725',
-              validator: ['required', 'regexp'],
+              required: true,
+              validator: ['regexp'],
               // eslint-disable-next-line
               pattern: '^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\ /0-9]*$',
             },
@@ -249,7 +261,8 @@ export default {
               },
               styleClasses: 'document-form',
               visibility: 'true',
-              validator: ['email', 'required'],
+              required: true,
+              validator: ['email'],
             },
           ],
         },
@@ -266,7 +279,7 @@ export default {
               attributes: {
                 input: { 'data-test': 'postgraduate-hospital' },
               },
-              validator: ['required'],
+              required: true,
             },
             //         // university
             {
@@ -281,7 +294,7 @@ export default {
               styleClasses: 'document-form',
               visibility: 'true',
               campus: false,
-              validator: ['required'],
+              required: true,
             },
             // Graduation year
             {
@@ -295,7 +308,7 @@ export default {
               },
               visibility: 'true',
               styleClasses: 'document-form',
-              validator: ['required'],
+              required: true,
             },
             // Specialty
             {
@@ -306,7 +319,7 @@ export default {
                 input: { 'data-test': 'postgraduate-specialty' },
               },
               values: ['Urgencias médico quirúrgicas', 'Medicina de urgencias', 'Urgencias Pediatricas'],
-              validator: ['required'],
+              required: true,
             },
             // Previous exam
             {
@@ -314,8 +327,9 @@ export default {
               label: '¿Ha realizado previamente el examen?',
               model: 'request.previousExam',
               attributes: {
-                input: { 'data-test': 'previousExam' },
+                input: { 'data-test': 'request-previousExam' },
               },
+              required: false,
             },
             // professional license
             {
@@ -323,8 +337,12 @@ export default {
               inputType: 'text',
               label: 'Cédula profesional',
               model: 'request.postgraduate.license',
+              attributes: {
+                input: { 'data-test': 'request-license' },
+              },
+              required: true,
               validator: ['regexp'],
-              pattern: '^[0-9]{8}([0-9]{7})?$',
+              pattern: '^[0-9]{7}([0-9]{8})?$',
             },
           ],
         },
@@ -335,16 +353,22 @@ export default {
             {
               type: 'hospital',
               label: 'Hospital donde labora',
-              model: 'request.professionalExercise.description',
+              model: 'request.professionalExercise.hospital',
+              attributes: {
+                input: { 'data-test': 'request-professionalExercise-hospital' },
+              },
               hint: 'Ej. Consultorio privado, Hospital General No. 450, Durango',
-              validator: ['required'],
+              required: true,
             },
             {
               type: 'googleAddress',
               label: 'Dirección del trabajo',
               placeholder: 'Dirección',
               model: 'request.professionalExercise.location',
-              validator: ['required'],
+              attributes: {
+                input: { 'data-test': 'request-professionalExercise-location' },
+              },
+              required: true,
             },
             // Charge
             {
@@ -352,9 +376,12 @@ export default {
               inputType: 'text',
               label: 'Cargo',
               model: 'request.professionalExercise.charge',
+              attributes: {
+                input: { 'data-test': 'request-professionalExercise-charge' },
+              },
               maxlength: 50,
               placeholder: 'Describa brevemente',
-              validator: ['required'],
+              required: true,
             },
           ],
         },
@@ -370,7 +397,7 @@ export default {
               browse: true,
               preview: true,
               model: 'request.voucher',
-              validator: ['required'],
+              required: true,
             },
           ],
         },
@@ -379,9 +406,11 @@ export default {
           fields: [
             {
               type: 'submit',
+              visible: true,
               onSubmit: () => {
                 console.log('Submited')
               },
+              validateBeforeSubmit: true,
             },
           ],
         },
