@@ -4,15 +4,15 @@ import { validators } from 'vue-form-generator'
 export default {
   methods: {
     onValidated(isValid, errors) {
-      console.log('Validation result: ', isValid, ', Errors:', errors)
+      // console.log('Validation result: ', isValid, ', Errors:', errors)
       if (errors.length >= 0) {
-        this.showModal = true
         this.modalErrors = errors
+        this.showModal = true
       }
     },
   },
   mounted() {
-    console.log('this :>> ', this)
+    // console.log('this :>> ', this)
   },
   data: () => ({
     validated: null,
@@ -173,13 +173,13 @@ export default {
               },
               visibility: 'true',
               styleClasses: 'document-form',
-              onPlaceChanged: (value, place, rawPlace, model, schema) => {
-                console.log('value :>> ', value)
-                console.log('place :>> ', place)
-                console.log('rawPlace :>> ', rawPlace)
-                console.log('model :>> ', model)
-                console.log('schema :>> ', schema)
-              },
+              // onPlaceChanged: (value, place, rawPlace, model, schema) => {
+              //   console.log('value :>> ', value)
+              //   console.log('place :>> ', place)
+              //   console.log('rawPlace :>> ', rawPlace)
+              //   console.log('model :>> ', model)
+              //   console.log('schema :>> ', schema)
+              // },
               required: true,
               validator: validators.required,
             },
@@ -421,9 +421,15 @@ export default {
             {
               type: 'submit',
               visible: true,
-              onSubmit: () => {
-                console.log('Submited')
+              onSubmit(model) {
+                console.log('Form submitted!', model)
               },
+              // onSubmit: function() {
+              //   console.log('Submited')
+              //   if (this.modalErrors.length > 0) {
+              //     this.showModal = true
+              //   }
+              // },
               validateBeforeSubmit: true,
             },
           ],

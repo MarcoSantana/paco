@@ -112,7 +112,7 @@ export default {
     fileType() {
       const myRe = /data:(\w+)\/(\w+)/g
       const myArray = myRe.exec(this.value)
-      console.log('myArray :>> ', myArray)
+      // console.log('myArray :>> ', myArray)
       return myArray[2]
     },
   },
@@ -129,13 +129,13 @@ export default {
   },
   mounted() {
     // this.value = null
+    this.$emit('validated', !isNil(this.value), ['Falta archivo'], this)
     this.$nextTick(() => {
       // The whole view is rendered, so I can safely access or query
       // the DOM. ¯\_(ツ)_/¯
-      console.log('!isNil(this.value) :>> ', !isNil(this.value))
+      // console.log('!isNil(this.value) :>> ', !isNil(this.value))
       this.value = null
       this.isValid = null
-      this.$emit('validated', !isNil(this.value), ['Falta archivo'], this)
     })
   },
   methods: {
