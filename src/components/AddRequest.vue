@@ -2,9 +2,6 @@
   <div class="box">
     <vue-form-generator :schema="schema" :model="model" :options="formOptions" @validated="onValidated">
     </vue-form-generator>
-
-    <button id="show-modal" @click="showModal = true">Show Modal</button>
-    <!-- use the modal component, pass in the prop -->
   </div>
 </template>
 <script>
@@ -14,7 +11,6 @@ import cmmuCertificationSchema from '@/components/cmmuCertificationSchema'
 export default {
   mixins: [cmmuCertificationSchema],
   data: () => ({
-    modalErrors: null,
     formOptions: {
       validateAfterLoad: false,
       validateAfterChanged: true,
@@ -25,13 +21,7 @@ export default {
   }),
   watch: {},
   mounted() {},
-  methods: {
-    displayValidationErrors() {},
-
-    onSubmit(foo) {
-      console.log('foo :>> ', foo)
-    },
-  },
+  methods: {},
 }
 </script>
 <style lang="scss">
