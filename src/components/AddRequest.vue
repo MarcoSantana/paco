@@ -1,6 +1,12 @@
 <template>
   <div class="box">
-    <vue-form-generator :schema="schema" :model="model" :options="formOptions" @validated="onValidated">
+    <vue-form-generator
+      :schema="schema"
+      :model="model"
+      :options="formOptions"
+      @validated="onValidated"
+      @submited="alert('meh')"
+    >
     </vue-form-generator>
     <button id="show-modal" @click="showModal = true">Show Modal</button>
     <!-- use the modal component, pass in the prop -->
@@ -36,6 +42,10 @@ export default {
   methods: {
     displayValidationErrors() {
       this.showModal = true
+    },
+
+    onSubmit(foo) {
+      console.log('foo :>> ', foo)
     },
   },
 }

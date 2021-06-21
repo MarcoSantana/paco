@@ -405,10 +405,16 @@ describe('Curriculum', () => {
       cy.get('@workplace').should('have.value', '1 Infinite Loop, Cupertino, CA 95014, EE. UU.')
     })
 
-    context('job', () => {
-      // chance.profession({rank: true})
-      cy.get('[data-test="request-professionalExercise-charge"]').as('job')
-      cy.get('@job').type(chance.profession({ rank: true }))
+    // context('job', () => {
+    //   // chance.profession({rank: true})
+    //   cy.get('[data-test="request-professionalExercise-charge"]').as('job')
+    //   cy.get('@job').type(chance.profession({ rank: true }))
+    // })
+
+    context('voucher', () => {
+      cy.get('[data-test=request-voucher]')
+        .as('voucher')
+        .should('exist')
     })
   })
 })

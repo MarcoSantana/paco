@@ -1,5 +1,12 @@
 <template>
-  <div class="wrapper">
+  <div
+    :id="getFieldID(schema)"
+    v-attributes="'input'"
+    class="wrapper"
+    :name="schema.inputName"
+    :class="schema.fieldClasses"
+    :required="schema.required"
+  >
     <div v-if="value">
       <div v-if="fileType == 'pdf'">
         <input
@@ -55,6 +62,7 @@
   </div>
 </template>
 <script>
+import { isNil, isFunction } from 'lodash'
 import { abstractField } from 'vue-form-generator'
 import pdf from 'vue-pdf'
 
@@ -109,6 +117,9 @@ export default {
     },
   },
   watch: {
+    value() {
+      this.isValid = !isNil(this.value)
+    },
     model() {
       const el = this.$el.querySelector('input.file')
       if (el) {
@@ -116,7 +127,47 @@ export default {
       }
     },
   },
+  mounted() {
+    // this.value = null
+    this.$nextTick(() => {
+      // The whole view is rendered, so I can safely access or query
+      // the DOM. ¯\_(ツ)_/¯
+      console.log('!isNil(this.value) :>> ', !isNil(this.value))
+      this.value = null
+      this.isValid = null
+      this.$emit('validated', !isNil(this.value), ['Falta archivo'], this)
+    })
+  },
   methods: {
+    validate(calledParent) {
+      // disabled inputs should always be assumed
+      // to be "valid" as they can not be changed
+      if (this.disabled) return true
+
+      let isValid = false
+
+      // clear previous errors
+      this.clearValidationErrors()
+
+      // BE SURE TO IMPLEMENT THE "required" validation rules
+      if (this.schema.required && !this.value) {
+        isValid = false
+        this.errors.push(this.schema.errorText || 'Ingrese el documento')
+      }
+
+      // CUSTOM VALIDATION LOGIC HERE
+      // return ['Enter your primary phone number']
+
+      // internal VFG logic for how validation is processed
+      // be sure to implement any core VFG logic in this method
+      if (isFunction(this.schema.onValidated)) {
+        this.schema.onValidated.call(this, this.model, this.errors, this.schema)
+      }
+
+      if (!calledParent) this.$emit('validated', isValid, this.errors, this)
+
+      return this.errors
+    },
     remove() {
       this.value = ''
     },
@@ -125,6 +176,10 @@ export default {
     },
     fileChanged(event) {
       // TODO Add schema option to enforce only pdf  202105.15-16.59
+      this.$emit('validated', !isNil(this.value), ['Ingrese documento archivo'], this)
+
+      // Schema has defined onChange method.
+      console.log('this.schema from event :>> ', this.schema)
       const reader = new FileReader()
       reader.onload = e => {
         this.value = e.target.result

@@ -397,6 +397,9 @@ export default {
               browse: true,
               preview: true,
               model: 'request.voucher',
+              attributes: {
+                input: { 'data-test': 'request-voucher' },
+              },
               required: true,
             },
           ],
