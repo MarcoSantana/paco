@@ -11,9 +11,7 @@
             </div>
 
             <div class="modal-body">
-              <slot name="body">
-                default body Here i want to display the errors I get. Dont know if it is better from slot or from prop
-              </slot>
+              <slot name="body"> </slot>
             </div>
 
             <div class="modal-footer">

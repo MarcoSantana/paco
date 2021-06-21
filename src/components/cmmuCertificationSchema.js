@@ -1,13 +1,13 @@
-import { isNil } from 'lodash'
+// import { isNil } from 'lodash'
 import { validators } from 'vue-form-generator'
 
 export default {
   methods: {
     onValidated(isValid, errors) {
       console.log('Validation result: ', isValid, ', Errors:', errors)
-      if (isNil(isValid)) {
-        // eslint-disable-next-line no-alert
-        alert('Invalid form')
+      if (errors.length >= 0) {
+        this.showModal = true
+        this.modalErrors = errors
       }
     },
   },
@@ -337,7 +337,8 @@ export default {
               attributes: {
                 input: { 'data-test': 'request-previousExam' },
               },
-              required: false,
+              required: true,
+              validator: validators.required,
             },
             // professional license
             {

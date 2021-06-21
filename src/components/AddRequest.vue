@@ -8,16 +8,20 @@
       @submited="alert('meh')"
     >
     </vue-form-generator>
-    <button id="show-modal" @click="showModal = true">Show Modal</button>
-    <!-- use the modal component, pass in the prop -->
     <error-modal v-if="showModal" @close="showModal = false">
-      create method to display this modal when validated is triggered
+      <div slot="body">
+        <ul v-for="error in modalErrors" :key="error.field">
+          <li>{{ error.field.label }}{{ error.error }}</li>
+        </ul>
+      </div>
       <!--
       you can use custom content here to overwrite
       default content
     -->
       <h3 slot="header">custom header</h3>
     </error-modal>
+    <button id="show-modal" @click="showModal = true">Show Modal</button>
+    <!-- use the modal component, pass in the prop -->
   </div>
 </template>
 <script>
@@ -30,19 +34,27 @@ export default {
   mixins: [cmmuCertificationSchema],
   data: () => ({
     showModal: false,
+    modalErrors: null,
     formOptions: {
-      validateAfterLoad: true,
+      validateAfterLoad: false,
       validateAfterChanged: true,
       validateAsync: true,
       validateBeforeSubmit: true,
     },
     model: {},
   }),
+  watch: {
+    modalErrors() {
+      this.showModal = false
+      console.log('this.modalErrors :>> ', this.modalErrors)
+      if (this.modalErrors.length > 0) {
+        this.showModal = true
+      }
+    },
+  },
   mounted() {},
   methods: {
-    displayValidationErrors() {
-      this.showModal = true
-    },
+    displayValidationErrors() {},
 
     onSubmit(foo) {
       console.log('foo :>> ', foo)
