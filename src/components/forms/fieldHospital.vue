@@ -8,6 +8,7 @@
       type="text"
       class="form-control"
       :name="schema.inputName"
+      :required="schema.required"
       :class="schema.fieldClasses"
       placeholder="Escriba el nombre del hospital"
       @input="onChange"
@@ -25,7 +26,7 @@
   </div>
 </template>
 <script>
-import { isObject, isNil, find } from 'lodash'
+import { isObject, isNil, find, isFunction } from 'lodash'
 import { abstractField } from 'vue-form-generator'
 import { mapState } from 'vuex'
 
@@ -63,6 +64,35 @@ export default {
     this.$store.dispatch('hospitals/getHospitals', null, { root: true })
   },
   methods: {
+    validate(calledParent) {
+      // disabled inputs should always be assumed
+      // to be "valid" as they can not be changed
+      if (this.disabled) return true
+
+      let isValid = false
+
+      // clear previous errors
+      this.clearValidationErrors()
+
+      // BE SURE TO IMPLEMENT THE "required" validation rules
+      if (this.schema.required && !this.value) {
+        isValid = false
+        this.errors.push(this.schema.errorText || 'Este campo es requerido')
+      }
+
+      // CUSTOM VALIDATION LOGIC HERE
+      // return ['Enter your primary phone number']
+
+      // internal VFG logic for how validation is processed
+      // be sure to implement any core VFG logic in this method
+      if (isFunction(this.schema.onValidated)) {
+        this.schema.onValidated.call(this, this.model, this.errors, this.schema)
+      }
+
+      if (!calledParent) this.$emit('validated', isValid, this.errors, this)
+
+      return this.errors
+    },
     formatValueToField(value) {
       if (isNil(value)) {
         return null

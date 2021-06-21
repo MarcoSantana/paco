@@ -37,6 +37,7 @@ import { abstractField } from 'vue-form-generator'
 import { Datetime } from 'vue-datetime'
 import 'vue-datetime/dist/vue-datetime.css'
 import { Settings, DateTime } from 'luxon'
+import { isFunction } from 'lodash'
 
 Settings.defaultLocale = 'es'
 
@@ -71,7 +72,37 @@ export default {
   mounted() {
     document.querySelector('.vdatetime-input').placeholder = 'Clic para ingresar fecha'
   },
-  methods: {},
+  methods: {
+    validate(calledParent) {
+      // disabled inputs should always be assumed
+      // to be "valid" as they can not be changed
+      if (this.disabled) return true
+
+      let isValid = false
+
+      // clear previous errors
+      this.clearValidationErrors()
+
+      // BE SURE TO IMPLEMENT THE "required" validation rules
+      if (this.schema.required && !this.value) {
+        isValid = false
+        this.errors.push(this.schema.errorText || 'La fecha es requerida')
+      }
+
+      // CUSTOM VALIDATION LOGIC HERE
+      // return ['Enter your primary phone number']
+
+      // internal VFG logic for how validation is processed
+      // be sure to implement any core VFG logic in this method
+      if (isFunction(this.schema.onValidated)) {
+        this.schema.onValidated.call(this, this.model, this.errors, this.schema)
+      }
+
+      if (!calledParent) this.$emit('validated', isValid, this.errors, this)
+
+      return this.errors
+    },
+  },
 }
 </script>
 
