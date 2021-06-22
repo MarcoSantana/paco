@@ -1,10 +1,19 @@
 <template>
   <div class="box">
+    <h1>TODO</h1>
+    <ul>
+      <li>Add wizard</li>
+      <li>Add vuex for the current form</li>
+    </ul>
+    <h1>Debug</h1>
+    <div>Model>> {{ model }}</div>
     <vue-form-generator :schema="schema" :model="model" :options="formOptions" @validated="onValidated">
     </vue-form-generator>
   </div>
 </template>
 <script>
+// eslint-disable-next-line no-unused-vars
+import { mapMutations, mapState, mapActions } from 'vuex'
 import 'vue-form-generator/dist/vfg'
 import cmmuCertificationSchema from '@/components/cmmuCertificationSchema'
 
