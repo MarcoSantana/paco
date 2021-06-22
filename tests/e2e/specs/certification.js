@@ -417,6 +417,18 @@ describe('Curriculum', () => {
       cy.get('[data-test=request-voucher]')
         .as('voucher')
         .should('exist')
+      //       const fileName = 'doc.pdf';
+      //       cy.fixture(fileName).then(fileContent => {
+      //         cy.get('@voucher')
+      //           .attachFile({
+      //             fileContent: fileContent.toString(),
+      //             fileName: fileName,
+      //             mimeType: 'image/pdf'
+      //           })
+      //           .trigger('change', { force: true })
+      // 
+      //       });
+      //       cy.get('@voucher').should('have.value', 'foo')
     })
   })
 })

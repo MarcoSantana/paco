@@ -1,6 +1,6 @@
 <template>
   <div class="page-wrapper">
-    <img alt="logo-bento" class="logo" src="@/assets/img/logo.png" />
+    <img alt="logo-bento" class="logo" src="@/assets/img/logo_cmmu.png" />
     <h1 class="home-page-title">{{ appTitle }}</h1>
     <h2 class="home-page-title">{{ clientName }}</h2>
 

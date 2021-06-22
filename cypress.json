@@ -1,4 +1,5 @@
 {
   "pluginsFile": "tests/e2e/plugins/index.js",
+  "fixturesFolder": "test/e2e/fixtures",
   "projectId": "xqc7yq"
 }

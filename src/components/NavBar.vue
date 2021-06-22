@@ -2,21 +2,21 @@
   <header class="navbar" :class="{ offline: !networkOnLine }">
     <router-link to="/home">
       <!-- <img alt="logo-bento" class="logo" src="@/assets/img/bento-starter.svg" /> -->
-      <img alt="logo-bento" class="logo" src="@/assets/img/logo.png" />
+      <img alt="logo-bento" class="logo" src="@/assets/img/logo_cmmu.png" />
       <span class="site-name title-desktop">{{ appTitle }}</span>
       <span class="site-name title-mobile">{{ appShortTitle }}</span>
     </router-link>
     <div class="links">
       <nav class="nav-links">
-        <div v-if="isUserLoggedIn && networkOnLine" data-test="navbar-products" class="nav-item ">
-          <router-link to="/products" data-test="navbar-products-link">Productos</router-link>
-        </div>
+        <!-- <div v-if="isUserLoggedIn && networkOnLine" data-test="navbar-products" class="nav-item ">
+             <router-link to="/products" data-test="navbar-products-link">Productos</router-link>
+             </div> -->
         <div v-if="isUserLoggedIn && networkOnLine" data-test="navbar-item-documents" class="nav-item ">
           <router-link to="/documents" data-test="navbar-documents-link">Documentos</router-link>
         </div>
-        <div v-if="isUserLoggedIn && networkOnLine" data-test="navbar-item-curriculum" class="nav-item ">
-          <router-link to="/curriculum" data-test="navbar-curriculum-link">Curriculum</router-link>
-        </div>
+        <!-- <div v-if="isUserLoggedIn && networkOnLine" data-test="navbar-item-curriculum" class="nav-item ">
+             <router-link to="/curriculum" data-test="navbar-curriculum-link">Curriculum</router-link>
+             </div> -->
         <!-- Must validate accoirding to date if the user can request certification, and or it has an active request -->
         <div v-if="isUserLoggedIn && networkOnLine" data-test="navbar-item-request" class="nav-item ">
           <router-link to="/request" data-test="navbar-request-link">Solicitud de examen</router-link>

@@ -27,7 +27,7 @@
 import firebase from 'firebase'
 
 import 'firebase/firestore'
-
+import 'cypress-file-upload'
 // const functions = require('firebase-functions')
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
