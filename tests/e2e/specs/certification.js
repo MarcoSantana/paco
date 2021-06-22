@@ -138,7 +138,7 @@ describe('Curriculum', () => {
     // Gender
     context('gender', () => {
       cy.get('[data-test="user-gender"]').as('gender')
-      cy.get('.radio-list > :nth-child(1)').click()
+      cy.get('#sexo-11').check('Hombre')
     })
 
     // RFC
@@ -293,15 +293,17 @@ describe('Curriculum', () => {
     context('hospital', () => {
       cy.get('[data-test=postgraduate-hospital]').as('hospital')
       cy.get('@hospital').should('exist')
-      cy.get('@hospital').type('Hospital General Tic')
+      cy.get('@hospital').type('lomas')
       cy.get('[data-test=hospital-list]').as('list')
-      cy.get('@list')
-        .should('be.visible')
-        .should('contain', 'Hospital General Ticomán')
-      cy.get('.result')
-        .should('contain', 'Hospital General Ticomán')
-        .click()
-      cy.get('@hospital').should('have.value', 'Hospital General Ticomán')
+      cy.get('[data-test=hospital-list] > :nth-child(1)').click()
+      // cy.get('@list')
+      //   .should('be.visible')
+      //   .should('contain', 'Hospital Ángeles Lomas')
+      //   .click()
+      // cy.get('.result')
+      //   .should('contain', 'Hospital Ángeles Lomas')
+      //   .click()
+      cy.get('@hospital').should('have.value', 'Hospital Ángeles Lomas')
     })
     // Endorser
     context('university', () => {
@@ -405,11 +407,11 @@ describe('Curriculum', () => {
       cy.get('@workplace').should('have.value', '1 Infinite Loop, Cupertino, CA 95014, EE. UU.')
     })
 
-    // context('job', () => {
-    //   // chance.profession({rank: true})
-    //   cy.get('[data-test="request-professionalExercise-charge"]').as('job')
-    //   cy.get('@job').type(chance.profession({ rank: true }))
-    // })
+    context('job', () => {
+      // chance.profession({rank: true})
+      cy.get('[data-test="request-professionalExercise-charge"]').as('job')
+      cy.get('@job').type(chance.profession({ rank: true }))
+    })
 
     context('voucher', () => {
       cy.get('[data-test=request-voucher]')
