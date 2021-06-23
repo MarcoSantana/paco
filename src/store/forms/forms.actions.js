@@ -1,4 +1,4 @@
-import UserFormsDB from '@/firebase/user-forms-db'
+import UserFormsDB from '@/firebase/forms-db'
 
 export default {
   /**
@@ -21,6 +21,11 @@ export default {
     const createdForm = await userFormDb.create(form)
     commit('addForm', createdForm)
     commit('setFormCreationPending', false)
+  },
+  triggerAddCurrentFormAction: ({ state, commit }, model) => {
+    console.log('state :>> ', state)
+    // state.currentForm[0] = model
+    commit('setCurrentForm', model)
   },
 
   /**

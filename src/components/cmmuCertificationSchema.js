@@ -6,8 +6,8 @@ export default {
     onValidated(isValid, errors) {
       // console.log('Validation result: ', isValid, ', Errors:', errors)
       if (errors.length >= 0) {
-        this.modalErrors = errors
-        this.showModal = true
+        console.log('isValid :>> ', isValid)
+        console.log('errors :>> ', errors)
       }
     },
   },

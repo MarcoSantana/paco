@@ -7,18 +7,30 @@
     </ul>
     <h1>Debug</h1>
     <div>Model>> {{ model }}</div>
-    <vue-form-generator :schema="schema" :model="model" :options="formOptions" @validated="onValidated">
+    <div>State {{ currentForm }}</div>
+
+    <!-- :value="productNameToCreate"
+         @input="setProductNameToCreate($event.target.value)" -->
+
+    <vue-form-generator
+      :schema="schema"
+      :model="model"
+      :options="formOptions"
+      @validated="onValidated"
+      @model-updated="updateCurrentForm"
+    >
     </vue-form-generator>
   </div>
 </template>
 <script>
 // eslint-disable-next-line no-unused-vars
-import { mapMutations, mapState, mapActions } from 'vuex'
+import { mapMutations, mapState, mapActions, mapGetters } from 'vuex'
 import 'vue-form-generator/dist/vfg'
 import cmmuCertificationSchema from '@/components/cmmuCertificationSchema'
 
 export default {
   mixins: [cmmuCertificationSchema],
+
   data: () => ({
     formOptions: {
       validateAfterLoad: false,
@@ -28,9 +40,37 @@ export default {
     },
     model: {},
   }),
-  watch: {},
-  mounted() {},
-  methods: {},
+  // computed: mapState('forms', ['formNameToCreate', 'formCreationPending']),
+  // computed: mapState('forms', ['currentForm']),
+  computed: {
+    ...mapState('forms', ['currentForm']),
+    // currentForm: {
+    //   get() {
+    //     return this.getCurrentForm()
+    //   },
+    //   set(value) {
+    //     // this.state.forms.currentForm = value
+    //     console.log('value :>> ', value);
+    //   },
+    // },
+  },
+  watch: {
+    model() {
+      console.log('this.model: ', this.model) // this.setCurrentForm(this.model)
+      // this.setCurrentForm(this.model.request)
+      // this.setCurrentForm([newVal])
+    },
+  },
+  methods: {
+    // ...mapMutations('forms', ['setCurrentForm']),
+    ...mapActions('forms', ['triggerAddCurrentFormAction']),
+    ...mapGetters('forms', ['getCurrentForm']),
+    updateCurrentForm() {
+      // this.currentForm = this.model
+      this.triggerAddCurrentFormAction(this.model)
+      // console.log('this.model :>> ', this.model)
+    },
+  },
 }
 </script>
 <style lang="scss">

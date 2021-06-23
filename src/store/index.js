@@ -6,6 +6,7 @@ import products from './products'
 import documents from './documents'
 import colleges from './colleges'
 import hospitals from './hospitals'
+import forms from './forms'
 
 Vue.use(Vuex)
 
@@ -20,5 +21,6 @@ export default new Vuex.Store({
     colleges,
     documents,
     hospitals,
+    forms,
   },
 })
