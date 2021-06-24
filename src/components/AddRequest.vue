@@ -1,12 +1,12 @@
 <template>
   <div class="box">
-    <h1>TODO</h1>
-    <ul>
+    <!-- <h1>TODO</h1> -->
+    <!-- <ul>
       <li>Bind wizard errors to vfg errors</li>
       <li>check loading animation (wizard)</li>
       <li>change tab color acording to validation results</li>
       <li>Add proper style to item legend title</li>
-    </ul>
+    </ul> -->
     <h2 v-if="model && model.errors" class="error">
       <ul v-for="error in model.errors" :key="error.field.label">
         <li>{{ error.field.label }} >> {{ error.error }}</li>
@@ -36,8 +36,8 @@
             @model-updated="updateCurrentForm"
           >
           </vue-form-generator>
-          <ul v-for="error in model.errors" :key="error.field.label">
-            <li>{{ error.field.label }} >> {{ error.error }} @error {{ error.field }}</li>
+          <ul v-for="error in model.errors" :key="error.field.label" class="">
+            <li>{{ error.field.label }} >> {{ error.error }}</li>
           </ul>
         </tab-content>
       </span>
@@ -61,7 +61,7 @@
 <script>
 // eslint-disable-next-line no-unused-vars
 import { mapState, mapActions, mapGetters } from 'vuex'
-import { isNil } from 'lodash'
+// import { isNil } from 'lodash'
 import 'vue-form-generator/dist/vfg'
 import cmmuCertificationSchema from '@/components/cmmuCertificationSchema'
 import { FormWizard, TabContent } from 'vue-form-wizard'
@@ -89,9 +89,9 @@ export default {
     groups() {
       return this.schema.groups
     },
-    errorMsg() {
-      return isNil(this.model && this.model.errors) ? null : this.model.errors
-    },
+    // errorMsg() {
+    //   return isNil(this.model && this.model.errors) ? null : this.model.errors
+    // },
   },
   watch: {
     model() {
@@ -124,7 +124,7 @@ export default {
     },
     handleErrorMessage(errorMsg) {
       // TODO Give this better style
-      // this.errorMsg = this.model.errors
+      this.errorMsg = this.model.errors
       // this.$store.state.currentForm.errors.push(errorMsg)
       console.log('errorMsg: ', errorMsg)
     },
