@@ -8,7 +8,6 @@ export default {
       if (errors.length >= 0) {
         console.log('isValid :>> ', isValid)
         console.log('errors :>> ', errors)
-        // TODO traverse errors to extract the exact fields and push only those values
         this.model.errors = errors
       }
     },

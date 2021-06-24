@@ -7,6 +7,11 @@
       <li>change tab color acording to validation results</li>
       <li>Add proper style to item legend title</li>
     </ul>
+    <h2 v-if="model && model.errors" class="error">
+      <ul v-for="error in model.errors" :key="error.field.label">
+        <li>{{ error.field.label }} >> {{ error.error }}</li>
+      </ul>
+    </h2>
     <form-wizard
       shape="tab"
       step-size="xs"
@@ -17,11 +22,11 @@
       finish-button-text="Terminado"
       @on-complete="onComplete"
       @on-loading="setLoading"
-      @on-validate="handleValidation"
+      @on-validate="handleValidation()"
       @on-error="handleErrorMessage"
     >
       <span v-for="item in groups" :key="item.legend">
-        <tab-content :title="item.legend" icon="ti-user">
+        <tab-content :title="item.legend" icon="ti-user" :before-change="validateAsync">
           <h2>{{ item.legend }}</h2>
           <vue-form-generator
             :schema="item"
@@ -31,28 +36,31 @@
             @model-updated="updateCurrentForm"
           >
           </vue-form-generator>
+          <ul v-for="error in model.errors" :key="error.field.label">
+            <li>{{ error.field.label }} >> {{ error.error }} @error {{ error.field }}</li>
+          </ul>
         </tab-content>
       </span>
-      <tab-content title="Siguientes pasos" icon="ti-check"
-        >Aquí ponemos los siguientes pasos a para el aspirante</tab-content
-      >
+      <tab-content title="Siguientes pasos" icon="ti-check">
+        Aquí ponemos los siguientes pasos a para el aspirante
+      </tab-content>
       <div v-if="loadingWizard" class="loader"></div>
-      <div v-if="errorMsg">
-        <span class="error">{{ errorMsg }}</span>
-        <span class="error">{{ errors }}</span>
-      </div>
+
+      <!-- <div v-if="errorMsg">
+           <span class="error">{{ errorMsg }}</span>
+           </div> -->
       <button slot="prev" class="form-wizard-button" data-test="document-prev-btn">Atrás</button>
-      <button slot="next" class="form-wizard-button" data-test="document-next-btn">Adelante</button>
+      <button slot="next" :diabled="!isValid" class="form-wizard-button" data-test="document-next-btn">Adelante</button>
       <button slot="finish" class="form-wizard-button">Guardar</button>
     </form-wizard>
-    <h1>Debug</h1>
+    <!-- <h1>Debug</h1>
     <div>Model>> {{ model }}</div>
-    <div>State {{ currentForm }}</div>
+    <div>State {{ currentForm }}</div> -->
   </div>
 </template>
 <script>
 // eslint-disable-next-line no-unused-vars
-import { mapMutations, mapState, mapActions, mapGetters } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 import { isNil } from 'lodash'
 import 'vue-form-generator/dist/vfg'
 import cmmuCertificationSchema from '@/components/cmmuCertificationSchema'
@@ -73,12 +81,16 @@ export default {
     model: {},
     // wizard
     loadingWizard: false,
-    errorMsg: null,
+    count: 0,
+    // errorMsg: null,
   }),
   computed: {
     ...mapState('forms', ['currentForm']),
     groups() {
       return this.schema.groups
+    },
+    errorMsg() {
+      return isNil(this.model && this.model.errors) ? null : this.model.errors
     },
   },
   watch: {
@@ -98,6 +110,11 @@ export default {
       // eslint-disable-next-line no-alert
       alert('Form wizard ended')
     },
+    beforeTabSwitch() {
+      // eslint-disable-next-line no-alert
+      alert('Before tab switch')
+      return true
+    },
     setLoading(value) {
       this.loadingWizard = value
     },
@@ -108,21 +125,19 @@ export default {
     handleErrorMessage(errorMsg) {
       // TODO Give this better style
       // this.errorMsg = this.model.errors
-      this.$store.state.currentForm.errors.push(errorMsg)
+      // this.$store.state.currentForm.errors.push(errorMsg)
+      console.log('errorMsg: ', errorMsg)
     },
     validateAsync() {
-      // TODO use this for all tab validations
       return new Promise((resolve, reject) => {
         setTimeout(() => {
-          if (isNil(this.documentType)) {
-            this.count += 1
-            // eslint-disable-next-line prefer-promise-reject-errors
-            reject('Debe elegir un tipo de documento')
+          if (this.model.errors.length > 0) {
+            console.log('this.model.errors :>> ', this.model.errors)
+            reject(new Error('Formulario inválido'))
           } else {
-            this.count = 0
             resolve(true)
           }
-        }, 500)
+        }, 1000)
       })
     },
   },

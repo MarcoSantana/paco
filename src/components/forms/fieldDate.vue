@@ -73,19 +73,20 @@ export default {
     document.querySelector('.vdatetime-input').placeholder = 'Clic para ingresar fecha'
   },
   methods: {
-    validate(calledParent) {
+    // validate(calledParent) {
+    validate() {
       // disabled inputs should always be assumed
       // to be "valid" as they can not be changed
       if (this.disabled) return true
 
-      let isValid = false
+      // let isValid = true
 
       // clear previous errors
       this.clearValidationErrors()
 
       // BE SURE TO IMPLEMENT THE "required" validation rules
       if (this.schema.required && !this.value) {
-        isValid = false
+        // isValid = false
         this.errors.push(this.schema.errorText || 'La fecha es requerida')
       }
 
@@ -96,10 +97,9 @@ export default {
       // be sure to implement any core VFG logic in this method
       if (isFunction(this.schema.onValidated)) {
         this.schema.onValidated.call(this, this.model, this.errors, this.schema)
+
+        // if (!calledParent) this.$emit('validated', isValid, this.errors, this)
       }
-
-      if (!calledParent) this.$emit('validated', isValid, this.errors, this)
-
       return this.errors
     },
   },
