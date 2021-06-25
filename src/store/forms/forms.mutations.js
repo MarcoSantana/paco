@@ -1,3 +1,5 @@
+import { cloneDeep } from 'lodash'
+
 export default {
   /* Form input name */
   setFormNameToCreate: (state, formNameToCreate) => (state.formNameToCreate = formNameToCreate),
@@ -7,14 +9,8 @@ export default {
    | Stores temporary the current form 
    |--------------------------------------------------
 */
-  // setCurrentForm: (state, currentForm) => (state.currentForm[0] = currentForm),
   setCurrentForm: (state, currentForm) => {
-    console.log('currentForm :>> ', currentForm)
-    const map = new Map(Object.entries(currentForm))
-    map.forEach((value, key) => {
-      state.currentForm[key] = value
-    })
-    // state.currentForm[0] = currentForm
+    state.currentForm = cloneDeep(currentForm)
   },
   /* Forms */
   setForms: (state, forms) => (state.forms = forms),

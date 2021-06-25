@@ -22,9 +22,7 @@ export default {
     commit('addForm', createdForm)
     commit('setFormCreationPending', false)
   },
-  triggerAddCurrentFormAction: ({ state, commit }, model) => {
-    console.log('state :>> ', state)
-    // state.currentForm[0] = model
+  triggerAddCurrentFormAction: ({ commit }, model) => {
     commit('setCurrentForm', model)
   },
 
