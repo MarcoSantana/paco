@@ -129,7 +129,7 @@ export default {
   },
   mounted() {
     // this.value = null
-    this.$emit('validated', !isNil(this.value), ['Falta archivo'], this)
+    // this.$emit('validated', !isNil(this.value), ['Falta archivo'], this)
     this.$nextTick(() => {
       // The whole view is rendered, so I can safely access or query
       // the DOM. ¯\_(ツ)_/¯

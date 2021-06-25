@@ -7,6 +7,11 @@
       <li>change tab color acording to validation results</li>
       <li>Add proper style to item legend title</li>
     </ul>
+    <h2 v-if="model && model.errors" class="error">
+      <ul v-for="error in model.errors" :key="error.field.label">
+        <li>{{ error.field.label }} >> {{ error.error }}</li>
+      </ul>
+    </h2>
     <form-wizard
       ref="wizard"
       shape="tab"
@@ -78,12 +83,16 @@ export default {
     model: {},
     // wizard
     loadingWizard: false,
-    errorMsg: null,
+    count: 0,
+    // errorMsg: null,
   }),
   computed: {
     ...mapState('forms', ['currentForm']),
     groups() {
       return this.schema.groups
+    },
+    errorMsg() {
+      return isNil(this.model && this.model.errors) ? null : this.model.errors
     },
   },
   watch: {
@@ -109,6 +118,11 @@ export default {
       // eslint-disable-next-line no-alert
       alert('Form wizard ended')
     },
+    beforeTabSwitch() {
+      // eslint-disable-next-line no-alert
+      alert('Before tab switch')
+      return true
+    },
     setLoading(value) {
       this.loadingWizard = value
     },
@@ -118,9 +132,9 @@ export default {
       // TODO Give this better style
       // this.errorMsg = this.model.errors
       // this.$store.state.currentForm.errors.push(errorMsg)
+      console.log('errorMsg: ', errorMsg)
     },
     validateAsync() {
-      // TODO use this for all tab validations
       return new Promise((resolve, reject) => {
         this.setLoading(true)
         setTimeout(() => {
