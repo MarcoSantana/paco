@@ -118,7 +118,7 @@ export default {
   },
   watch: {
     value() {
-      this.isValid = !isNil(this.value)
+      // this.isValid = !isNil(this.value)
     },
     model() {
       const el = this.$el.querySelector('input.file')
@@ -144,14 +144,14 @@ export default {
       // to be "valid" as they can not be changed
       if (this.disabled) return true
 
-      let isValid = false
+      // let isValid = true
 
       // clear previous errors
       this.clearValidationErrors()
 
       // BE SURE TO IMPLEMENT THE "required" validation rules
       if (this.schema.required && !this.value) {
-        isValid = false
+        // isValid = false
         this.errors.push(this.schema.errorText || 'Ingrese el documento')
       }
 
@@ -164,7 +164,7 @@ export default {
         this.schema.onValidated.call(this, this.model, this.errors, this.schema)
       }
 
-      if (!calledParent) this.$emit('validated', isValid, this.errors, this)
+      if (!calledParent) this.$emit('validated', !isNil(this.value), this.errors, this)
 
       return this.errors
     },
