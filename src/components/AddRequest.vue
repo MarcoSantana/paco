@@ -8,6 +8,7 @@
       <li>Add proper style to item legend title</li>
     </ul>
     <form-wizard
+      ref="wizard"
       shape="tab"
       step-size="xs"
       color="#2596c7"
@@ -16,44 +17,45 @@
       subtitle="Pasos de solicitud"
       finish-button-text="Terminado"
       @on-complete="onComplete"
-      @on-loading="setLoading"
-      @on-validate="handleValidation"
-      @on-error="handleErrorMessage"
     >
-      <span v-for="item in groups" :key="item.legend">
-        <tab-content :title="item.legend" icon="ti-user">
-          <h2>{{ item.legend }}</h2>
-          <vue-form-generator
-            :schema="item"
-            :model="model"
-            :options="formOptions"
-            @validated="onValidated"
-            @model-updated="updateCurrentForm"
-          >
-          </vue-form-generator>
-        </tab-content>
-      </span>
-      <tab-content title="Siguientes pasos" icon="ti-check"
-        >Aquí ponemos los siguientes pasos a para el aspirante</tab-content
-      >
+      current step>> {{ currentStep }}
+      <tab-content v-for="item in groups" :key="item.legend" :before-change="validateAsync" :title="item.legend">
+        <vue-form-generator
+          :ref="getAttrs(item.fields)"
+          :schema="item"
+          :model="model"
+          :options="formOptions"
+          @validated="onValidated"
+          @model-updated="updateCurrentForm"
+        >
+        </vue-form-generator>
+      </tab-content>
+      <tab-content title="Siguientes pasos">
+        Aquí ponemos los siguientes pasos a para el aspirante
+      </tab-content>
       <div v-if="loadingWizard" class="loader"></div>
-      <div v-if="errorMsg">
-        <span class="error">{{ errorMsg }}</span>
-        <span class="error">{{ errors }}</span>
-      </div>
-      <button slot="prev" class="form-wizard-button" data-test="document-prev-btn">Atrás</button>
-      <button slot="next" class="form-wizard-button" data-test="document-next-btn">Adelante</button>
+      {{ errorMsg }}
+      <span slot="prev"></span>
+      <button
+        class="reset-button"
+        @click="
+          model = {}
+          $refs.wizard.reset()
+        "
+      >
+        Borrar formulario
+      </button>
+      <button slot="next" class="form-wizard-button" data-test="document-next-btn">
+        Adelante
+      </button>
       <button slot="finish" class="form-wizard-button">Guardar</button>
     </form-wizard>
-    <h1>Debug</h1>
-    <div>Model>> {{ model }}</div>
-    <div>State {{ currentForm }}</div>
   </div>
 </template>
 <script>
 // eslint-disable-next-line no-unused-vars
 import { mapMutations, mapState, mapActions, mapGetters } from 'vuex'
-import { isNil } from 'lodash'
+import { get, isEmpty, isNil } from 'lodash'
 import 'vue-form-generator/dist/vfg'
 import cmmuCertificationSchema from '@/components/cmmuCertificationSchema'
 import { FormWizard, TabContent } from 'vue-form-wizard'
@@ -64,6 +66,9 @@ export default {
   mixins: [cmmuCertificationSchema],
 
   data: () => ({
+    currentIsValid: false,
+    currentStep: null,
+    steps: [],
     formOptions: {
       validateAfterLoad: false,
       validateAfterChanged: true,
@@ -82,16 +87,22 @@ export default {
     },
   },
   watch: {
-    model() {
-      console.log('this.model: ', this.model)
-    },
+    model() {},
   },
   methods: {
     // ...mapMutations('forms', ['setCurrentForm']),
     ...mapActions('forms', ['triggerAddCurrentFormAction']),
     ...mapGetters('forms', ['getCurrentForm']),
+    getAttrs(vnode) {
+      return get(vnode[0], 'attributes.input.data-test', {})
+    },
     updateCurrentForm() {
       this.triggerAddCurrentFormAction(this.model)
+    },
+    // vfg
+    onValidated(isValid, errors) {
+      this.errorMsg = errors
+      this.currentIsValid = isValid
     },
     // form wizard
     onComplete() {
@@ -101,28 +112,29 @@ export default {
     setLoading(value) {
       this.loadingWizard = value
     },
-    handleValidation(isValid, tabIndex) {
-      // TODO use this to validate the presence of the actual file and maybe the complete fields
-      console.log(`Tab: ${tabIndex} valid: ${isValid}`)
-    },
     handleErrorMessage(errorMsg) {
+      if (!isNil(errorMsg) || !isEmpty(errorMsg)) this.errorMsg = errorMsg
+      return true
       // TODO Give this better style
       // this.errorMsg = this.model.errors
-      this.$store.state.currentForm.errors.push(errorMsg)
+      // this.$store.state.currentForm.errors.push(errorMsg)
     },
     validateAsync() {
       // TODO use this for all tab validations
       return new Promise((resolve, reject) => {
+        this.setLoading(true)
         setTimeout(() => {
-          if (isNil(this.documentType)) {
-            this.count += 1
-            // eslint-disable-next-line prefer-promise-reject-errors
-            reject('Debe elegir un tipo de documento')
+          if (!this.currentIsValid) {
+            const msg = 'Complete este paso antes de pasar al siguiente'
+            this.errorMsg = msg
+            reject(new Error(msg))
           } else {
-            this.count = 0
+            this.currentIsValid = false
+            this.errorMsg = null
             resolve(true)
           }
-        }, 500)
+          this.setLoading(false)
+        }, 1000)
       })
     },
   },
@@ -131,6 +143,11 @@ export default {
 <style lang="scss">
 @import '@/theme/style.scss';
 @import '@/theme/variables.scss';
+.reset-button {
+  @extend .form-wizard-button;
+  background-color: lighten($danger-color, 10%);
+  // color: $danger-color;
+}
 
 fieldset {
   margin-top: 1.75rem;
