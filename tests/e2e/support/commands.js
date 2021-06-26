@@ -67,3 +67,11 @@ Cypress.Commands.add('login', (email = 'marco.santana@gmail.com', password = 'A1
 Cypress.Commands.add('logout', () => {
   return auth.signOut()
 })
+/* ***************************************************************************** *
+ * This is to advance in the vfw
+ ******************************************************************************* */
+Cypress.Commands.add('nextWizardTab', button => {
+  cy.get(button).as('next')
+  cy.get('@next').click()
+  // TODO validate taht this button actually did something
+})

@@ -12,9 +12,6 @@ export default {
       }
     },
   },
-  mounted() {
-    // console.log('this :>> ', this)
-  },
   data: () => ({
     validated: null,
     isValid: false,
@@ -399,7 +396,7 @@ export default {
         },
         // Payment
         {
-          legend: 'Comprobante de pago',
+          legend: 'Carga de documentos',
           fields: [
             // Payment voucher
             {
@@ -411,6 +408,32 @@ export default {
               model: 'request.voucher',
               attributes: {
                 input: { 'data-test': 'request-voucher' },
+              },
+              required: true,
+            },
+            // Diploma
+            {
+              type: 'pdf',
+              label: 'Copia del título de la licenciatura en medicina.',
+              hideInput: true,
+              browse: true,
+              preview: true,
+              model: 'request.upload.degreeDiploma',
+              attributes: {
+                input: { 'data-test': 'request-uploadDegreeDiploma' },
+              },
+              required: true,
+            },
+            // License
+            {
+              type: 'pdf',
+              label: 'Copia de la cédula profesional de la licenciatura en medicina.',
+              hideInput: true,
+              browse: true,
+              preview: true,
+              model: 'request.upload.license',
+              attributes: {
+                input: { 'data-test': 'request-uploadLicense' },
               },
               required: true,
             },

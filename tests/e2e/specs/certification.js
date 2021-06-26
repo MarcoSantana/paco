@@ -26,10 +26,21 @@ describe('Curriculum', () => {
       cy.get('[data-test=navbar-request-link]').as('request-link')
       cy.get('@request-link').click()
       cy.get('.request-page-title').should('contain', 'Solicitud de certificación')
+      cy.get('[data-test=document-next-btn]').as('nextButton')
+
+      cy.nextWizardTab('@nextButton')
     })
     // Request place
     context('should show a place (google powered)', () => {
       cy.get('#lugar-de-solicitud')
+        .as('request')
+        .should('be.visible')
+      cy.get('@request').type('infinite loop 1')
+      cy.get('.pac-item', { timeout: 10000 }).should('be.visible')
+      cy.get('@request').type('{downarrow}')
+      cy.get('@request').type('{enter}')
+      cy.get('@request').should('have.value', '1 Infinite Loop, Cupertino, CA 95014, EE. UU.')
+      cy.nextWizardTab('@nextButton')
     })
     // Request date
     context('should have a request date', () => {
@@ -138,7 +149,8 @@ describe('Curriculum', () => {
     // Gender
     context('gender', () => {
       cy.get('[data-test="user-gender"]').as('gender')
-      cy.get('#sexo-11').check('Hombre')
+      cy.get(':nth-child(1) > [data-test=user-gender]').click()
+      // cy.get('#sexo-11').check('Hombre')
     })
 
     // RFC
@@ -192,6 +204,7 @@ describe('Curriculum', () => {
       cy.get('@nationality').type('{downarrow}')
       cy.get('@nationality').type('{enter}')
       cy.get('@nationality').should('have.value', 'México')
+      cy.nextWizardTab('@nextButton')
     })
     // phone (land line)
     context('landphone', () => {
@@ -258,6 +271,7 @@ describe('Curriculum', () => {
       cy.get('@email')
         .parents('.error')
         .should('not.exist')
+      cy.nextWizardTab('@nextButton')
     })
 
     //   // // Garduation date
@@ -291,19 +305,20 @@ describe('Curriculum', () => {
 
     // Postgraduate studies
     context('hospital', () => {
-      cy.get('[data-test=postgraduate-hospital]').as('hospital')
-      cy.get('@hospital').should('exist')
-      cy.get('@hospital').type('lomas')
-      cy.get('[data-test=hospital-list]').as('list')
-      cy.get('[data-test=hospital-list] > :nth-child(1)').click()
-      // cy.get('@list')
-      //   .should('be.visible')
-      //   .should('contain', 'Hospital Ángeles Lomas')
-      //   .click()
-      // cy.get('.result')
-      //   .should('contain', 'Hospital Ángeles Lomas')
-      //   .click()
-      cy.get('@hospital').should('have.value', 'Hospital Ángeles Lomas')
+      cy.get('[data-test=postgraduate-hospital]')
+        .as('postgraduateHospital')
+        .should('exist')
+      cy.get('@postgraduateHospital').type(chance.sentence())
+      cy.focused().clear()
+      cy.get('@postgraduateHospital').type('Hospital General Tic')
+      cy.get('@postgraduateHospital')
+        .siblings('.results')
+        .as('postgraduateHospital.list')
+      cy.get('@postgraduateHospital.list')
+        .should('be.visible')
+        .should('contain', 'Hospital General Ticomán')
+        .click()
+      cy.get('@postgraduateHospital').should('have.value', 'Hospital General Ticomán')
     })
     // Endorser
     context('university', () => {
@@ -378,6 +393,7 @@ describe('Curriculum', () => {
       cy.get('@license')
         .parents('.error')
         .should('not.exist')
+      cy.nextWizardTab('@nextButton')
     })
     // professionalExercise
 
@@ -385,7 +401,7 @@ describe('Curriculum', () => {
       cy.get('[data-test=request-professionalExercise-hospital]')
         .as('professional.Hospital')
         .should('exist')
-      cy.get('@hospital').type(chance.sentence())
+      cy.get('@professional.Hospital').type(chance.sentence())
       cy.focused().clear()
       cy.get('@professional.Hospital').type('Hospital General Tic')
       cy.get('@professional.Hospital')
@@ -411,24 +427,23 @@ describe('Curriculum', () => {
       // chance.profession({rank: true})
       cy.get('[data-test="request-professionalExercise-charge"]').as('job')
       cy.get('@job').type(chance.profession({ rank: true }))
+      cy.nextWizardTab('@nextButton')
     })
 
     context('voucher', () => {
       cy.get('[data-test=request-voucher]')
         .as('voucher')
         .should('exist')
-      //       const fileName = 'doc.pdf';
-      //       cy.fixture(fileName).then(fileContent => {
-      //         cy.get('@voucher')
-      //           .attachFile({
-      //             fileContent: fileContent.toString(),
-      //             fileName: fileName,
-      //             mimeType: 'image/pdf'
-      //           })
-      //           .trigger('change', { force: true })
-      // 
-      //       });
-      //       cy.get('@voucher').should('have.value', 'foo')
+    })
+    context('diploma', () => {
+      cy.get('[data-test=request-uploadDegreeDiploma]')
+        .as('uploadDiploma')
+        .should('exist')
+    })
+    context('license', () => {
+      cy.get('[data-test=request-uploadLicense]')
+        .as('uploadLicense')
+        .should('exist')
     })
   })
 })
