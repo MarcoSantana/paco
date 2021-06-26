@@ -5,6 +5,26 @@ export default {
   data: () => ({
     documents: [
       {
+        name: 'Fotografía de diploma',
+        required: true,
+        points: 0,
+        schema: {
+          groups: [
+            {
+              fields: [
+                {
+                  type: 'image',
+                  label: 'Avatar',
+                  model: 'avatar',
+                  required: true,
+                  validator: validators.checkSize,
+                },
+              ],
+            },
+          ],
+        },
+      },
+      {
         name: 'Credencial INE',
         required: true,
         point: 0,
@@ -72,7 +92,25 @@ export default {
       },
     ],
   }),
+  mounted() {},
+  methods: {
+    async checkSize(value, field, model) {
+      const blob = await fetch(model.avatar)
+        .then(res => res.blob())
+        .then(foo => {
+          return foo
+        })
+      if (blob.size / (1024 * 1024) > 5) return ['Tamaño máximo de archivo 5MB']
+      return []
+    },
+    checkAmount(value) {
+      console.log('value :>> ', value)
+      // eslint-disable-next-line no-alert
+      alert('Filesize')
+    },
+  },
   created() {
+    validators.checkSize = this.checkSize
     const res = validators.resources
     res.textTooSmall = 'No son suficientes caracteres'
     res.fieldIsRequired = 'Este campo en requerido'
