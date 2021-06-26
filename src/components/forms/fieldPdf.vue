@@ -42,15 +42,10 @@
         </div>
       </div>
     </div>
+    <input v-if="!value" type="button" class="file-button" value="Cargar documento" @click="clickLoadFile" />
     <input
-      v-if="!value"
-      type="button"
-      class="file-button"
-      onclick="document.getElementById('getFile').click()"
-      value="Cargar documento"
-    />
-    <input
-      id="getFile"
+      :id="getFileId"
+      :ref="getFileId"
       class="file"
       accept="image/png, image/jpeg, .pdf"
       :disabled="disabled"
@@ -86,6 +81,9 @@ export default {
     }
   },
   computed: {
+    getFileId() {
+      return this.getFieldID(this.schema)
+    },
     previewStyle() {
       if (this.schema.preview !== false) {
         return {
@@ -139,6 +137,11 @@ export default {
     })
   },
   methods: {
+    clickLoadFile() {
+      // this.$document.getElementById(this.getFileId).click()
+      this.$refs[this.getFileId].click()
+      console.log('this.getFileId :>> ', this.getFileId)
+    },
     validate(calledParent) {
       // disabled inputs should always be assumed
       // to be "valid" as they can not be changed
