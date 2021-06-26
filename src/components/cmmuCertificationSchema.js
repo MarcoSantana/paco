@@ -410,6 +410,7 @@ export default {
                 input: { 'data-test': 'request-voucher' },
               },
               required: true,
+              validator: ['required'],
             },
             // Diploma
             {
@@ -423,6 +424,7 @@ export default {
                 input: { 'data-test': 'request-uploadDegreeDiploma' },
               },
               required: true,
+              validator: ['required'],
             },
             // License
             {
@@ -436,11 +438,58 @@ export default {
                 input: { 'data-test': 'request-uploadLicense' },
               },
               required: true,
+              validator: ['required'],
+            },
+            // ENARM
+            {
+              type: 'pdf',
+              label: 'Copia de la constancia de haber efectuado y aprobado el ENARM',
+              hint:
+                'Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional para la Formación de Recursos Humanos para la Salud (CIFRHS)',
+              hideInput: true,
+              browse: true,
+              preview: true,
+              model: 'request.upload.enarm',
+              attributes: {
+                input: { 'data-test': 'request-uploadEnarm' },
+              },
+              required: true,
+              validator: ['required'],
+            },
+            // constancia de haber terminado satisfactoriamente una residencia progresiva hospitalaria de por lo menos 2 años
+            {
+              type: 'pdf',
+              label: 'Constancia de residencia progresiva hospitalaria',
+              hint:
+                'Constancia de haber terminado satisfactoriamente una residencia progresiva hospitalaria de por lo menos 2 años',
+              hideInput: true,
+              browse: true,
+              preview: true,
+              model: 'request.upload.pediatricResidence',
+              attributes: {
+                input: { 'data-test': 'request-uploadPediatricResidence' },
+              },
+              required: false,
+            },
+            // Copia del diploma institucional en Medicina de Urgencias o en su caso Urgencias Pediatricas.
+            {
+              type: 'pdf',
+              label: 'Copia del diploma institucional en Medicina de Urgencias o en su caso Urgencias Pediatricas',
+              hint: '',
+              hideInput: true,
+              browse: true,
+              preview: true,
+              model: 'request.upload.postgraduateDiploma',
+              attributes: {
+                input: { 'data-test': 'request-uploadPostgraduateDiploma' },
+              },
+              required: false,
             },
           ],
         },
         // Submit
         {
+          legend: 'Enviar solicitud',
           fields: [
             {
               type: 'submit',

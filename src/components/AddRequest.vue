@@ -32,9 +32,10 @@
             <li>Ser médico cirujano debidamente autorizado para ejercer la medicina en México.</li>
             <li>Copia del título y cédula profesional de la licenciatura en medicina.</li>
             <li>
-              Copia de la constancia de haber efectuado y aprobado el Examen Nacional de Aspirantes a Residencias
-              Médicas (ENARM), realizado por la Comisión Interinstitucional para la Formación de Recursos Humanos para
-              la Salud (CIFRHS);
+              Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional
+              para la Formación de Recursos Humanos para la Salud (CIFRHS); Copia de la constancia de haber efectuado y
+              aprobado el Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión
+              Interinstitucional para la Formación de Recursos Humanos para la Salud (CIFRHS);
             </li>
             <li>
               En el caso de Urgencias Pediátricas deberá entregar además el diploma institucional y diploma de la

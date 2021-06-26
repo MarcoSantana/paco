@@ -72,6 +72,6 @@ Cypress.Commands.add('logout', () => {
  ******************************************************************************* */
 Cypress.Commands.add('nextWizardTab', button => {
   cy.get(button).as('next')
-  cy.get('@next').click()
+  cy.get('@next').click({ timeout: 1000 })
   // TODO validate taht this button actually did something
 })

@@ -447,5 +447,15 @@ describe('Curriculum', () => {
         .as('uploadLicense')
         .should('exist')
     })
+    context('enarm', () => {
+      cy.get('[data-test=request-uploadEnarm]')
+        .as('uploadEnarm')
+        .should('exist')
+    })
+    context('pediatricResidence', () => {
+      cy.get('[data-test=request-uploadPediatricResidence]')
+        .as('uploadResidence')
+        .should('exist')
+    })
   })
 })
