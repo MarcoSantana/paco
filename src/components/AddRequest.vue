@@ -1,12 +1,5 @@
 <template>
   <div class="box">
-    <!-- <h1>TODO</h1> -->
-    <!-- <ul>
-      <li>Bind wizard errors to vfg errors</li>
-      <li>check loading animation (wizard)</li>
-      <li>change tab color acording to validation results</li>
-      <li>Add proper style to item legend title</li>
-    </ul> -->
     <h2 v-if="model && model.errors" class="error">
       <ul v-for="error in model.errors" :key="error.field.label">
         <li>{{ error.field.label }} >> {{ error.error }}</li>
@@ -23,7 +16,50 @@
       finish-button-text="Terminado"
       @on-complete="onComplete"
     >
-      current step>> {{ currentStep }}
+      <tab-content title="Requisitos" class="requirements">
+        <h2>Requisitos para solicitar Certificación</h2>
+        <div>
+          <h3>
+            **Importante**
+          </h3>
+          <div>
+            Todos los documentos solicitados deberán estar impresos, y digitalizados en formato PDF o JPG. Y cargados en
+            esta plataforma
+          </div>
+        </div>
+        <div>
+          <ol>
+            <li>Ser médico cirujano debidamente autorizado para ejercer la medicina en México.</li>
+            <li>Copia del título y cédula profesional de la licenciatura en medicina.</li>
+            <li>
+              Copia de la constancia de haber efectuado y aprobado el Examen Nacional de Aspirantes a Residencias
+              Médicas (ENARM), realizado por la Comisión Interinstitucional para la Formación de Recursos Humanos para
+              la Salud (CIFRHS);
+            </li>
+            <li>
+              En el caso de Urgencias Pediátricas deberá entregar además el diploma institucional y diploma de la
+              institución educativa (universitaria) que lo avala en Pediatría.
+            </li>
+            <li>
+              En el caso de Urgencias Pediátricas, constancia de haber terminado satisfactoriamente una residencia
+              progresiva hospitalaria de por lo menos 2 años.
+            </li>
+            <li>Copia del diploma institucional en Medicina de Urgencias o en su caso Urgencias Pediatricas.</li>
+            <li>Copia del diploma de la institución educativa (Universitaria) que lo avala.</li>
+            <li>
+              Tres fotografías oval tamaño diploma (5x7cm) blanco y negro, con fondo blanco, vestimenta formal. Con
+              nombre csompleto al reverso (con tinta).
+            </li>
+            <li>Imprimir, llenar completamente y anexar la solicitud de Certificación</li>
+            <li>
+              Vigente en Medicina de Urgencias o Urgencias Pediátricas según sea el caso. (Descargar de la página web
+              del Consejo).
+            </li>
+            <li>Curriculum vitae</li>
+            <li>Donativo no reembolsable de $ 5,500. 00/100 m.n.</li>
+          </ol>
+        </div>
+      </tab-content>
       <tab-content v-for="item in groups" :key="item.legend" :before-change="validateAsync" :title="item.legend">
         <vue-form-generator
           :ref="getAttrs(item.fields)"
@@ -39,7 +75,6 @@
         Aquí ponemos los siguientes pasos a para el aspirante
       </tab-content>
       <div v-if="loadingWizard" class="loader"></div>
-      {{ errorMsg }}
       <span slot="prev"></span>
       <button
         class="reset-button"
@@ -72,7 +107,6 @@ export default {
 
   data: () => ({
     currentIsValid: false,
-    currentStep: null,
     steps: [],
     formOptions: {
       validateAfterLoad: false,
@@ -84,20 +118,15 @@ export default {
     // wizard
     loadingWizard: false,
     count: 0,
-    // errorMsg: null,
+    errorMsg: null,
   }),
   computed: {
     ...mapState('forms', ['currentForm']),
     groups() {
       return this.schema.groups
     },
-    // errorMsg() {
-    //   return isNil(this.model && this.model.errors) ? null : this.model.errors
-    // },
   },
-  watch: {
-    model() {},
-  },
+  watch: {},
   methods: {
     // ...mapMutations('forms', ['setCurrentForm']),
     ...mapActions('forms', ['triggerAddCurrentFormAction']),
@@ -128,11 +157,11 @@ export default {
     },
     handleErrorMessage(errorMsg) {
       if (!isNil(errorMsg) || !isEmpty(errorMsg)) this.errorMsg = errorMsg
-      return true
       // TODO Give this better style
       this.errorMsg = this.model.errors
       // this.$store.state.currentForm.errors.push(errorMsg)
       console.log('errorMsg: ', errorMsg)
+      return true
     },
     validateAsync() {
       return new Promise((resolve, reject) => {
@@ -157,6 +186,25 @@ export default {
 <style lang="scss">
 @import '@/theme/style.scss';
 @import '@/theme/variables.scss';
+.requirements {
+  padding: 1.5rem;
+  @extend .box;
+  h1 {
+  }
+  div {
+    padding: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 75%;
+  }
+  ol {
+    background-color: $light-accent;
+    :nth-child(2n + 1) {
+      background-color: $light-accent-1;
+    }
+  }
+}
 .reset-button {
   @extend .form-wizard-button;
   background-color: lighten($danger-color, 10%);
