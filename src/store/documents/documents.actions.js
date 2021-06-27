@@ -18,9 +18,21 @@ export default {
     const userDocumentDb = new UserDocumentsDB(rootState.authentication.user.id)
 
     commit('setDocumentCreationPending', true)
-    const createdDocument = await userDocumentDb.create(document)
-    commit('addDocument', createdDocument)
-    commit('setDocumentCreationPending', false)
+    // const addUniqueUserDocument = await userDocumentDb.addUniqueUserDocument(document.name)
+    // console.log('addUniqueUserDocument :>> ', addUniqueUserDocument)
+    const docExists = await userDocumentDb.checkUniqueUserDocument(document.name)
+    try {
+      if (!docExists) {
+        const createdDocument = await userDocumentDb.create(document, document.name)
+        commit('addDocument', createdDocument)
+        commit('setDocumentCreationPending', false)
+        return createdDocument
+      }
+      throw new Error('El documento ya existe')
+    } catch (error) {
+      console.log('Error', error)
+    }
+    return null
   },
 
   /**
@@ -29,7 +41,7 @@ export default {
   triggerAddDocumentAction: ({ dispatch, state, commit }, data) => {
     if (state.documentNameToCreate === '') return
 
-    const document = { name: state.documentNameToCreate, data }
+    const document = { name: state.documentNameToCreate, ...data }
     commit('setDocumentNameToCreate', '')
     dispatch('createUserDocument', document)
   },
