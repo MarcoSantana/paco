@@ -14,7 +14,7 @@ export default {
     id: String,
   },
   computed: {
-    ...mapGetters('document', ['getDocumentById']),
+    ...mapGetters('documents', ['getDocumentById']),
     currentDocument() {
       return this.getDocumentById(this.id)
     },

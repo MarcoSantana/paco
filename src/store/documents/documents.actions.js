@@ -26,10 +26,10 @@ export default {
   /**
    * Create a new document for current loggedin user and reset document name input
    */
-  triggerAddDocumentAction: ({ dispatch, state, commit }) => {
+  triggerAddDocumentAction: ({ dispatch, state, commit }, data) => {
     if (state.documentNameToCreate === '') return
 
-    const document = { name: state.documentNameToCreate }
+    const document = { name: state.documentNameToCreate, data }
     commit('setDocumentNameToCreate', '')
     dispatch('createUserDocument', document)
   },

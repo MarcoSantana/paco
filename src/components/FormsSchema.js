@@ -19,6 +19,12 @@ export default {
                   required: true,
                   validator: validators.checkSize,
                 },
+                {
+                  type: 'submit',
+                  label: 'Enviar',
+                  buttonText: 'Almacenar',
+                  onSubmit: 'alert("submited")',
+                },
               ],
             },
           ],
@@ -102,6 +108,11 @@ export default {
         })
       if (blob.size / (1024 * 1024) > 5) return ['Tamaño máximo de archivo 5MB']
       return []
+    },
+    submit() {
+      console.log('submit: ')
+      // eslint-disable-next-line no-alert
+      alert('submit')
     },
     checkAmount(value) {
       console.log('value :>> ', value)

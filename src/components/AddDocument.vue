@@ -1,12 +1,5 @@
 <template>
   <div class="box">
-    <h2>TODO</h2>
-    <div>
-      <ul>
-        <li>Make upload image mechanism</li>
-      </ul>
-    </div>
-    <!-- todo -->
     <form-wizard
       shape="circle"
       step-size="xs"
@@ -34,7 +27,6 @@
         icon="ti-settings"
       >
         <span v-if="documentType">
-          Form model: {{ formModel }}
           <h2 v-if="documentType">Formulario para anexar {{ documentType.name }}</h2>
           <vue-form-generator :schema="documentType.schema" :model="formModel" :options="formOptions">
           </vue-form-generator>
@@ -87,7 +79,9 @@ export default {
     ...mapMutations('documents', ['setDocumentNameToCreate']),
     ...mapActions('documents', ['triggerAddDocumentAction']),
     onComplete() {
-      // TODO must actually upload the file
+      this.setDocumentNameToCreate(this.documentType.name)
+      this.triggerAddDocumentAction(this.formModel)
+      // TODO Do not use alert use your own modal 202106.26-19.52
       // eslint-disable-next-line no-alert
       alert('Terminó la carga del documento')
     },
