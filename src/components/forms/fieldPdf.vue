@@ -28,6 +28,7 @@
       </div>
       <div style="width: 50%">
         <pdf
+          v-if="fileType == 'pdf'"
           ref="myPdf"
           :src="value"
           :page="page"
@@ -78,6 +79,7 @@ export default {
       numPages: 0,
       loadedRatio: 0,
       mimeType: null,
+      fileSize: null,
     }
   },
   computed: {
@@ -110,7 +112,6 @@ export default {
     fileType() {
       const myRe = /data:(\w+)\/(\w+)/g
       const myArray = myRe.exec(this.value)
-      // console.log('myArray :>> ', myArray)
       return myArray[2]
     },
   },
@@ -131,7 +132,6 @@ export default {
     this.$nextTick(() => {
       // The whole view is rendered, so I can safely access or query
       // the DOM. ¯\_(ツ)_/¯
-      // console.log('!isNil(this.value) :>> ', !isNil(this.value))
       this.value = null
       this.isValid = null
     })
@@ -140,7 +140,6 @@ export default {
     clickLoadFile() {
       // this.$document.getElementById(this.getFileId).click()
       this.$refs[this.getFileId].click()
-      console.log('this.getFileId :>> ', this.getFileId)
     },
     validate(calledParent) {
       // disabled inputs should always be assumed
@@ -156,6 +155,10 @@ export default {
       if (this.schema.required && !this.value) {
         // isValid = false
         this.errors.push(this.schema.errorText || 'Ingrese el documento')
+      }
+      if (this.fileSize / (1024 * 1024) > 5) {
+        this.errors.push(this.schema.errorText || 'Tamaño máximo de archivo 5Mb')
+        if (!calledParent) this.$emit('validated', !isNil(this.value), this.errors, this)
       }
 
       // CUSTOM VALIDATION LOGIC HERE
@@ -182,13 +185,12 @@ export default {
       this.$emit('validated', !isNil(this.value), ['Ingrese documento archivo'], this)
 
       // Schema has defined onChange method.
-      console.log('this.schema from event :>> ', this.schema)
       const reader = new FileReader()
       reader.onload = e => {
         this.value = e.target.result
-        console.log('this.value :>> ', this.value)
       }
       if (event.target.files && event.target.files.length > 0) {
+        this.fileSize = event.target.files[0].size
         reader.readAsDataURL(event.target.files[0])
       }
     },
