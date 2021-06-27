@@ -3,6 +3,15 @@ import { validators } from 'vue-form-generator'
 
 export default {
   methods: {
+    async checkSize(value, field, model) {
+      const blob = await fetch(model.avatar)
+        .then(res => res.blob())
+        .then(foo => {
+          return foo
+        })
+      if (blob.size / (1024 * 1024) > 5) return ['Tamaño máximo de archivo 5MB']
+      return []
+    },
     onValidated(isValid, errors) {
       // console.log('Validation result: ', isValid, ', Errors:', errors)
       if (errors.length >= 0) {
@@ -395,123 +404,138 @@ export default {
           ],
         },
         // Payment
-        {
-          legend: 'Carga de documentos',
-          fields: [
-            // Payment voucher
-            {
-              type: 'pdf',
-              label: 'Cargar comprobante de pago',
-              hideInput: true,
-              browse: true,
-              preview: true,
-              model: 'request.voucher',
-              attributes: {
-                input: { 'data-test': 'request-voucher' },
-              },
-              required: true,
-              validator: ['required'],
-            },
-            // Diploma
-            {
-              type: 'pdf',
-              label: 'Copia del título de la licenciatura en medicina.',
-              hideInput: true,
-              browse: true,
-              preview: true,
-              model: 'request.upload.degreeDiploma',
-              attributes: {
-                input: { 'data-test': 'request-uploadDegreeDiploma' },
-              },
-              required: true,
-              validator: ['required'],
-            },
-            // License
-            {
-              type: 'pdf',
-              label: 'Copia de la cédula profesional de la licenciatura en medicina.',
-              hideInput: true,
-              browse: true,
-              preview: true,
-              model: 'request.upload.license',
-              attributes: {
-                input: { 'data-test': 'request-uploadLicense' },
-              },
-              required: true,
-              validator: ['required'],
-            },
-            // ENARM
-            {
-              type: 'pdf',
-              label: 'Copia de la constancia de haber efectuado y aprobado el ENARM',
-              hint:
-                'Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional para la Formación de Recursos Humanos para la Salud (CIFRHS)',
-              hideInput: true,
-              browse: true,
-              preview: true,
-              model: 'request.upload.enarm',
-              attributes: {
-                input: { 'data-test': 'request-uploadEnarm' },
-              },
-              required: true,
-              validator: ['required'],
-            },
-            // constancia de haber terminado satisfactoriamente una residencia progresiva hospitalaria de por lo menos 2 años
-            {
-              type: 'pdf',
-              label: 'Constancia de residencia progresiva hospitalaria',
-              hint:
-                'Constancia de haber terminado satisfactoriamente una residencia progresiva hospitalaria de por lo menos 2 años',
-              hideInput: true,
-              browse: true,
-              preview: true,
-              model: 'request.upload.pediatricResidence',
-              attributes: {
-                input: { 'data-test': 'request-uploadPediatricResidence' },
-              },
-              required: false,
-            },
-            // Copia del diploma institucional en Medicina de Urgencias o en su caso Urgencias Pediatricas.
-            {
-              type: 'pdf',
-              label: 'Copia del diploma institucional en Medicina de Urgencias o en su caso Urgencias Pediatricas',
-              hint: '',
-              hideInput: true,
-              browse: true,
-              preview: true,
-              model: 'request.upload.postgraduateDiploma',
-              attributes: {
-                input: { 'data-test': 'request-uploadPostgraduateDiploma' },
-              },
-              required: false,
-            },
-          ],
-        },
+        // {
+        //   legend: 'Carga de documentos',
+        //   fields: [
+        //     // Payment voucher
+        //     {
+        //       type: 'pdf',
+        //       label: 'Cargar comprobante de pago',
+        //       hideInput: true,
+        //       browse: true,
+        //       preview: true,
+        //       model: 'request.voucher',
+        //       attributes: {
+        //         input: { 'data-test': 'request-voucher' },
+        //       },
+        //       required: false,
+        //       // validator: ['required'],
+        //     },
+        //     // Diploma
+        //     {
+        //       type: 'pdf',
+        //       label: 'Copia del título de la licenciatura en medicina.',
+        //       hideInput: true,
+        //       browse: true,
+        //       preview: true,
+        //       model: 'request.upload.degreeDiploma',
+        //       attributes: {
+        //         input: { 'data-test': 'request-uploadDegreeDiploma' },
+        //       },
+        //       required: false,
+        //       // validator: ['required'],
+        //     },
+        //     // License
+        //     {
+        //       type: 'pdf',
+        //       label: 'Copia de la cédula profesional de la licenciatura en medicina.',
+        //       hideInput: true,
+        //       browse: true,
+        //       preview: true,
+        //       model: 'request.upload.license',
+        //       attributes: {
+        //         input: { 'data-test': 'request-uploadLicense' },
+        //       },
+        //       required: false,
+        //       // validator: ['required'],
+        //     },
+        //     // ENARM
+        //     {
+        //       type: 'pdf',
+        //       label: 'Copia de la constancia de haber efectuado y aprobado el ENARM',
+        //       hint:
+        //         'Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional para la Formación de Recursos Humanos para la Salud (CIFRHS)',
+        //       hideInput: true,
+        //       browse: true,
+        //       preview: true,
+        //       model: 'request.upload.enarm',
+        //       attributes: {
+        //         input: { 'data-test': 'request-uploadEnarm' },
+        //       },
+        //       required: false,
+        //       // validator: ['required'],
+        //     },
+        //     // constancia de haber terminado satisfactoriamente una residencia progresiva hospitalaria de por lo menos 2 años
+        //     {
+        //       type: 'pdf',
+        //       label: 'Constancia de residencia progresiva hospitalaria',
+        //       hint:
+        //         'Constancia de haber terminado satisfactoriamente una residencia progresiva hospitalaria de por lo menos 2 años',
+        //       hideInput: true,
+        //       browse: true,
+        //       preview: true,
+        //       model: 'request.upload.pediatricResidence',
+        //       attributes: {
+        //         input: { 'data-test': 'request-uploadPediatricResidence' },
+        //       },
+        //       required: false,
+        //     },
+        //     // Copia del diploma institucional en Medicina de Urgencias o en su caso Urgencias Pediatricas.
+        //     {
+        //       type: 'pdf',
+        //       label: 'Copia del diploma institucional en Medicina de Urgencias o en su caso Urgencias Pediatricas',
+        //       hint: '',
+        //       hideInput: true,
+        //       browse: true,
+        //       preview: true,
+        //       model: 'request.upload.postgraduateDiploma',
+        //       attributes: {
+        //         input: { 'data-test': 'request-uploadPostgraduateDiploma' },
+        //       },
+        //       required: false,
+        //     },
+        //     // Tres fotografías oval tamaño diploma(5x7cm) blanco y negro, con fondo blanco, vestimenta formal.Con nombre csompleto al reverso(con tinta).
+        //     {
+        //       type: 'image',
+        //       label: 'Avatar',
+        //       model: 'avatar',
+        //       required: false,
+        //       browse: true,
+        //       preview: true,
+        //       attributes: {
+        //         input: { 'data-test': 'request-uploadPostgraduateDiploma' },
+        //       },
+        //       validator: validators.checkSize,
+        //     },
+        //   ],
+        // },
         // Submit
-        {
-          legend: 'Enviar solicitud',
-          fields: [
-            {
-              type: 'submit',
-              visible: true,
-              onSubmit(model) {
-                console.log('Form submitted!', model)
-              },
-              // onSubmit: function() {
-              //   console.log('Submited')
-              //   if (this.modalErrors.length > 0) {
-              //     this.showModal = true
-              //   }
-              // },
-              validateBeforeSubmit: true,
-            },
-          ],
-        },
+        // {
+        //   legend: 'Enviar solicitud',
+        //   fields: [
+        //     {
+        //       label: 'Enviar solicitud',
+        //       type: 'submit',
+        //       visible: true,
+        //       onSubmit(model) {
+        //         console.log('Form submitted!', model)
+        //       },
+        //       // onSubmit: function() {
+        //       //   console.log('Submited')
+        //       //   if (this.modalErrors.length > 0) {
+        //       //     this.showModal = true
+        //       //   }
+        //       // },
+        //       validateBeforeSubmit: true,
+        //     },
+        //   ],
+        // },
       ],
     },
   }),
   created() {
     const res = validators.resources
+    validators.checkSize = this.checkSize
     res.textTooSmall = 'No son suficientes caracteres'
     res.fieldIsRequired = 'Este campo en requerido'
     res.dateIsEarly = 'Esta fecha es muy pronto. Actual: {0}, Mínimo: {1}'
