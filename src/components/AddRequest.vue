@@ -105,7 +105,6 @@ import 'vue-form-wizard/dist/vue-form-wizard.min.css'
 export default {
   components: { 'form-wizard': FormWizard, 'tab-content': TabContent },
   mixins: [cmmuCertificationSchema],
-
   data: () => ({
     currentIsValid: false,
     steps: [],
@@ -122,15 +121,20 @@ export default {
     errorMsg: null,
   }),
   computed: {
-    ...mapState('forms', ['currentForm']),
+    ...mapState('forms', ['currentForm', 'formNameToCreate']),
     groups() {
       return this.schema.groups
     },
   },
   watch: {},
+  mounted() {
+    this.setFormNameToCreate('Solicitud de examen')
+  },
   methods: {
-    // ...mapMutations('forms', ['setCurrentForm']),
-    ...mapActions('forms', ['triggerAddCurrentFormAction']),
+    ...mapMutations('forms', ['setFormNameToCreate']),
+    ...mapMutations('documents', ['setDocumentNameToCreate']),
+    ...mapActions('forms', ['triggerAddCurrentFormAction', 'triggerAddFormAction']),
+    ...mapActions('documents', ['triggerAddDocumentAction']),
     ...mapGetters('forms', ['getCurrentForm']),
     getAttrs(vnode) {
       return get(vnode[0], 'attributes.input.data-test', {})
@@ -142,9 +146,15 @@ export default {
     onValidated(isValid, errors) {
       this.errorMsg = errors
       this.currentIsValid = isValid
+      // this.currentIsValid = true
     },
     // form wizard
     onComplete() {
+      // This might take a while so make it async and show a loader
+      // Maybe add a timeout
+      // Make a fixed value the request skeleton to improve failsafe
+      this.setDocumentNameToCreate('Solicitud de certificacion')
+      this.triggerAddDocumentAction(this.model)
       // eslint-disable-next-line no-alert
       alert('Form wizard ended')
     },
