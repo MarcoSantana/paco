@@ -50,7 +50,7 @@ describe('Curriculum', () => {
       cy.get('@date').click()
       cy.get('.vdatetime-popup__title').as('title')
       cy.get('@title').should('contain', 'Fecha de solicitud')
-      cy.get('.vdatetime-popup__year').as('year')
+      cy.get('.vdatetime-popup__year', { timeout: 2000 }).as('year')
       cy.get('@year').click()
       cy.get('.vdatetime-year-picker__list > :nth-child(62)')
         .should('contain', '1982')
@@ -65,7 +65,7 @@ describe('Curriculum', () => {
       cy.get('.vdatetime-calendar__month')
         .should('be.visible')
         .should('contain', '27')
-      cy.get(':nth-child(35) > :nth-child(1)').click()
+      cy.get(':nth-child(35) > :nth-child(1)', { timeout: 10000 }).click()
       cy.get('.vdatetime-input').should('have.value', '27 de junio de 1982')
     })
     // First name
@@ -142,7 +142,7 @@ describe('Curriculum', () => {
       cy.get(':nth-child(35) > :nth-child(1)').click()
       cy.get('.vdatetime-input').should('have.value', '27 de junio de 1982')
       cy.get('#age').as('age')
-      cy.get('@age').should('have.value', '38')
+      cy.get('@age').should('have.value', '39')
 
       // Close pop up
       // cy.get('.vdatetime-popup__actions__button--cancel').as('cancelButton')
