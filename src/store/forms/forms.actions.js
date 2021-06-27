@@ -1,4 +1,4 @@
-import UserFormsDB from '@/firebase/forms-db'
+import UserFormsDB from '@/firebase/user-forms-db'
 
 export default {
   /**
