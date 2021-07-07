@@ -68,7 +68,7 @@
 import { mapState, mapMutations } from 'vuex'
 import { isNil } from 'lodash'
 import firebase from 'firebase/app'
-import { desktop as isDekstop } from 'is_js'
+// import { desktop as isDekstop } from 'is_js'
 import * as firebaseErrors from '@/firebase/firebase-errors.json'
 
 export default {
@@ -104,7 +104,7 @@ export default {
     user: {
       handler(user) {
         if (!isNil(user)) {
-          const redirectUrl = isNil(this.$route.query.redirectUrl) ? '/documents' : this.$route.query.redirectUrl
+          const redirectUrl = isNil(this.$route.query.redirectUrl) ? '/home' : this.$route.query.redirectUrl
           this.$router.push(redirectUrl)
         }
       },
@@ -113,24 +113,24 @@ export default {
   },
   methods: {
     ...mapMutations('authentication', ['setUser']),
-    async login() {
-      this.loginError = null
-      const provider = new firebase.auth.GoogleAuthProvider()
-      this.setUser(undefined)
+    // async login() {
+    //   this.loginError = null
+    //   const provider = new firebase.auth.GoogleAuthProvider()
+    //   this.setUser(undefined)
 
-      try {
-        // Firebase signin with popup is faster than redirect
-        // but we can't use it on mobile because it's not well supported
-        // when app is running as standalone on ios & android
-        // eslint-disable-next-line no-unused-expressions
-        isDekstop()
-          ? await firebase.auth().signInWithPopup(provider)
-          : await firebase.auth().signInWithRedirect(provider)
-      } catch (err) {
-        this.loginError = err
-        this.setUser(null)
-      }
-    },
+    //   try {
+    //     // Firebase signin with popup is faster than redirect
+    //     // but we can't use it on mobile because it's not well supported
+    //     // when app is running as standalone on ios & android
+    //     // eslint-disable-next-line no-unused-expressions
+    //     isDekstop()
+    //       ? await firebase.auth().signInWithPopup(provider)
+    //       : await firebase.auth().signInWithRedirect(provider)
+    //   } catch (err) {
+    //     this.loginError = err
+    //     this.setUser(null)
+    //   }
+    // },
     async loginWithEmailPassword() {
       this.loginError = null
       firebase

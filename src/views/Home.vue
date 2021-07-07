@@ -4,11 +4,15 @@
     <h1 class="home-page-title">{{ appTitle }}</h1>
     <h2 class="home-page-title">{{ clientName }}</h2>
 
-    <div class="box">
-      <form>
-        <input id="admin-email" ref="adminEmail" type="email" required />
-        <button @click.prevent="addRole">Make admin</button>
-      </form>
+    <!-- <div v-if="isAdmin" class="box"> -->
+    <div v-if="isUserLoggedIn">
+      Is Admin? :: {{ isUserAdmin }}
+      <div v-if="isUserAdmin" class="box">
+        <form>
+          <input id="admin-email" ref="adminEmail" type="email" required />
+          <button @click.prevent="addRole">Make admin</button>
+        </form>
+      </div>
     </div>
 
     <!-- <a rel="noopener" class="documentation-link" target="_blank" href="https://bento-starter.netlify.com/"
@@ -19,7 +23,7 @@
 
 <script>
 import { functions } from 'firebase'
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import callAddAdminRole from '@/firebase/functions'
 
 export default {
@@ -37,7 +41,11 @@ export default {
       ],
     }
   },
-  computed: mapState('app', ['appTitle', 'clientName']),
+  computed: {
+    ...mapState('app', ['appTitle', 'clientName']),
+    ...mapState('authentication', ['user']),
+    ...mapGetters('authentication', ['isUserLoggedIn', 'isUserAdmin']),
+  },
   methods: {
     addRole() {
       console.log('Click')

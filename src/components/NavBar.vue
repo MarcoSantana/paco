@@ -6,6 +6,11 @@
       <span class="site-name title-desktop">{{ appTitle }}</span>
       <span class="site-name title-mobile">{{ appShortTitle }}</span>
     </router-link>
+
+    <div v-if="isUserLoggedIn && networkOnLine" data-test="navbar-products" class="nav-item ">
+      Administrador
+      <i class="mdi mdi-badge-account icon"></i>
+    </div>
     <div class="links">
       <nav class="nav-links">
         <!-- <div v-if="isUserLoggedIn && networkOnLine" data-test="navbar-products" class="nav-item ">

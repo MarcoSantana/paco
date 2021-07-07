@@ -2,6 +2,7 @@ import router from '@/router'
 import { isNil } from 'lodash'
 import { createNewUserFromFirebaseAuthUser } from '@/misc/helpers'
 import UsersDB from '@/firebase/users-db'
+// import asyncFirestore from '@/firebase/async-firestore'
 
 export default {
   /**
@@ -13,8 +14,22 @@ export default {
     const user = isNil(userFromFirebase) ? await createNewUserFromFirebaseAuthUser(firebaseAuthUser) : userFromFirebase
 
     commit('setUser', user)
+    await dispatch('setClaims', firebaseAuthUser)
+
+    // Actions should not be async move this to the actual mutation
     dispatch('products/getUserProducts', null, { root: true })
     dispatch('documents/getUserDocuments', null, { root: true })
+  },
+
+  setClaims: async ({ commit }, user) => {
+    if (!isNil(user)) {
+      user.getIdTokenResult().then(idTokenResult => {
+        if (!isNil(idTokenResult)) {
+          commit('setUserClaims', idTokenResult.claims)
+          console.log('idTokenResult.claims :>> ', idTokenResult.claims)
+        }
+      })
+    }
   },
 
   /**
@@ -22,6 +37,7 @@ export default {
    */
   logout: ({ commit }) => {
     commit('setUser', null)
+    commit('setUserClaims', null)
     commit('products/setProducts', null, { root: true })
     commit('documents/setDocuments', null, { root: true })
 
