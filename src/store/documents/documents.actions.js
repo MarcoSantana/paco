@@ -1,4 +1,5 @@
 import UserDocumentsDB from '@/firebase/user-documents-db'
+import { storage } from 'firebase'
 
 export default {
   /**
@@ -23,7 +24,24 @@ export default {
     const docExists = await userDocumentDb.checkUniqueUserDocument(document.name)
     try {
       if (!docExists) {
+        const { upload } = document
+        delete document.upload
+        document.files = Object.keys(upload)
+        console.log('document.files :>> ', document.files)
+        console.log('upload :>> ', upload)
+        // TODO here we mmust traverse the new uploads object to extract only the keys and create the route and those values must be inserted into a new object node maybe called again uploads or maybe files 202106.27-18.51
         const createdDocument = await userDocumentDb.create(document, document.name)
+
+        // Create a root reference
+        const storageRef = storage().ref(`documents/${rootState.authentication.user.id}`)
+        document.files.forEach(element => {
+          console.log('element :>> ', element)
+          const documentRef = storageRef
+            .child(`${document.name}/${element}`)
+            .putString(upload[element], 'data_url')
+            .then(snapshot => console.log(snapshot))
+          console.log('documentRef :>> ', documentRef)
+        })
         commit('addDocument', createdDocument)
         commit('setDocumentCreationPending', false)
         return createdDocument

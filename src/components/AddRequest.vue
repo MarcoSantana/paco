@@ -23,8 +23,8 @@
             **Importante**
           </h3>
           <div>
-            Todos los documentos solicitados deberán estar impresos, y digitalizados en formato PDF o JPG. Y cargados en
-            esta plataforma
+            Todos los documentos solicitados deberán estar digitalizados en formato PDF o JPG. Y cargados en esta
+            plataforma
           </div>
         </div>
         <div>

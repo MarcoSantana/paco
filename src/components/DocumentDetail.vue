@@ -1,9 +1,9 @@
 <template>
   <div class="document-detail">
     <h1>{{ document.name }}</h1>
-    <!-- <div>{{ document.data }}</div> -->
+    <div>{{ document.data }}</div>
     <div>
-      <img width="500px" :src="document.data.avatar" alt="" />
+      <!-- <img width="500px" :src="document.data.avatar" alt="" /> -->
     </div>
   </div>
 </template>
