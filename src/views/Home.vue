@@ -4,6 +4,13 @@
     <h1 class="home-page-title">{{ appTitle }}</h1>
     <h2 class="home-page-title">{{ clientName }}</h2>
 
+    <div class="box">
+      <form>
+        <input id="admin-email" ref="adminEmail" type="email" required />
+        <button @click.prevent="addRole">Make admin</button>
+      </form>
+    </div>
+
     <!-- <a rel="noopener" class="documentation-link" target="_blank" href="https://bento-starter.netlify.com/"
       >Documentation →</a
     > -->
@@ -11,7 +18,9 @@
 </template>
 
 <script>
+import { functions } from 'firebase'
 import { mapState } from 'vuex'
+import callAddAdminRole from '@/firebase/functions'
 
 export default {
   head() {
@@ -29,6 +38,24 @@ export default {
     }
   },
   computed: mapState('app', ['appTitle', 'clientName']),
+  methods: {
+    addRole() {
+      console.log('Click')
+      const ref = this.$refs.adminEmail
+      console.log('ref.value :>> ', ref.value)
+      console.log('functions :>> ', functions)
+      const foo = callAddAdminRole(ref.value)
+      console.log('foo :>> ', foo)
+      // const adminRole = functions.httpsCallable('addAdminRole')
+      // adminRole({ email: ref.value })
+      //   .then(result => {
+      //     console.log('result', result)
+      //   })
+      //   .catch(err => {
+      //     console.error(err)
+      //   })
+    },
+  },
 }
 </script>
 
