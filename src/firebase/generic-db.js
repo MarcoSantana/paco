@@ -86,6 +86,33 @@ export default class GenericDB {
   }
 
   /**
+   * Read all documents
+   * @param constraints
+   */
+  async readAllAsAdmin(constraints = null) {
+    const collectionRef = (await firestore()).collection(this.collectionPath)
+    console.log('readAllAsAdmin')
+    let query = collectionRef
+    console.log('query', query)
+
+    if (constraints) {
+      constraints.forEach(constraint => {
+        query = query.where(...constraint)
+      })
+    }
+
+    const formatResult = result =>
+      result.docs.map(ref =>
+        this.convertObjectTimestampPropertiesToDate({
+          id: ref.id,
+          ...ref.data(),
+        })
+      )
+
+    return query.get().then(formatResult)
+  }
+
+  /**
    * Update a document in the collection
    * @param data
    */

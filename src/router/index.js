@@ -82,8 +82,25 @@ const router = new Router({
       path: '/documents/:id',
       name: 'document',
       props: true,
-      component: () => import(/* webpackChunkName: "client-chunk-documents-details" */ '@/views/Document.vue'),
+      component: () => import(/* webpackChunkName: "client-chunk-document-details" */ '@/views/Document.vue'),
     },
+
+    // Admin routes
+    // // Show all users
+    // {
+    //   path: '/users',
+    //   name: 'users',
+    //   component: () => import(/* webpackChunkName: "client-chunk-users-details" */ '@/components/admin/Users.vue'),
+    // },
+
+    // Main admin view
+    {
+      path: '/admin/home',
+      name: 'adminHome',
+      component: () => import(/* webpackChunkName: "client-chunk-main-details" */ '@/views/admin/Main.vue'),
+    },
+
+    // Default route
     { path: '*', redirect: '/home' },
   ],
 })

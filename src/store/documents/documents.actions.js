@@ -1,4 +1,5 @@
 import UserDocumentsDB from '@/firebase/user-documents-db'
+import UsersDB from '@/firebase/users-db'
 import { storage } from 'firebase'
 
 export default {
@@ -6,9 +7,22 @@ export default {
    * Fetch documents of current loggedin user
    */
   getUserDocuments: async ({ rootState, commit }) => {
+    console.log('Get User Documents')
     const userDocumentDb = new UserDocumentsDB(rootState.authentication.user.id)
 
     const documents = await userDocumentDb.readAll()
+    commit('setDocuments', documents)
+  },
+
+  /**
+   * Fetch all documents if logged user is admin
+   */
+  getAllDocuments: async ({ rootState, commit }) => {
+    console.log('Get All Documents')
+    console.log('rootState: ', rootState)
+    const usersDb = new UsersDB(`${rootState.authentication.user.id}/**`)
+    const documents = await usersDb.readAllAsAdmin()
+    console.log('documents: ', documents)
     commit('setDocuments', documents)
   },
 

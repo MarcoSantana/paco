@@ -1,21 +1,21 @@
 <template>
   <header class="navbar" :class="{ offline: !networkOnLine }">
-    <router-link to="/home">
+    <router-link :to="`/${isUserAdmin ? 'admin/home' : 'home'}`">
       <!-- <img alt="logo-bento" class="logo" src="@/assets/img/bento-starter.svg" /> -->
       <img alt="logo-bento" class="logo" src="@/assets/img/logo_cmmu.png" />
       <span class="site-name title-desktop">{{ appTitle }}</span>
       <span class="site-name title-mobile">{{ appShortTitle }}</span>
     </router-link>
 
-    <div v-if="isUserLoggedIn && networkOnLine" data-test="navbar-products" class="nav-item ">
+    <div v-if="isUserLoggedIn && networkOnLine && isUserAdmin" data-test="navbar-products" class="nav-item ">
       Administrador
       <i class="mdi mdi-badge-account icon"></i>
     </div>
     <div class="links">
       <nav class="nav-links">
-        <!-- <div v-if="isUserLoggedIn && networkOnLine" data-test="navbar-products" class="nav-item ">
-             <router-link to="/products" data-test="navbar-products-link">Productos</router-link>
-             </div> -->
+        <div v-if="isUserLoggedIn && networkOnLine && isUserAdmin" data-test="navbar-products" class="nav-item ">
+          <router-link to="/users" data-test="navbar-products-link">Usuarios</router-link>
+        </div>
         <div v-if="isUserLoggedIn && networkOnLine" data-test="navbar-item-documents" class="nav-item ">
           <router-link to="/documents" data-test="navbar-documents-link">Documentos</router-link>
         </div>
@@ -62,7 +62,7 @@ import { mapGetters, mapState } from 'vuex'
 
 export default {
   computed: {
-    ...mapGetters('authentication', ['isUserLoggedIn']),
+    ...mapGetters('authentication', ['isUserLoggedIn', 'isUserAdmin']),
     ...mapState('authentication', ['user']),
     ...mapState('app', ['networkOnLine', 'appTitle', 'appShortTitle']),
   },
