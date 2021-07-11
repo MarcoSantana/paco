@@ -1,6 +1,7 @@
 import { isNil } from 'lodash'
 import GenericDB from './generic-db'
 
+// Users-documents
 export default class UserDocumentsDB extends GenericDB {
   constructor(userId) {
     super(`users/${userId}/documents`)
