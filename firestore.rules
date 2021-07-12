@@ -3,7 +3,7 @@ match /databases/{database}/documents {
   function authenticated() { return request.auth.uid != null }
   function isAdmin() { return request.auth.token.admin == true }
     match /forms {
-      allow read, write: false;
+      allow read, write: if (false);
     }
 
     match /users/{userId} {
