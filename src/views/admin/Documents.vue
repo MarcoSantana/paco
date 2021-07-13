@@ -2,12 +2,8 @@
   <div>
     <div>
       <h2>
-        Documents
+        Documentos
       </h2>
-      Remember that this is a view we need to create a list component and a element component taht recives the data via
-      props <br />
-      Style each 'li' with alternating colors <br />
-      Remove 'decorations'
     </div>
     <div>
       <ul v-for="document in documents" :key="document.id">
