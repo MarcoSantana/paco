@@ -12,18 +12,7 @@
     <div>
       <ul v-for="document in documents" :key="document.id">
         <li>
-          <div class="box">
-            <ul>
-              <li>UserID: {{ document.id }} change me to the full name (do this as denormalized data)</li>
-              <li>createTimestam: {{ document.createTimestamp }} (filter me with luxon)</li>
-              <li>Document name: {{ document.name }}</li>
-              <li>Status: {{ document.status }} (add me a color icon)</li>
-            </ul>
-            <div style="color: red;">
-              <button @click="showData = !showData">>></button>TODO add a certification request display component
-            </div>
-            <div v-show="showData">{{ document.data }}</div>
-          </div>
+          <document-details :document="document"></document-details>
         </li>
       </ul>
     </div>
@@ -32,8 +21,10 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import DocumentDetails from '@/components/admin/DocumentDetails'
 
 export default {
+  components: { DocumentDetails },
   data() {
     return {
       showData: false,
