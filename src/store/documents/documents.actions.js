@@ -1,5 +1,6 @@
 import UserDocumentsDB from '@/firebase/user-documents-db'
 import UsersDB from '@/firebase/users-db'
+import DocumentsDB from '@/firebase/documents-db'
 import { storage } from 'firebase'
 
 export default {
@@ -31,33 +32,36 @@ export default {
    */
   createUserDocument: async ({ commit, rootState }, document) => {
     const userDocumentDb = new UserDocumentsDB(rootState.authentication.user.id)
+    const documentsDB = new DocumentsDB(rootState.authentication.user.id)
 
     commit('setDocumentCreationPending', true)
     // const addUniqueUserDocument = await userDocumentDb.addUniqueUserDocument(document.name)
     // console.log('addUniqueUserDocument :>> ', addUniqueUserDocument)
-    const docExists = await userDocumentDb.checkUniqueUserDocument(document.name)
+    const docUnique = await documentsDB.isUniqueUserDocument(document.name, rootState.authentication.user.id)
+    console.log('docUnique :>> ', docUnique)
     try {
-      if (!docExists) {
+      if (docUnique) {
         const { upload } = document
         delete document.upload
-        document.files = Object.keys(upload)
-        console.log('document.files :>> ', document.files)
-        console.log('upload :>> ', upload)
-        // TODO here we mmust traverse the new uploads object to extract only the keys and create the route and those values must be inserted into a new object node maybe called again uploads or maybe files 202106.27-18.51
-        const createdDocument = await userDocumentDb.create(document, document.name)
-
-        // Create a root reference
-        const storageRef = storage().ref(`documents/${rootState.authentication.user.id}`)
-        document.files.forEach(element => {
-          console.log('element :>> ', element)
-          const documentRef = storageRef
-            .child(`${document.name}/${element}`)
-            .putString(upload[element], 'data_url')
-            .then(snapshot => console.log(snapshot))
-          console.log('documentRef :>> ', documentRef)
-        })
+        const createdDocument = await userDocumentDb.create(document)
+        console.log('createdDocument', createdDocument)
         commit('addDocument', createdDocument)
         commit('setDocumentCreationPending', false)
+        if (upload) {
+          document.files = Object.keys(upload)
+          console.log('document.files :>> ', document.files)
+          console.log('upload :>> ', upload)
+          // Create a root reference
+          const storageRef = storage().ref(`documents/${rootState.authentication.user.id}`)
+          document.files.forEach(element => {
+            console.log('element :>> ', element)
+            const documentRef = storageRef
+              .child(`${document.name}/${element}`)
+              .putString(upload[element], 'data_url')
+              .then(snapshot => console.log(snapshot))
+            console.log('documentRef :>> ', documentRef)
+          })
+        }
         return createdDocument
       }
       throw new Error('El documento ya existe')

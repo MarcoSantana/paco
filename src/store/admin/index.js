@@ -1,7 +1,7 @@
-import state from './documents.state'
-import mutations from './documents.mutations'
-import actions from './documents.actions'
-import getters from './documents.getters'
+import state from './admin.state'
+import mutations from './admin.mutations'
+import actions from './admin.actions'
+import getters from './admin.getters'
 
 export default {
   namespaced: true,

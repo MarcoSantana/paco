@@ -7,6 +7,7 @@ import documents from './documents'
 import colleges from './colleges'
 import hospitals from './hospitals'
 import forms from './forms'
+import admin from './admin'
 
 Vue.use(Vuex)
 
@@ -22,5 +23,6 @@ export default new Vuex.Store({
     documents,
     hospitals,
     forms,
+    admin,
   },
 })

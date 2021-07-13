@@ -40,17 +40,20 @@ exports.logActivities = functions.firestore.document("{collection}/{id}")
 // TODO format the actual db entry to be useful
 // at top level you need the userId and the subcollection id
 exports.syncDocuments = functions.firestore
-    .document("users/{userId}/forms/{formId}")
+    .document("users/{userId}/documents/{documentId}")
     .onCreate((snapshot, context) => {
       console.log(snapshot.data());
       console.log("context.params.userId: ", context.params.userId);
       const userId = context.params.userId;
-      const formId = context.params.formId;
-      const documents = admin.firestore().collection("forms");
+      const documentId = context.params.documentId;
+      const documents = admin.firestore().collection("documents");
       return documents.add({
         "userId": userId,
-        "formId": formId,
-        "form": snapshot.data(),
+        "documentId": documentId,
+        "createTimestamp": snapshot.data().createTimestamp,
+        "name": snapshot.data().name,
+        "data": snapshot.data(),
+        "status": 1,
       });
     });
 
