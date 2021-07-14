@@ -66,7 +66,7 @@ describe('Curriculum', () => {
         .should('be.visible')
         .should('contain', '27')
       cy.get(':nth-child(35) > :nth-child(1)', { timeout: 10000 }).click()
-      cy.get('.vdatetime-input').should('have.value', '27 de junio de 1982')
+      cy.get('.vdatetime-input').should('have.value', '25 de julio de 1982')
     })
     // First name
     context('should verify first name', () => {
@@ -140,9 +140,9 @@ describe('Curriculum', () => {
         .should('be.visible')
         .should('contain', '27')
       cy.get(':nth-child(35) > :nth-child(1)').click()
-      cy.get('.vdatetime-input').should('have.value', '27 de junio de 1982')
+      cy.get('.vdatetime-input').should('have.value', '25 de julio de 1982')
       cy.get('#age').as('age')
-      cy.get('@age').should('have.value', '39')
+      cy.get('@age').should('have.value', '38')
 
       // Close pop up
       // cy.get('.vdatetime-popup__actions__button--cancel').as('cancelButton')
@@ -355,7 +355,7 @@ describe('Curriculum', () => {
         .should('be.visible')
         .should('contain', '27')
       cy.get(':nth-child(35) > :nth-child(1)').click()
-      cy.get('.vdatetime-input').should('have.value', '27 de junio de 1982')
+      cy.get('.vdatetime-input').should('have.value', '25 de julio de 1982')
 
       // Close pop up
       // cy.get('.vdatetime-popup__actions__button--cancel').as('cancelButton')
