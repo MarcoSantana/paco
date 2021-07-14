@@ -80,7 +80,7 @@ export default {
   },
 
   /**
-   * Delete a user document from its id
+   * Delete (as admin) a document from its id
    */
   deleteUserDocument: async ({ rootState, commit, getters }, documentId) => {
     if (getters.isDocumentDeletionPending(documentId)) return
