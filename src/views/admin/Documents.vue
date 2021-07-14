@@ -8,7 +8,7 @@
     <div>
       <ul v-for="document in documents" :key="document.id">
         <li>
-          <document-details :document="document"></document-details>
+          <document-details :document="document" @deleteDocument="deleteUserDocument"></document-details>
         </li>
       </ul>
     </div>
@@ -34,7 +34,7 @@ export default {
     this.dispatchAllDocuments()
   },
   methods: {
-    ...mapActions('admin', ['getAllDocuments']),
+    ...mapActions('admin', ['getAllDocuments', 'deleteUserDocument']),
     dispatchAllDocuments() {
       this.$store.dispatch('admin/getAllDocuments', null, { root: true })
     },
