@@ -37,8 +37,6 @@ exports.logActivities = functions.firestore.document("{collection}/{id}")
 // Syncs in the admin only documents collection
 
 // TODO block all external (no admin) calls in the collection (use rules)
-// TODO format the actual db entry to be useful
-// at top level you need the userId and the subcollection id
 exports.syncDocuments = functions.firestore
     .document("users/{userId}/documents/{documentId}")
     .onCreate((snapshot, context) => {
@@ -55,6 +53,24 @@ exports.syncDocuments = functions.firestore
         "data": snapshot.data(),
         "status": 1,
       });
+    });
+
+// When a document is deleted by admin the user's document is also deleted
+
+exports.syncDeleteDocuments = functions.firestore
+    .document("users/{userId}/documents/{documentId}")
+    .onDelete((snapshot, context) => {
+      console.log(snapshot.data());
+      console.log("context.params.userId: ", context.params.userId);
+      const userId = context.params.userId;
+      const documentId = context.params.documentId;
+      const documents = admin.firestore()
+          .collection("documents")
+          .where("documentId", "=", documentId)
+          .where("userId", "=", userId)
+          .get()
+          .delete();
+      return documents.delete;
     });
 
 
