@@ -85,10 +85,10 @@ export default {
   deleteUserDocument: async ({ rootState, commit, getters }, documentId) => {
     if (getters.isDocumentDeletionPending(documentId)) return
 
-    const userDocumentsDb = new UserDocumentsDB(rootState.authentication.user.id)
-
+    const documentsDb = new DocumentsDB(rootState.authentication.user.id)
     commit('addDocumentDeletionPending', documentId)
-    await userDocumentsDb.delete(documentId)
+    await documentsDb.delete(documentId)
+    // FIXME Move this to a cloud function
     commit('removeDocumentById', documentId)
     commit('removeDocumentDeletionPending', documentId)
   },
