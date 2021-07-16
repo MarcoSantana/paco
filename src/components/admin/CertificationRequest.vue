@@ -15,7 +15,6 @@
         <div>CURP: {{ user.curp }}</div>
         <div>RFC: {{ user.rfc }}</div>
         <h4>Datos de contacto</h4>
-        <!-- "contact": { "cellphone": "(256) 772-2973", "email": "bicu@kecdir.mq", "fax": "(347) 646-6981", "telephone": "(482) 338-2803" },  -->
         <div>Correo electrónico: {{ user.contact.email }}</div>
         <div>Teléfono celular: {{ user.contact.cellphone }}</div>
         <div>Fax: {{ user.contact.fax }}</div>
