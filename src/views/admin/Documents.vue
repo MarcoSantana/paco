@@ -1,13 +1,11 @@
 <template>
   <div>
     <div>
-      <h2>
-        Documentos
-      </h2>
+      <h2>Documentos</h2>
     </div>
     <div>
-      <ul v-for="document in documents" :key="document.id">
-        <li>
+      <ul>
+        <li v-for="document in documents" :key="document.id">
           <document-details :document="document" @deleteDocument="deleteUserDocument"></document-details>
         </li>
       </ul>
@@ -42,4 +40,23 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+@import '@/theme/style.scss';
+@import '@/theme/variables.scss';
+
+ul {
+  list-style-type: none;
+  li {
+    font-size: 1.3rem;
+    font-weight: 400;
+    border-radius: 5px;
+    padding: 0;
+  }
+  li:nth-child(odd) {
+    background-color: $light-accent;
+  }
+  li:nth-child(even) {
+    background-color: $light-accent-1;
+  }
+}
+</style>

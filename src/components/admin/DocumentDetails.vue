@@ -1,26 +1,33 @@
 <template>
   <div>
-    <div class="box" :class="document.status == 1 ? 'pending' : ''">
-      <ul>
-        <li>UserID: {{ document.userId }} change me to the full name (do this as denormalized data)</li>
-        <li>
-          Creado: {{ document.createTimestamp | intlDate }}
-          <small>hace {{ document.createTimestamp | ago }} días</small>
-        </li>
-        <li>{{ document.name }}</li>
-        <li :class="document.status == 1 ? 'pending' : ''">
-          Estado: {{ document.status == 1 ? 'Por revisar' : 'Revisado' }}
-        </li>
-      </ul>
-      <div>
-        <button class="button" @click="showData = !showData">Detalles</button>
-        <div class="delete-btn" @click="$emit('deleteDocument', document.id)">
-          {{ isDocumentDeletionPending(document.id) ? 'delete in progress...' : 'delete' }}
+    <div class="row">
+      <span class="actions">
+        <div class="btn" @click="showData = !showData">
+          <i class="mdi mdi-chevron-down"></i>
         </div>
-      </div>
-      <div v-show="showData" class="document-detail">{{ document.data }}</div>
+      </span>
+      <!-- actions -->
+      <span class="userName">
+        {{ document.userName }}
+      </span>
+      <span class="documentName"> {{ document.name }}</span>
+      <span class="info">
+        {{ document.createTimestamp | intlDate }}
+        <small>hace {{ document.createTimestamp | ago }} días</small>
+      </span>
+      <span class="status" :class="document.status == 1 ? 'pending' : ''">{{
+        document.status == 1 ? 'Por revisar' : 'Revisado'
+      }}</span>
+      <span class="delete"
+        ><div class="delete-btn" @click="$emit('deleteDocument', document.id)">
+          <i v-if="!isDocumentDeletionPending(document.id)" class="mdi mdi-trash-can-outline"></i>
+          {{ isDocumentDeletionPending(document.id) ? 'borrado en proceso' : '' }}
+        </div></span
+      >
     </div>
+    <div v-show="showData" class="document-detail">{{ document.data }}</div>
   </div>
+  <!-- row -->
 </template>
 
 <script>
@@ -30,9 +37,12 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 export default {
   filters: {
     intlDate(date) {
-      return DateTime.fromJSDate(new Date(date))
-        .setLocale('es')
-        .toLocaleString(DateTime.DATETIME_FULL)
+      return (
+        DateTime.fromJSDate(new Date(date))
+          .setLocale('es')
+          // .toLocaleString(DateTime.DATETIME_FULL)
+          .toLocaleString()
+      )
     },
     ago(date) {
       const newValueParsed = DateTime.fromJSDate(new Date(date))
@@ -61,38 +71,42 @@ export default {
 @import '@/theme/style.scss';
 @import '@/theme/variables.scss';
 
-ul {
-  list-style-type: none;
-  li {
-    font-size: 1.2rem;
-    font-weight: 400;
-    border-radius: 5px;
-    padding: 0.35rem;
+.row {
+  display: flex;
+  span {
+    // width: 100%;
+    margin: 0 0.5rem 0.5rem 0;
+    padding-top: 0.25rem;
   }
-  li:nth-child(odd) {
-    background-color: $light-accent;
+  .actions {
+    flex: 1;
   }
-  li:nth-child(even) {
-    background-color: $light-accent-1;
+  .userName {
+    flex: 2;
+  }
+  .documentName {
+    flex: 2;
   }
 }
 small {
   color: grey;
 }
-.button {
-  @extend .button;
-  margin-top: 0.75rem;
-  font-size: 0.8rem;
-
+.btn {
+  @extend .delete-btn;
+  background-color: transparent;
+  color: $main;
+  border: none;
   :hover {
-    background-color: $light-accent;
-    color: $main;
-    opacity: 0.8;
+    background-color: $main;
+    color: $light-accent;
+    opacity: 0.7;
     cursor: pointer;
   }
 }
-
+.delete-btn {
+  border: none;
+}
 .pending {
-  background-color: lighten($danger-color, 30%);
+  color: lighten($danger-color, 10%);
 }
 </style>
