@@ -37,28 +37,39 @@ exports.addAdminRole = functions.https.onCall((data, context) => {
 // Syncs in the admin only documents collection
 // TODO Block user deleting/updating documents in rules
 // TODO use the actual user name
+// TODO add try/catch and report to the log in db
 exports.syncDocuments = functions.firestore
     .document("users/{userId}/documents/{documentId}")
     .onCreate((snapshot, context) => {
       const userId = context.params.userId;
-      const documentId = context.params.documentId;
-      const documents = admin.firestore().collection("documents");
-      return documents.add({
-        "userId": userId,
-        // TODO "userName": userName
-        "documentId": documentId,
-        "createTimestamp": snapshot.data().createTimestamp,
-        "name": snapshot.data().name,
-        "data": snapshot.data(),
-        "status": 1,
-        // "ref": `users/${userId}/documents/${documentId}`,
-      });
+      const userRef = admin.firestore().collection("users").doc(userId);
+      return userRef.get()
+          .then((userSnapshot) => {
+            return userSnapshot.data();
+          })
+          .then((res) => {
+            const userDoc = res;
+            console.log("userDoc", userDoc);
+            const documentId = context.params.documentId;
+            const documents = admin.firestore().collection("documents");
+            return documents.add({
+              "userId": userId,
+              "userName": userDoc.displayName,
+              "documentId": documentId,
+              "createTimestamp": snapshot.data().createTimestamp,
+              "name": snapshot.data().name,
+              "data": snapshot.data(),
+              "status": 1,
+              "ref": `users/${userId}/documents/${documentId}`,
+            });
+          })
+          .then((docs)=> docs);
     });
 
 // When a document is deleted by admin the user's document is also deleted
 exports.syncDeleteDocuments = functions.firestore
     .document("documents/{documentId}")
-    .onDelete((snapshot, context) => {
+    .onDelete((snapshot) => {
       const userId = snapshot.data().userId;
       const documentId = snapshot.data().documentId;
       const documentsQuery = admin.firestore()
