@@ -18,6 +18,7 @@ exports.addAdminRole = functions.https.onCall((data, context) => {
       });
 });
 
+// FIXME must create actual useful logs not just print to the same db entry
 // Basic activities log
 // exports.logActivities = functions.firestore.document("{collection}/{id}")
 //     .onCreate((snapshot, context) => {
@@ -36,7 +37,6 @@ exports.addAdminRole = functions.https.onCall((data, context) => {
 
 // Syncs in the admin only documents collection
 // TODO Block user deleting/updating documents in rules
-// TODO use the actual user name
 // TODO add try/catch and report to the log in db
 exports.syncDocuments = functions.firestore
     .document("users/{userId}/documents/{documentId}")

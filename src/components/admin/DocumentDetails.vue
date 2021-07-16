@@ -25,7 +25,9 @@
         </div></span
       >
     </div>
-    <div v-show="showData" class="document-detail">{{ document.data }}</div>
+    <div v-show="showData" class="document-detail">
+      <component :is="components[document.name]" :data="document.data"></component>
+    </div>
   </div>
   <!-- row -->
 </template>
@@ -33,8 +35,13 @@
 <script>
 import { DateTime } from 'luxon'
 import { mapState, mapActions, mapGetters } from 'vuex'
+import CertificationRequest from '@/components/admin/CertificationRequest'
+import * as components from '@/components/admin/componentsList.json'
+
+console.log('components :>> ', components.default['Solicitud de certificación'])
 
 export default {
+  components: { CertificationRequest },
   filters: {
     intlDate(date) {
       return (
@@ -54,6 +61,7 @@ export default {
   data() {
     return {
       showData: false,
+      components: components.default,
     }
   },
   computed: {

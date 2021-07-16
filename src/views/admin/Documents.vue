@@ -51,6 +51,8 @@ ul {
     font-weight: 400;
     border-radius: 5px;
     padding: 0;
+    padding-top: 0.3rem;
+    padding-bottom: 0;
   }
   li:nth-child(odd) {
     background-color: $light-accent;
