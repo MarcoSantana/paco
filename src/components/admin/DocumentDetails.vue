@@ -1,9 +1,10 @@
 <template>
   <div>
     <div class="row">
-      <span class="actions">
+      <span cla.ss="actions">
         <div class="btn" @click="showData = !showData">
-          <i class="mdi mdi-chevron-down"></i>
+          <i v-if="!showData" class="mdi mdi-chevron-down"></i>
+          <i v-if="showData" class="mdi mdi-chevron-up"></i>
         </div>
       </span>
       <!-- actions -->
@@ -18,15 +19,15 @@
       <span class="status" :class="document.status == 1 ? 'pending' : ''">{{
         document.status == 1 ? 'Por revisar' : 'Revisado'
       }}</span>
-      <span class="delete"
-        ><div class="delete-btn" @click="$emit('deleteDocument', document.id)">
+      <span class="delete">
+        <div class="delete-btn" @click="$emit('deleteDocument', document.id)">
           <i v-if="!isDocumentDeletionPending(document.id)" class="mdi mdi-trash-can-outline"></i>
           {{ isDocumentDeletionPending(document.id) ? 'borrado en proceso' : '' }}
-        </div></span
-      >
+        </div>
+      </span>
     </div>
     <div v-show="showData" class="document-detail">
-      <component :is="components[document.name]" :data="document.data"></component>
+      <component :is="components[document.name]" :document="document.data"></component>
     </div>
   </div>
   <!-- row -->
