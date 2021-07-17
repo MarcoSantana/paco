@@ -474,7 +474,7 @@ export default {
               hideInput: true,
               browse: true,
               preview: true,
-              model: 'upload.pediatricResidence',
+              model: 'upload.residence',
               attributes: {
                 input: { 'data-test': 'request-uploadPediatricResidence' },
               },
