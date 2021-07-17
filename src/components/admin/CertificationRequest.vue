@@ -30,6 +30,8 @@
         <h4>Estudios de posgrado</h4>
         <div>
           <div>Cédula profesional: {{ request.postgraduate.license }}</div>
+          <div>Cedula</div>
+          <document-image :src="license" />
           <div>Universidas</div>
           <div>Especialidad: {{ request.postgraduate.specialty }}</div>
           <div>Hospital formativo: {{ request.postgraduate.hospital }}</div>
@@ -49,8 +51,15 @@
 <script>
 import { DateTime } from 'luxon'
 import { isNil } from 'lodash'
+import { storage } from 'firebase'
 
 export default {
+  components: {
+    'document-image': {
+      props: { src: String },
+      template: '<div><img :src="src"  /> {{src}}Document image in tah house</div>',
+    },
+  },
   filters: {
     intlDate(date) {
       const newDate = new Date(date)
@@ -86,11 +95,28 @@ export default {
   data() {
     return {
       // ...document,
-      request: this.document.request,
-      user: this.document.user,
+      request: this.document.data.request,
+      user: this.document.data.user,
+      documentName: this.document.data.name,
+      license: null,
     }
   },
   computed: {},
+  mounted() {
+    this.licenseFile()
+  },
+  methods: {
+    async licenseFile() {
+      const storageRef = storage().ref(`documents/${this.document.userId}/${this.documentName}/license`)
+      console.log('storage :>> ', storageRef)
+      // storage()
+      //   .refFromURL(`gs://paco-1a08b.appspot.com/documents/${this.document.userId}/${this.documentName}/license`)
+      //   .getDownloadURL()
+      //   .then(url => {
+      //     this.license = url
+      //   })
+    },
+  },
 }
 </script>
 
