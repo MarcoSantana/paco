@@ -31,11 +31,18 @@
         <div>
           <div>Cédula profesional: {{ request.postgraduate.license }}</div>
           <div>Cedula</div>
-          <document-image :src="licenseFile" />
+          <document-file :document-name="document.name" :user-id="document.userId" file-name="license"> </document-file>
           <div>Universidas</div>
           <div>Especialidad: {{ request.postgraduate.specialty }}</div>
           <div>Hospital formativo: {{ request.postgraduate.hospital }}</div>
           <div>Fecha de graduación: {{ request.postgraduate.graduationDate | intlDate }}</div>
+          <div>
+            <document-file
+              :document-name="document.name"
+              :user-id="document.userId"
+              file-name="pediatricResidence"
+            ></document-file>
+          </div>
         </div>
       </div>
       <div>
@@ -51,18 +58,16 @@
 <script>
 import { DateTime } from 'luxon'
 import { isNil } from 'lodash'
+import DocumentFile from '@/components/admin/DocumentFile.vue'
 // TODO move this to a method that runs on mounted in a tiny component
 // import { storage } from 'firebase'
 
 export default {
   components: {
+    DocumentFile,
     // TODO Export this to ist own component 202107.17-11.42
     // props: document name, user name
     // lightbox/modal or some crap
-    'document-image': {
-      props: { src: String },
-      template: '<div><img style="width:50%;" :src="src"  /> {{src}}Document image in tah house</div>',
-    },
   },
   filters: {
     intlDate(date) {

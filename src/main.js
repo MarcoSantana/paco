@@ -25,6 +25,8 @@ import fieldDate from '@/components/forms/fieldDate'
 import fieldPerdiod from '@/components/forms/fieldPeriod'
 import 'vue-form-generator/dist/vfg.css'
 import VueGoogleAutocomplete from 'vue-google-autocomplete'
+// Async computed
+import AsyncComputed from 'vue-async-computed'
 
 import App from './App.vue'
 import router from './router'
@@ -53,6 +55,7 @@ veeValidate.localize('es', es)
 
 Vue.use(VueFormGenerator)
 Vue.use(VueGoogleAutocomplete)
+Vue.use(AsyncComputed)
 
 Vue.component('field-pdf', fieldPdf)
 Vue.component('field-university', fieldUniversity)
