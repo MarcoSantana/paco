@@ -27,7 +27,7 @@
       </span>
     </div>
     <div v-show="showData" class="document-detail">
-      <component :is="components[document.name]" :document="document.data"></component>
+      <component :is="components[document.name]" :document="document"></component>
     </div>
   </div>
   <!-- row -->

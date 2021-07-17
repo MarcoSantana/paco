@@ -31,7 +31,7 @@
         <div>
           <div>Cédula profesional: {{ request.postgraduate.license }}</div>
           <div>Cedula</div>
-          <document-image :src="license" />
+          <document-image :src="licenseFile" />
           <div>Universidas</div>
           <div>Especialidad: {{ request.postgraduate.specialty }}</div>
           <div>Hospital formativo: {{ request.postgraduate.hospital }}</div>
@@ -51,13 +51,17 @@
 <script>
 import { DateTime } from 'luxon'
 import { isNil } from 'lodash'
-import { storage } from 'firebase'
+// TODO move this to a method that runs on mounted in a tiny component
+// import { storage } from 'firebase'
 
 export default {
   components: {
+    // TODO Export this to ist own component 202107.17-11.42
+    // props: document name, user name
+    // lightbox/modal or some crap
     'document-image': {
       props: { src: String },
-      template: '<div><img :src="src"  /> {{src}}Document image in tah house</div>',
+      template: '<div><img style="width:50%;" :src="src"  /> {{src}}Document image in tah house</div>',
     },
   },
   filters: {
@@ -98,25 +102,20 @@ export default {
       request: this.document.data.request,
       user: this.document.data.user,
       documentName: this.document.data.name,
-      license: null,
     }
   },
   computed: {},
-  mounted() {
-    this.licenseFile()
-  },
-  methods: {
-    async licenseFile() {
-      const storageRef = storage().ref(`documents/${this.document.userId}/${this.documentName}/license`)
-      console.log('storage :>> ', storageRef)
-      // storage()
-      //   .refFromURL(`gs://paco-1a08b.appspot.com/documents/${this.document.userId}/${this.documentName}/license`)
-      //   .getDownloadURL()
-      //   .then(url => {
-      //     this.license = url
-      //   })
-    },
-  },
+  // TODO move this to a method that runs on mounted in a tiny component
+  // asyncComputed: {
+  //   licenseFile() {
+  //     const storageRef = storage().ref(`documents/${this.document.userId}/${this.documentName}/license`)
+  //     const url = storageRef.getDownloadURL().then(res => res)
+  //     return url
+  //   },
+  // },
+
+  mounted() {},
+  methods: {},
 }
 </script>
 
