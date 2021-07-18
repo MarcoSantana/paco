@@ -1,5 +1,34 @@
 <template>
   <div>
+    <modal
+      :id="`${documentName}-id`"
+      :name="fileName"
+      :width="'80%'"
+      :height="'auto'"
+      resizable="true"
+      :scrollable="true"
+    >
+      <div slot="top-right">
+        <button class="delete-btn" @click="$modal.hide(fileName)">
+          ❌
+        </button>
+      </div>
+      <span
+        v-if="
+          documentFileType &&
+            (documentFileType.contentType == 'image/png' || documentFileType.contentType == 'image/jpeg')
+        "
+      >
+        <img width="100%" :src="documentFile" alt="" />
+      </span>
+
+      <span v-if="documentFileType && documentFileType.contentType == 'application/pdf'">
+        <!-- <pdf :src="documentFile"></pdf> -->
+      </span>
+      <button class="delete-btn" @click="hide()">
+        <i class="mdi mdi-close-box"></i>
+      </button>
+    </modal>
     <div
       v-if="
         documentFileType &&
@@ -7,7 +36,7 @@
       "
       class="image-container"
     >
-      <img :src="documentFile" alt="" />
+      <img :src="documentFile" alt="" @click="show()" />
     </div>
 
     <div v-if="documentFileType && documentFileType.contentType == 'application/pdf'" class="pdf-container">
@@ -18,6 +47,7 @@
 
 <script>
 import { storage } from 'firebase'
+
 // import pdf from 'vue-pdf'
 
 export default {
@@ -26,6 +56,9 @@ export default {
     documentName: String,
     userId: String,
     fileName: String,
+  },
+  mount() {
+    // this.show()
   },
   mounted() {},
   asyncComputed: {
@@ -56,7 +89,14 @@ export default {
       return metadata
     },
   },
-  methods: {},
+  methods: {
+    show() {
+      this.$modal.show(this.fileName)
+    },
+    hide() {
+      this.$modal.hide(this.fileName)
+    },
+  },
 }
 </script>
 

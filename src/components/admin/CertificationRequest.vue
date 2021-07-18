@@ -3,6 +3,14 @@
     <div>
       <h3>Detalles del aspirante</h3>
       <div>
+        <div>
+          <document-file
+            class="document-file"
+            :document-name="documentName"
+            :user-id="document.userId"
+            file-name="avatar"
+          ></document-file>
+        </div>
         <div>Nombres: {{ user.firstName }} {{ user.lastName1 }} {{ user.lastName2 ? user.lastName2 : '' }}</div>
         <div class="row">
           <div>Fecha de nacimiento: {{ user.dob | intlDate }}</div>
@@ -31,13 +39,20 @@
         <div>
           <div>Cédula profesional: {{ request.postgraduate.license }}</div>
           <div>Cedula</div>
-          <document-file :document-name="document.name" :user-id="document.userId" file-name="license"> </document-file>
+          <document-file
+            class="document-file"
+            :document-name="document.name"
+            :user-id="document.userId"
+            file-name="license"
+          >
+          </document-file>
           <div>Universidas</div>
           <div>Especialidad: {{ request.postgraduate.specialty }}</div>
           <div>Hospital formativo: {{ request.postgraduate.hospital }}</div>
           <div>Fecha de graduación: {{ request.postgraduate.graduationDate | intlDate }}</div>
           <div>
             <document-file
+              class="document-file"
               :document-name="document.name"
               :user-id="document.userId"
               file-name="pediatricResidence"
@@ -110,15 +125,6 @@ export default {
     }
   },
   computed: {},
-  // TODO move this to a method that runs on mounted in a tiny component
-  // asyncComputed: {
-  //   licenseFile() {
-  //     const storageRef = storage().ref(`documents/${this.document.userId}/${this.documentName}/license`)
-  //     const url = storageRef.getDownloadURL().then(res => res)
-  //     return url
-  //   },
-  // },
-
   mounted() {},
   methods: {},
 }
@@ -157,5 +163,9 @@ small {
 }
 .pending {
   color: lighten($danger-color, 10%);
+}
+
+.document-file {
+  max-width: 200px;
 }
 </style>
