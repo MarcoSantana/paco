@@ -8,6 +8,8 @@
             class="document-file"
             :document-name="documentName"
             :user-id="document.userId"
+            :scrollable-modal="true"
+            :resizable-modal="true"
             file-name="avatar"
           ></document-file>
         </div>
@@ -43,10 +45,12 @@
             class="document-file"
             :document-name="document.name"
             :user-id="document.userId"
+            :scrollable-modal="true"
+            :resizable-modal="true"
             file-name="license"
           >
           </document-file>
-          <div>Universidas</div>
+          <div>Universidad</div>
           <div>Especialidad: {{ request.postgraduate.specialty }}</div>
           <div>Hospital formativo: {{ request.postgraduate.hospital }}</div>
           <div>Fecha de graduación: {{ request.postgraduate.graduationDate | intlDate }}</div>

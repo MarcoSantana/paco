@@ -5,8 +5,8 @@
       :name="fileName"
       :width="'80%'"
       :height="'auto'"
-      resizable="true"
-      :scrollable="true"
+      :resizable="resizableModal"
+      :scrollable="scrollableModal"
     >
       <div slot="top-right">
         <button class="delete-btn" @click="$modal.hide(fileName)">
@@ -56,6 +56,8 @@ export default {
     documentName: String,
     userId: String,
     fileName: String,
+    resizableModal: Boolean,
+    scrollableModal: Boolean,
   },
   mount() {
     // this.show()
