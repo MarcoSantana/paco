@@ -15,10 +15,11 @@ export default {
     commit('setDocuments', documents)
   },
 
-  /**
+  /*
    * Fetch all documents if logged user is admin
    */
   getAllDocuments: async ({ rootState, commit }) => {
+    // FIXME romove all "clos"
     console.log('Get All Documents')
     console.log('rootState: ', rootState)
     const usersDb = new UsersDB(`${rootState.authentication.user.id}/**`)
@@ -38,34 +39,42 @@ export default {
     // const addUniqueUserDocument = await userDocumentDb.addUniqueUserDocument(document.name)
     // console.log('addUniqueUserDocument :>> ', addUniqueUserDocument)
     const docUnique = await documentsDB.isUniqueUserDocument(document.name, rootState.authentication.user.id)
+    // FIXME romove all "clos"
     console.log('docUnique :>> ', docUnique)
     try {
       if (docUnique) {
         const { upload } = document
         delete document.upload
-        const createdDocument = await userDocumentDb.create(document)
-
-        commit('addDocument', createdDocument)
-        commit('setDocumentCreationPending', false)
-        if (upload) {
-          document.files = Object.keys(upload)
-          // Create a root reference
-          const storageRef = storage().ref(`documents/${rootState.authentication.user.id}`)
-          document.files.forEach(element => {
-            console.log('element :>> ', element)
-            const documentRef = storageRef
-              .child(`${document.name}/${element}`)
-              .putString(upload[element], 'data_url')
-              .then(snapshot => console.log(snapshot))
-            console.log('documentRef :>> ', documentRef)
-          })
+        try {
+          const createdDocument = await userDocumentDb.create(document)
+          commit('addDocument', createdDocument)
+          commit('setDocumentCreationPending', false)
+          commit('setDocumentCreationMessage', { type: 'info', message: 'Documento creado' })
+        } catch (error) {
+          throw new Error('Error al crear el documento', error)
         }
-        commit('setDocumentCreationMessage', { type: 'info', message: 'Documento creado' })
-        return createdDocument
+        if (upload) {
+          try {
+            document.files = Object.keys(upload)
+            // Create a root reference
+            const storageRef = storage().ref(`documents/${rootState.authentication.user.id}`)
+            document.files.forEach(element => {
+              storageRef
+                .child(`${document.name}/${element}`)
+                .putString(upload[element], 'data_url')
+                .then(snapshot => console.log(snapshot))
+            })
+          } catch (error) {
+            commit('setDocumentCreationMessage', { type: 'error', message: error })
+            throw new Error('Error al subir el documento', error)
+          }
+        }
+        // return createdDocument
+      } else {
+        throw new Error('El documento ya existe')
       }
-      throw new Error('El documento ya existe')
     } catch (error) {
-      commit('setDocumentCreationMessage', { type: 'error', message: 'Error al crear el documento' })
+      commit('setDocumentCreationMessage', { type: 'error', message: error })
       console.log('Error', error)
     }
     return null
