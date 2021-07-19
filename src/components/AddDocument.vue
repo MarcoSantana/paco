@@ -2,6 +2,7 @@
   <div class="box">
     <form-wizard
       shape="circle"
+      ref="standarDocumentWizard"
       step-size="xs"
       color="#2596c7"
       error-color="#e74c3c"
@@ -16,7 +17,7 @@
       <tab-content title="Tipo de documento" :before-change="validateAsync" icon="ti-file">
         <span id="create-document-type-span" class="{ error: errors[0] }">
           <label for="document-type" class="tip"> Tipo de documento </label>
-          <select id="document-type" v-model="documentType" name="document-type">
+          <select id="document-type" v-model="documentType" name="document-type" @change="reset">
             <option>Seleccione un documento</option>
             <option v-for="item in documents" :key="item.name" :value="item">{{ item.name }}</option>
           </select>
@@ -32,17 +33,24 @@
           </vue-form-generator>
         </span>
       </tab-content>
-      <tab-content title="Vista previa" icon="ti-check">
-        <h1>Revise su documento</h1>
-        Aquí se presenta el documento terminado
+      <tab-content title="Guardar">
+        <div :class="documentCreationMessage.type">{{ documentCreationMessage.message }}</div>
+        <button :disabled="documentCreationPending || isFinished" class="form-wizard-button" @click="saveDocument()">
+          Guardar
+        </button>
       </tab-content>
+      <tab-content title="Fin" icon="ti-check"> </tab-content>
       <div v-if="loadingWizard" class="loader"></div>
       <div v-if="errorMsg">
         <span class="error">{{ errorMsg }}</span>
       </div>
       <button slot="prev" class="form-wizard-button" data-test="document-prev-btn">Atrás</button>
       <button slot="next" class="form-wizard-button" data-test="document-next-btn">Adelante</button>
-      <button slot="finish" class="form-wizard-button">Guardar</button>
+      <!-- <button slot="finish" class="form-wizard-button">Guardar</button> -->
+      <button slot="finish" :disabled="documentCreationPending" class="form-wizard-button">
+        Terminar
+        <span v-if="documentCreationPending">Almacenando documento</span>
+      </button>
     </form-wizard>
   </div>
 </template>
@@ -66,6 +74,7 @@ export default {
     errorMsg: null,
     fileURL: null,
     formModel: {},
+    isFinished: false,
 
     formOptions: {
       validateAfterLoad: true,
@@ -74,16 +83,26 @@ export default {
     },
     documentType: null,
   }),
-  computed: mapState('documents', ['documentNameToCreate', 'documentCreationPending']),
+  computed: mapState('documents', ['documentNameToCreate', 'documentCreationPending', 'documentCreationMessage']),
   methods: {
-    ...mapMutations('documents', ['setDocumentNameToCreate']),
+    ...mapMutations('documents', ['setDocumentNameToCreate', 'setDocumentCreationMessage']),
     ...mapActions('documents', ['triggerAddDocumentAction']),
     onComplete() {
-      this.setDocumentNameToCreate(this.documentType.name)
-      this.triggerAddDocumentAction(this.formModel)
       // TODO Do not use alert use your own modal 202106.26-19.52
       // eslint-disable-next-line no-alert
       alert('Terminó la carga del documento')
+      this.setDocumentCreationMessage({})
+      this.$router.push('/home')
+    },
+    reset() {
+      this.isFinished = false
+      this.setDocumentCreationMessage({})
+      this.$refs('standarDocumentWizard').reset()
+    },
+    saveDocument() {
+      this.setDocumentNameToCreate(this.documentType.name)
+      this.triggerAddDocumentAction(this.formModel)
+      this.isFinished = true
     },
     addedFile(file) {
       // eslint-disable-next-line no-alert
@@ -130,6 +149,17 @@ export default {
 @import '@/theme/variables.scss';
 
 // TODO clean me 202105.12-16.28
+.error {
+  color: $danger-color;
+  font-weight: 400;
+  font-size: 1.5rem;
+}
+
+.info {
+  color: $secondary;
+  font-weight: 400;
+  font-size: 1.5rem;
+}
 
 .vue-form-generator .field-image .form-control {
   position: relative;

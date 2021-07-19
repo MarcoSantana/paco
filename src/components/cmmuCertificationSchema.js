@@ -44,7 +44,7 @@ export default {
               required: true,
               validator: validators.required,
             },
-            // - [ ] Fecha de solicitud
+            // Fecha de solicitud
             {
               type: 'date',
               label: 'Fecha de solicitud',
@@ -57,6 +57,7 @@ export default {
               visibility: 'true',
               styleClasses: 'document-form',
               required: true,
+              // TODO Make the date fixed to today 202107.18-11.31
             },
           ],
         },
