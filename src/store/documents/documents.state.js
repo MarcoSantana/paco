@@ -3,4 +3,5 @@ export default {
   documentNameToCreate: '',
   documentDeletionPending: [],
   documentCreationPending: false,
+  documentCreationMessage: {},
 }

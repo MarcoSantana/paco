@@ -14,7 +14,7 @@
       title="Solicitud de certificación"
       subtitle="Pasos de solicitud"
       finish-button-text="Terminado"
-      @on-complete="onComplete"
+      @on-complete="onComplete()"
     >
       <tab-content title="Requisitos" class="requirements">
         <h2>Requisitos para solicitar Certificación</h2>
@@ -62,6 +62,9 @@
         </div>
       </tab-content>
       <tab-content v-for="item in groups" :key="item.legend" :before-change="validateAsync" :title="item.legend">
+        <div v-if="!!errorMsg && errorMsg.length > 1" class="field-wrap">
+          <h3>{{ errorMsg }}</h3>
+        </div>
         <vue-form-generator
           :ref="getAttrs(item.fields)"
           :schema="item"
@@ -72,24 +75,37 @@
         >
         </vue-form-generator>
       </tab-content>
+      <tab-content title="Guardar">
+        <div :class="documentCreationMessage.type">{{ documentCreationMessage.message }}</div>
+        <button
+          v-if="!isFinished"
+          :disabled="documentCreationPending"
+          class="form-wizard-button"
+          @click="saveDocument()"
+        >
+          Guardar
+        </button>
+      </tab-content>
       <tab-content title="Siguientes pasos">
         Aquí ponemos los siguientes pasos a para el aspirante
       </tab-content>
       <div v-if="loadingWizard" class="loader"></div>
-      <span slot="prev"></span>
-      <button
-        class="reset-button"
-        @click="
-          model = {}
-          $refs.wizard.reset()
-        "
-      >
-        Borrar formulario
-      </button>
+      <span slot="prev">
+        <!-- TODO call reset method 202107.18-20.12 -->
+        <button
+          v-show="!isFinished"
+          class="reset-button"
+          @click="
+            model = {}
+            $refs.wizard.reset()
+          "
+        >
+          Borrar formulario
+        </button>
+      </span>
       <button slot="next" class="form-wizard-button" data-test="document-next-btn">
         Adelante
       </button>
-      <button slot="finish" class="form-wizard-button">Guardar</button>
     </form-wizard>
   </div>
 </template>
@@ -119,9 +135,11 @@ export default {
     loadingWizard: false,
     count: 0,
     errorMsg: null,
+    isFinished: false,
   }),
   computed: {
     ...mapState('forms', ['currentForm', 'formNameToCreate']),
+    ...mapState('documents', ['documentCreationPending', 'documentCreationMessage']),
     groups() {
       return this.schema.groups
     },
@@ -129,10 +147,11 @@ export default {
   watch: {},
   mounted() {
     this.setFormNameToCreate('Solicitud de examen')
+    // Reset the form state
   },
   methods: {
     ...mapMutations('forms', ['setFormNameToCreate']),
-    ...mapMutations('documents', ['setDocumentNameToCreate']),
+    ...mapMutations('documents', ['setDocumentNameToCreate', 'setDocumentCreationMessage']),
     ...mapActions('forms', ['triggerAddCurrentFormAction', 'triggerAddFormAction']),
     ...mapActions('documents', ['triggerAddDocumentAction']),
     ...mapGetters('forms', ['getCurrentForm']),
@@ -148,15 +167,38 @@ export default {
       this.currentIsValid = isValid
       // this.currentIsValid = true
     },
+    // Reset the form state
+    reset() {
+      this.model = {}
+      this.isFinished = false
+      this.setDocumentCreationMessage({})
+      this.setDocumentNameToCreate = null
+      this.$refs.wizard.reset()
+    },
     // form wizard
     onComplete() {
+      this.$router.push('/home')
+    },
+    saveDocument() {
       // This might take a while so make it async and show a loader
       // Maybe add a timeout
       // Make a fixed value the request skeleton to improve failsafe
-      this.setDocumentNameToCreate('Solicitud de certificacion')
-      this.triggerAddDocumentAction(this.model)
-      // eslint-disable-next-line no-alert
-      alert('Form wizard ended')
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          this.setLoading(true)
+          try {
+            this.setDocumentNameToCreate('Solicitud de certificacion')
+            this.triggerAddDocumentAction(this.model)
+            this.errorMsg = null
+            this.isFinished = true
+            resolve(true)
+          } catch (error) {
+            this.errorMsg = error
+            reject(new Error(error))
+          }
+          this.setLoading(false)
+        }, 1000)
+      })
     },
     beforeTabSwitch() {
       // eslint-disable-next-line no-alert
@@ -179,7 +221,9 @@ export default {
         this.setLoading(true)
         setTimeout(() => {
           if (!this.currentIsValid) {
+            // const msg = this.errorMsg
             const msg = 'Complete este paso antes de pasar al siguiente'
+            this.errorMsg = this.model.errors
             this.errorMsg = msg
             reject(new Error(msg))
           } else {
@@ -200,8 +244,6 @@ export default {
 .requirements {
   padding: 1.5rem;
   @extend .box;
-  h1 {
-  }
   div {
     padding: 0.75rem;
     display: flex;
@@ -219,7 +261,7 @@ export default {
 .reset-button {
   @extend .form-wizard-button;
   background-color: lighten($danger-color, 10%);
-  // color: $danger-color;
+  color: darken($danger-color, 40%);
 }
 
 fieldset {

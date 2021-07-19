@@ -26,4 +26,7 @@ export default {
 
   /* Document creation */
   setDocumentCreationPending: (state, value) => (state.documentCreationPending = value),
+
+  /* Document creation messages */
+  setDocumentCreationMessage: (state, payload) => (state.documentCreationMessage = payload),
 }

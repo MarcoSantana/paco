@@ -34,6 +34,7 @@ export default {
     const userDocumentDb = new UserDocumentsDB(rootState.authentication.user.id)
     const documentsDB = new DocumentsDB(rootState.authentication.user.id)
     commit('setDocumentCreationPending', true)
+    commit('setDocumentCreationMessage', {})
     // const addUniqueUserDocument = await userDocumentDb.addUniqueUserDocument(document.name)
     // console.log('addUniqueUserDocument :>> ', addUniqueUserDocument)
     const docUnique = await documentsDB.isUniqueUserDocument(document.name, rootState.authentication.user.id)
@@ -43,6 +44,7 @@ export default {
         const { upload } = document
         delete document.upload
         const createdDocument = await userDocumentDb.create(document)
+
         commit('addDocument', createdDocument)
         commit('setDocumentCreationPending', false)
         if (upload) {
@@ -58,10 +60,12 @@ export default {
             console.log('documentRef :>> ', documentRef)
           })
         }
+        commit('setDocumentCreationMessage', { type: 'info', message: 'Documento creado' })
         return createdDocument
       }
       throw new Error('El documento ya existe')
     } catch (error) {
+      commit('setDocumentCreationMessage', { type: 'error', message: 'Error al crear el documento' })
       console.log('Error', error)
     }
     return null
