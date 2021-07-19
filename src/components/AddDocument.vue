@@ -1,8 +1,8 @@
 <template>
   <div class="box">
     <form-wizard
-      shape="circle"
       ref="standarDocumentWizard"
+      shape="circle"
       step-size="xs"
       color="#2596c7"
       error-color="#e74c3c"
@@ -35,7 +35,12 @@
       </tab-content>
       <tab-content title="Guardar">
         <div :class="documentCreationMessage.type">{{ documentCreationMessage.message }}</div>
-        <button :disabled="documentCreationPending || isFinished" class="form-wizard-button" @click="saveDocument()">
+        <button
+          v-if="!isFinished"
+          :disabled="documentCreationPending || isFinished"
+          class="form-wizard-button"
+          @click="saveDocument()"
+        >
           Guardar
         </button>
       </tab-content>

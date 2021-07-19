@@ -153,6 +153,11 @@ input[type='submit']:active {
   font-size: 0.8rem;
   color: $light-accent;
 }
+// mesage
+.info {
+  color: $vue-color;
+  font-size: 1.5rem;
+}
 
 // Validation
 
