@@ -36,15 +36,12 @@ export default {
     const documentsDB = new DocumentsDB(rootState.authentication.user.id)
     commit('setDocumentCreationPending', true)
     commit('setDocumentCreationMessage', {})
-    // const addUniqueUserDocument = await userDocumentDb.addUniqueUserDocument(document.name)
-    // console.log('addUniqueUserDocument :>> ', addUniqueUserDocument)
     const docUnique = await documentsDB.isUniqueUserDocument(document.name, rootState.authentication.user.id)
-    // FIXME romove all "clos"
-    console.log('docUnique :>> ', docUnique)
     try {
       if (docUnique) {
         const { upload } = document
         delete document.upload
+        document.status = 1
         try {
           const createdDocument = await userDocumentDb.create(document)
           commit('addDocument', createdDocument)
@@ -56,7 +53,6 @@ export default {
         if (upload) {
           try {
             document.files = Object.keys(upload)
-            // Create a root reference
             const storageRef = storage().ref(`documents/${rootState.authentication.user.id}`)
             document.files.forEach(element => {
               storageRef

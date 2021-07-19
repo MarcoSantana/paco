@@ -40,7 +40,7 @@
     </div>
 
     <div v-if="documentFileType && documentFileType.contentType == 'application/pdf'" class="pdf-container">
-    <pdf :src="documentFile"></pdf>
+      <pdf :src="documentFile"></pdf>
     </div>
   </div>
 </template>
@@ -48,10 +48,10 @@
 <script>
 import { storage } from 'firebase'
 
-// import pdf from 'vue-pdf'
+import pdf from 'vue-pdf'
 
 export default {
-  // components: { pdf },
+  components: { pdf },
   props: {
     documentName: String,
     userId: String,
