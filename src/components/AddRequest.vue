@@ -195,8 +195,9 @@ export default {
           } catch (error) {
             this.errorMsg = error
             reject(new Error(error))
+          } finally {
+            this.setLoading(false)
           }
-          this.setLoading(false)
         }, 1000)
       })
     },

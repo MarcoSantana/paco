@@ -40,7 +40,7 @@
     </div>
 
     <div v-if="documentFileType && documentFileType.contentType == 'application/pdf'" class="pdf-container">
-      <!-- <pdf :src="documentFile"></pdf> -->
+    <pdf :src="documentFile"></pdf>
     </div>
   </div>
 </template>
