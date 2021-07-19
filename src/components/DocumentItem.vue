@@ -1,16 +1,50 @@
 <template>
   <div class="document-item">
-    <router-link class="document-link" :to="{ name: 'document', params: { id: data.id } }"
-      >#{{ index }} {{ data.name }}</router-link
-    >
-    <div v-if="!disableActions" class="delete-btn" @click="$emit('deleteDocument', data.id)">
-      {{ isDocumentDeletionPending ? 'delete in progress...' : 'delete' }}
-    </div>
+    <router-link class="document-link" :to="{ name: 'document', params: { id: data.id } }">
+      <div class="documentName">{{ data.name }}</div>
+      <div>
+        {{ data.createTimestamp | intlDate }}
+        <small>hace {{ data.createTimestamp | ago }} días</small>
+      </div>
+      <div>{{ data.status | docStatus }}</div>
+    </router-link>
   </div>
 </template>
 
 <script>
+import { DateTime } from 'luxon'
+
 export default {
+  filters: {
+    docStatus(value) {
+      if (!value) return ''
+      switch (value) {
+        case 1:
+          value = 'Por revisar'
+          break
+        case 2:
+          value = 'En revisión'
+          break
+        default:
+          break
+      }
+      value = value.toString()
+      return value.charAt(0).toUpperCase() + value.slice(1)
+    },
+    intlDate(date) {
+      return (
+        DateTime.fromJSDate(new Date(date))
+          .setLocale('es')
+          // .toLocaleString(DateTime.DATETIME_FULL)
+          .toLocaleString()
+      )
+    },
+    ago(date) {
+      const newValueParsed = DateTime.fromJSDate(new Date(date))
+      const now = DateTime.now()
+      return Math.round(now.diff(newValueParsed, ['days']).days)
+    },
+  },
   props: {
     data: Object,
     index: Number,
@@ -30,7 +64,12 @@ export default {
   width: 100%;
 
   .document-link {
-    color: $vue-color;
+    border-style: dotted;
+    border-width: 1px;
+    border-color: $light-accent;
+    small {
+      color: gray;
+    }
   }
 
   .delete-btn {
