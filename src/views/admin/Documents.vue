@@ -6,7 +6,11 @@
     <div>
       <ul>
         <li v-for="document in documents" :key="document.id">
-          <document-details :document="document" @deleteDocument="deleteUserDocument"></document-details>
+          <document-details
+            :document="document"
+            @deleteDocument="deleteUserDocument"
+            @acceptDocument="acceptDocument"
+          ></document-details>
         </li>
       </ul>
     </div>
@@ -16,6 +20,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import DocumentDetails from '@/components/admin/DocumentDetails'
+import { callUpdateDocumentStatus } from '@/firebase/functions'
 
 export default {
   components: { DocumentDetails },
@@ -35,6 +40,9 @@ export default {
     ...mapActions('admin', ['getAllDocuments', 'deleteUserDocument']),
     dispatchAllDocuments() {
       this.$store.dispatch('admin/getAllDocuments', null, { root: true })
+    },
+    acceptDocument(documentId) {
+      callUpdateDocumentStatus(documentId, 2)
     },
   },
 }

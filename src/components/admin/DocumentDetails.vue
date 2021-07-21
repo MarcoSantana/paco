@@ -25,6 +25,13 @@
           {{ isDocumentDeletionPending(document.id) ? 'borrado en proceso' : '' }}
         </div>
       </span>
+      <span class="accept">
+        <div class="accept-btn" @click="$emit('acceptDocument', document.id)">
+          <!-- <i v-if="!isDocumentDeletionPending(document.id)" class="mdi mdi-trash-can-outline"></i>
+          {{ isDocumentDeletionPending(document.id) ? 'borrado en proceso' : '' }} -->
+          <i class="mdi mdi-check"></i>
+        </div>
+      </span>
     </div>
     <div v-show="showData" class="document-detail">
       <component :is="components[document.name]" :document="document"></component>
@@ -114,6 +121,15 @@ small {
 }
 .delete-btn {
   border: none;
+}
+.accept-btn {
+  color: $vue-color;
+  :hover {
+    background-color: $vue-color;
+    color: whitesmoke;
+    border-color: lighten($vue-color, 30%);
+    border-radius: 5px;
+  }
 }
 .pending {
   color: lighten($danger-color, 10%);
