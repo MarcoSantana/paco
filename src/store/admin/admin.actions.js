@@ -82,6 +82,7 @@ export default {
   /**
    * Delete (as admin) a document from its id
    */
+  // FIXME rename to triggerDeleteDocument
   deleteUserDocument: async ({ rootState, commit, getters }, documentId) => {
     if (getters.isDocumentDeletionPending(documentId)) return
 

@@ -10,10 +10,21 @@ import firebase from 'firebase/app'
 // import { functions } from 'firebase'
 // const functions = require('firebase/functions')
 
-export default function callAddAdminRole(email) {
+export function callAddAdminRole(email) {
   console.log('Click')
   const adminRole = firebase.functions().httpsCallable('addAdminRole')
   adminRole({ email })
+    .then(result => {
+      console.log('result', result)
+    })
+    .catch(err => {
+      console.error(err)
+    })
+}
+
+export function callUpdateDocumentStatus(documentId, status) {
+  const documentStatus = firebase.functions().httpsCallable('updateDocumentStatus')
+  documentStatus({ documentId, status })
     .then(result => {
       console.log('result', result)
     })

@@ -1,5 +1,6 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
+// const {firestore} = require("firebase-admin");
 
 admin.initializeApp();
 
@@ -18,6 +19,29 @@ exports.addAdminRole = functions.https.onCall((data, context) => {
       });
 });
 
+// Update document status
+exports.updateDocumentStatus = functions.https.onCall((data, context) => {
+  try {
+    return admin.firestore()
+        .collection("documents")
+        .doc(data.documentId)
+        .update({"status": data.status})
+        .then(() => {
+          return {
+            type: "info",
+            message: "Estado actualizado",
+          };
+        });
+  } catch (error) {
+    console.log("Error>> ", error);
+    return {
+      type: "info",
+      message: "Estado actualizado",
+    };
+  }
+});
+
+
 // FIXME must create actual useful logs not just print to the same db entry
 // Basic activities log
 // exports.logActivities = functions.firestore.document("{collection}/{id}")
@@ -34,6 +58,44 @@ exports.addAdminRole = functions.https.onCall((data, context) => {
 //       }
 //       return null;
 //     });
+
+// Updates the user-document document with the new admin added status
+exports.docStatus = functions
+    .firestore
+    .document("documents/{documentId}")
+    .onUpdate((snapshot, context) => {
+      // console.log("ref", snapshot.data().ref);
+      // const userDocRef = snapshot.data().ref;
+      const userDoc = admin.firestore()
+          .collection("users")
+          .doc(context.userId)
+          .collection("documents")
+          .doc(context.documentId);
+      userDoc.update({status: context.status})
+          .then((res) => {
+            console.log("res", res);
+          });
+      return userDoc;
+    });
+
+// Test
+exports.updateDocStatus = functions.firestore
+    .document("documents/{documentId}")
+    .onUpdate((change, context) => {
+      const newValue = change.after.data();
+      const previousValue = change.before.data();
+      console.log("previousValue", previousValue);
+      const userDoc =
+        admin.firestore()
+            .collection("users")
+            .doc(previousValue.userId)
+            .collection("documents")
+            .doc(previousValue.documentId);
+      userDoc.update({
+        status: newValue.status,
+      });
+      return userDoc;
+    });
 
 // Syncs in the admin only documents collection
 // TODO Block user deleting/updating documents in rules
@@ -63,7 +125,7 @@ exports.syncDocuments = functions.firestore
               "ref": `users/${userId}/documents/${documentId}`,
             });
           })
-          .then((docs)=> docs);
+          .then((docs) => docs);
     });
 
 // When a document is deleted by admin the user's document is also deleted
@@ -81,11 +143,3 @@ exports.syncDeleteDocuments = functions.firestore
       return documentsQuery;
     });
 
-
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//   functions.logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
