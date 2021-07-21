@@ -6,7 +6,6 @@
 
     <!-- <div v-if="isAdmin" class="box"> -->
     <div v-if="isUserLoggedIn">
-      Is Admin? :: {{ isUserAdmin }}
       <div v-if="isUserAdmin" class="box">
         <form>
           <input id="admin-email" ref="adminEmail" type="email" required />
