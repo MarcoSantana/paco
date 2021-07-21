@@ -16,9 +16,7 @@
         {{ document.createTimestamp | intlDate }}
         <small>hace {{ document.createTimestamp | ago }} días</small>
       </span>
-      <span class="status" :class="document.status == 1 ? 'pending' : ''">{{
-        document.status == 1 ? 'Por revisar' : 'Revisado'
-      }}</span>
+      <span class="status" :class="status == 1 ? 'pending' : ''">{{ status == 1 ? 'Por revisar' : 'Revisado' }} </span>
       <span class="delete">
         <div class="delete-btn" @click="$emit('deleteDocument', document.id)">
           <i v-if="!isDocumentDeletionPending(document.id)" class="mdi mdi-trash-can-outline"></i>
@@ -26,7 +24,7 @@
         </div>
       </span>
       <span class="accept">
-        <div class="accept-btn" @click="$emit('acceptDocument', document.id)">
+        <div class="accept-btn" @click="acceptDocument">
           <!-- <i v-if="!isDocumentDeletionPending(document.id)" class="mdi mdi-trash-can-outline"></i>
           {{ isDocumentDeletionPending(document.id) ? 'borrado en proceso' : '' }} -->
           <i class="mdi mdi-check"></i>
@@ -45,6 +43,7 @@ import { DateTime } from 'luxon'
 import { mapState, mapActions, mapGetters } from 'vuex'
 import CertificationRequest from '@/components/admin/CertificationRequest'
 import * as components from '@/components/admin/componentsList.json'
+import { callUpdateDocumentStatus } from '@/firebase/functions'
 
 console.log('components :>> ', components.default['Solicitud de certificación'])
 
@@ -70,6 +69,7 @@ export default {
     return {
       showData: false,
       components: components.default,
+      status: this.document.status,
     }
   },
   computed: {
@@ -79,6 +79,10 @@ export default {
   },
   methods: {
     ...mapActions('admin', ['deleteUserDocuments']),
+    async acceptDocument() {
+      callUpdateDocumentStatus(this.document.id, 2)
+      this.status = 2
+    },
   },
 }
 </script>
