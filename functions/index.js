@@ -97,13 +97,23 @@ exports.updateDocStatus = functions.firestore
             .doc(previousValue.documentId);
       userDoc.update({
         status: newValue.status,
+      }).then(() => {
+        const userRef = admin.firestore()
+            .collection("users")
+            .doc(previousValue.userId);
+        return userRef.get().then((snapshot)=> {
+          return snapshot.data();
+        });
       })
-          .then(() => {
+          .then((userData) => {
+            console.log("userData :>> ", userData);
             admin.firestore().collection("mail").add({
               to: "marco.santana@gmail.com",
+              cc: userData.email,
               message: {
-                subject: "Documento cambio de estado",
-                html: "This is an <code>HTML</code> email body.",
+                subject: `Documento ${previousValue.name} cambio de estado`,
+                // eslint-disable-next-line max-len
+                html: `El documento: ${previousValue.name} ha cambiado de estado.  Por favor ingrese a la aplicación PAD para verificarlo`,
               },
             });
           });
