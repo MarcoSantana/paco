@@ -10,11 +10,11 @@ fileName: views/SignUp.vue -->
 
   <div class="page-wrapper" background-color="primary">
     <!-- Loader -->
-    <div v-show="user === undefined" data-test="loader">Authenticating...</div>
+    <div v-show="user === undefined" data-test="loader">Autenticando...</div>
 
     <!-- Offline instruction -->
     <div v-show="!networkOnLine" data-test="offline-instruction">
-      Please check your connection, login feature is not available offline.
+      Por favor revise su conexión, la característica de ingreso no está disponible fuera de línea.
     </div>
 
     <p v-if="loginError">{{ loginError }}</p>
@@ -57,7 +57,7 @@ fileName: views/SignUp.vue -->
                   <i class="mdi mdi-face icon"></i>
                   <input
                     id="registration-name"
-                    v-model="registrationData.registrationName"
+                    v-model="registrationData.name"
                     type="text"
                     name="name"
                     placeholder="Nombres (ej. Juan Carlos)"
@@ -273,7 +273,7 @@ export default {
   head() {
     return {
       title: {
-        inner: 'Login',
+        inner: 'Ingreso',
       },
       meta: [
         // TODO translate anad adjust
@@ -354,9 +354,17 @@ export default {
         .createUserWithEmailAndPassword(data.email, data.password)
         .then(userCredentials => {
           const { user } = userCredentials
+          console.log('user :>> ', user)
+          user
+            .updateProfile({
+              displayName: `${data.name} ${data.lastname1} ${data.lastname2}`,
+            })
+            .catch(error => {
+              this.errors.push(error)
+            })
           user.sendEmailVerification()
-          // TODO store this user to vuex 202105.02-09.21
         })
+      // update user data
     },
     onSubmit() {
       // Submit values to API...
