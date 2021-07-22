@@ -85,6 +85,10 @@ exports.updateDocStatus = functions.firestore
       const newValue = change.after.data();
       const previousValue = change.before.data();
       console.log("previousValue", previousValue);
+      // TODO get user data
+      // personalizae mail
+      // create document url
+      //
       const userDoc =
         admin.firestore()
             .collection("users")
@@ -93,7 +97,16 @@ exports.updateDocStatus = functions.firestore
             .doc(previousValue.documentId);
       userDoc.update({
         status: newValue.status,
-      });
+      })
+          .then(() => {
+            admin.firestore().collection("mail").add({
+              to: "marco.santana@gmail.com",
+              message: {
+                subject: "Documento cambio de estado",
+                html: "This is an <code>HTML</code> email body.",
+              },
+            });
+          });
       return userDoc;
     });
 
@@ -142,4 +155,5 @@ exports.syncDeleteDocuments = functions.firestore
           .delete();
       return documentsQuery;
     });
+
 
