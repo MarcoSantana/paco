@@ -1,7 +1,8 @@
 <template>
   <div>
-    <div class="row">
-      <span cla.ss="actions">
+    <div v-if="message" class="row">{{ message }}</div>
+    <div v-if="!message" class="row">
+      <span class="actions">
         <div class="btn" @click="showData = !showData">
           <i v-if="!showData" class="mdi mdi-chevron-down"></i>
           <i v-if="showData" class="mdi mdi-chevron-up"></i>
@@ -16,18 +17,26 @@
         {{ document.createTimestamp | intlDate }}
         <small>hace {{ document.createTimestamp | ago }} días</small>
       </span>
-      <span class="status" :class="status == 1 ? 'pending' : ''">{{ status == 1 ? 'Por revisar' : 'Revisado' }} </span>
-      <span class="delete">
+      <span class="status" :class="status == 1 ? 'pending' : ''">{{ status | docStatus }} </span>
+      <!-- <span class="delete">
         <div class="delete-btn" @click="$emit('deleteDocument', document.id)">
           <i v-if="!isDocumentDeletionPending(document.id)" class="mdi mdi-trash-can-outline"></i>
           {{ isDocumentDeletionPending(document.id) ? 'borrado en proceso' : '' }}
         </div>
-      </span>
+      </span> -->
       <span class="accept">
-        <div class="accept-btn" @click="acceptDocument">
-          <!-- <i v-if="!isDocumentDeletionPending(document.id)" class="mdi mdi-trash-can-outline"></i>
-          {{ isDocumentDeletionPending(document.id) ? 'borrado en proceso' : '' }} -->
+        <div :id="`accept-${document.id}`" class="accept-btn" @click="acceptDocument">
           <i class="mdi mdi-check"></i>
+        </div>
+      </span>
+      <span class="review">
+        <div class="review-btn" @click="reviewDocument">
+          <i class="mdi mdi-file-find"></i>
+        </div>
+      </span>
+      <span class="reject">
+        <div class="reject-btn" @click="rejectDocument">
+          <i class="mdi mdi-file-cancel"></i>
         </div>
       </span>
     </div>
@@ -63,6 +72,27 @@ export default {
       const now = DateTime.now()
       return Math.round(now.diff(newValueParsed, ['days']).days)
     },
+    docStatus(value) {
+      if (!value) return ''
+      switch (value) {
+        case 1:
+          value = 'Por revisar'
+          break
+        case 2:
+          value = 'En revisión'
+          break
+        case 3:
+          value = 'Rechazado'
+          break
+        case 4:
+          value = 'Aceptado'
+          break
+        default:
+          break
+      }
+      value = value.toString()
+      return value.charAt(0).toUpperCase() + value.slice(1)
+    },
   },
   props: { document: Object },
   data() {
@@ -70,6 +100,7 @@ export default {
       showData: false,
       components: components.default,
       status: this.document.status,
+      message: null,
     }
   },
   computed: {
@@ -80,8 +111,31 @@ export default {
   methods: {
     ...mapActions('admin', ['deleteUserDocuments']),
     async acceptDocument() {
-      callUpdateDocumentStatus(this.document.id, 2)
+      this.message = 'Cambiando el estado del documento'
+      await callUpdateDocumentStatus(this.document.id, 4).then(result => {
+        console.log('result :>> ', result)
+        this.message = result.data.message
+      })
+      this.status = 4
+      this.message = null
+    },
+
+    async rejectDocument() {
+      this.message = 'Cambiando el estado del documento'
+      await callUpdateDocumentStatus(this.document.id, 3).then(result => {
+        this.message = result.data.message
+      })
+      this.status = 3
+      this.message = null
+    },
+
+    async reviewDocument() {
+      this.message = 'Cambiando el estado del documento'
+      await callUpdateDocumentStatus(this.document.id, 2).then(result => {
+        this.message = result.data.message
+      })
       this.status = 2
+      this.message = null
     },
   },
 }
@@ -113,26 +167,51 @@ small {
 }
 .btn {
   @extend .delete-btn;
+  $color: $main;
   background-color: transparent;
-  color: $main;
   border: none;
   :hover {
     background-color: $main;
-    color: $light-accent;
+    color: whitesmoke;
     opacity: 0.7;
     cursor: pointer;
+    border-radius: 5px;
+    border-style: dotted;
   }
 }
 .delete-btn {
-  border: none;
+  @extend .btn;
+  $color: $danger-color;
+  :hover {
+    background-color: $color;
+    border-color: lighten($color, 30%);
+  }
 }
 .accept-btn {
-  color: $vue-color;
+  @extend .btn;
+  $color: $vue-color;
+  color: $color;
   :hover {
-    background-color: $vue-color;
-    color: whitesmoke;
-    border-color: lighten($vue-color, 30%);
-    border-radius: 5px;
+    background-color: $color;
+    border-color: lighten($color, 30%);
+  }
+}
+
+.review-btn {
+  @extend .btn;
+  color: $warning-color;
+  :hover {
+    background-color: $warning-color;
+    border-color: lighten($warning-color, 30%);
+  }
+}
+
+.reject-btn {
+  @extend .btn;
+  color: $danger-color;
+  :hover {
+    background-color: $warning-color;
+    border-color: lighten($warning-color, 30%);
   }
 }
 .pending {
