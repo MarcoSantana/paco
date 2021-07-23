@@ -498,7 +498,7 @@ export default {
             // Tres fotografías oval tamaño diploma(5x7cm) blanco y negro, con fondo blanco, vestimenta formal.Con nombre csompleto al reverso(con tinta).
             {
               type: 'image',
-              label: 'Fotografía de diploma',
+              label: 'Fotografía tamaño diploma en formato JPG/PNG',
               model: 'upload.avatar',
               required: false,
               browse: true,
