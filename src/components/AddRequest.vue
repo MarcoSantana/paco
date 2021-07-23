@@ -57,7 +57,7 @@
               del Consejo).
             </li>
             <li>Curriculum vitae</li>
-            <li>Donativo no reembolsable de $ 5,500. 00/100 m.n.</li>
+            <li>Donativo no reembolsable de $ 5,700. 00/100 m.n.</li>
           </ol>
         </div>
       </tab-content>
