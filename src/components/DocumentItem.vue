@@ -1,7 +1,7 @@
 <template>
   <div class="document-item">
-    <router-link class="document-link" :to="{ name: 'document', params: { id: data.id } }">
-      <div class="documentName">{{ data.name }}</div>
+    <router-link class="" :to="{ name: 'document', params: { id: data.id } }">
+      <div class="">{{ data.name }}</div>
       <div>
         {{ data.createTimestamp | intlDate }}
         <small>hace {{ data.createTimestamp | ago }} días</small>
@@ -24,6 +24,12 @@ export default {
           break
         case 2:
           value = 'En revisión'
+          break
+        case 3:
+          value = 'Rechazado'
+          break
+        case 4:
+          value = 'Aceptado'
           break
         default:
           break
