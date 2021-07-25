@@ -4,7 +4,7 @@ import { validators } from 'vue-form-generator'
 export default {
   methods: {
     async checkSize(value, field, model) {
-      const blob = await fetch(model.avatar)
+      const blob = await fetch(model)
         .then(res => res.blob())
         .then(foo => {
           return foo
@@ -292,6 +292,7 @@ export default {
                 input: { 'data-test': 'postgraduate-hospital' },
               },
               required: true,
+              validator: validators.required,
             },
             //         // university
             {
@@ -322,6 +323,7 @@ export default {
               visibility: 'true',
               styleClasses: 'document-form',
               required: true,
+              validator: validators.required,
             },
             // Specialty
             {
@@ -419,7 +421,8 @@ export default {
               attributes: {
                 input: { 'data-test': 'request-voucher' },
               },
-              required: false,
+              required: true,
+              validator: ['required', 'hasValue'],
               // validator: ['required'],
             },
             // Diploma
@@ -433,7 +436,8 @@ export default {
               attributes: {
                 input: { 'data-test': 'request-uploadDegreeDiploma' },
               },
-              required: false,
+              required: true,
+              validator: validators.required,
               // validator: ['required'],
             },
             // License
@@ -447,7 +451,8 @@ export default {
               attributes: {
                 input: { 'data-test': 'request-uploadLicense' },
               },
-              required: false,
+              required: true,
+              validator: validators.required,
               // validator: ['required'],
             },
             // ENARM
@@ -463,7 +468,8 @@ export default {
               attributes: {
                 input: { 'data-test': 'request-uploadEnarm' },
               },
-              required: false,
+              required: true,
+              validator: validators.required,
               // validator: ['required'],
             },
             // constancia de haber terminado satisfactoriamente una residencia progresiva hospitalaria de por lo menos 2 años
@@ -479,7 +485,8 @@ export default {
               attributes: {
                 input: { 'data-test': 'request-uploadPediatricResidence' },
               },
-              required: false,
+              required: true,
+              validator: validators.required,
             },
             // Copia del diploma institucional en Medicina de Urgencias o en su caso Urgencias Pediatricas.
             {
@@ -493,20 +500,21 @@ export default {
               attributes: {
                 input: { 'data-test': 'request-uploadPostgraduateDiploma' },
               },
-              required: false,
+              required: true,
+              validator: validators.required,
             },
             // Tres fotografías oval tamaño diploma(5x7cm) blanco y negro, con fondo blanco, vestimenta formal.Con nombre csompleto al reverso(con tinta).
             {
               type: 'image',
               label: 'Fotografía tamaño diploma en formato JPG/PNG',
               model: 'upload.avatar',
-              required: false,
               browse: true,
               preview: true,
               attributes: {
                 input: { 'data-test': 'request-uploadPostgraduateDiploma' },
               },
-              validator: validators.checkSize,
+              required: true,
+              validator: ['validators.required', 'validators.checkSize'],
             },
           ],
         },
