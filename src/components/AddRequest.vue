@@ -127,7 +127,7 @@ export default {
     formOptions: {
       validateAfterLoad: false,
       validateAfterChanged: true,
-      validateAsync: false,
+      validateAsync: true,
       validateBeforeSubmit: true,
     },
     model: {},
