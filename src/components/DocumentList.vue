@@ -5,7 +5,7 @@
     <document-item
       v-for="(document, index) in documents"
       :key="document.id"
-      class="document-row"
+      class="box"
       :index="index"
       :is-document-deletion-pending="isDocumentDeletionPending(document.id)"
       :disable-actions="!networkOnLine"
