@@ -142,7 +142,7 @@ describe('Curriculum', () => {
       cy.get(':nth-child(35) > :nth-child(1)').click()
       cy.get('.vdatetime-input').should('have.value', '25 de julio de 1982')
       cy.get('#age').as('age')
-      cy.get('@age').should('have.value', '38')
+      cy.get('@age').should('have.value', '39')
 
       // Close pop up
       // cy.get('.vdatetime-popup__actions__button--cancel').as('cancelButton')
