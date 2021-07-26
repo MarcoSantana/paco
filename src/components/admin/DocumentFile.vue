@@ -8,39 +8,45 @@
       :resizable="resizableModal"
       :scrollable="scrollableModal"
     >
+      MODAL
+
+      <div
+        v-if="
+          documentFileType &&
+            (documentFileType.contentType == 'image/png' || documentFileType.contentType == 'image/jpeg')
+        "
+        class="image-container"
+      >
+        <img :src="documentFile" style="height: 80%;" />
+      </div>
+
+      <div v-if="documentFileType && documentFileType.contentType == 'application/pdf'" class="pdf-container">
+        <pdf style="height: 80%;" :src="documentFile"></pdf>
+      </div>
+
       <div slot="top-right">
         <button class="delete-btn" @click="$modal.hide(fileName)">
           ❌
         </button>
       </div>
-      <span
-        v-if="
-          documentFileType &&
-            (documentFileType.contentType == 'image/png' || documentFileType.contentType == 'image/jpeg')
-        "
-      >
-        <img width="100%" :src="documentFile" alt="" />
-      </span>
-
-      <span v-if="documentFileType && documentFileType.contentType == 'application/pdf'">
-        <!-- <pdf :src="documentFile"></pdf> -->
-      </span>
       <button class="delete-btn" @click="hide()">
         <i class="mdi mdi-close-box"></i>
       </button>
     </modal>
-    <div
-      v-if="
-        documentFileType &&
-          (documentFileType.contentType == 'image/png' || documentFileType.contentType == 'image/jpeg')
-      "
-      class="image-container"
-    >
-      <img :src="documentFile" alt="" @click="show()" />
-    </div>
+    <div @click="show">
+      <div
+        v-if="
+          documentFileType &&
+            (documentFileType.contentType == 'image/png' || documentFileType.contentType == 'image/jpeg')
+        "
+        class="image-container"
+      >
+        <img :src="documentFile" alt="" @click="show()" />
+      </div>
 
-    <div v-if="documentFileType && documentFileType.contentType == 'application/pdf'" class="pdf-container">
-      <pdf :src="documentFile"></pdf>
+      <div v-if="documentFileType && documentFileType.contentType == 'application/pdf'" class="pdf-container">
+        <pdf :src="documentFile"></pdf>
+      </div>
     </div>
   </div>
 </template>
