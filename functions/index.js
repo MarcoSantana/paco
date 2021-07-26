@@ -71,7 +71,11 @@ exports.docStatus = functions
           .doc(context.userId)
           .collection("documents")
           .doc(context.documentId);
-      userDoc.update({status: context.status})
+      userDoc.update({
+        status: context.status,
+        deletedTimestamp: context.deletedTimestamp,
+        updateTimestamp: admin.firestore().FieldValue.serverTimestamp(),
+      })
           .then((res) => {
             console.log("res", res);
           });

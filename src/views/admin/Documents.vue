@@ -9,7 +9,7 @@
           <document-details
             :ref="document.id"
             :document="document"
-            @deleteDocument="deleteUserDocument"
+            @deleteDocument="triggerSoftDeleteUserDocument"
             @acceptDocument="acceptDocument"
           ></document-details>
         </li>
@@ -37,7 +37,7 @@ export default {
     this.dispatchAllDocuments()
   },
   methods: {
-    ...mapActions('admin', ['getAllDocuments', 'deleteUserDocument']),
+    ...mapActions('admin', ['getAllDocuments', 'deleteUserDocument', 'triggerSoftDeleteUserDocument']),
     dispatchAllDocuments() {
       this.$store.dispatch('admin/getAllDocuments', null, { root: true })
     },
