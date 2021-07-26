@@ -36,11 +36,47 @@
         <div>{{ request.address }} {{ request.date | intlDate }}</div>
         <div>Examen previo: {{ request.previousExam }}</div>
       </div>
+      <h3>Recibo de pago</h3>
+      <div>
+        <document-file
+          class="document-file"
+          :document-name="documentName"
+          :user-id="document.userId"
+          :scrollable-modal="true"
+          :resizable-modal="true"
+          file-name="voucher"
+        ></document-file>
+      </div>
+      <h3>Estudios de licenciatura de medicina</h3>
+      <div>
+        <div>Título de la licenciatura en medicina</div>
+        <document-file
+          class="document-file"
+          :document-name="document.name"
+          :user-id="document.userId"
+          :scrollable-modal="true"
+          :resizable-modal="true"
+          file-name="degreeDiploma"
+        >
+        </document-file>
+        <div>
+          <div>Documento del ENARM (constancia de haber presentado o equivalente)</div>
+          <document-file
+            class="document-file"
+            :document-name="document.name"
+            :user-id="document.userId"
+            :scrollable-modal="true"
+            :resizable-modal="true"
+            file-name="enarm"
+          >
+          </document-file>
+        </div>
+      </div>
       <div>
         <h4>Estudios de posgrado</h4>
         <div>
           <div>Cédula profesional: {{ request.postgraduate.license }}</div>
-          <div>Cedula</div>
+          <div>Cédula</div>
           <document-file
             class="document-file"
             :document-name="document.name"
@@ -55,6 +91,7 @@
           <div>Hospital formativo: {{ request.postgraduate.hospital }}</div>
           <div>Fecha de graduación: {{ request.postgraduate.graduationDate | intlDate }}</div>
           <div>
+            <div>Constancia de residencia progresiva hospitalaria</div>
             <document-file
               class="document-file"
               :document-name="document.name"
@@ -62,6 +99,15 @@
               file-name="pediatricResidence"
             ></document-file>
           </div>
+        </div>
+        <div>
+          <div>Diploma institucional en Medicina de Urgencias o en su caso Urgencias Pediatricas</div>
+          <document-file
+            class="document-file"
+            :document-name="document.name"
+            :user-id="document.userId"
+            file-name="postgraduateDiploma"
+          ></document-file>
         </div>
       </div>
       <div>
