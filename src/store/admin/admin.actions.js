@@ -22,12 +22,7 @@ export default {
     console.log('Get All Documents')
     console.log('rootState: ', rootState)
     const documentsDb = new DocumentsDB(`${rootState.authentication.user.id}`)
-    // const constraints = [['deletedTimestamp', '==', false]]
-    const constraints = [
-      ['status', '==', 1],
-      ['deletedTimestamp', '>', 0],
-    ]
-    const documents = await documentsDb.readAllAsAdmin(constraints)
+    const documents = await documentsDb.readAllAsAdmin()
     console.log('documents: ', documents)
     commit('setDocuments', documents)
   },
