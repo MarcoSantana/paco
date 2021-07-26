@@ -22,9 +22,9 @@ export function callAddAdminRole(email) {
     })
 }
 
-export async function callUpdateDocumentStatus(documentId, status) {
+export async function callUpdateDocumentStatus(documentId, status, message) {
   const documentStatus = firebase.functions().httpsCallable('updateDocumentStatus')
-  return documentStatus({ documentId, status })
+  return documentStatus({ documentId, status, message })
     .then(result => {
       return result
     })

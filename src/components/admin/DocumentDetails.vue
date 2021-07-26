@@ -35,7 +35,7 @@
         </div>
       </span>
       <span class="reject">
-        <div class="reject-btn" @click="rejectDocument">
+        <div class="reject-btn" @click="showRejectionModal">
           <i class="mdi mdi-file-cancel"></i>
         </div>
       </span>
@@ -43,6 +43,12 @@
     <div v-show="showData" class="document-detail">
       <component :is="components[document.name]" :document="document"></component>
     </div>
+    <modal :name="`rejectModal${document.id}`" :width="'80%'" :height="'auto'" :resizable="true" :scrollable="true">
+      <input ref="rejectionReason" v-model="rejectionReason" placeholder="Detalle el motivo de rechazo" type="text" />
+      <button v-if="rejectionReason != null" class="btn delete-btn" @click="rejectDocument">
+        Rechazar documento
+      </button>
+    </modal>
   </div>
   <!-- row -->
 </template>
@@ -101,6 +107,7 @@ export default {
       components: components.default,
       status: this.document.status,
       message: null,
+      rejectionReason: null,
     }
   },
   computed: {
@@ -120,13 +127,22 @@ export default {
       this.message = null
     },
 
+    showRejectionModal() {
+      console.log('rejectionMOdalrejectionMOdal')
+      console.log(`rejectModal${this.document.id}`)
+      this.$modal.show(`rejectModal${this.document.id}`)
+    },
     async rejectDocument() {
       this.message = 'Cambiando el estado del documento'
-      await callUpdateDocumentStatus(this.document.id, 3).then(result => {
-        this.message = result.data.message
-      })
-      this.status = 3
-      this.message = null
+      await callUpdateDocumentStatus(this.document.id, 3, this.rejectionReason)
+        .then(result => {
+          this.message = result.data.message
+        })
+        .then(() => {
+          this.status = 3
+          this.message = null
+          this.$modal.hide(`rejectModal${this.document.id}`)
+        })
     },
 
     async reviewDocument() {

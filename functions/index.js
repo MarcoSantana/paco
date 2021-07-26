@@ -25,7 +25,7 @@ exports.updateDocumentStatus = functions.https.onCall((data, context) => {
     return admin.firestore()
         .collection("documents")
         .doc(data.documentId)
-        .update({"status": data.status})
+        .update({"status": data.status, "message": data.message})
         .then(() => {
           return {
             type: "info",
@@ -35,8 +35,8 @@ exports.updateDocumentStatus = functions.https.onCall((data, context) => {
   } catch (error) {
     console.log("Error>> ", error);
     return {
-      type: "info",
-      message: "Estado actualizado",
+      type: "error",
+      message: "Error al actualizar estado",
     };
   }
 });
@@ -59,23 +59,28 @@ exports.updateDocumentStatus = functions.https.onCall((data, context) => {
 //       return null;
 //     });
 
-// Updates the user-document document with the new admin added status
+// Updates the user-document document with the new added status and message
 exports.docStatus = functions
     .firestore
     .document("documents/{documentId}")
     .onUpdate((snapshot, context) => {
+      console.log("snapshot.userId: ", snapshot.userId);
+      console.log("snsnapshot.documentId: ", snapshot.documentId);
+      console.log("snapshot.status: ", snapshot.status);
+      console.log("snapshot.message: ", snapshot.message);
       // console.log("ref", snapshot.data().ref);
       // const userDocRef = snapshot.data().ref;
-      const userDoc = admin.firestore()
-          .collection("users")
-          .doc(context.userId)
-          .collection("documents")
-          .doc(context.documentId);
-      userDoc.update({status: context.status})
-          .then((res) => {
-            console.log("res", res);
-          });
-      return userDoc;
+      // const userDoc = admin.firestore()
+      //     .collection("users")
+      //     .doc(snapshot.userId)
+      //     .collection("documents")
+      //     .doc(snapshot.documentId);
+      // console.log("context.message: ", context.message);
+      // userDoc.update({status: context.status})
+      //     .then(() => {
+      //       userDoc.update({message: context.message});
+      //     });
+      // return userDoc;
     });
 
 // Test
@@ -97,6 +102,7 @@ exports.updateDocStatus = functions.firestore
             .doc(previousValue.documentId);
       userDoc.update({
         status: newValue.status,
+        message: newValue.message,
       }).then(() => {
         const userRef = admin.firestore()
             .collection("users")
@@ -113,7 +119,7 @@ exports.updateDocStatus = functions.firestore
               message: {
                 subject: `Documento ${previousValue.name} cambio de estado`,
                 // eslint-disable-next-line max-len
-                html: `El documento: ${previousValue.name} ha cambiado de estado.  Por favor ingrese a la aplicación PAD para verificarlo`,
+                html: `El documento: ${previousValue.name} ha cambiado de estado.  Por favor ingrese a la aplicación PAD para verificarlo. <div>${newValue.message}</div>`,
               },
             });
           });

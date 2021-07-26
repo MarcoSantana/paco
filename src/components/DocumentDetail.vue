@@ -2,6 +2,7 @@
   <div class="container">
     <h1>{{ document.name }}</h1>
     <h2>Estado: {{ document.status | docStatus }}</h2>
+    <h3>{{ document.message }}</h3>
     <div class="document-grid">
       <div>
         <h3>Detalles del aspirante</h3>
