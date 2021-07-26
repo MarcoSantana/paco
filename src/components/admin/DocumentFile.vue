@@ -8,8 +8,6 @@
       :resizable="resizableModal"
       :scrollable="scrollableModal"
     >
-      MODAL
-
       <div
         v-if="
           documentFileType &&

@@ -1,11 +1,11 @@
 <template>
   <div class="wrapper">
     <template v-if="refreshingApp">
-      Loading new content...
+      Cargando nuevo contenido...
     </template>
     <template v-else>
-      New content available. Please
-      <span class="refresh-btn" @click="$emit('refresh')">REFRESH</span>
+      Nuevo contenido disponible por favor
+      <span class="refresh-btn" @click="$emit('refresh')">REFRESQUE</span>
     </template>
   </div>
 </template>
@@ -20,11 +20,12 @@ export default {
 
 <style lang="scss" scoped>
 .wrapper {
+  width: 80vw;
   padding: 10px 20px;
   background-color: #333;
   color: white;
   display: inline-block;
-  border-radius: 4px;
+  border-radius: 5px;
 
   .refresh-btn {
     text-decoration: underline;
