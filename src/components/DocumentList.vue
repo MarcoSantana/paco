@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p v-if="documents === null" class="infos-label">Loading...</p>
+    <p v-if="documents === null" class="infos-label">Cargando...</p>
     <p v-if="documents && !documents.length" class="infos-label">Aún no tiene documentos</p>
     <document-item
       v-for="(document, index) in documents"

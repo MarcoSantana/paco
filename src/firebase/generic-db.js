@@ -97,6 +97,7 @@ export default class GenericDB {
 
     if (constraints) {
       constraints.forEach(constraint => {
+        console.log('constraint :>> ', constraint)
         query = query.where(...constraint)
       })
     }
@@ -141,6 +142,19 @@ export default class GenericDB {
       .collection(this.collectionPath)
       .doc(id)
       .delete()
+  }
+
+  /**
+   * Soft Delete a document in the collection
+   * @param id
+   */
+  async softDelete(id) {
+    return (await firestore())
+      .collection(this.collectionPath)
+      .doc(id)
+      .update({
+        deletedTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      })
   }
 
   /**

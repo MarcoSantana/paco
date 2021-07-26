@@ -22,7 +22,12 @@ export default {
     console.log('Get All Documents')
     console.log('rootState: ', rootState)
     const documentsDb = new DocumentsDB(`${rootState.authentication.user.id}`)
-    const documents = await documentsDb.readAllAsAdmin()
+    // const constraints = [['deletedTimestamp', '==', false]]
+    const constraints = [
+      ['status', '==', 1],
+      ['deletedTimestamp', '>', 0],
+    ]
+    const documents = await documentsDb.readAllAsAdmin(constraints)
     console.log('documents: ', documents)
     commit('setDocuments', documents)
   },
@@ -90,6 +95,19 @@ export default {
     commit('addDocumentDeletionPending', documentId)
     await documentsDb.delete(documentId)
     // FIXME Move this to a cloud function
+    commit('removeDocumentById', documentId)
+    commit('removeDocumentDeletionPending', documentId)
+  },
+
+  /**
+   * Soft Delete (as admin) a document from its id
+   */
+  triggerSoftDeleteUserDocument: async ({ rootState, commit, getters }, documentId) => {
+    if (getters.isDocumentDeletionPending(documentId)) return
+
+    const documentsDb = new DocumentsDB(rootState.authentication.user.id)
+    commit('addDocumentDeletionPending', documentId)
+    await documentsDb.softDelete(documentId)
     commit('removeDocumentById', documentId)
     commit('removeDocumentDeletionPending', documentId)
   },

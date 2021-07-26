@@ -70,17 +70,20 @@ exports.docStatus = functions
       console.log("snapshot.message: ", snapshot.message);
       // console.log("ref", snapshot.data().ref);
       // const userDocRef = snapshot.data().ref;
-      // const userDoc = admin.firestore()
-      //     .collection("users")
-      //     .doc(snapshot.userId)
-      //     .collection("documents")
-      //     .doc(snapshot.documentId);
-      // console.log("context.message: ", context.message);
-      // userDoc.update({status: context.status})
-      //     .then(() => {
-      //       userDoc.update({message: context.message});
-      //     });
-      // return userDoc;
+      const userDoc = admin.firestore()
+          .collection("users")
+          .doc(context.userId)
+          .collection("documents")
+          .doc(context.documentId);
+      userDoc.update({
+        status: context.status,
+        deletedTimestamp: context.deletedTimestamp,
+        updateTimestamp: admin.firestore().FieldValue.serverTimestamp(),
+      })
+          .then((res) => {
+            console.log("res", res);
+          });
+      return userDoc;
     });
 
 // Test
