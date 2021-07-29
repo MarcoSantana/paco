@@ -90,10 +90,7 @@ exports.updateDocStatus = functions.firestore
       const newValue = change.after.data();
       const previousValue = change.before.data();
       console.log("previousValue", previousValue);
-      // TODO get user data
-      // personalizae mail
-      // create document url
-      //
+      // TODO create document url
       const userDoc =
         admin.firestore()
             .collection("users")
