@@ -3,10 +3,19 @@
     <div v-if="message" class="row">{{ message }}</div>
     <div v-if="!message" class="row">
       <span class="actions">
-        <div class="btn" @click="showData = !showData">
+        <div>
+          <router-link
+            :id="document.id"
+            class="btn"
+            :to="{ name: 'document-view', params: { id: document.id, document: document } }"
+          >
+            Abrir documento
+          </router-link>
+        </div>
+        <!-- <div class="btn" @click="showData = !showData">
           <i v-if="!showData" class="mdi mdi-chevron-down"></i>
           <i v-if="showData" class="mdi mdi-chevron-up"></i>
-        </div>
+        </div> -->
       </span>
       <!-- actions -->
       <span class="userName">
@@ -40,9 +49,9 @@
         </div>
       </span>
     </div>
-    <div v-show="showData" class="document-detail">
+    <!-- <div v-show="showData" class="document-detail">
       <component :is="components[document.name]" :document="document"></component>
-    </div>
+    </div> -->
     <modal :name="`rejectModal${document.id}`" :width="'80%'" :height="'auto'" :resizable="true" :scrollable="true">
       <input ref="rejectionReason" v-model="rejectionReason" placeholder="Detalle el motivo de rechazo" type="text" />
       <button v-if="rejectionReason != null" class="btn delete-btn" @click="rejectDocument">
@@ -56,14 +65,13 @@
 <script>
 import { DateTime } from 'luxon'
 import { mapState, mapActions, mapGetters } from 'vuex'
-import CertificationRequest from '@/components/admin/CertificationRequest'
+// import CertificationRequest from '@/components/admin/CertificationRequest'
 import * as components from '@/components/admin/componentsList.json'
 import { callUpdateDocumentStatus } from '@/firebase/functions'
 
 console.log('components :>> ', components.default['Solicitud de certificación'])
 
 export default {
-  components: { CertificationRequest },
   filters: {
     intlDate(date) {
       return (
@@ -100,6 +108,7 @@ export default {
       return value.charAt(0).toUpperCase() + value.slice(1)
     },
   },
+  // components: { CertificationRequest },
   props: { document: Object },
   data() {
     return {
@@ -115,6 +124,7 @@ export default {
     ...mapState('admin', ['documents']),
     ...mapState('app', ['networkOnLine']),
   },
+  mounted() {},
   methods: {
     ...mapActions('admin', ['deleteUserDocuments']),
     async acceptDocument() {
@@ -182,17 +192,21 @@ small {
   color: grey;
 }
 .btn {
-  @extend .delete-btn;
-  $color: $main;
-  background-color: transparent;
+  @extend .button;
+  background-color: $main;
+  color: $light-accent;
+  font-size: 1rem;
+  padding: 0.35rem;
+  border-radius: 5px;
+  // background-color: transparent;
   border: none;
   :hover {
     background-color: $main;
     color: whitesmoke;
     opacity: 0.7;
     cursor: pointer;
-    border-radius: 5px;
-    border-style: dotted;
+    // border-radius: 2px;
+    // border-style: dotted;
   }
 }
 .delete-btn {
@@ -215,22 +229,29 @@ small {
 
 .review-btn {
   @extend .btn;
-  color: $warning-color;
+  $color: $warning-color;
+  color: $color;
   :hover {
-    background-color: $warning-color;
-    border-color: lighten($warning-color, 30%);
+    background-color: $color;
+    border-color: lighten($color, 30%);
   }
 }
 
 .reject-btn {
   @extend .btn;
-  color: $danger-color;
+  $color: $danger-color;
+  color: $color;
   :hover {
-    background-color: $warning-color;
-    border-color: lighten($warning-color, 30%);
+    background-color: $color;
+    border-color: lighten($color, 30%);
   }
 }
 .pending {
-  color: lighten($danger-color, 10%);
+  $color: $danger-color;
+  color: $color;
+  :hover {
+    color: lighten($danger-color, 10%);
+    border-color: lighten($color, 30%);
+  }
 }
 </style>
