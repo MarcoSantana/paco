@@ -86,6 +86,43 @@ export default class GenericDB {
   }
 
   /**
+   * Read the requested document collection with constraints, limits and
+   * pagination
+   */
+  // WIP 🌠🚀: 202108.01-08.48
+
+  async readWithPagination(constraints = null, startAt = null, endAt = null) {
+    if (constraints) console.log('constraints :>> ', constraints)
+    if (startAt) console.log('startAt :>> ', startAt)
+    if (endAt) console.log('endAt :>> ', endAt)
+
+    const collectionRef = (await firestore()).collection(this.collectionPath)
+    let query = collectionRef
+    query = query.orderBy('createTimestamp')
+    query = query.orderBy('status')
+    if (startAt) {
+      query = query.startAt(startAt)
+    }
+    if (endAt) {
+      query = query.endAt(endAt)
+    }
+    if (constraints) {
+      constraints.forEach(constraint => {
+        query = query.where(...constraint)
+      })
+    }
+    const formatResult = result =>
+      result.docs.map(ref =>
+        this.convertObjectTimestampPropertiesToDate({
+          id: ref.id,
+          ...ref.data(),
+        })
+      )
+    console.log('query', query)
+    return query.get().then(formatResult)
+  }
+
+  /**
    * Read all documents
    * @param constraints
    */
@@ -154,6 +191,8 @@ export default class GenericDB {
       .doc(id)
       .update({
         deletedTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        status: 5,
+        // status 5 "Borrado"
       })
   }
 

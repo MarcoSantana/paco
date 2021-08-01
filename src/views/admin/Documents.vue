@@ -4,6 +4,9 @@
       <h2>Documentos</h2>
     </div>
     <div>
+      <div class="button" @click="paginateDocuments(), (paginationStart = paginationStart + resultsPerPage)">
+        Siguiente >>
+      </div>
       <ul>
         <li v-for="document in documents" :key="document.id">
           <document-details
@@ -27,19 +30,35 @@ export default {
   data() {
     return {
       showData: false,
+      paginationStart: 5,
+      resultsPerPage: 5,
+      constraints: null,
     }
   },
   computed: {
     ...mapState('admin', ['documents']),
     ...mapState('app', ['networkOnLine']),
+    paginationEnd() {
+      return this.paginationStart + this.resultsPerPage
+    },
   },
   mounted() {
-    this.dispatchAllDocuments()
+    /* this.dispatchAllDocuments() */
+    this.paginateDocuments()
   },
   methods: {
     ...mapActions('admin', ['getAllDocuments', 'deleteUserDocument', 'triggerSoftDeleteUserDocument']),
     dispatchAllDocuments() {
       this.$store.dispatch('admin/getAllDocuments', null, { root: true })
+    },
+    paginateDocuments() {
+      // const payload = {
+      //   constraints: this.constraints,
+      //   startAt: this.paginationStart,
+      //   endAt: this.paginationEnd,
+      // }
+      // this.$store.dispatch('admin/getAllDocuments', payload, { root: true })
+      this.$store.dispatch('admin/getAllDocuments', { root: true })
     },
   },
 }
