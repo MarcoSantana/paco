@@ -68,7 +68,7 @@
       <template>
         <modal name="reset-password">
           <div><h2>Recuperar contraseña</h2></div>
-          <div>
+          <div v-if="!showResetMessage">
             <validation-observer>
               <validation-provider v-slot="{ errors }">
                 <input
@@ -81,10 +81,14 @@
                   data-test="reset-password-email"
                 />
                 <button class="btn" name="reset-password-submit" data-test="signup-submit" @click="resetPassword">
-                  Cambiar contrseña
+                  Cambiar contraseña
                 </button>
               </validation-provider>
             </validation-observer>
+          </div>
+          <div v-else>
+            <h3>Correo enviado</h3>
+            Por favor revise su correo electrónico y siga instrucciones para cambiar su contraseña.
           </div>
         </modal>
       </template>
@@ -111,6 +115,7 @@ export default {
       password: null,
     },
     resetEmail: null,
+    showResetMessage: false,
   }),
   head() {
     return {
@@ -199,6 +204,7 @@ export default {
           .sendPasswordResetEmail(email)
           .then(() => {
             console.log('Password reset mail sent!! :>> ')
+            this.showResetMessage = true
           })
           .catch(error => {
             const errorCode = error.code
