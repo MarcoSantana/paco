@@ -30,7 +30,7 @@ export default {
   data() {
     return {
       showData: false,
-      paginationStart: 5,
+      paginationStart: 1,
       resultsPerPage: 5,
       constraints: null,
     }
@@ -44,6 +44,8 @@ export default {
   },
   mounted() {
     /* this.dispatchAllDocuments() */
+    console.log('this.documents :>> ', this.documents)
+    console.log('typeof documents :>> ', typeof documents)
     this.paginateDocuments()
   },
   methods: {
@@ -52,13 +54,14 @@ export default {
       this.$store.dispatch('admin/getAllDocuments', null, { root: true })
     },
     paginateDocuments() {
-      // const payload = {
-      //   constraints: this.constraints,
-      //   startAt: this.paginationStart,
-      //   endAt: this.paginationEnd,
-      // }
-      // this.$store.dispatch('admin/getAllDocuments', payload, { root: true })
-      this.$store.dispatch('admin/getAllDocuments', { root: true })
+      // Get the index of this given element
+      const payload = {
+        constraints: this.constraints,
+      }
+      payload.startAt = this.documents ? this.documents[this.resultsPerPage - 1].id : null
+      if (this.documtents)
+        console.log('this.documents[this.resultsPerPage - 1].id :>> ', this.documents[this.resultsPerPage - 1].id)
+      this.$store.dispatch('admin/getAllDocuments', payload, { root: true })
     },
   },
 }
