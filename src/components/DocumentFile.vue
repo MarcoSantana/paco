@@ -14,15 +14,21 @@
         <pdf :src="src"></pdf>
       </div>
     </modal>
-    <div
-      v-if="src && (metadata.contentType == 'image/png' || metadata.contentType == 'image/jpeg')"
-      class="image-container"
-      @click="show()"
-    >
-      <img :src="src" />
+    <div class="">
+      <div
+        v-if="src && (metadata.contentType == 'image/png' || metadata.contentType == 'image/jpeg')"
+        class="image-container"
+        @click="show()"
+      >
+        <img :src="src" />
+      </div>
+      <div v-if="src && metadata.contentType == 'application/pdf'" class="pdf-container" @click="show()">
+        <pdf :src="src"></pdf>
+      </div>
+      <div><button class="button" @click="$emit('editFile', url)">Editar</button></div>
     </div>
-    <div v-if="src && metadata.contentType == 'application/pdf'" class="pdf-container" @click="show()">
-      <pdf :src="src"></pdf>
+    <div v-if="!src">
+      <h3 class="error">Documento Faltante</h3>
     </div>
   </div>
 </template>
