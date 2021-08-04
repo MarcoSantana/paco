@@ -5,7 +5,7 @@
 
     <!-- Offline instruction -->
     <div v-show="!networkOnLine" data-test="offline-instruction">
-      Please check your connection, login feature is not available offline.
+      Por favor revise su conexión, el servicio de ingreso no está disponible fuera de línea.
     </div>
 
     <!-- Auth UI -->
@@ -49,17 +49,49 @@
             </span>
           </validation-provider>
 
-          <button
-            type="submit"
-            name="signup_submit"
-            :disabled="invalid"
-            data-test="signup-submit"
-            @click.prevent="loginWithEmailPassword"
-          >
-            Ingresar
-          </button>
+          <validation-provider v-slot="{ errors }" rules="required">
+            <button
+              type="submit"
+              name="signup_submit"
+              :disabled="invalid"
+              data-test="signup-submit"
+              @click.prevent="loginWithEmailPassword"
+            >
+              Ingresar
+            </button>
+          </validation-provider>
         </form>
       </validation-observer>
+      <div :disabled="invalid" data-test="signup-submit" @click.prevent="showResetPassword">
+        <small>Olvidé mi contraseña</small>
+      </div>
+      <template>
+        <modal name="reset-password">
+          <div><h2>Recuperar contraseña</h2></div>
+          <div v-if="!showResetMessage">
+            <validation-observer>
+              <validation-provider v-slot="{ errors }">
+                <input
+                  ref="resetPasswordEmail"
+                  required
+                  type="text"
+                  :model="resetEmail"
+                  name="reset-password-email"
+                  placeholder="A este correo enviaremos instrucciones"
+                  data-test="reset-password-email"
+                />
+                <button class="btn" name="reset-password-submit" data-test="signup-submit" @click="resetPassword">
+                  Cambiar contraseña
+                </button>
+              </validation-provider>
+            </validation-observer>
+          </div>
+          <div v-else>
+            <h3>Correo enviado</h3>
+            Por favor revise su correo electrónico y siga instrucciones para cambiar su contraseña.
+          </div>
+        </modal>
+      </template>
     </div>
   </div>
 </template>
@@ -75,12 +107,15 @@ export default {
   // mixins: [firebaseErrorsMap],
   data: () => ({
     firebaseErrors,
+    invalid: null,
     loginError: null,
     errors: [],
     loginData: {
       email: null,
       password: null,
     },
+    resetEmail: null,
+    showResetMessage: false,
   }),
   head() {
     return {
@@ -148,6 +183,39 @@ export default {
           this.loginError = fbErr[error.code]
         })
     },
+
+    showResetPassword() {
+      this.$modal.show('reset-password')
+    },
+    hideResetPassword() {
+      this.$modal.hide('reset-password')
+    },
+    test() {
+      // eslint-disable-next-line no-alert
+      alert('click')
+      console.log('this.$refs :>> ', this.$refs.resetPasswordEmail.value)
+    },
+    // sendResetPasswordEmail: async element => {
+    async resetPassword() {
+      const email = this.$refs.resetPasswordEmail.value
+      if (!isNil(email)) {
+        firebase
+          .auth()
+          .sendPasswordResetEmail(email)
+          .then(() => {
+            console.log('Password reset mail sent!! :>> ')
+            this.showResetMessage = true
+          })
+          .catch(error => {
+            const errorCode = error.code
+            const errorMessage = error.message
+            const fbErr = Object.values(firebaseErrors)[0]
+            this.loginError = fbErr[error.code]
+            console.log('errorCode :>> ', errorCode)
+            console.log('errorMessage :>> ', errorMessage)
+          })
+      }
+    },
     translateErrors(error) {
       return firebaseErrors[error.code]
     },
@@ -174,7 +242,6 @@ body {
   font-size: 16px;
   font-weight: 300;
 }
-
 #signup-form-container {
   box-sizing: border-box;
 }
@@ -256,7 +323,12 @@ button[type='submit'] {
   transition: 0.5s ease;
   cursor: pointer;
 }
-
+.btn {
+  @extend button[type='submit'];
+  border-radius: 2px;
+  font-size: 0.8rem;
+  margin-left: 0.35rem;
+}
 button[type='submit']:disabled {
   cursor: not-allowed;
   color: $main;

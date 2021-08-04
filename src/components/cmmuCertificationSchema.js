@@ -354,14 +354,14 @@ export default {
             {
               type: 'input',
               inputType: 'text',
-              label: 'Cédula profesional',
+              label: 'Cédula profesional de licenciatura en medicina',
               model: 'request.postgraduate.license',
               attributes: {
                 input: { 'data-test': 'request-license' },
               },
               required: true,
               validator: ['regexp'],
-              pattern: '^[0-9]{7}([0-9]{8})?$',
+              pattern: '^\\d{7}(?:\\d{1})?$',
             },
           ],
         },

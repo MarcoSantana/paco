@@ -84,6 +84,12 @@ const router = new Router({
       props: true,
       component: () => import(/* webpackChunkName: "client-chunk-document-details" */ '@/views/Document.vue'),
     },
+    {
+      path: '/admin/documents/:id',
+      name: 'document-view',
+      props: true,
+      component: () => import(/* webpackChunkName: "client-chunk-document-details" */ '@/views/admin/DocumentView.vue'),
+    },
 
     // Admin routes
     // // Show all users
@@ -100,6 +106,16 @@ const router = new Router({
       component: () => import(/* webpackChunkName: "client-chunk-main-details" */ '@/views/admin/Main.vue'),
     },
 
+    {
+      // https://paco-1a08b.firebaseapp.com/home?mode=resetPassword&oobCode=tRiYs5S8Ry5pwQrd7SH5-qQr9Zlv7Hkg2yzX9HyQyhIAAAF6-Fh59g&apiKey=AIzaSyAge4gR03bNsbvhOtyRSuw4qtGBgE4pX_U&lang=es-419
+      path: '/resetPassword',
+      name: 'resetPassword',
+      component: () => import(/* webpackChunkName: "client-chunk-main-details" */ '@/views/ResetPassword.vue'),
+      props: true,
+      meta: {
+        authNotRequired: true,
+      },
+    },
     // Default route
     { path: '*', redirect: '/home' },
   ],
@@ -110,6 +126,27 @@ const router = new Router({
  */
 // eslint-disable-next-line consistent-return
 router.beforeEach((to, from, next) => {
+  console.log('to.query :>> ', to.query)
+  // DONE Capture the route query to detect the password rest attempt 202107.30-16.15
+  if (!isNil(to.query)) {
+    // const { mode, oobCode, lang } = to.query
+    const { mode, oobCode, lang, apiKey } = to.query
+    // console.log('oobCode :>> ', oobCode)
+    // console.log('lang :>> ', lang)
+    if (mode === 'resetPassword') {
+      return router.push({
+        name: 'resetPassword',
+        params: {
+          resetActionCode: oobCode,
+          resetLang: lang,
+          resetKey: apiKey,
+        },
+      })
+    }
+  }
+  // TODO Add component to show the screen 202107.30-12.06
+  // TODO Create handleResetPassword 202107.30-16.28
+  // TODO Add store action to use firebase an call auth.confirmPasswordReset 202107.30-12.06
   if (!(to.meta && to.meta.authNotRequired) && isNil(store.state.authentication.user)) {
     const path = store.state.authentication.user === null ? '/login' : '/check-login'
     return next(`${path}?redirectUrl=${to.path}`)

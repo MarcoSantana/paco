@@ -1,5 +1,6 @@
 import router from '@/router'
 import { isNil } from 'lodash'
+import { auth } from 'firebase'
 import { createNewUserFromFirebaseAuthUser } from '@/misc/helpers'
 import UsersDB from '@/firebase/users-db'
 // import asyncFirestore from '@/firebase/async-firestore'
@@ -44,6 +45,22 @@ export default {
     const currentRouter = router.app.$route
     if (!(currentRouter.meta && currentRouter.meta.authNotRequired)) {
       router.push('/login')
+    }
+  },
+
+  resetPassword: async email => {
+    if (!isNil(email)) {
+      auth()
+        .sendPasswordResetEmail(email)
+        .then(() => {
+          console.log('Password reset mail sent!! :>> ')
+        })
+        .catch(error => {
+          const errorCode = error.code
+          const errorMessage = error.message
+          console.log('errorCode :>> ', errorCode)
+          console.log('errorMessage :>> ', errorMessage)
+        })
     }
   },
 }
