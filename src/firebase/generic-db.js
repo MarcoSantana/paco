@@ -91,32 +91,16 @@ export default class GenericDB {
    */
   // WIP 🌠🚀: 202108.01-08.48
 
-  async readWithPagination(constraints = null, startAt = null, endAt = null) {
-    /*
-    // Will return all Springfields
-var startAtName = db
-  .collection('cities')
-  .orderBy('name')
-  .orderBy('state')
-  .startAt('Springfield');
-
-// Will return "Springfield, Missouri" and "Springfield, Wisconsin"
-var startAtNameAndState = db
-  .collection('cities')
-  .orderBy('name')
-  .orderBy('state')
-  .startAt('Springfield', 'Missouri');
-  */
-    if (constraints) console.log('constraints :>> ', constraints)
-    if (startAt) console.log('startAt :>> ', startAt)
-    if (endAt) console.log('endAt :>> ', endAt)
-
+  async readWithPagination(constraints = null, startAt = null, endAt = null, limit = null) {
     const collectionRef = (await firestore()).collection(this.collectionPath)
     let query = collectionRef
-    // query = query.orderBy('status')
     if (startAt) {
       query = query.orderBy(firebase.firestore.FieldPath.documentId())
       query = query.startAfter(startAt)
+    }
+    if (endAt) {
+      query = query.orderBy(firebase.firestore.FieldPath.documentId())
+      query = query.endBefore(endAt)
     }
     if (constraints) {
       constraints.forEach(constraint => {
@@ -130,7 +114,15 @@ var startAtNameAndState = db
           ...ref.data(),
         })
       )
-    query = query.limit(5)
+    if (limit) query = query.limit(limit)
+    if (endAt) {
+      try {
+        const querySnapshot = query.get()
+        return querySnapshot.docs.reverse().then(formatResult)
+      } catch (error) {
+        console.log('error :>> ', error)
+      }
+    }
     return query.get().then(formatResult)
   }
 

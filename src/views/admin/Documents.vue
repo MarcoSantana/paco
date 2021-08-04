@@ -4,8 +4,11 @@
       <h2>Documentos</h2>
     </div>
     <div>
-      <div class="button" @click="paginateDocuments(), (paginationStart = paginationStart + resultsPerPage)">
-        Siguiente >>
+      <div class="button" @click="paginateDocumentsForward()">
+        Siguiente
+      </div>
+      <div class="button" @click="paginateDocumentsBackwards()">
+        Atrás
       </div>
       <ul>
         <li v-for="document in documents" :key="document.id">
@@ -31,36 +34,62 @@ export default {
     return {
       showData: false,
       paginationStart: 1,
-      resultsPerPage: 5,
+      limit: 10,
       constraints: null,
     }
   },
   computed: {
     ...mapState('admin', ['documents']),
     ...mapState('app', ['networkOnLine']),
-    paginationEnd() {
-      return this.paginationStart + this.resultsPerPage
+    firstDocument() {
+      return this.documents[0]
+    },
+    lastDocument() {
+      return this.documents[this.documents.length - 1]
     },
   },
   mounted() {
-    /* this.dispatchAllDocuments() */
-    console.log('this.documents :>> ', this.documents)
-    console.log('typeof documents :>> ', typeof documents)
-    this.paginateDocuments()
+    this.paginateDocumentsForward()
+    // FIXME
   },
   methods: {
     ...mapActions('admin', ['getAllDocuments', 'deleteUserDocument', 'triggerSoftDeleteUserDocument']),
     dispatchAllDocuments() {
       this.$store.dispatch('admin/getAllDocuments', null, { root: true })
     },
-    paginateDocuments() {
-      // Get the index of this given element
-      const payload = {
-        constraints: this.constraints,
-      }
-      payload.startAt = this.documents ? this.documents[this.resultsPerPage - 1].id : null
-      if (this.documtents)
-        console.log('this.documents[this.resultsPerPage - 1].id :>> ', this.documents[this.resultsPerPage - 1].id)
+    paginateDocumentsForward() {
+      /*
+        var first = db.collection("cities")
+                .orderBy("population")
+                .limit(25);
+
+        return first.get().then((documentSnapshots) => {
+          // Get the last visible document
+          var lastVisible = documentSnapshots.docs[documentSnapshots.docs.length-1];
+          console.log("last", lastVisible);
+
+          // Construct a new query starting at this document,
+          // get the next 25 cities.
+          var next = db.collection("cities")
+                  .orderBy("population")
+                  .startAfter(lastVisible)
+                  .limit(25);
+        });
+      */
+      this.paginationStart += this.limit
+      const payload = { constraints: this.constraints }
+      payload.startAt = this.documents ? this.lastDocument.id : null
+      payload.startAfter = null
+      payload.limit = this.limit ? Number(this.limit) : 10
+      this.$store.dispatch('admin/getAllDocuments', payload, { root: true })
+    },
+
+    paginateDocumentsBackwards() {
+      this.paginationStart -= this.limit
+      const payload = { constraints: this.constraints }
+      payload.endAt = this.documents ? this.firstDocument.id : null
+      payload.startAt = null
+      payload.limit = this.limit ? Number(this.limit) : 10
       this.$store.dispatch('admin/getAllDocuments', payload, { root: true })
     },
   },
