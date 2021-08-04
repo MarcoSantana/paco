@@ -9,7 +9,7 @@
       <div v-if="isUserAdmin" class="box">
         <form>
           <input id="admin-email" ref="adminEmail" type="email" required />
-          <button @click.prevent="addRole">Make admin</button>
+          <button @click.prevent="addRole">Hacer administrador</button>
         </form>
       </div>
     </div>
@@ -21,9 +21,8 @@
 </template>
 
 <script>
-import { functions } from 'firebase'
 import { mapGetters, mapState } from 'vuex'
-import callAddAdminRole from '@/firebase/functions'
+import { callAddAdminRole } from '@/firebase/functions'
 
 export default {
   head() {
@@ -46,21 +45,9 @@ export default {
     ...mapGetters('authentication', ['isUserLoggedIn', 'isUserAdmin']),
   },
   methods: {
-    addRole() {
-      console.log('Click')
+    async addRole() {
       const ref = this.$refs.adminEmail
-      console.log('ref.value :>> ', ref.value)
-      console.log('functions :>> ', functions)
-      const foo = callAddAdminRole(ref.value)
-      console.log('foo :>> ', foo)
-      // const adminRole = functions.httpsCallable('addAdminRole')
-      // adminRole({ email: ref.value })
-      //   .then(result => {
-      //     console.log('result', result)
-      //   })
-      //   .catch(err => {
-      //     console.error(err)
-      //   })
+      await callAddAdminRole(ref.value)
     },
   },
 }

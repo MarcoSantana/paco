@@ -11,9 +11,9 @@ import firebase from 'firebase/app'
 // const functions = require('firebase/functions')
 
 export function callAddAdminRole(email) {
-  console.log('Click')
+  console.log('adminRole called')
   const adminRole = firebase.functions().httpsCallable('addAdminRole')
-  adminRole({ email })
+  return adminRole({ email })
     .then(result => {
       console.log('result', result)
     })
