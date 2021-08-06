@@ -61,49 +61,12 @@
       </div>
       <div v-for="requiredFile in requiredFiles" :key="requiredFile">
         <div class="">
-          <!-- <form @submit.prevent="onSubmit"> -->
-          <h3></h3>
-          <div v-if="uploadFileError" class="error-text">{{ uploadFileError }}</div>
-          <span id="`upload-${requiredFile}-errors`" :class="{ error: errors[0] }">
-            <div class="input-container">
-              <span style="padding: 0.35rem;">{{ errors[0] }}</span>
-              <input id="`upload-${requiredFile}`" type="file" data-test="login-email" @change="fileSelected" />
-            </div>
-          </span>
-          <p v-if="uploadValue && uploadValue > 99">Progress: {{ uploadValue.toFixed() + '%' }}</p>
-          <p v-if="picture">
-            IMG:>> {{ picture }}
-            <img :src="picture" alt="" />
-          </p>
-          <p>
-            <label for="`upload-${requiredFile}`">{{ documentFileNames[requiredFile] }}</label>
-          </p>
-          <div>
-            <button
-              v-show="selectedFile"
-              type="submit"
-              name="signup_submit"
-              data-test="signup-submit"
-              @click.prevent="
-                currentFileName = requiredFile
-                onUpload()
-              "
-            >
-              Cargar Archivo
-            </button>
-          </div>
-
-          <!-- </form> -->
+          <document-form
+            :ref="`${requiredFile}-form`"
+            :document-name="document.name"
+            :file-name="requiredFile"
+          ></document-form>
         </div>
-      </div>
-      <div v-for="(file, index) in allFiles" :key="`file-${index}`" class="item">
-        <br />
-        <document-file
-          class="document-file"
-          :url="file.url.i"
-          :type="file.metadata"
-          @editFile="editFile"
-        ></document-file>
       </div>
     </div>
   </div>
@@ -112,12 +75,11 @@
 <script>
 import { DateTime } from 'luxon'
 import { isNil } from 'lodash'
-import { storage } from 'firebase'
 import { mapState } from 'vuex'
-import DocumentFile from '@/components/DocumentFile.vue'
+import DocumentForm from '@/components/DocumentForm.vue'
 
 export default {
-  components: { DocumentFile },
+  components: { DocumentForm },
   filters: {
     docStatus(value) {
       if (!value) return ''
@@ -199,80 +161,7 @@ export default {
   computed: {
     ...mapState('authentication', ['user']),
   },
-  methods: {
-    editFile(url) {
-      console.log('url', url)
-    },
-    fileSelected(event) {
-      ;[this.selectedFile] = event.target.files
-      console.log('event :>> ', event)
-      console.log('this.selectedFile :>> ', this.selectedFile)
-      return true
-    },
-    onUpload() {
-      console.log('onUpload')
-      try {
-        const element = this.currentFileName
-        console.log('element :>> ', element)
-        console.log('this.user.id :>> ', this.user.id)
-        const storageRef = storage().ref(`documents/${this.user.id}`)
-        const uploadTask = storageRef.child(`${this.document.name}/${element}`).put(this.selectedFile)
-        uploadTask.on(
-          'state_changed',
-          snapshot => {
-            this.uploadValue = (snapshot.bytesTransfered / snapshot.totalBytes) * 100
-          },
-          error => {
-            this.errors.push(error)
-          },
-          () => {
-            this.uploadValue = 100
-            uploadTask.snapshot.ref.getDownloadURL().then(url => {
-              this.picture = url
-            })
-          }
-        )
-      } catch (error) {
-        // commit('setDocumentCreationMessage', { type: 'error', message: error })
-        console.log('error :>> ', error)
-        throw new Error('Error al subir el documento', error)
-      }
-    },
-  },
-  asyncComputed: {
-    allFiles() {
-      function getFile(fileRef) {
-        return fileRef.getDownloadURL().then(url => {
-          return url
-        })
-      }
-      function getType(fileRef) {
-        return fileRef.getMetadata().then(metadata => {
-          return metadata
-        })
-      }
-      const storageRef = storage().ref(`documents/${this.user.id}/`)
-      const listRef = storageRef.child(`${this.document.name}`)
-      const urls = listRef
-        .listAll()
-        .then(res => {
-          const files = []
-          res.items.forEach(itemRef => {
-            const url = getFile(itemRef)
-            const metadata = getType(itemRef)
-            files.push({
-              url,
-              metadata,
-            })
-          })
-          return files
-        })
-        .catch(error => {
-          console.error(error)
-        })
-      return urls
-    },
-  },
+  methods: {},
 }
 </script>
 

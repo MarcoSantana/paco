@@ -25,7 +25,6 @@
       <div v-if="src && metadata.contentType == 'application/pdf'" class="pdf-container" @click="show()">
         <pdf :src="src"></pdf>
       </div>
-      <div><button class="button" @click="$emit('editFile', url)">Editar</button></div>
     </div>
     <div v-if="!src">
       <h3 class="error">Documento Faltante</h3>
