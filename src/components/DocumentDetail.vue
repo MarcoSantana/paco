@@ -2,7 +2,7 @@
   <div class="container">
     <h1>{{ document.name }}</h1>
     <h2>Estado: {{ document.status | docStatus }}</h2>
-    <h3>{{ document.message }}</h3>
+    <h3><small>Mensaje del administrador: </small>{{ document.message }}</h3>
     <div class="document-grid">
       <div>
         <h3>Detalles del aspirante</h3>
@@ -59,18 +59,16 @@
         <span>Dirección: {{ document.request.professionalExercise.location }}</span>
         <span>Cargo: {{ document.request.professionalExercise.charge }}</span>
       </div>
-      <div>
-        <h4>Práctica profesional</h4>
-        <span>Hospital donde labora: {{ document.request.professionalExercise.hospital }}</span>
-        <br />
-        <span>Dirección: {{ document.request.professionalExercise.location }}</span>
-        <br />
-        <span>Cargo: {{ document.request.professionalExercise.charge }}</span>
-        <br />
-      </div>
-      <div v-for="(file, index) in allFiles" :key="`file-${index}`" class="item">
-        <br />
-        <document-file class="document-file" :url="file.url.i" :type="file.metadata"></document-file>
+      <div v-for="requiredFile in requiredFiles" :key="requiredFile">
+        <div class="">
+          Editable:: {{ editable }} Status:: {{ document.status }}
+          <document-form
+            :ref="`${requiredFile}-form`"
+            :document-name="document.name"
+            :file-name="requiredFile"
+            :editable="editable"
+          ></document-form>
+        </div>
       </div>
     </div>
   </div>
@@ -79,12 +77,11 @@
 <script>
 import { DateTime } from 'luxon'
 import { isNil } from 'lodash'
-import { storage } from 'firebase'
 import { mapState } from 'vuex'
-import DocumentFile from '@/components/DocumentFile.vue'
+import DocumentForm from '@/components/DocumentForm.vue'
 
 export default {
-  components: { DocumentFile },
+  components: { DocumentForm },
   filters: {
     docStatus(value) {
       if (!value) return ''
@@ -145,44 +142,34 @@ export default {
   props: {
     document: Object,
   },
+  data: () => ({
+    requiredFiles: ['avatar', 'degreeDiploma', 'enarm', 'license', 'postgraduateDiploma', 'residence', 'voucher'],
+    documentFileNames: {
+      avatar: 'Fotografía de título',
+      degreeDiploma: 'Diploma de licenciatura',
+      enarm: 'Constancia ENARM o similar',
+      license: 'Cédula profesional',
+      postgraduateDiploma: 'Diploma de especialidad',
+      residence: 'Diploma de residencia',
+      voucher: 'Comprobante de pago',
+    },
+    uploadFileError: null,
+    selectedFile: null,
+    currentFileName: null,
+    errors: [],
+    uploadValue: 0,
+    picture: null,
+  }),
   computed: {
     ...mapState('authentication', ['user']),
-  },
-  methods: {},
-  asyncComputed: {
-    allFiles() {
-      function getFile(fileRef) {
-        return fileRef.getDownloadURL().then(url => {
-          return url
-        })
-      }
-      function getType(fileRef) {
-        return fileRef.getMetadata().then(metadata => {
-          return metadata
-        })
-      }
-      const storageRef = storage().ref(`documents/${this.user.id}/`)
-      const listRef = storageRef.child(`${this.document.name}`)
-      const urls = listRef
-        .listAll()
-        .then(res => {
-          const files = []
-          res.items.forEach(itemRef => {
-            const url = getFile(itemRef)
-            const metadata = getType(itemRef)
-            files.push({
-              url,
-              metadata,
-            })
-          })
-          return files
-        })
-        .catch(error => {
-          console.error(error)
-        })
-      return urls
+    editable() {
+      console.log('this.document.status :>> ', this.document.status)
+      console.log('this.document.status === "3" :>> ', this.document.status === '3')
+      console.log('typeof document.status :>> ', typeof document.status)
+      return this.document.status === 3
     },
   },
+  methods: {},
 }
 </script>
 
