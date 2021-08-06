@@ -2,7 +2,7 @@
   <div class="container">
     <h1>{{ document.name }}</h1>
     <h2>Estado: {{ document.status | docStatus }}</h2>
-    <h3>{{ document.message }}</h3>
+    <h3><small>Mensaje del administrador: </small>{{ document.message }}</h3>
     <div class="document-grid">
       <div>
         <h3>Detalles del aspirante</h3>
@@ -61,10 +61,12 @@
       </div>
       <div v-for="requiredFile in requiredFiles" :key="requiredFile">
         <div class="">
+          Editable:: {{ editable }} Status:: {{ document.status }}
           <document-form
             :ref="`${requiredFile}-form`"
             :document-name="document.name"
             :file-name="requiredFile"
+            :editable="editable"
           ></document-form>
         </div>
       </div>
@@ -160,6 +162,12 @@ export default {
   }),
   computed: {
     ...mapState('authentication', ['user']),
+    editable() {
+      console.log('this.document.status :>> ', this.document.status)
+      console.log('this.document.status === "3" :>> ', this.document.status === '3')
+      console.log('typeof document.status :>> ', typeof document.status)
+      return this.document.status === 3
+    },
   },
   methods: {},
 }

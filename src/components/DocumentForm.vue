@@ -1,5 +1,9 @@
 <template>
   <div>
+    <label for="`upload-${fileName}">
+      <h4 v-if="fileName">{{ documentFileNames[fileName] }}</h4>
+      Editab:: {{ editable }}
+    </label>
     <div v-if="fileName && picture && picture.i && pictureMetadata">
       <document-file
         class="document-file"
@@ -10,10 +14,18 @@
       ></document-file>
     </div>
     <div v-if="uploadFileError" class="error-text">{{ uploadFileError }}</div>
-    <span id="`upload-${fileName}-errors`" :class="{ error: errors[0] }">
-      <div class="input-container">
+    <span :id="`upload-${fileName}-errors`" :class="{ error: errors[0] }">
+      <div v-show="editable" class="input-container">
         <span style="padding: 0.35rem;">{{ errors[0] }}</span>
-        <input id="`upload-${fileName}`" type="file" data-test="login-email" @change="fileSelected" />
+        <input type="button" class="file-button" value="Cargar documento" @click="clickLoadFile" />
+        <input
+          :ref="`upload-${fileName}`"
+          type="file"
+          class="file"
+          data-test=""
+          :name="`upload-${fileName}`"
+          @change="fileSelected"
+        />
       </div>
     </span>
     <!-- TODO add spinner 202108.06-08.53 -->
@@ -31,6 +43,7 @@ export default {
   props: {
     fileName: String,
     documentName: String,
+    editable: Boolean,
   },
   data: () => ({
     documentFileNames: {
@@ -57,6 +70,10 @@ export default {
     this.getFileData()
   },
   methods: {
+    clickLoadFile() {
+      // this.$document.getElementById(this.getFileId).click()
+      this.$refs[`upload-${this.fileName}`].click()
+    },
     fileSelected(event) {
       ;[this.selectedFile] = event.target.files
       this.picture.i = URL.createObjectURL(this.selectedFile)
@@ -151,8 +168,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/theme/style.scss';
+@import '@/theme/variables.scss';
+
 img {
   max-height: 200px;
   width: auto;
+}
+input.file {
+  visibility: hidden;
+  display: none;
 }
 </style>
