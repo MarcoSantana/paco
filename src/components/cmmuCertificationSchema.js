@@ -488,6 +488,21 @@ export default {
               required: true,
               validator: validators.required,
             },
+            // Copia del diploma universitario de especialidad o en caso de no contar con ello carta compromiso
+            {
+              type: 'pdf',
+              label: 'Copia del diploma universitario de especialidad o en caso de no contar con ello carta compromiso',
+              hint: '',
+              hideInput: true,
+              browse: true,
+              preview: true,
+              model: 'upload.postgraduateUniversitaryDiploma',
+              attributes: {
+                input: { 'data-test': 'request-uploadPostgraduateUniversitaryDiploma' },
+              },
+              required: true,
+              validator: validators.required,
+            },
             // Copia del diploma institucional en Medicina de Urgencias o en su caso Urgencias Pediatricas.
             {
               type: 'pdf',
