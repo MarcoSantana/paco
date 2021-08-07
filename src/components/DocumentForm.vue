@@ -51,6 +51,7 @@ export default {
       enarm: 'Constancia ENARM o similar',
       license: 'Cédula profesional',
       postgraduateDiploma: 'Diploma de especialidad',
+      postgraduateUniversitaryDiploma: 'Diploma universitario de especialidad',
       residence: 'Diploma de residencia',
       voucher: 'Comprobante de pago',
     },

@@ -143,12 +143,22 @@ export default {
     document: Object,
   },
   data: () => ({
-    requiredFiles: ['avatar', 'degreeDiploma', 'enarm', 'license', 'postgraduateDiploma', 'residence', 'voucher'],
+    requiredFiles: [
+      'avatar',
+      'degreeDiploma',
+      'enarm',
+      'license',
+      'postgraduateDiploma',
+      'postgraduateUniversitaryDiploma',
+      'residence',
+      'voucher',
+    ],
     documentFileNames: {
       avatar: 'Fotografía de título',
       degreeDiploma: 'Diploma de licenciatura',
       enarm: 'Constancia ENARM o similar',
       license: 'Cédula profesional',
+      postgraduateUniversitaryDiploma: 'Diploma universitario de especialidad',
       postgraduateDiploma: 'Diploma de especialidad',
       residence: 'Diploma de residencia',
       voucher: 'Comprobante de pago',
