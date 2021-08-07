@@ -361,7 +361,7 @@ export default {
               },
               required: true,
               validator: ['regexp'],
-              pattern: '^\\d{7}(?:\\d{1})?$',
+              pattern: '^\\d{7,10}?$',
             },
           ],
         },
