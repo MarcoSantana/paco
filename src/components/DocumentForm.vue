@@ -2,7 +2,6 @@
   <div>
     <label for="`upload-${fileName}">
       <h4 v-if="fileName">{{ documentFileNames[fileName] }}</h4>
-      Editab:: {{ editable }}
     </label>
     <div v-if="fileName && picture && picture.i && pictureMetadata">
       <document-file

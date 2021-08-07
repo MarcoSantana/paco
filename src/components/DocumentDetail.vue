@@ -61,7 +61,7 @@
       </div>
       <div v-for="requiredFile in requiredFiles" :key="requiredFile">
         <div class="">
-          Editable:: {{ editable }} Status:: {{ document.status }}
+          Editable:: {{ editable ? 'Si' : 'No' }}
           <document-form
             :ref="`${requiredFile}-form`"
             :document-name="document.name"
