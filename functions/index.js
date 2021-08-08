@@ -171,5 +171,3 @@ exports.syncDeleteDocuments = functions.firestore
           .delete();
       return documentsQuery;
     });
-
-

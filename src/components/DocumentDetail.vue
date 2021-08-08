@@ -187,18 +187,22 @@ export default {
   },
   methods: {
     ...mapActions('documents', ['setDocumentForReview']),
+    ...mapActions('admin', ['readAllAsAdmin']),
     async markForReview() {
       console.clear()
       console.log('this.document.id :>> ', this.document.id)
       const data = { id: this.document.id }
-      await this.setDocumentForReview(data).then(result => {
-        console.log('result :>> ', result)
-        // eslint-disable-next-line no-alert
-        alert('Documento marcado para ser revisado, este proceso puede tardar algunos días.')
-      })
+      await this.setDocumentForReview(data)
+        .then(result => {
+          console.log('result :>> ', result)
+        })
+        .then(res => {
+          console.log('res :>> ', res)
+          this.document.status = 1
+          // eslint-disable-next-line no-alert
+          alert('Documento marcado para ser revisado, este proceso puede tardar algunos días.')
+        })
       // TODO change the local state to reflect the new status of this document 202108.08-12.09
-      // TODO call the users-document action   202108.08-11.34Sun
-      // This should not pass any param. The function must be hardcoded to only set the given status
     },
   },
 }
