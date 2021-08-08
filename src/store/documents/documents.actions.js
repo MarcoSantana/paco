@@ -1,6 +1,8 @@
+import { isNil } from 'lodash'
 import UserDocumentsDB from '@/firebase/user-documents-db'
 import UsersDB from '@/firebase/users-db'
 import DocumentsDB from '@/firebase/documents-db'
+import { callUpdateDocumentStatus } from '@/firebase/functions'
 import { storage } from 'firebase'
 
 export default {
@@ -74,6 +76,43 @@ export default {
       console.log('Error', error)
     }
     return null
+  },
+
+  /** Update document status to "for revision"
+      this is fixed so de user can not accept her own documents
+       */
+  setDocumentForReview: async ({ rootState, state }, data) => {
+    if (isNil(data) || isNil(data.id)) return null
+    async function getDocumentReference(id) {
+      console.log('id :>> ', id)
+      const documentsDB = new DocumentsDB(rootState.authentication.user.id)
+      const constraints = [['documentId', '==', id]]
+      const docs = await documentsDB.readAll(constraints)
+      console.log('docs :>> ', docs[0].id)
+      return docs[0].id
+    }
+    const documentReference = await getDocumentReference(data.id)
+    console.log('documentReference :>> ', documentReference)
+    data.status = Number(1)
+    console.log('state :>> ', state)
+    console.log('data :>> ', data)
+    const userDocumentDb = new UserDocumentsDB(rootState.authentication.user.id)
+    const res = await userDocumentDb
+      .update(data)
+      .then(result => {
+        // TODO Sedn message back to caller 202108.08-13.32
+        return result
+      })
+      .then(() => {
+        console.log('callUpdateDocumentStatus')
+        return callUpdateDocumentStatus(documentReference, 1, '')
+      })
+    // .then(result => {
+    //   // this.message = result.data.message
+    //   console.log('callUpdateDocumentStatus')
+    //   console.log('result :>> ', result)
+    // })
+    return res
   },
 
   /**
