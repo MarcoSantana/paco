@@ -1,3 +1,4 @@
+import { isNil } from 'lodash'
 import UserDocumentsDB from '@/firebase/user-documents-db'
 import UsersDB from '@/firebase/users-db'
 import DocumentsDB from '@/firebase/documents-db'
@@ -74,6 +75,22 @@ export default {
       console.log('Error', error)
     }
     return null
+  },
+
+  /** Update document status to "for revision"
+      this is fixed so de user can not accept her own documents
+       */
+  setDocumentForReview: async ({ rootState, state }, data) => {
+    if (isNil(data) || isNil(data.id)) return null
+    data.status = Number(1)
+    console.log('state :>> ', state)
+    console.log('data :>> ', data)
+    const userDocumentDb = new UserDocumentsDB(rootState.authentication.user.id)
+    const res = await userDocumentDb.update(data).then(result => {
+      console.log('result :>> ', result)
+      return result
+    })
+    return res
   },
 
   /**

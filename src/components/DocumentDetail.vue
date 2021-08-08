@@ -2,7 +2,13 @@
   <div class="container">
     <h1>{{ document.name }}</h1>
     <h2>Estado: {{ document.status | docStatus }}</h2>
-    <h3><small>Mensaje del administrador: </small>{{ document.message }}</h3>
+    <h3 v-show="editable"><small>Mensaje del administrador: </small>{{ document.message }}</h3>
+    <div v-show="editable">
+      <h4>Enviar para revisión</h4>
+      <div>
+        <button class="button" @click="markForReview">Enviar</button>
+      </div>
+    </div>
     <div class="document-grid">
       <div>
         <h3>Detalles del aspirante</h3>
@@ -77,7 +83,7 @@
 <script>
 import { DateTime } from 'luxon'
 import { isNil } from 'lodash'
-import { mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import DocumentForm from '@/components/DocumentForm.vue'
 
 export default {
@@ -179,7 +185,22 @@ export default {
       return this.document.status === 3
     },
   },
-  methods: {},
+  methods: {
+    ...mapActions('documents', ['setDocumentForReview']),
+    async markForReview() {
+      console.clear()
+      console.log('this.document.id :>> ', this.document.id)
+      const data = { id: this.document.id }
+      await this.setDocumentForReview(data).then(result => {
+        console.log('result :>> ', result)
+        // eslint-disable-next-line no-alert
+        alert('Documento marcado para ser revisado, este proceso puede tardar algunos días.')
+      })
+      // TODO change the local state to reflect the new status of this document 202108.08-12.09
+      // TODO call the users-document action   202108.08-11.34Sun
+      // This should not pass any param. The function must be hardcoded to only set the given status
+    },
+  },
 }
 </script>
 
