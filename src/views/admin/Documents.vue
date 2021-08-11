@@ -3,6 +3,7 @@
     <div>
       <h2>Documentos</h2>
     </div>
+    <div><button @click="createUserList">Descargar lista</button></div>
     <div>
       <ul>
         <li v-for="document in documents" :key="document.id">
@@ -21,6 +22,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import DocumentDetails from '@/components/admin/DocumentDetails'
+import { callCreateUserListSheet } from '@/firebase/functions'
 
 export default {
   components: { DocumentDetails },
@@ -40,6 +42,10 @@ export default {
     ...mapActions('admin', ['getAllDocuments', 'deleteUserDocument', 'triggerSoftDeleteUserDocument']),
     dispatchAllDocuments() {
       this.$store.dispatch('admin/getAllDocuments', null, { root: true })
+    },
+    async createUserList() {
+      const result = await callCreateUserListSheet()
+      console.log('result :>> ', result)
     },
   },
 }

@@ -171,3 +171,29 @@ exports.syncDeleteDocuments = functions.firestore
           .delete();
       return documentsQuery;
     });
+
+// googleSheets
+
+// createUserListSheet
+exports.createUserListSheet = functions.https.onCall((data, context) => {
+  try {
+    const documents = [];
+    return admin.firestore()
+        .collection("documents")
+        .where("status", "==", 4)
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            console.log(doc.displayName, " =>", doc.data().userName);
+            documents.push(doc.data());
+          });
+          return documents;
+        })
+        .then(documents );
+  } catch (error) {
+    const message = {};
+    message.text = "Error al procesar socilicitud";
+    message.type = "error";
+    return message;
+  }
+});
