@@ -1,5 +1,6 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
+const {google} = require("googleapis");
 // const {firestore} = require("firebase-admin");
 
 admin.initializeApp();
@@ -171,3 +172,115 @@ exports.syncDeleteDocuments = functions.firestore
           .delete();
       return documentsQuery;
     });
+
+// googleSheets
+
+// createUserListSheet
+exports.createUserListSheet = functions.https.onCall(async (data, context) => {
+  const auth = await google.auth.getClient({
+    scopes: [
+      "https://www.googleapis.com/auth/spreadsheets",
+      "https://www.googleapis.com/auth/devstorage.read_only",
+    ],
+  });
+  const spreadsheetId = "16LOr6OdFbMrbNfj_qHs4L0_xz9Crj36AX4LWJPnLz7E";
+  const sheetsAPI = google.sheets({ version: "v4", auth });
+  // const getSheets = sheetsAPI.spreadsheets
+  // console.log('auth :>> ', auth);
+  // console.log('getSheets :>> ', await getSheets);
+
+    const documents = [];
+
+     await admin.firestore()
+        .collection("documents")
+        .where("status", "==", 4)
+        .orderBy('createTimestamp')
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            const { userName } = doc.data();
+            const { userId } = doc.data();
+            const { request } = doc.data().data;
+            const { college } = doc.data().data.request.postgraduate || {}
+            const { collegeId } = college || 'Missing'
+            const { hospital } =  doc.data().data.request.postgraduate || {}
+            let  graduationDate  =doc.data().data.request.postgraduate.graduationDate || {}
+            graduationDate = new Date(graduationDate).getFullYear().toString()
+
+            const docData = doc.data().data
+            const { user } = docData
+            const userEmail = user.contact.email
+            // console.log('request.postgraduate :>> ', request.postgraduate);
+            // .toDate()
+            if (userName != null && userName.length > 0) {
+              documents.push([userId, userName, userEmail, collegeId, graduationDate, hospital])
+            }
+          });
+        })
+        // console.log('documents :>> ', documents);
+        // console.log('finalDocs :>> ', finalDocs);
+
+  // let numRows = 0; // get the last row to write new data
+  // const sheetVals = await getSheets
+  //   .values
+  //   .get({
+  //     spreadsheetId: spreadsheetId,
+  //     range: 'Hoja 1!A1:E1'
+  //   });
+  // if (sheetVals.status < 200 || sheetVals.status > 299) {
+  //   console.log('error reading sheet')
+  //   return
+  // }
+  // numRows = sheetVals.data.values ? sheetVals.data.values.length : 0;
+  // const metadata = await getSheets.get({ auth, spreadsheetId})
+  await sheetsAPI.spreadsheets.values.append({
+        auth,
+        spreadsheetId,
+        range: `Sheet1!A2:E2`,
+        valueInputOption: 'RAW',
+        requestBody: { values: documents, majorDimension: "ROWS" }
+    }, {})
+  return documents;
+  // const payload = {
+  //   auth,
+  //   spreadsheetId,
+  //   valueInputOption: "RAW",
+  //   range: 'foo!A2:K',
+  //   insertDataOption: 'INSERT_ROWS',
+  //   resource: {
+  //     majorDimension: "ROWS",
+  //     values: finalDocs
+  //   }
+  // }
+  // sheetsAPI.spreadsheets.values.append(payload, (err, response) => {
+  //   if (err) {
+  //     console.log('err :>> ', err);
+  //   } else {
+  //     console.log('success :>> ', success);
+  //     resolve();
+  //   }
+  //   // foo
+  // })
+  // return numRows;
+  // try {
+  //   const documents = [];
+
+  //   return admin.firestore()
+  //       .collection("documents")
+  //       .where("status", "==", 4)
+  //       .get()
+  //       .then((querySnapshot) => {
+  //         querySnapshot.forEach((doc) => {
+  //           console.log(doc.displayName, " =>", doc.data().userName);
+  //           documents.push(doc.data());
+  //         });
+  //         return documents;
+  //       })
+  //       .then(documents );
+  // } catch (error) {
+  //   const message = {};
+  //   message.text = "Error al procesar socilicitud";
+  //   message.type = "error";
+  //   return message;
+  // }
+});

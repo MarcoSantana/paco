@@ -32,3 +32,14 @@ export async function callUpdateDocumentStatus(documentId, status, message) {
       console.error(err)
     })
 }
+
+export async function callCreateUserListSheet() {
+  const userList = firebase.functions().httpsCallable('createUserListSheet')
+  return userList()
+    .then(result => {
+      return result
+    })
+    .catch(err => {
+      return err
+    })
+}
