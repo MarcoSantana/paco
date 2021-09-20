@@ -22,8 +22,8 @@ export default {
     const documentsDb = new DocumentsDB(`${rootState.authentication.user.id}`)
     console.log('Get all documents(admin)')
     console.log('payload :>> ', payload)
-    const { startAt, endAt, constraints, limit } = payload
-    const documents = await documentsDb.readWithPagination(constraints, startAt, endAt, limit)
+    const { startAt, endAt, constraints, limit, orderBy } = payload
+    const documents = await documentsDb.readWithPagination(constraints, startAt, endAt, limit, orderBy)
     console.log('documents', documents)
     // const documents = await documentsDb.readAllAsAdmin()
     // console.log('documents: ', documents)

@@ -91,7 +91,7 @@ export default class GenericDB {
    */
   // WIP 🌠🚀: 202108.01-08.48
 
-  async readWithPagination(constraints = null, startAt = null, endAt = null, limit = null) {
+  async readWithPagination(constraints = null, startAt = null, endAt = null, limit = null, orderBy = null) {
     const collectionRef = (await firestore()).collection(this.collectionPath)
     let query = collectionRef
     if (startAt) {
@@ -114,6 +114,12 @@ export default class GenericDB {
           ...ref.data(),
         })
       )
+    if (orderBy) {
+      orderBy.forEach(order => {
+        console.log('orderBy', order)
+        query = query.orderBy(...order)
+      })
+    }
     if (limit) query = query.limit(limit)
     if (endAt) {
       try {
