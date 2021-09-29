@@ -55,49 +55,76 @@ export default {
       // WIP
       if (s === this.currentSort) {
         this.currentSortDirection = this.currentSortDirection === 'asc' ? 'desc' : 'asc'
+      } else {
+        this.$refs[this.currentSort].classList.remove('selected')
       }
       const payload = { constraints: this.constraints }
       payload.limit = this.limit ? +this.limit : 10
       payload.orderBy = [[s, this.currentSortDirection]]
-      console.log(payload.orderBy)
       this.$store.dispatch('admin/getAllDocuments', payload, { root: true })
+      // console.log('th', this.$refs[s])
+      // console.log('th class', this.$refs[s].classList)
+      // this.$refs[s].style['background-color'] = 'red'
+      this.$refs[s].classList.add('selected')
       this.currentSort = s
     },
-  },
+  }, // methods
 }
 </script>
 <template>
-  <div>
+  <div style="width: 100%">
     <div>
       <h2>Documentos</h2>
     </div>
-    <div>
-      <div class="button" @click="paginateDocumentsForward()">
-        Siguiente
-      </div>
-      <div class="button" @click="paginateDocumentsBackwards()">
-        Atrás
-      </div>
-      <table>
-        <thead>
-          <th>Mostrar</th>
-          <th @click="sort('userName')">Nombre</th>
-          <th @click="sort('name')">Documento</th>
-          <th @click="sort('createTimestamp')">Fecha de creación</th>
-          <th @click="sort('status')">Estado</th>
-          <th>Aceptar</th>
-          <th>Por revisar</th>
-          <th>Rechazar</th>
-        </thead>
-        <document-details
-          v-for="document in documents"
-          :key="document.id"
-          :ref="document.id"
-          :document="document"
-          @deleteDocument="triggerSoftDeleteUserDocument"
-        ></document-details>
-      </table>
-    </div>
+    <!-- <div class="button" @click="paginateDocumentsForward()"> -->
+    <!--   Siguiente -->
+    <!-- </div> -->
+    <!-- <div class="button" @click="paginateDocumentsBackwards()"> -->
+    <!--   Atrás -->
+    <!-- </div> -->
+    <table>
+      <thead>
+        <th ref="header" class="selected"></th>
+        <th ref="userName" @click="sort('userName')">
+          Nombre
+          <small>
+            <i v-if="currentSortDirection === 'asc'" class="mdi icon mdi-sort-ascending"></i>
+            <i v-if="currentSortDirection === 'desc'" class="mdi icon mdi-sort-descending"></i>
+          </small>
+        </th>
+        <th ref="name" @click="sort('name')">
+          Documento
+          <small>
+            <i v-if="currentSortDirection === 'asc'" class="mdi icon mdi-sort-ascending"></i>
+            <i v-if="currentSortDirection === 'desc'" class="mdi icon mdi-sort-descending"></i>
+          </small>
+        </th>
+        <th ref="createTimestamp" @click="sort('createTimestamp')">
+          Creación
+          <small>
+            <i v-if="currentSortDirection === 'asc'" class="mdi icon mdi-sort-ascending"></i>
+            <i v-if="currentSortDirection === 'desc'" class="mdi icon mdi-sort-descending"></i>
+          </small>
+        </th>
+        <th ref="status" @click="sort('status')">
+          Estado
+          <small>
+            <i v-if="currentSortDirection === 'asc'" class="mdi icon mdi-sort-ascending"></i>
+            <i v-if="currentSortDirection === 'desc'" class="mdi icon mdi-sort-descending"></i>
+          </small>
+        </th>
+        <th>Aceptar</th>
+        <th>Por revisar</th>
+        <th>Rechazar</th>
+      </thead>
+      <document-details
+        v-for="document in documents"
+        :key="document.id"
+        :ref="document.id"
+        :document="document"
+        @deleteDocument="triggerSoftDeleteUserDocument"
+      ></document-details>
+    </table>
   </div>
 </template>
 
@@ -111,10 +138,28 @@ table {
   border-spacing: 0px;
   border-radius: 0.5rem;
   padding: 0.35rem;
+  width: 100%;
   td {
     margin-right: 0.35rem;
     padding: 0.35rem;
   }
+  th {
+    padding: 0.4rem;
+  }
+  th small {
+    visibility: hidden;
+    font-size: 0.35rem;
+  }
+  .selected {
+    background-color: $light-accent;
+    font-size: 1.2rem;
+    small {
+      visibility: visible;
+    }
+  }
+  // .selected small {
+  //   visibility: visible;
+  // }
   tr:nth-child(odd) {
     background-color: $light-accent;
     &:hover {
@@ -127,5 +172,5 @@ table {
       background-color: lighten($light-accent, 15%);
     }
   }
-}
+} // table
 </style>
