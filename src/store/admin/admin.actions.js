@@ -18,12 +18,15 @@ export default {
   /**
    * Fetch all documents if logged user is admin
    */
-  getAllDocuments: async ({ rootState, commit }) => {
-    console.log('Get All Documents')
-    console.log('rootState: ', rootState)
+  getAllDocuments: async ({ rootState, commit }, payload) => {
     const documentsDb = new DocumentsDB(`${rootState.authentication.user.id}`)
-    const documents = await documentsDb.readAllAsAdmin()
-    console.log('documents: ', documents)
+    console.log('Get all documents(admin)')
+    console.log('payload :>> ', payload)
+    const { startAt, endAt, constraints, limit, orderBy } = payload
+    const documents = await documentsDb.readWithPagination(constraints, startAt, endAt, limit, orderBy)
+    console.log('documents', documents)
+    // const documents = await documentsDb.readAllAsAdmin()
+    // console.log('documents: ', documents)
     commit('setDocuments', documents)
   },
 

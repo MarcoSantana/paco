@@ -1,6 +1,7 @@
 <template>
-  <div>
+  <tr v-if="!message" style="width: auto;">
     <div v-if="message" class="row">{{ message }}</div>
+<<<<<<< HEAD
     <div v-if="!message" class="row">
       <span class="actions">
         <div>
@@ -18,60 +19,106 @@
         </div> -->
       </span>
       <!-- actions -->
+=======
+    <!-- mostrar -->
+    <td class="actions">
+      <div class="btn" @click="showData = !showData">
+        <button class="btn">Mostrar</button>
+        <!-- <i v-if="!showData" class="mdi mdi-chevron-down"></i> -->
+        <!-- <i v-if="showData" class="mdi mdi-chevron-up"></i> -->
+      </div>
+    </td>
+    <!-- nombre -->
+    <td>
+>>>>>>> feature/adminPagintion
       <span class="userName">
         {{ document.userName }}
       </span>
+    </td>
+    <!-- documento -->
+    <td>
       <span class="documentName"> {{ document.name }}</span>
+    </td>
+    <!-- fecha de creación -->
+    <td>
       <span class="info">
         {{ document.createTimestamp | intlDate }}
+        <br />
         <small>hace {{ document.createTimestamp | ago }} días</small>
       </span>
+    </td>
+    <!-- estado -->
+    <td>
       <span class="status" :class="status == 1 ? 'pending' : ''">{{ status | docStatus }} </span>
-      <!-- <span class="delete">
-        <div class="delete-btn" @click="$emit('deleteDocument', document.id)">
+    </td>
+    <!-- <span class="delete">
+          <div class="delete-btn" @click="$emit('deleteDocument', document.id)">
           <i v-if="!isDocumentDeletionPending(document.id)" class="mdi mdi-trash-can-outline"></i>
           {{ isDocumentDeletionPending(document.id) ? 'borrado en proceso' : '' }}
-        </div>
-      </span> -->
+          </div>
+          </span> -->
+    <!-- aceptar -->
+    <td>
       <span class="accept">
         <div :id="`accept-${document.id}`" class="accept-btn" @click="acceptDocument">
           <i class="mdi mdi-check"></i>
         </div>
       </span>
+    </td>
+    <!-- por revisar -->
+    <td>
       <span class="review">
         <div class="review-btn" @click="reviewDocument">
           <i class="mdi mdi-file-find"></i>
         </div>
       </span>
+    </td>
+    <!-- rechazar -->
+    <td>
       <span class="reject">
         <div class="reject-btn" @click="showRejectionModal">
           <i class="mdi mdi-file-cancel"></i>
         </div>
       </span>
+<<<<<<< HEAD
     </div>
     <!-- <div v-show="showData" class="document-detail">
       <component :is="components[document.name]" :document="document"></component>
     </div> -->
+=======
+    </td>
+
+    <!-- <div v-show="showData" class="document-detail"> -->
+    <!--   <component :is="components[document.name]" :document="document"></component> -->
+    <!-- </div> -->
+>>>>>>> feature/adminPagintion
     <modal :name="`rejectModal${document.id}`" :width="'80%'" :height="'auto'" :resizable="true" :scrollable="true">
       <input ref="rejectionReason" v-model="rejectionReason" placeholder="Detalle el motivo de rechazo" type="text" />
       <button v-if="rejectionReason != null" class="btn delete-btn" @click="rejectDocument">
         Rechazar documento
       </button>
     </modal>
-  </div>
+  </tr>
   <!-- row -->
 </template>
 
 <script>
 import { DateTime } from 'luxon'
 import { mapState, mapActions, mapGetters } from 'vuex'
+<<<<<<< HEAD
 // import CertificationRequest from '@/components/admin/CertificationRequest'
+=======
+>>>>>>> feature/adminPagintion
 import * as components from '@/components/admin/componentsList.json'
 import { callUpdateDocumentStatus } from '@/firebase/functions'
 
 console.log('components :>> ', components.default['Solicitud de certificación'])
 
 export default {
+<<<<<<< HEAD
+=======
+  // components: { CertificationRequest },
+>>>>>>> feature/adminPagintion
   filters: {
     intlDate(date) {
       return (
@@ -188,8 +235,21 @@ export default {
     flex: 2;
   }
 }
+.info {
+  font-size: 1rem;
+}
 small {
   color: grey;
+  font-size: 0.8rem;
+}
+td {
+  padding: 0.35rem;
+  border-bottom: 1px solid lighten($main, 50%); /* move spacing to the cell */
+}
+tr {
+  border: 1px solid $main;
+  border-top: 0px;
+  border-bottom: 1px;
 }
 .btn {
   @extend .button;

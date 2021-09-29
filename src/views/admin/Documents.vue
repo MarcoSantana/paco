@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <template>
   <div>
     <div>
@@ -19,6 +20,8 @@
   </div>
 </template>
 
+=======
+>>>>>>> feature/adminPagintion
 <script>
 import { mapState, mapActions } from 'vuex'
 import DocumentDetails from '@/components/admin/DocumentDetails'
@@ -29,47 +32,178 @@ export default {
   data() {
     return {
       showData: false,
+      paginationStart: 1,
+      limit: 10,
+      constraints: null,
+      // Sorting
+      currentSort: 'userName',
+      currentSortDirection: 'asc',
     }
   },
   computed: {
     ...mapState('admin', ['documents']),
     ...mapState('app', ['networkOnLine']),
+    firstDocument() {
+      return this.documents[0]
+    },
+    lastDocument() {
+      return this.documents[this.documents.length - 1]
+    },
   },
   mounted() {
-    this.dispatchAllDocuments()
+    this.paginateDocumentsForward()
+    // FIXME
   },
   methods: {
     ...mapActions('admin', ['getAllDocuments', 'deleteUserDocument', 'triggerSoftDeleteUserDocument']),
     dispatchAllDocuments() {
       this.$store.dispatch('admin/getAllDocuments', null, { root: true })
     },
+<<<<<<< HEAD
     async createUserList() {
       const result = await callCreateUserListSheet()
       console.log('result :>> ', result)
     },
   },
+=======
+    paginateDocumentsForward() {
+      this.paginationStart += this.limit
+      const payload = { constraints: this.constraints }
+      payload.startAt = this.documents ? this.lastDocument.id : null
+      payload.startAfter = null
+      payload.limit = this.limit ? Number(this.limit) : 10
+      this.$store.dispatch('admin/getAllDocuments', payload, { root: true })
+    },
+
+    paginateDocumentsBackwards() {
+      this.paginationStart -= this.limit
+      const payload = { constraints: this.constraints }
+      payload.endAt = this.documents ? this.firstDocument.id : null
+      payload.startAt = null
+      payload.limit = this.limit ? Number(this.limit) : 10
+      this.$store.dispatch('admin/getAllDocuments', payload, { root: true })
+    },
+    sort(s) {
+      // WIP
+      if (s === this.currentSort) {
+        this.currentSortDirection = this.currentSortDirection === 'asc' ? 'desc' : 'asc'
+      } else {
+        this.$refs[this.currentSort].classList.remove('selected')
+      }
+      const payload = { constraints: this.constraints }
+      payload.limit = this.limit ? +this.limit : 10
+      payload.orderBy = [[s, this.currentSortDirection]]
+      this.$store.dispatch('admin/getAllDocuments', payload, { root: true })
+      // console.log('th', this.$refs[s])
+      // console.log('th class', this.$refs[s].classList)
+      // this.$refs[s].style['background-color'] = 'red'
+      this.$refs[s].classList.add('selected')
+      this.currentSort = s
+    },
+  }, // methods
+>>>>>>> feature/adminPagintion
 }
 </script>
+<template>
+  <div style="width: 100%">
+    <div>
+      <h2>Documentos</h2>
+    </div>
+    <!-- <div class="button" @click="paginateDocumentsForward()"> -->
+    <!--   Siguiente -->
+    <!-- </div> -->
+    <!-- <div class="button" @click="paginateDocumentsBackwards()"> -->
+    <!--   Atrás -->
+    <!-- </div> -->
+    <table>
+      <thead>
+        <th ref="header" class="selected"></th>
+        <th ref="userName" @click="sort('userName')">
+          Nombre
+          <small>
+            <i v-if="currentSortDirection === 'asc'" class="mdi icon mdi-sort-ascending"></i>
+            <i v-if="currentSortDirection === 'desc'" class="mdi icon mdi-sort-descending"></i>
+          </small>
+        </th>
+        <th ref="name" @click="sort('name')">
+          Documento
+          <small>
+            <i v-if="currentSortDirection === 'asc'" class="mdi icon mdi-sort-ascending"></i>
+            <i v-if="currentSortDirection === 'desc'" class="mdi icon mdi-sort-descending"></i>
+          </small>
+        </th>
+        <th ref="createTimestamp" @click="sort('createTimestamp')">
+          Creación
+          <small>
+            <i v-if="currentSortDirection === 'asc'" class="mdi icon mdi-sort-ascending"></i>
+            <i v-if="currentSortDirection === 'desc'" class="mdi icon mdi-sort-descending"></i>
+          </small>
+        </th>
+        <th ref="status" @click="sort('status')">
+          Estado
+          <small>
+            <i v-if="currentSortDirection === 'asc'" class="mdi icon mdi-sort-ascending"></i>
+            <i v-if="currentSortDirection === 'desc'" class="mdi icon mdi-sort-descending"></i>
+          </small>
+        </th>
+        <th>Aceptar</th>
+        <th>Por revisar</th>
+        <th>Rechazar</th>
+      </thead>
+      <document-details
+        v-for="document in documents"
+        :key="document.id"
+        :ref="document.id"
+        :document="document"
+        @deleteDocument="triggerSoftDeleteUserDocument"
+      ></document-details>
+    </table>
+  </div>
+</template>
 
 <style lang="scss" scoped>
 @import '@/theme/style.scss';
 @import '@/theme/variables.scss';
 
-ul {
-  list-style-type: none;
-  li {
-    font-size: 1.3rem;
-    font-weight: 400;
-    border-radius: 5px;
-    padding: 0;
-    padding-top: 0.3rem;
-    padding-bottom: 0;
+table {
+  margin-top: 0.35rem;
+  border: 1px solid $main;
+  border-spacing: 0px;
+  border-radius: 0.5rem;
+  padding: 0.35rem;
+  width: 100%;
+  td {
+    margin-right: 0.35rem;
+    padding: 0.35rem;
   }
-  li:nth-child(odd) {
+  th {
+    padding: 0.4rem;
+  }
+  th small {
+    visibility: hidden;
+    font-size: 0.35rem;
+  }
+  .selected {
     background-color: $light-accent;
+    font-size: 1.2rem;
+    small {
+      visibility: visible;
+    }
   }
-  li:nth-child(even) {
+  // .selected small {
+  //   visibility: visible;
+  // }
+  tr:nth-child(odd) {
+    background-color: $light-accent;
+    &:hover {
+      background-color: lighten($light-accent, 15%);
+    }
+  }
+  tr:nth-child(even) {
     background-color: $light-accent-1;
+    &:hover {
+      background-color: lighten($light-accent, 15%);
+    }
   }
-}
+} // table
 </style>
