@@ -35,3 +35,5 @@ notes.md
 *.log
 *.org
 certificationCheckList.md
+
+*.vue_
