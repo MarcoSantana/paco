@@ -86,6 +86,53 @@ export default class GenericDB {
   }
 
   /**
+   * Read the requested document collection with constraints, limits and
+   * pagination
+   */
+  // WIP 🌠🚀: 202108.01-08.48
+
+  async readWithPagination(constraints = null, startAt = null, endAt = null, limit = null, orderBy = null) {
+    const collectionRef = (await firestore()).collection(this.collectionPath)
+    let query = collectionRef
+    if (startAt) {
+      query = query.orderBy(firebase.firestore.FieldPath.documentId())
+      query = query.startAfter(startAt)
+    }
+    if (endAt) {
+      query = query.orderBy(firebase.firestore.FieldPath.documentId())
+      query = query.endBefore(endAt)
+    }
+    if (constraints) {
+      constraints.forEach(constraint => {
+        query = query.where(...constraint)
+      })
+    }
+    const formatResult = result =>
+      result.docs.map(ref =>
+        this.convertObjectTimestampPropertiesToDate({
+          id: ref.id,
+          ...ref.data(),
+        })
+      )
+    if (orderBy) {
+      orderBy.forEach(order => {
+        console.log('orderBy', order)
+        query = query.orderBy(...order)
+      })
+    }
+    if (limit) query = query.limit(limit)
+    if (endAt) {
+      try {
+        const querySnapshot = query.get()
+        return querySnapshot.docs.reverse().then(formatResult)
+      } catch (error) {
+        console.log('error :>> ', error)
+      }
+    }
+    return query.get().then(formatResult)
+  }
+
+  /**
    * Read all documents
    * @param constraints
    */
@@ -154,6 +201,8 @@ export default class GenericDB {
       .doc(id)
       .update({
         deletedTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        status: 5,
+        // status 5 "Borrado"
       })
   }
 
