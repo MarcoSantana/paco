@@ -324,7 +324,7 @@ button[type='submit'] {
   cursor: pointer;
 }
 .btn {
-  @extend button[type='submit'];
+  /* @extend button[type='submit']; */
   border-radius: 2px;
   font-size: 0.8rem;
   margin-left: 0.35rem;

@@ -4,22 +4,18 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "deploy":"npm run build && firebase deploy",
-    "deploy:hosting":"npm run build && firebase deploy --only hosting",
-    "lint": "vue-cli-service lint",
-    "test:e2e": "vue-cli-service test:e2e",
-    "test:e2e:video": "vue-cli-service test:e2e --headless --record --key 92e58a31-0a27-40bf-a897-023371f31e6d",
-    "test:e2e:headless": "vue-cli-service test:e2e --headless",
     "test:unit": "vue-cli-service test:unit",
-    "test:watch": "vue-cli-service test:unit --watch",
-    "prettier:format-all": "prettier --write \"**/*.{vue,scss,sass,js,json}\"",
-    "prettier:check": "prettier \"**/*.{vue,scss,sass,js,json}\" --list-different",
+    "test:e2e": "vue-cli-service test:e2e",
+    "lint": "vue-cli-service lint",
+    "deploy": "npm run build && firebase deploy",
+    "bundlesize": "bundlesize",
+    "deploy:hosting": "npm run build && firebase deploy --only hosting",
     "firebase:deploy:ci": "firebase deploy --non-interactive --token $FIREBASE_TOKEN",
-    "bundlesize": "bundlesize"
-  },
-  "engines": {
-    "npm": ">=5.5.0",
-    "node": ">=9.3.0"
+    "prettier:check": "prettier \"**/*.{vue,scss,sass,js,json}\" --list-different",
+    "prettier:format-all": "prettier --write \"**/*.{vue,scss,sass,js,json}\"",
+    "test:e2e:headless": "vue-cli-service test:e2e --headless",
+    "test:e2e:video": "vue-cli-service test:e2e --headless --record --key 92e58a31-0a27-40bf-a897-023371f31e6d",
+    "test:watch": "vue-cli-service test:unit --watch"
   },
   "dependencies": {
     "@vue/babel-preset-app": "^4.5.13",
@@ -42,6 +38,7 @@
     "vue-js-modal": "^2.0.0-rc.6",
     "vue-pdf": "^4.2.0",
     "vue-router": "^3.1.6",
+    "vuetify": "^2.4.0",
     "vuex": "^3.3.0",
     "weekstart": "^1.1.0"
   },
@@ -77,29 +74,14 @@
     "flow-bin": "^0.151.0",
     "node-sass": "^4.14.0",
     "prerender-spa-plugin": "^3.4.0",
-    "sass-loader": "^8.0.2",
+    "sass": "~1.32.0",
+    "sass-loader": "^10.0.0",
+    "vue-cli-plugin-vuetify": "~2.4.4",
     "vue-template-compiler": "^2.6.11",
+    "vuetify-loader": "^1.7.0",
     "webpack-bundle-analyzer": "^3.7.0",
     "webpack-merge": "^4.2.2"
   },
-  "bundlesize": [
-    {
-      "path": "./dist/js/chunk-vendors*.js",
-      "maxSize": "125 kB"
-    },
-    {
-      "path": "./dist/js/chunk-firestore*.js",
-      "maxSize": "95 kB"
-    },
-    {
-      "path": "./dist/js/app*.js",
-      "maxSize": "15 kB"
-    },
-    {
-      "path": "./dist/js/client-chunk-*.js",
-      "maxSize": "6 kB"
-    }
-  ],
   "eslintConfig": {
     "root": true,
     "env": {
@@ -150,6 +132,28 @@
       "<rootDir>/tests/unit/setup.js"
     ]
   },
-  "readme": "ERROR: No README data found!",
-  "_id": "plataforma-administradora-de-documentos@1.0.0"
+  "_id": "plataforma-administradora-de-documentos@1.0.0",
+  "bundlesize": [
+    {
+      "path": "./dist/js/chunk-vendors*.js",
+      "maxSize": "125 kB"
+    },
+    {
+      "path": "./dist/js/chunk-firestore*.js",
+      "maxSize": "95 kB"
+    },
+    {
+      "path": "./dist/js/app*.js",
+      "maxSize": "15 kB"
+    },
+    {
+      "path": "./dist/js/client-chunk-*.js",
+      "maxSize": "6 kB"
+    }
+  ],
+  "engines": {
+    "npm": ">=5.5.0",
+    "node": ">=9.3.0"
+  },
+  "readme": "ERROR: No README data found!"
 }

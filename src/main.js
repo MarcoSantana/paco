@@ -40,6 +40,7 @@ import '@/firebase/authentication'
 import '@/firebase/functions'
 import '@/misc/handle-apple-install-prompt'
 import 'pwacompat'
+import vuetify from './plugins/vuetify'
 
 Vue.config.productionTip = false
 // Vue.use(VeeValidate)
@@ -48,6 +49,7 @@ new Vue({
   router,
   store,
   components: { App },
+  vuetify,
   render: h => h(App),
 }).$mount('#app')
 

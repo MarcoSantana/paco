@@ -18,11 +18,12 @@ export default {
   /**
    * Fetch all documents if logged user is admin
    */
-  getAllDocuments: async ({ rootState, commit }) => {
+  getAllDocuments: async ({ rootState, commit }, constraints = null) => {
+    console.log('constraints', constraints)
     console.log('Get All Documents')
     console.log('rootState: ', rootState)
     const documentsDb = new DocumentsDB(`${rootState.authentication.user.id}`)
-    const documents = await documentsDb.readAllAsAdmin()
+    const documents = await documentsDb.readAllAsAdmin(constraints)
     console.log('documents: ', documents)
     commit('setDocuments', documents)
   },
