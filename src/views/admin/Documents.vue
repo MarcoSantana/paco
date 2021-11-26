@@ -1,31 +1,7 @@
-<<<<<<< HEAD
-<template>
-  <div>
-    <div>
-      <h2>Documentos</h2>
-    </div>
-    <div><button @click="createUserList">Descargar lista</button></div>
-    <div>
-      <ul>
-        <li v-for="document in documents" :key="document.id">
-          <document-details
-            :ref="document.id"
-            :document="document"
-            @deleteDocument="triggerSoftDeleteUserDocument"
-            @acceptDocument="acceptDocument"
-          ></document-details>
-        </li>
-      </ul>
-    </div>
-  </div>
-</template>
-
-=======
->>>>>>> feature/adminPagintion
 <script>
 import { mapState, mapActions } from 'vuex'
 import DocumentDetails from '@/components/admin/DocumentDetails'
-import { callCreateUserListSheet } from '@/firebase/functions'
+// import { callCreateUserListSheet } from '@/firebase/functions'
 
 export default {
   components: { DocumentDetails },
@@ -59,13 +35,6 @@ export default {
     dispatchAllDocuments() {
       this.$store.dispatch('admin/getAllDocuments', null, { root: true })
     },
-<<<<<<< HEAD
-    async createUserList() {
-      const result = await callCreateUserListSheet()
-      console.log('result :>> ', result)
-    },
-  },
-=======
     paginateDocumentsForward() {
       this.paginationStart += this.limit
       const payload = { constraints: this.constraints }
@@ -101,7 +70,6 @@ export default {
       this.currentSort = s
     },
   }, // methods
->>>>>>> feature/adminPagintion
 }
 </script>
 <template>
