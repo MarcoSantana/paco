@@ -10,4 +10,11 @@ export default {
    * Get event by id
    */
   getEventById: state => eventId => find(state.events, event => event.id === eventId),
+
+  /**
+   *  Get active events
+   * @param {*} state
+   * @returns collection
+   */
+  getActiveEvents: state => find(state.evets, event => event.active === true),
 }

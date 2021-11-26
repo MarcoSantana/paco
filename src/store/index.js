@@ -8,6 +8,7 @@ import colleges from './colleges'
 import hospitals from './hospitals'
 import forms from './forms'
 import admin from './admin'
+import events from './events'
 
 Vue.use(Vuex)
 
@@ -24,5 +25,6 @@ export default new Vuex.Store({
     hospitals,
     forms,
     admin,
+    events,
   },
 })

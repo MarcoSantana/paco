@@ -5,124 +5,117 @@
         <li>{{ error.field.label }} >> {{ error.error }}</li>
       </ul>
     </h2>
-    <form-wizard
-      ref="wizard"
-      shape="tab"
-      step-size="xs"
-      color="#2596c7"
-      error-color="#e74c3c"
-      title="Solicitud de certificación"
-      subtitle="Pasos de solicitud"
-      finish-button-text="Terminado"
-      @on-complete="onComplete()"
-    >
-      <tab-content title="Requisitos" class="requirements">
-        <h2>Requisitos para solicitar Certificación</h2>
-        <div>
-          <h3>
-            **Importante**
-          </h3>
-          <div>
-            Todos los documentos solicitados deberán estar digitalizados en formato PDF o JPG. Y cargados en esta
-            plataforma
-          </div>
-        </div>
-        <div>
-          <ol>
-            <li>Ser médico cirujano debidamente autorizado para ejercer la medicina en México.</li>
-            <li>Copia del título y cédula profesional de la licenciatura en medicina.</li>
-            <li>
-              Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional
-              para la Formación de Recursos Humanos para la Salud (CIFRHS); Copia de la constancia de haber efectuado y
-              aprobado el Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión
-              Interinstitucional para la Formación de Recursos Humanos para la Salud (CIFRHS);
-            </li>
-            <li>
-              En el caso de Urgencias Pediátricas deberá entregar además el diploma institucional y diploma de la
-              institución educativa (universitaria) que lo avala en Pediatría.
-            </li>
-            <li>
-              En el caso de Urgencias Pediátricas, constancia de haber terminado satisfactoriamente una residencia
-              progresiva hospitalaria de por lo menos 2 años.
-            </li>
-            <li>Copia del diploma institucional en Medicina de Urgencias o en su caso Urgencias Pediatricas.</li>
-            <li>Copia del diploma de la institución educativa (Universitaria) que lo avala.</li>
-            <li>
-              Tres fotografías oval tamaño diploma (5x7cm) blanco y negro, con fondo blanco, vestimenta formal. Con
-              nombre csompleto al reverso (con tinta).
-            </li>
-            <li>Imprimir, llenar completamente y anexar la solicitud de Certificación</li>
-            <li>
-              Vigente en Medicina de Urgencias o Urgencias Pediátricas según sea el caso. (Descargar de la página web
-              del Consejo).
-            </li>
-            <li>Curriculum vitae</li>
-            <li>Donativo no reembolsable de $ 5,700. 00/100 m.n.</li>
-          </ol>
-        </div>
-      </tab-content>
-      <tab-content v-for="item in groups" :key="item.legend" :before-change="validateAsync" :title="item.legend">
-        <div v-if="!!errorMsg && errorMsg.length > 1" class="field-wrap">
-          <h3>{{ errorMsg }}</h3>
-        </div>
-        <vue-form-generator
-          :ref="getAttrs(item.fields)"
-          :schema="item"
-          :model="model"
-          :options="formOptions"
-          @validated="onValidated"
-          @model-updated="updateCurrentForm"
-        >
-        </vue-form-generator>
-      </tab-content>
-      <tab-content title="Guardar">
-        <div :class="documentCreationMessage.type">{{ documentCreationMessage.message }}</div>
-        <button
-          v-if="!isFinished"
-          :disabled="documentCreationPending"
-          class="form-wizard-button"
-          @click="saveDocument()"
-        >
-          Guardar
-        </button>
-      </tab-content>
-      <tab-content title="Siguientes pasos">
-        Aquí ponemos los siguientes pasos a para el aspirante
-      </tab-content>
-      <div v-if="loadingWizard" class="loader"></div>
-      <span slot="prev">
-        <!-- TODO call reset method 202107.18-20.12 -->
-        <button
-          v-show="!isFinished"
-          class="reset-button"
-          @click="
-            model = {}
-            $refs.wizard.reset()
-          "
-        >
-          Borrar formulario
-        </button>
-      </span>
-      <button slot="next" class="form-wizard-button" data-test="document-next-btn">
-        Adelante
-      </button>
-    </form-wizard>
+    <h2>Requisitos para solicitar Certificación</h2>
+    <div>
+      <h3>
+        **Importante**
+      </h3>
+      <div>
+        Todos los documentos solicitados deberán estar digitalizados en formato PDF o JPG. Y cargados en esta plataforma
+      </div>
+    </div>
+    <div>
+      <ol>
+        <li>Ser médico cirujano debidamente autorizado para ejercer la medicina en México.</li>
+        <li>Copia del título y cédula profesional de la licenciatura en medicina.</li>
+        <li>
+          Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional para
+          la Formación de Recursos Humanos para la Salud (CIFRHS); Copia de la constancia de haber efectuado y aprobado
+          el Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional
+          para la Formación de Recursos Humanos para la Salud (CIFRHS);
+        </li>
+        <li>
+          En el caso de Urgencias Pediátricas deberá entregar además el diploma institucional y diploma de la
+          institución educativa (universitaria) que lo avala en Pediatría.
+        </li>
+        <li>
+          En el caso de Urgencias Pediátricas, constancia de haber terminado satisfactoriamente una residencia
+          progresiva hospitalaria de por lo menos 2 años.
+        </li>
+        <li>Copia del diploma institucional en Medicina de Urgencias o en su caso Urgencias Pediatricas.</li>
+        <li>Copia del diploma de la institución educativa (Universitaria) que lo avala.</li>
+        <li>
+          Tres fotografías oval tamaño diploma (5x7cm) blanco y negro, con fondo blanco, vestimenta formal. Con nombre
+          completo al reverso (con tinta).
+        </li>
+        <li>Imprimir, llenar completamente y anexar la solicitud de Certificación</li>
+        <li>
+          Vigente en Medicina de Urgencias o Urgencias Pediátricas según sea el caso. (Descargar de la página web del
+          Consejo).
+        </li>
+        <li>Curriculum vitae</li>
+        <li>Donativo no reembolsable de $ 5,700. 00/100 m.n.</li>
+      </ol>
+    </div>
+    <div>E^ {{ e6 }}</div>
+    <v-stepper v-model="e6" vertical>
+      <v-stepper-step :complete="e6 > 1" step="1">
+        Select an app
+        <small>Summarize if needed</small>
+      </v-stepper-step>
+
+      <v-stepper-content step="1">
+        <v-card color="grey lighten-1" class="mb-12" height="200px"></v-card>
+        <v-btn color="primary" @click="e6 = 2">
+          Continue
+        </v-btn>
+        <v-btn text>
+          Cancel
+        </v-btn>
+      </v-stepper-content>
+
+      <v-stepper-step :complete="e6 > 2" step="2">
+        Configure analytics for this app
+      </v-stepper-step>
+
+      <v-stepper-content step="2">
+        <v-card color="grey lighten-1" class="mb-12" height="200px"></v-card>
+        <v-btn color="primary" @click="e6 = 3">
+          Continue
+        </v-btn>
+        <v-btn text>
+          Cancel
+        </v-btn>
+      </v-stepper-content>
+
+      <v-stepper-step :complete="e6 > 3" step="3">
+        Select an ad format and name ad unit
+      </v-stepper-step>
+
+      <v-stepper-content step="3">
+        <v-card color="grey lighten-1" class="mb-12" height="200px"></v-card>
+        <v-btn color="primary" @click="e6 = 4">
+          Continue
+        </v-btn>
+        <v-btn text>
+          Cancel
+        </v-btn>
+      </v-stepper-content>
+
+      <v-stepper-step step="4">
+        View setup instructions
+      </v-stepper-step>
+      <v-stepper-content step="4">
+        <v-card color="grey lighten-1" class="mb-12" height="200px"></v-card>
+        <v-btn color="primary" @click="e6 = 1">
+          Continue
+        </v-btn>
+        <v-btn text>
+          Cancel
+        </v-btn>
+      </v-stepper-content>
+    </v-stepper>
   </div>
 </template>
 <script>
 // eslint-disable-next-line no-unused-vars
 import { mapMutations, mapState, mapActions, mapGetters } from 'vuex'
 import { get, isEmpty, isNil } from 'lodash'
-import 'vue-form-generator/dist/vfg'
-import cmmuCertificationSchema from '@/components/cmmuCertificationSchema'
-import { FormWizard, TabContent } from 'vue-form-wizard'
-import 'vue-form-wizard/dist/vue-form-wizard.min.css'
 
 export default {
-  components: { 'form-wizard': FormWizard, 'tab-content': TabContent },
-  mixins: [cmmuCertificationSchema],
   data: () => ({
     currentIsValid: false,
+    e6: 1,
     steps: [],
     formOptions: {
       validateAfterLoad: false,
