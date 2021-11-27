@@ -13,7 +13,8 @@ export default {
 
   /* Events */
   setEvents: (state, events) => (state.events = events),
-  addDocument: (state, document) => state.documents.push(document),
+  setUserEvents: (state, userEvents) => (state.userEvents = userEvents),
+  addEvent: (state, document) => state.documents.push(document),
   removeEventById: (state, eventId) => {
     const index = state.events.findIndex(document => document.id === eventId)
     state.events.splice(index, 1)

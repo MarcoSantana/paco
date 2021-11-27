@@ -4,4 +4,6 @@ export default {
   eventDeletionPending: [],
   eventCreationPending: false,
   eventCreationMessage: {},
+  userEvents: [],
+  curentEvent: {}
 }

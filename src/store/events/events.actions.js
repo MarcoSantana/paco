@@ -1,7 +1,8 @@
 // import { isNil } from 'lodash'
-// import UserDocumentsDB from '@/firebase/user-documents-db'
+// import UserEveDB from '@/firebase/user-documents-db'
 // import UsersDB from '@/firebase/users-db'
 import EventsDB from '@/firebase/events-db'
+import UserEventsDB from '@/firebase/user-events-db'
 // import DocumentsDB from '@/firebase/documents-db'
 // import { callUpdateDocumentStatus } from '@/firebase/functions'
 // import { storage } from 'firebase'
@@ -25,6 +26,40 @@ export default {
     const eventsDb = new EventsDB(`${rootState.authentication.user.id}/**`)
     const events = await eventsDb.readAll()
     commit('setEvents', events)
+  },
+
+  getUserEvents: async ({ rootState, commit }) => {
+    const userEventsDb = new UserEventsDB(rootState.authentication.user.id)
+    const userEvents = await userEventsDb.readAll()
+    console.log('userEvents: ', userEvents)
+    commit('setUserEvents', userEvents)
+  },
+
+  /*
+   * Gets the event details for the given user if not exists create
+   */
+  setUserEvent: async ({ rootState }, id) => {
+    const userEventsDb = new UserEventsDB(rootState.authentication.user.id)
+    const eventsDB = new EventsDB(rootState)
+    console.log(eventsDB)
+    const userEvent = await userEventsDb.read(id)
+    console.log('userEvent: ', userEvent)
+    if (!userEvent) {
+      try {
+        // const createdDocument = await userEventsDb.create(document)
+        // console.log('createdEvent: ', createdEvent)
+        // commit('addDocument', createdDocument)
+        // commit('setDocumentCreationPending', false)
+        // commit('setDocumentCreationMessage', { type: 'info', message: 'Documento creado' })
+      } catch (error) {
+        throw new Error('Error al crear el documento', error)
+      }
+    }
+    // TODO: create the below actions
+    //   commit('setDocumentCreationPending', true)
+    //   commit('setDocumentCreationMessage', {})
+    // TODO: get from the users/events the currentEvent
+    // TODO: try to get or add it to the collection
   },
 
   // /**
