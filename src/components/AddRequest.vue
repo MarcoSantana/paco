@@ -1,5 +1,9 @@
 <template>
   <div class="box">
+    <h2>
+      TODO Here we must check if there is an active request event (aviable certification exams) and if the user already
+      started the process 202111.25-18.46
+    </h2>
     <h2 v-if="model && model.errors" class="error">
       <ul v-for="error in model.errors" :key="error.field.label">
         <li>{{ error.field.label }} >> {{ error.error }}</li>
@@ -113,6 +117,12 @@ import { mapMutations, mapState, mapActions, mapGetters } from 'vuex'
 import { get, isEmpty, isNil } from 'lodash'
 
 export default {
+  props: {
+    eventId: {
+      type: String,
+      required: true,
+    },
+  },
   data: () => ({
     currentIsValid: false,
     e6: 1,
