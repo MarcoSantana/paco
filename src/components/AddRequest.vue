@@ -51,64 +51,24 @@
         <li>Donativo no reembolsable de $ 5,700. 00/100 m.n.</li>
       </ol>
     </div>
-    <div>E^ {{ e6 }}</div>
-    <v-stepper v-model="e6" vertical>
-      <v-stepper-step :complete="e6 > 1" step="1">
-        Select an app
-        <small>Summarize if needed</small>
-      </v-stepper-step>
 
-      <v-stepper-content step="1">
-        <v-card color="grey lighten-1" class="mb-12" height="200px"></v-card>
-        <v-btn color="primary" @click="e6 = 2">
-          Continue
+    <v-stepper v-for="(myStep, index) in stepperSteps" :key="myStep" v-model="e6" vertical>
+      <v-stepper-step :complete="e6 >= index" :step="index + 1">
+        {{ stepperSteps[index].name }}
+      </v-stepper-step>
+      <v-stepper-content :step="index">
+        <v-card color="grey lighten-1" class="mb-12" height="200px">
+          TODO Call the proper component
+        </v-card>
+        <v-btn color="primary" @click="e6 = index + 1">
+          Continuar
         </v-btn>
         <v-btn text>
-          Cancel
-        </v-btn>
-      </v-stepper-content>
-
-      <v-stepper-step :complete="e6 > 2" step="2">
-        Configure analytics for this app
-      </v-stepper-step>
-
-      <v-stepper-content step="2">
-        <v-card color="grey lighten-1" class="mb-12" height="200px"></v-card>
-        <v-btn color="primary" @click="e6 = 3">
-          Continue
-        </v-btn>
-        <v-btn text>
-          Cancel
-        </v-btn>
-      </v-stepper-content>
-
-      <v-stepper-step :complete="e6 > 3" step="3">
-        Select an ad format and name ad unit
-      </v-stepper-step>
-
-      <v-stepper-content step="3">
-        <v-card color="grey lighten-1" class="mb-12" height="200px"></v-card>
-        <v-btn color="primary" @click="e6 = 4">
-          Continue
-        </v-btn>
-        <v-btn text>
-          Cancel
-        </v-btn>
-      </v-stepper-content>
-
-      <v-stepper-step step="4">
-        View setup instructions
-      </v-stepper-step>
-      <v-stepper-content step="4">
-        <v-card color="grey lighten-1" class="mb-12" height="200px"></v-card>
-        <v-btn color="primary" @click="e6 = 1">
-          Continue
-        </v-btn>
-        <v-btn text>
-          Cancel
+          Cancelar
         </v-btn>
       </v-stepper-content>
     </v-stepper>
+    <!-- steps -->
   </div>
 </template>
 <script>
@@ -125,8 +85,31 @@ export default {
   },
   data: () => ({
     currentIsValid: false,
-    e6: 1,
+    e6: 0,
     steps: [],
+    // <!--TODO: Move this elsewhere-->
+    stepperSteps: [
+      { name: 'Copia del título y cédula profesional de la licenciatura en medicina.' },
+      {
+        name:
+          ' Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional para la Formación de Recursos Humanos para la Salud (CIFRHS); Copia de la constancia de haber efectuado y aprobado el Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional para la Formación de Recursos Humanos para la Salud (CIFRHS); ',
+      },
+      {
+        name:
+          ' En el caso de Urgencias Pediátricas deberá entregar además el diploma institucional y diploma de la institución educativa (universitaria) que lo avala en Pediatría. ',
+      },
+      {
+        name:
+          ' En el caso de Urgencias Pediátricas, constancia de haber terminado satisfactoriamente una residencia progresiva hospitalaria de por lo menos 2 años. ',
+      },
+      { name: 'Copia del diploma institucional en Medicina de Urgencias o en su caso Urgencias Pediatricas.' },
+      { name: 'Copia del diploma de la institución educativa (Universitaria) que lo avala.' },
+      {
+        name:
+          ' Tres fotografías oval tamaño diploma (5x7cm) blanco y negro, con fondo blanco, vestimenta formal. Con nombre completo al reverso (con tinta). ',
+      },
+      { name: 'Donativo no reembolsable de $ 5,700. 00/100 m.n.' },
+    ],
     formOptions: {
       validateAfterLoad: false,
       validateAfterChanged: true,
