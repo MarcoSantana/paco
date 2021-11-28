@@ -1,9 +1,8 @@
 <template>
   <v-container>
-    Event>>>> {{ getEventById(id) }}
-    <div>User event {{ getUserEvent(id) }}</div>
+    <!-- <div>User event {{ getUserEvent(id) }}</div> -->
     <!--TODO: Check if the user has this event document registered, and create it or access it-->
-    <add-request></add-request>
+    <add-request :id="id"></add-request>
   </v-container>
 </template>
 

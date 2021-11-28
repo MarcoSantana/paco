@@ -1,9 +1,10 @@
 <template>
   <div class="box">
-    <h2>
-      TODO Here we must check if there is an active request event (aviable certification exams) and if the user already
-      started the process 202111.25-18.46
-    </h2>
+    ID::>> {{ id }}
+    <!-- <h2>
+         TODO Here we must check if there is an active request event (aviable certification exams) and if the user already
+         started the process 202111.25-18.46
+         </h2> -->
     <h2 v-if="model && model.errors" class="error">
       <ul v-for="error in model.errors" :key="error.field.label">
         <li>{{ error.field.label }} >> {{ error.error }}</li>
@@ -52,13 +53,27 @@
       </ol>
     </div>
 
-    <v-stepper v-for="(myStep, index) in stepperSteps" :key="myStep" v-model="e6" vertical>
+    <v-stepper v-for="(myStep, index) in stepperSteps" :key="myStep.name" v-model="e6" vertical>
+      <!--TODO: rename this model-->
       <v-stepper-step :complete="e6 >= index" :step="index + 1">
-        {{ stepperSteps[index].name }}
+        {{ myStep.name }}
       </v-stepper-step>
       <v-stepper-content :step="index">
         <v-card color="grey lighten-1" class="mb-12" height="200px">
-          TODO Call the proper component
+          <span v-if="myStep.upload">
+            <v-file-input v-model="foo[index]" counter show-size truncate-length="15" />
+          </span>
+          <!--TODO: add proper styling looks like crap -->
+          <!--TODO: Validation to disable next button, validation must come ALSO form fb storage -->
+          <v-img
+            v-if="foo[index] && (foo[index].type === 'image/png' || foo[index].type === 'image/jpeg')"
+            contain
+            lazy-src="https://picsum.photos/id/11/10/6"
+            max-height="150"
+            max-width="250"
+            :src="getURL(foo[index])"
+          />
+          <object v-if="foo[index] && foo[index].type === 'application/pdf'" :data="getURL(foo[index])" />
         </v-card>
         <v-btn color="primary" @click="e6 = index + 1">
           Continuar
@@ -74,22 +89,31 @@
 <script>
 // eslint-disable-next-line no-unused-vars
 import { mapMutations, mapState, mapActions, mapGetters } from 'vuex'
-import { get, isEmpty, isNil } from 'lodash'
+import { isNil } from 'lodash'
+// import { get, isEmpty, isNil } from 'lodash'
 
 export default {
   props: {
-    eventId: {
+    id: {
       type: String,
       required: true,
     },
   },
   data: () => ({
+    foo: [],
     currentIsValid: false,
     e6: 0,
-    steps: [],
     // <!--TODO: Move this elsewhere-->
+    // TODO Use the dynamic component load to upload the apropiate file
     stepperSteps: [
-      { name: 'Copia del título y cédula profesional de la licenciatura en medicina.' },
+      {
+        name: 'Copia del título y cédula profesional de la licenciatura en medicina.',
+        upload: true,
+        // TODO: Put here everything you need to create the upload event
+        // TODO: Validation rules
+        // TODO put here the props for the file component
+        // TODO put here the props for the image component
+      },
       {
         name:
           ' Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional para la Formación de Recursos Humanos para la Salud (CIFRHS); Copia de la constancia de haber efectuado y aprobado el Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional para la Formación de Recursos Humanos para la Salud (CIFRHS); ',
@@ -110,49 +134,38 @@ export default {
       },
       { name: 'Donativo no reembolsable de $ 5,700. 00/100 m.n.' },
     ],
-    formOptions: {
-      validateAfterLoad: false,
-      validateAfterChanged: true,
-      validateAsync: true,
-      validateBeforeSubmit: true,
-    },
     model: {},
     // wizard
-    loadingWizard: false,
-    count: 0,
     errorMsg: null,
     isFinished: false,
   }),
   computed: {
     ...mapState('forms', ['currentForm', 'formNameToCreate']),
     ...mapState('documents', ['documentCreationPending', 'documentCreationMessage']),
-    groups() {
-      return this.schema.groups
-    },
   },
   watch: {},
   mounted() {
-    this.setFormNameToCreate('Solicitud de examen')
-    // Reset the form state
+    // this.setFormNameToCreate('Solicitud de examen')
   },
   methods: {
-    ...mapMutations('forms', ['setFormNameToCreate']),
-    ...mapMutations('documents', ['setDocumentNameToCreate', 'setDocumentCreationMessage']),
-    ...mapActions('forms', ['triggerAddCurrentFormAction', 'triggerAddFormAction']),
     ...mapActions('documents', ['triggerAddDocumentAction']),
-    ...mapGetters('forms', ['getCurrentForm']),
-    getAttrs(vnode) {
-      return get(vnode[0], 'attributes.input.data-test', {})
-    },
-    updateCurrentForm() {
-      this.triggerAddCurrentFormAction(this.model)
-    },
+    ...mapMutations('documents', ['setDocumentNameToCreate', 'setDocumentCreationMessage']),
+    // <!--TODO: Add a method/action to update the document(fb) onModify (or whatever its called)-->
+    // ...mapMutations('forms', ['setFormNameToCreate']),
+    // ...mapActions('forms', ['triggerAddCurrentFormAction', 'triggerAddFormAction']),
+    // ...mapGetters('forms', ['getCurrentForm']),
+    // getAttrs(vnode) {
+    //   return get(vnode[0], 'attributes.input.data-test', {})
+    // },
+    // updateCurrentForm() {
+    //   this.triggerAddCurrentFormAction(this.model)
+    // },
     // vfg
-    onValidated(isValid, errors) {
-      this.errorMsg = errors
-      this.currentIsValid = isValid
-      // this.currentIsValid = true
-    },
+    // onValidated(isValid, errors) {
+    //   this.errorMsg = errors
+    //   this.currentIsValid = isValid
+    //   // this.currentIsValid = true
+    // },
     // Reset the form state
     reset() {
       this.model = {}
@@ -160,6 +173,15 @@ export default {
       this.setDocumentCreationMessage({})
       this.setDocumentNameToCreate = null
       this.$refs.wizard.reset()
+    },
+    getURL(file) {
+      if (!isNil(file)) {
+        return URL.createObjectURL(file)
+      }
+      return null
+    },
+    fileIsNil(file) {
+      return isNil(file)
     },
     // form wizard
     onComplete() {
@@ -193,16 +215,18 @@ export default {
       return true
     },
     setLoading(value) {
-      this.loadingWizard = value
+      console.log(value)
+      // this.loadingWizard = value
     },
-    handleErrorMessage(errorMsg) {
-      if (!isNil(errorMsg) || !isEmpty(errorMsg)) this.errorMsg = errorMsg
-      // TODO Give this better style
-      this.errorMsg = this.model.errors
-      // this.$store.state.currentForm.errors.push(errorMsg)
-      console.log('errorMsg: ', errorMsg)
-      return true
-    },
+    // handleErrorMessage(errorMsg) {
+    //   if (!isNil(errorMsg) || !isEmpty(errorMsg)) this.errorMsg = errorMsg
+    //   // TODO Give this better style
+    //   this.errorMsg = this.model.errors
+    //   // this.$store.state.currentForm.errors.push(errorMsg)
+    //   console.log('errorMsg: ', errorMsg)
+    //   return true
+    // },
+    // TODO recycle me
     validateAsync() {
       return new Promise((resolve, reject) => {
         this.setLoading(true)
@@ -225,132 +249,4 @@ export default {
   },
 }
 </script>
-<style lang="scss">
-@import '@/theme/style.scss';
-@import '@/theme/variables.scss';
-.requirements {
-  padding: 1.5rem;
-  @extend .box;
-  div {
-    padding: 0.75rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    max-width: 75%;
-  }
-  ol {
-    background-color: $light-accent;
-    :nth-child(2n + 1) {
-      background-color: $light-accent-1;
-    }
-  }
-}
-.reset-button {
-  @extend .form-wizard-button;
-  background-color: lighten($danger-color, 10%);
-  color: darken($danger-color, 40%);
-}
-
-fieldset {
-  margin-top: 1.75rem;
-  border: none;
-  h1 {
-    color: $main;
-  }
-  legend {
-    font-size: 1.5rem;
-    color: $main;
-    padding-bottom: 0.75rem;
-  }
-}
-/* form wizard */
-.loader,
-.loader:after {
-  border-radius: 75%;
-  width: 10em;
-  height: 10em;
-}
-.loader {
-  margin: 60px auto;
-  font-size: 10px;
-  position: relative;
-  text-indent: -9999em;
-  border-top: 1.1em solid rgba(255, 255, 255, 0.2);
-  border-right: 1.1em solid rgba(255, 255, 255, 0.2);
-  border-bottom: 1.1em solid rgba(255, 255, 255, 0.2);
-  border-left: 1.1em solid $secondary;
-  -webkit-transform: translateZ(0);
-  -ms-transform: translateZ(0);
-  transform: translateZ(0);
-  -webkit-animation: load8 1.1s infinite linear;
-  animation: load8 1.1s infinite linear;
-}
-@-webkit-keyframes load8 {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
-}
-@keyframes load8 {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
-}
-
-fieldset {
-  border-style: dotted;
-  border-color: $light-accent;
-}
-.field-wrap {
-  color: red;
-}
-
-.file-upload {
-  :hover {
-    background: $light-accent;
-  }
-
-  label {
-    opacity: 0.8; // This makes visible the label wich is behind
-    outline: 2px dashed grey; /* the dash box */
-    outline-offset: -10px;
-    background: $light-accent-1;
-    color: $main;
-    min-height: 80px; /* minimum height */
-    cursor: pointer;
-    position: relative;
-    cursor: pointer;
-    font-size: 1.2em;
-    display: grid;
-    place-items: center;
-    margin-top: 3.2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    & span {
-      margin-left: 1rem;
-      margin-right: 1rem;
-    }
-
-    @include respond(tablet) {
-      // responsive code for tablet viewport i.e. 600px
-      max-height: 50px;
-      width: 100%;
-    }
-
-    @include respond(mobile) {
-      // responsive code for mobile viewport i.e. 480px
-      font-size: 0.8rem;
-    }
-  }
-}
-</style>
+<style lang="scss"></style>
