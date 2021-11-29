@@ -52,35 +52,51 @@
         <li>Donativo no reembolsable de $ 5,700. 00/100 m.n.</li>
       </ol>
     </div>
-
-    <v-stepper v-for="(myStep, index) in stepperSteps" :key="myStep.name" v-model="e6" vertical>
-      <!--TODO: rename this model-->
-      <v-stepper-step :complete="e6 >= index" :step="index + 1">
-        {{ myStep.name }}
-      </v-stepper-step>
-      <v-stepper-content :step="index">
-        <v-card color="grey lighten-1" class="mb-12" height="200px">
-          <span v-if="myStep.upload">
-            <v-file-input v-model="foo[index]" counter show-size truncate-length="15" />
-          </span>
-          <!--TODO: add proper styling looks like crap -->
-          <!--TODO: Validation to disable next button, validation must come ALSO form fb storage -->
-          <v-img
-            v-if="foo[index] && (foo[index].type === 'image/png' || foo[index].type === 'image/jpeg')"
-            contain
-            lazy-src="https://picsum.photos/id/11/10/6"
-            max-height="150"
-            max-width="250"
-            :src="getURL(foo[index])"
-          />
-          <object v-if="foo[index] && foo[index].type === 'application/pdf'" :data="getURL(foo[index])" />
+    <v-stepper v-model="curr" color="green">
+      <v-stepper-content v-for="(step, n) in steps" :key="n" :step="n + 1">
+        <v-stepper-header class="overflow-x-auto">
+          <v-stepper-step
+            :complete="stepComplete(n + 1)"
+            :step="n + 1"
+            :rules="[value => !!step.valid]"
+            :color="stepStatus(n + 1)"
+          >
+            {{ step.name }}
+          </v-stepper-step>
+        </v-stepper-header>
+        <v-card class="mb-12" height="200px">
+          <v-card-text>
+            <v-form :ref="'stepForm'" v-model="step.valid" lazy-validation>
+              <v-file-input
+                v-if="step.upload"
+                :ref="step.refName"
+                v-model="foo[n]"
+                :rules="step.rules"
+                accept="image/png, image/jpeg, application/pdf"
+                :placeholder="step.placeholder"
+                counter
+                show-size
+                truncate-length="15"
+                required
+                @change="$emit('bar')"
+              />
+              <!--TODO: add proper styling looks like crap -->
+              <!--TODO: Validation to disable next button, validation must come ALSO form fb storage -->
+              <v-img
+                v-if="foo[n] && (foo[n].type === 'image/png' || foo[n].type === 'image/jpeg')"
+                contain
+                lazy-src="https://picsum.photos/id/11/10/6"
+                max-height="150"
+                max-width="250"
+                :src="getURL(foo[n])"
+              />
+              <object v-show="foo[n] && foo[n].name && foo[n].type === 'application/pdf'" :data="getURL(foo[n])" />
+            </v-form>
+          </v-card-text>
         </v-card>
-        <v-btn color="primary" @click="e6 = index + 1">
-          Continuar
-        </v-btn>
-        <v-btn text>
-          Cancelar
-        </v-btn>
+        <v-btn v-if="n + 1 < lastStep" color="primary" :disabled="!step.valid" @click="validate(n)">Continuar</v-btn>
+        <v-btn v-else color="success" @click="done()">Terminar</v-btn>
+        <v-btn text @click="curr = n">Atrás</v-btn>
       </v-stepper-content>
     </v-stepper>
     <!-- steps -->
@@ -100,18 +116,33 @@ export default {
     },
   },
   data: () => ({
+    curr: 1,
+    lastStep: 4,
+    // steps: [
+    //   { name: 'Start', rules: [v => !!v || 'Required.'], valid: true },
+    //   { name: 'Step 2', rules: [v => !!v || 'Required.'], valid: true },
+    //   { name: 'Step 3', rules: [v => (v && v.length >= 4) || 'Enter at least 4 characters.'], valid: true },
+    //   { name: 'Complete' },
+    // ],
+    valid: false,
+    stepForm: [],
     foo: [],
     currentIsValid: false,
     e6: 0,
     // <!--TODO: Move this elsewhere-->
-    // TODO Use the dynamic component load to upload the apropiate file
-    stepperSteps: [
+    steps: [
       {
         name: 'Copia del título y cédula profesional de la licenciatura en medicina.',
         upload: true,
+        // TODO separate this into functions to reuse them
+        rules: [
+          value => !value || value.size < 2000000 || 'El archivo no puede exeder los 2Mb de tamaño',
+          value => !!value || 'Este campo es obligatorio.',
+        ],
+        placeholder: 'Título profesional',
+        refName: 'titulo',
+        valid: false,
         // TODO: Put here everything you need to create the upload event
-        // TODO: Validation rules
-        // TODO put here the props for the file component
         // TODO put here the props for the image component
       },
       {
@@ -133,6 +164,7 @@ export default {
           ' Tres fotografías oval tamaño diploma (5x7cm) blanco y negro, con fondo blanco, vestimenta formal. Con nombre completo al reverso (con tinta). ',
       },
       { name: 'Donativo no reembolsable de $ 5,700. 00/100 m.n.' },
+      { name: 'Solicitud completa' },
     ],
     model: {},
     // wizard
@@ -173,6 +205,25 @@ export default {
       this.setDocumentCreationMessage({})
       this.setDocumentNameToCreate = null
       this.$refs.wizard.reset()
+    },
+    stepComplete(step) {
+      return this.curr > step
+    },
+    stepStatus(step) {
+      return this.curr > step ? 'green' : 'blue'
+    },
+    validate(n) {
+      this.steps[n].valid = false
+      const v = this.$refs.stepForm[n].validate()
+      if (v) {
+        this.steps[n].valid = true
+        // continue to next
+        this.curr = n + 2
+      }
+    },
+    done() {
+      this.curr = this.steps.length + 1
+      // TODO show some loader
     },
     getURL(file) {
       if (!isNil(file)) {
