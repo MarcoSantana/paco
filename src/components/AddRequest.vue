@@ -1,6 +1,5 @@
 <template>
   <div class="box">
-    ID::>> {{ id }}
     <!-- <h2>
          TODO Here we must check if there is an active request event (aviable certification exams) and if the user already
          started the process 202111.25-18.46
@@ -50,7 +49,7 @@
     </div>
     <v-stepper v-model="curr" color="green">
       <v-stepper-content v-for="(step, n) in steps" :key="n" :step="n + 1">
-        <v-stepper-header class="overflow-x-auto">
+        <v-stepper-header class="overflow-x-auto mb-3">
           <v-stepper-step
             :complete="stepComplete(n + 1)"
             :step="n + 1"
@@ -58,7 +57,26 @@
             :color="stepStatus(n + 1)"
           >{{ step.name }}</v-stepper-step>
         </v-stepper-header>
-        <v-card class="mb-12" height="200px">
+        <v-card class="mx-auto" max-width="500">
+          <v-fade-transition>
+            <v-img
+              class="ma-5"
+              v-if="files[n] && (files[n].type === 'image/png' || files[n].type === 'image/jpeg')"
+              contain
+              lazy-src="https://picsum.photos/id/11/10/6"
+              max-height="150"
+              max-width="250"
+              :src="getURL(files[n])"
+            />
+          </v-fade-transition>
+          <v-fade-transition>
+            <object
+              class="ma-5"
+              style="max-width: 500px; min-width: 344px; min-height: 500px;"
+              v-show="files[n] && files[n].name && files[n].type === 'application/pdf'"
+              :data="getURL(files[n])"
+            />
+          </v-fade-transition>
           <v-card-text>
             <v-form :ref="'stepForm'" v-model="step.valid" lazy-validation>
               <v-file-input
@@ -75,23 +93,11 @@
               />
               <!--TODO: add proper styling looks like crap -->
               <!--TODO: Validation to disable next button, validation must come ALSO form fb storage -->
-              <v-img
-                v-if="files[n] && (files[n].type === 'image/png' || files[n].type === 'image/jpeg')"
-                contain
-                lazy-src="https://picsum.photos/id/11/10/6"
-                max-height="150"
-                max-width="250"
-                :src="getURL(files[n])"
-              />
-              <object
-                v-show="files[n] && files[n].name && files[n].type === 'application/pdf'"
-                :data="getURL(files[n])"
-              />
             </v-form>
           </v-card-text>
         </v-card>
         <v-btn
-          v-if="n + 1 < lastStep"
+          v-if="n + 1 < steps.length + 1"
           color="primary"
           :disabled="!step.valid"
           @click="validate(n)"
@@ -105,7 +111,7 @@
 </template>
 <script>
 // eslint-disable-next-line no-unused-vars
-import { mapMutations, mapState, mapActions, mapGetters } from 'vuex'
+import { mapMutations, mapState, mapActions } from 'vuex'
 import { isNil } from 'lodash'
 // import { get, isEmpty, isNil } from 'lodash'
 //
@@ -122,11 +128,8 @@ export default {
   },
   data: () => ({
     curr: 1,
-    lastStep: 4,
     valid: false,
     files: [],
-    currentIsValid: false,
-    e6: 0,
     // <!--TODO: Move this elsewhere-->
     steps: [
       {
@@ -183,16 +186,6 @@ export default {
     // updateCurrentForm() {
     //   this.triggerAddCurrentFormAction(this.model)
     // },
-    // vfg
-    // onValidated(isValid, errors) {
-    //   this.errorMsg = errors
-    //   this.currentIsValid = isValid
-    //   // this.currentIsValid = true
-    // },
-    // required(value) {
-    //   console.log('value from required', value)
-    //   return !!value || 'Este campo es obligatorio'
-    // },
     // Steps
     stepComplete(step) {
       return this.curr > step
@@ -219,11 +212,9 @@ export default {
       }
       return null
     },
-    fileIsNil(file) {
-      return isNil(file)
-    },
     // form wizard
     onComplete() {
+      // TODO feedback and query to link to home
       this.$router.push('/home')
     },
     saveDocument() {
