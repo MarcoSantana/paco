@@ -4,7 +4,7 @@
     <!-- <h2>
          TODO Here we must check if there is an active request event (aviable certification exams) and if the user already
          started the process 202111.25-18.46
-         </h2> -->
+    </h2>-->
     <h2 v-if="model && model.errors" class="error">
       <ul v-for="error in model.errors" :key="error.field.label">
         <li>{{ error.field.label }} >> {{ error.error }}</li>
@@ -12,12 +12,8 @@
     </h2>
     <h2>Requisitos para solicitar Certificación</h2>
     <div>
-      <h3>
-        **Importante**
-      </h3>
-      <div>
-        Todos los documentos solicitados deberán estar digitalizados en formato PDF o JPG. Y cargados en esta plataforma
-      </div>
+      <h3>**Importante**</h3>
+      <div>Todos los documentos solicitados deberán estar digitalizados en formato PDF o JPG. Y cargados en esta plataforma</div>
     </div>
     <div>
       <ol>
@@ -60,9 +56,7 @@
             :step="n + 1"
             :rules="[value => !!step.valid]"
             :color="stepStatus(n + 1)"
-          >
-            {{ step.name }}
-          </v-stepper-step>
+          >{{ step.name }}</v-stepper-step>
         </v-stepper-header>
         <v-card class="mb-12" height="200px">
           <v-card-text>
@@ -70,7 +64,7 @@
               <v-file-input
                 v-if="step.upload"
                 :ref="step.refName"
-                v-model="foo[n]"
+                v-model="files[n]"
                 :rules="step.rules"
                 accept="image/png, image/jpeg, application/pdf"
                 :placeholder="step.placeholder"
@@ -78,23 +72,30 @@
                 show-size
                 truncate-length="15"
                 required
-                @change="$emit('bar')"
               />
               <!--TODO: add proper styling looks like crap -->
               <!--TODO: Validation to disable next button, validation must come ALSO form fb storage -->
               <v-img
-                v-if="foo[n] && (foo[n].type === 'image/png' || foo[n].type === 'image/jpeg')"
+                v-if="files[n] && (files[n].type === 'image/png' || files[n].type === 'image/jpeg')"
                 contain
                 lazy-src="https://picsum.photos/id/11/10/6"
                 max-height="150"
                 max-width="250"
-                :src="getURL(foo[n])"
+                :src="getURL(files[n])"
               />
-              <object v-show="foo[n] && foo[n].name && foo[n].type === 'application/pdf'" :data="getURL(foo[n])" />
+              <object
+                v-show="files[n] && files[n].name && files[n].type === 'application/pdf'"
+                :data="getURL(files[n])"
+              />
             </v-form>
           </v-card-text>
         </v-card>
-        <v-btn v-if="n + 1 < lastStep" color="primary" :disabled="!step.valid" @click="validate(n)">Continuar</v-btn>
+        <v-btn
+          v-if="n + 1 < lastStep"
+          color="primary"
+          :disabled="!step.valid"
+          @click="validate(n)"
+        >Continuar</v-btn>
         <v-btn v-else color="success" @click="done()">Terminar</v-btn>
         <v-btn text @click="curr = n">Atrás</v-btn>
       </v-stepper-content>
@@ -107,6 +108,10 @@
 import { mapMutations, mapState, mapActions, mapGetters } from 'vuex'
 import { isNil } from 'lodash'
 // import { get, isEmpty, isNil } from 'lodash'
+//
+const required = (value) => !!value || 'Este campo es obligatorio'
+const maxSize = (value, max) => !value || value.size < max || `El archivo no puede exceder los ${max / 1000000} Mb`
+// const minSize = (value, min) => !value || value.size < min || `El archivo no puede ser menor a los ${min / 1000000} Mb`
 
 export default {
   props: {
@@ -118,15 +123,8 @@ export default {
   data: () => ({
     curr: 1,
     lastStep: 4,
-    // steps: [
-    //   { name: 'Start', rules: [v => !!v || 'Required.'], valid: true },
-    //   { name: 'Step 2', rules: [v => !!v || 'Required.'], valid: true },
-    //   { name: 'Step 3', rules: [v => (v && v.length >= 4) || 'Enter at least 4 characters.'], valid: true },
-    //   { name: 'Complete' },
-    // ],
     valid: false,
-    stepForm: [],
-    foo: [],
+    files: [],
     currentIsValid: false,
     e6: 0,
     // <!--TODO: Move this elsewhere-->
@@ -135,10 +133,7 @@ export default {
         name: 'Copia del título y cédula profesional de la licenciatura en medicina.',
         upload: true,
         // TODO separate this into functions to reuse them
-        rules: [
-          value => !value || value.size < 2000000 || 'El archivo no puede exeder los 2Mb de tamaño',
-          value => !!value || 'Este campo es obligatorio.',
-        ],
+        rules: [(value) => maxSize(value, 2000000), (value) => required(value)],
         placeholder: 'Título profesional',
         refName: 'titulo',
         valid: false,
@@ -146,22 +141,18 @@ export default {
         // TODO put here the props for the image component
       },
       {
-        name:
-          ' Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional para la Formación de Recursos Humanos para la Salud (CIFRHS); Copia de la constancia de haber efectuado y aprobado el Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional para la Formación de Recursos Humanos para la Salud (CIFRHS); ',
+        name: ' Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional para la Formación de Recursos Humanos para la Salud (CIFRHS); Copia de la constancia de haber efectuado y aprobado el Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional para la Formación de Recursos Humanos para la Salud (CIFRHS); ',
       },
       {
-        name:
-          ' En el caso de Urgencias Pediátricas deberá entregar además el diploma institucional y diploma de la institución educativa (universitaria) que lo avala en Pediatría. ',
+        name: ' En el caso de Urgencias Pediátricas deberá entregar además el diploma institucional y diploma de la institución educativa (universitaria) que lo avala en Pediatría. ',
       },
       {
-        name:
-          ' En el caso de Urgencias Pediátricas, constancia de haber terminado satisfactoriamente una residencia progresiva hospitalaria de por lo menos 2 años. ',
+        name: ' En el caso de Urgencias Pediátricas, constancia de haber terminado satisfactoriamente una residencia progresiva hospitalaria de por lo menos 2 años. ',
       },
       { name: 'Copia del diploma institucional en Medicina de Urgencias o en su caso Urgencias Pediatricas.' },
       { name: 'Copia del diploma de la institución educativa (Universitaria) que lo avala.' },
       {
-        name:
-          ' Tres fotografías oval tamaño diploma (5x7cm) blanco y negro, con fondo blanco, vestimenta formal. Con nombre completo al reverso (con tinta). ',
+        name: ' Tres fotografías oval tamaño diploma (5x7cm) blanco y negro, con fondo blanco, vestimenta formal. Con nombre completo al reverso (con tinta). ',
       },
       { name: 'Donativo no reembolsable de $ 5,700. 00/100 m.n.' },
       { name: 'Solicitud completa' },
@@ -198,14 +189,11 @@ export default {
     //   this.currentIsValid = isValid
     //   // this.currentIsValid = true
     // },
-    // Reset the form state
-    reset() {
-      this.model = {}
-      this.isFinished = false
-      this.setDocumentCreationMessage({})
-      this.setDocumentNameToCreate = null
-      this.$refs.wizard.reset()
-    },
+    // required(value) {
+    //   console.log('value from required', value)
+    //   return !!value || 'Este campo es obligatorio'
+    // },
+    // Steps
     stepComplete(step) {
       return this.curr > step
     },
