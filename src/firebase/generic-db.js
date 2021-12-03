@@ -25,12 +25,12 @@ export default class GenericDB {
 
     const createPromise = isNil(id)
       ? // Create doc with generated id
-        collectionRef.add(dataToCreate).then(doc => doc.id)
+      collectionRef.add(dataToCreate).then(doc => doc.id)
       : // Create doc with custom id
-        collectionRef
-          .doc(id)
-          .set(dataToCreate)
-          .then(() => id)
+      collectionRef
+        .doc(id)
+        .set(dataToCreate)
+        .then(() => id)
 
     const docId = await createPromise
 

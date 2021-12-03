@@ -38,21 +38,25 @@ export default {
   /*
    * Gets the event details for the given user if not exists create
    */
-  setUserEvent: async ({ rootState }, id) => {
+  setUserEvent: async ({ rootState, commit }, id) => {
     const userEventsDb = new UserEventsDB(rootState.authentication.user.id)
     const eventsDB = new EventsDB(rootState)
     console.log(eventsDB)
     const userEvent = await userEventsDb.read(id)
+
     console.log('userEvent: ', userEvent)
+    // TODO must create the userEvent using the data from the existing event
     if (!userEvent) {
       try {
-        // const createdDocument = await userEventsDb.create(document)
-        // console.log('createdEvent: ', createdEvent)
-        // commit('addDocument', createdDocument)
-        // commit('setDocumentCreationPending', false)
-        // commit('setDocumentCreationMessage', { type: 'info', message: 'Documento creado' })
+        // Get the existing event to append it to the user
+        const currentEvent = await eventsDB.read(id)
+        const createdEvent = await userEventsDb.create(currentEvent, id)
+        console.log('createdEvent: ', createdEvent)
+        commit('addUserEvent', createdEvent)
+        commit('setEventCreationPending', false)
+        commit('setEventCreationMessage', { type: 'info', message: 'Evento creado' })
       } catch (error) {
-        throw new Error('Error al crear el documento', error)
+        throw new Error('Error al crear el evento', error)
       }
     }
     // TODO: create the below actions
@@ -60,6 +64,7 @@ export default {
     //   commit('setDocumentCreationMessage', {})
     // TODO: get from the users/events the currentEvent
     // TODO: try to get or add it to the collection
+    //
   },
 
   // /**

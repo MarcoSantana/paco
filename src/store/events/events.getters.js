@@ -17,6 +17,11 @@ export default {
   getUserEvent: state => eventId => find(state.userEvents, event => event.id === eventId),
 
   /**
+   * Get the current event
+   * */
+  getCurrentEvent: state => state.currentEvent,
+
+  /**
    *  Get active events
    * @param {*} state
    * @returns collection
