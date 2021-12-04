@@ -84,23 +84,35 @@ export default {
           commit('setDocumentCreationMessage', { type: 'warning', message: 'Guardando documento' })
           try {
             upload.forEach((element, index) => {
+              console.log('element', element)
               // FIXME use a real regex you lazy f*ck
               const documentName = document.name
                 .replaceAll(' ', '')
                 .replaceAll(',', '')
                 .replaceAll('-', '')
                 .concat('_', index)
-              const uploadTask = storage()
+              // const uploadTask = storage()
+              storage()
                 .ref(`documents/${rootState.authentication.user.id}/${document.id}/${documentName}`)
                 .put(element)
-              uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
-                userDocumentDB.update({
-                  ...document,
-                  documents: { [documentName]: downloadURL },
+                .then(snapshot => {
+                  return snapshot.ref.getDownloadURL()
                 })
-              })
+                .then(downloadURL => {
+                  try {
+                    userDocumentDB.update({ ...document, documents: { [documentName]: downloadURL } })
+                  } catch (error) {
+                    console.error('Error al actualizar el documento', error)
+                    commit('setDocumentCreationMessage', {
+                      type: 'danger',
+                      message: 'Error al actualizar el documento vuelva a intentar de nuevo más tarde',
+                    })
+                  }
+                })
+                .finally(() => {
+                  commit('setDocumentCreationMessage', { type: 'success', message: 'Éxito' })
+                })
               commit('setDocumentCreationMessage', { type: 'success', message: 'Éxito' })
-              commit('setDocumentCreationPending', false)
             })
           } catch (error) {
             console.error(error)
