@@ -10,6 +10,7 @@
         max-width="250"
         :src="getURL(file)"
       />
+      <!-- TODO Center this inside the card 202112.04-08.24 -->
       <object
         v-if="file.name && file.type === 'application/pdf'"
         class="ma-5"
@@ -90,18 +91,15 @@ export default {
     },
     createLocalDocument(document) {
       if (isNil(document) || isNil(this.files)) return
-      document.upload = [this.files]
+      document.upload = this.files
       this.createUserDocument(document)
     },
     validate() {
       // this.valid = false
       this.setDocumentCreationMessage({ type: 'info', message: 'Validando documento' })
-      console.log('refs', this.$refs)
-      console.log('foo', this.$refs[`documentUpload_${document.name}`])
       if (this.valid) {
         this.setDocumentCreationMessage({ type: 'warning', message: 'Creando documento' })
         this.createLocalDocument({ name: this.document.name, upload: this.files })
-        // this.valid = false
         // TODO do some timeout and a loader to give better feedback
         // TODO  Emit event of valid or not
       }
