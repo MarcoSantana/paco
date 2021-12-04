@@ -7,55 +7,65 @@
         Todos los documentos solicitados deberán estar digitalizados en formato PDF o JPG. Y cargados en esta plataforma
       </div>
     </div>
-    <!--
-     // TODO Put this into an accordion
-     -->
-    <div>
-      <ol>
-        <li>Ser médico cirujano debidamente autorizado para ejercer la medicina en México.</li>
-        <li>Copia del título y cédula profesional de la licenciatura en medicina.</li>
-        <li>
-          Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional para
-          la Formación de Recursos Humanos para la Salud (CIFRHS); Copia de la constancia de haber efectuado y aprobado
-          el Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional
-          para la Formación de Recursos Humanos para la Salud (CIFRHS);
-        </li>
-        <li>
-          En el caso de Urgencias Pediátricas deberá entregar además el diploma institucional y diploma de la
-          institución educativa (universitaria) que lo avala en Pediatría.
-        </li>
-        <li>
-          En el caso de Urgencias Pediátricas, constancia de haber terminado satisfactoriamente una residencia
-          progresiva hospitalaria de por lo menos 2 años.
-        </li>
-        <li>Copia del diploma institucional en Medicina de Urgencias o en su caso Urgencias Pediatricas.</li>
-        <li>Copia del diploma de la institución educativa (Universitaria) que lo avala.</li>
-        <li>
-          Tres fotografías oval tamaño diploma (5x7cm) blanco y negro, con fondo blanco, vestimenta formal. Con nombre
-          completo al reverso (con tinta).
-        </li>
-        <li>Imprimir, llenar completamente y anexar la solicitud de Certificación</li>
-        <li>
-          Vigente en Medicina de Urgencias o Urgencias Pediátricas según sea el caso. (Descargar de la página web del
-          Consejo).
-        </li>
-        <li>Curriculum vitae</li>
-        <li>Donativo no reembolsable de $ 5,700. 00/100 m.n.</li>
-      </ol>
-    </div>
+    <v-expansion-panels>
+      <v-expansion-panel>
+        <v-expansion-panel-header
+          >Requisitos
+          <template v-slot:actions>
+            <v-icon color="primary">
+              mdi-plus
+            </v-icon>
+          </template>
+        </v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <ol>
+            <li>
+              Ser médico cirujano debidamente autorizado para ejercer la medicina en México.
+            </li>
+
+            <li>Copia del título y cédula profesional de la licenciatura en medicina.</li>
+            <li>
+              Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional
+              para la Formación de Recursos Humanos para la Salud (CIFRHS); Copia de la constancia de haber efectuado y
+              aprobado el Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión
+              Interinstitucional para la Formación de Recursos Humanos para la Salud (CIFRHS);
+            </li>
+            <li>
+              En el caso de Urgencias Pediátricas deberá entregar además el diploma institucional y diploma de la
+              institución educativa (universitaria) que lo avala en Pediatría.
+            </li>
+            <li>
+              En el caso de Urgencias Pediátricas, constancia de haber terminado satisfactoriamente una residencia
+              progresiva hospitalaria de por lo menos 2 años.
+            </li>
+            <li>Copia del diploma institucional en Medicina de Urgencias o en su caso Urgencias Pediatricas.</li>
+            <li>Copia del diploma de la institución educativa (Universitaria) que lo avala.</li>
+            <li>
+              Tres fotografías oval tamaño diploma (5x7cm) blanco y negro, con fondo blanco, vestimenta formal. Con
+              nombre completo al reverso (con tinta).
+            </li>
+            <li>Imprimir, llenar completamente y anexar la solicitud de Certificación</li>
+            <li>
+              Vigente en Medicina de Urgencias o Urgencias Pediátricas según sea el caso. (Descargar de la página web
+              del Consejo).
+            </li>
+            <li>Curriculum vitae</li>
+            <li>Donativo no reembolsable de $ 5,700. 00/100 m.n.</li>
+          </ol>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels>
+
     <!-- TODO populate this with existing dat if any 202112.04-12.31 -->
     <v-stepper v-model="curr" color="green">
       <v-stepper-content v-for="(step, n) in steps" :key="n" :step="n + 1">
-        //TODO the header looks like shit 202112.02-17.13
-        <v-stepper-header class="overflow-x-auto mb-3">
-          <v-stepper-step
-            :complete="stepComplete(n + 1)"
-            :step="n + 1"
-            :rules="[value => !!step.valid]"
-            :color="stepStatus(n + 1)"
-            >{{ step.name }}</v-stepper-step
-          >
-        </v-stepper-header>
+        <v-stepper-step
+          :complete="stepComplete(n + 1)"
+          :step="n + 1"
+          :rules="[value => !!step.valid]"
+          :color="stepStatus(n + 1)"
+          >{{ step.name }}</v-stepper-step
+        >
         <v-form :ref="'stepForm'" v-model="step.valid" lazy-validation>
           <upload-document :document="step"></upload-document>
         </v-form>
