@@ -18,26 +18,29 @@
       />
     </v-fade-transition>
     <v-card-text>
-      <v-form :ref="'documentUpload'" v-model="valid" lazy-validation>
-        <v-file-input
-          v-model="files"
-          :rules="rules"
-          accept="image/png, image/jpeg, application/pdf"
-          :placeholder="document.placeholder"
-          counter
-          show-size
-          truncate-length="15"
-          required
-          @change="setDocumentCreationMessage({})"
-        />
-      </v-form>
+      <v-file-input
+        v-model="files"
+        accept="image/png, image/jpeg, application/pdf"
+        :placeholder="document.placeholder"
+        counter
+        chips
+        show-size
+        truncate-length="15"
+        required
+        small-chips
+        multiple
+        clearable
+        :rules="[val => required(val), val => maxSize(val, 2e6)]"
+        @change="setDocumentCreationMessage({})"
+      >
+      </v-file-input>
       <v-alert v-if="documentCreationMessage.message" dense text :type="documentCreationMessage.type">
         {{ documentCreationMessage.message }}
       </v-alert>
       <v-btn
         v-if="documentCreationMessage.type !== 'success'"
         color="success"
-        :disabled="!valid || files.length == 0"
+        :disabled="!valid || (files && files.length == 0)"
         @click="validate()"
       >
         Guardar
@@ -51,9 +54,7 @@
 
 <script>
 import { mapState, mapActions, mapMutations } from 'vuex'
-
-const required = val => !!val || 'Este campo es obligatorio'
-const maxSize = (value, max) => !value || value.size < max || `El archivo no puede exceder los ${max / 1000000} Mb`
+import { isNil } from 'lodash'
 
 export default {
   props: {
@@ -65,24 +66,42 @@ export default {
   data: () => ({
     valid: true,
     files: [],
-    rules: [value => maxSize(value, 2000000), value => required(value)],
   }),
   computed: {
     ...mapState('documents', ['documentNameToCreate', 'documentCreationPending', 'documentCreationMessage']),
   },
-  // mounted: console.log('UploadDocument mounted'),
 
   methods: {
     ...mapActions('documents', ['triggerAddDocumentAction']),
     ...mapMutations('documents', ['setDocumentNameToCreate', 'setDocumentCreationMessage']),
     ...mapActions('documents', ['createUserDocument']),
-
+    maxSize(files, max) {
+      return !files || !files.some(file => file.size > max) || `El archivo no puede exceder los ${max / 1e6} Mb`
+    },
+    required(files) {
+      return !isNil(files) || 'Este campo es obligatorio'
+      // return !isNil(val) || 'Este campo es obligatorio'
+    },
+    getURL(file) {
+      if (!isNil(file)) {
+        return URL.createObjectURL(file)
+      }
+      return null
+    },
+    createLocalDocument(document) {
+      if (isNil(document) || isNil(this.files)) return
+      document.upload = [this.files]
+      this.createUserDocument(document)
+    },
     validate() {
-      this.valid = false
-      const v = this.$refs.documentUpload.validate()
-      if (v) {
-        this.valid = true
-        // this.createLocalDocument({ name: 'Documento de prueba, por favor ignore', upload: { name: 'foo' } }, n)
+      // this.valid = false
+      this.setDocumentCreationMessage({ type: 'info', message: 'Validando documento' })
+      console.log('refs', this.$refs)
+      console.log('foo', this.$refs[`documentUpload_${document.name}`])
+      if (this.valid) {
+        this.setDocumentCreationMessage({ type: 'warning', message: 'Creando documento' })
+        this.createLocalDocument({ name: this.document.name, upload: this.files })
+        // this.valid = false
         // TODO do some timeout and a loader to give better feedback
         // TODO  Emit event of valid or not
       }
