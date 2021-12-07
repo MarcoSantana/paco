@@ -57,68 +57,80 @@ export default {
     const { upload } = document
     delete document.upload
     try {
+      console.log('docUnique', docUnique)
       if (docUnique) {
         document.status = 1
         try {
           createdDocument = await userDocumentDB.create(document)
+          console.log('createdDocument', createdDocument)
           commit('addDocument', createdDocument)
           commit('setDocumentCreationPending', false)
           commit('setDocumentCreationMessage', { type: 'info', message: 'Documento creado' })
         } catch (error) {
+          commit('setDocumentCreationMessage', { type: 'error', message: 'Error al crear el documento' })
           throw new Error('Error al crear el documento', error)
         }
       } else {
-        const results = await userDocumentDB.getDocumentByName(document.name)
-        const { id } = results.shift()
-        document.id = id
-        createdDocument = await userDocumentDB.update(document)
-        commit('addDocument', createdDocument)
-        commit('setDocumentCreationPending', false)
-        commit('setDocumentCreationMessage', { type: 'success', message: 'Documento actualizado' })
+        try {
+          const result = await userDocumentDB.getDocumentByName(document.name)
+          createdDocument = result.shift()
+        } catch (error) {
+          throw new Error('Error al obtener el documento', error)
+        }
       }
       if (upload) {
-        console.log('upload', upload)
-        console.log('typeof upload', typeof upload)
         try {
           commit('setDocumentCreationPending', true)
           commit('setDocumentCreationMessage', { type: 'warning', message: 'Guardando documento' })
+          const documentsURL = []
           try {
             upload.forEach((element, index) => {
-              console.log('element', element)
-              // FIXME use a real regex you lazy f*ck
-              const documentName = document.name
-                .replaceAll(' ', '')
-                .replaceAll(',', '')
-                .replaceAll('-', '')
-                .concat('_', index)
-              // const uploadTask = storage()
+              const documentName = index
               storage()
                 .ref(`documents/${rootState.authentication.user.id}/${document.id}/${documentName}`)
                 .put(element)
                 .then(snapshot => {
                   return snapshot.ref.getDownloadURL()
                 })
-                .then(downloadURL => {
+                .then(async downloadURL => {
                   try {
-                    userDocumentDB.update({ ...document, documents: { [documentName]: downloadURL } })
+                    documentsURL.push(downloadURL)
+                    // await userDocumentDB.update({ ...createdDocument, documents: { [documentName]: downloadURL } })
                   } catch (error) {
-                    console.error('Error al actualizar el documento', error)
                     commit('setDocumentCreationMessage', {
                       type: 'danger',
                       message: 'Error al actualizar el documento vuelva a intentar de nuevo más tarde',
                     })
+                    commit('setDocumentCreationPending', false)
                   }
+                })
+                .then(() => {
+                  documentsURL.map(downloadURL => {
+                    const node = `documents.${documentName}`
+                    return userDocumentDB.update(
+                      {
+                        ...createdDocument,
+                        [node]: downloadURL,
+                      },
+                      { merge: true }
+                    )
+                  })
                 })
                 .finally(() => {
                   commit('setDocumentCreationMessage', { type: 'success', message: 'Éxito' })
+                  commit('setDocumentCreationPending', false)
                 })
-              commit('setDocumentCreationMessage', { type: 'success', message: 'Éxito' })
             })
           } catch (error) {
-            console.error(error)
+            commit('setDocumentCreationMessage', {
+              type: 'danger',
+              message: 'Error al crear el documento vuelva a intentar de nuevo más tarde',
+            })
+            commit('setDocumentCreationPending', false)
           }
         } catch (error) {
           commit('setDocumentCreationMessage', { type: 'error', message: error })
+          commit('setDocumentCreationPending', false)
           throw new Error('Error al subir el documento', error)
         }
       }

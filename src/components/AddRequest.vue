@@ -9,19 +9,15 @@
     </div>
     <v-expansion-panels>
       <v-expansion-panel>
-        <v-expansion-panel-header
-          >Requisitos
+        <v-expansion-panel-header>
+          Requisitos
           <template v-slot:actions>
-            <v-icon color="primary">
-              mdi-plus
-            </v-icon>
+            <v-icon color="primary">mdi-plus</v-icon>
           </template>
         </v-expansion-panel-header>
         <v-expansion-panel-content>
           <ol>
-            <li>
-              Ser médico cirujano debidamente autorizado para ejercer la medicina en México.
-            </li>
+            <li>Ser médico cirujano debidamente autorizado para ejercer la medicina en México.</li>
 
             <li>Copia del título y cédula profesional de la licenciatura en medicina.</li>
             <li>
@@ -55,7 +51,6 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
-
     <!-- TODO populate this with existing dat if any 202112.04-12.31 -->
     <v-stepper v-model="curr" color="green">
       <v-stepper-content v-for="(step, n) in steps" :key="n" :step="n + 1">
@@ -67,7 +62,7 @@
           >{{ step.name }}</v-stepper-step
         >
         <v-form :ref="'stepForm'" v-model="step.valid" lazy-validation>
-          <upload-document :document="step"></upload-document>
+          <upload-document :document="step" :show-files="null" @document-added="updateUserEvent"></upload-document>
         </v-form>
         <v-btn v-if="n + 1 < steps.length + 1" color="primary" :disabled="!step.valid" @click="nextStep(n)"
           >Continuar</v-btn
@@ -167,6 +162,10 @@ export default {
       if (isNil(this.currentUserEvent)) {
         this.setUserEvent(this.id)
       }
+    },
+    updateUserEvent(val) {
+      // TODO ???
+      console.log('event document (last document in state)', val)
     },
     createLocalDocument(document, n) {
       if (isNil(document) || isNil(this.files[n])) return

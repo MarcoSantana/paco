@@ -33,8 +33,7 @@
         clearable
         :rules="[val => required(val), val => maxSize(val, 2e6)]"
         @change="setDocumentCreationMessage({})"
-      >
-      </v-file-input>
+      ></v-file-input>
       <v-alert v-if="documentCreationMessage.message" dense text :type="documentCreationMessage.type">
         {{ documentCreationMessage.message }}
       </v-alert>
@@ -45,9 +44,7 @@
         @click="validate()"
       >
         Guardar
-        <v-icon right dark>
-          mdi-cloud-upload
-        </v-icon>
+        <v-icon right dark>mdi-cloud-upload</v-icon>
       </v-btn>
     </v-card-text>
   </v-card>
@@ -63,13 +60,22 @@ export default {
       type: Object,
       required: true,
     },
+    showFiles: {
+      type: Array,
+      required: false,
+    },
   },
   data: () => ({
     valid: true,
     files: [],
   }),
   computed: {
-    ...mapState('documents', ['documentNameToCreate', 'documentCreationPending', 'documentCreationMessage']),
+    ...mapState('documents', [
+      'documents',
+      'documentNameToCreate',
+      'documentCreationPending',
+      'documentCreationMessage',
+    ]),
   },
 
   methods: {
@@ -94,14 +100,15 @@ export default {
       document.upload = this.files
       this.createUserDocument(document)
     },
-    validate() {
+    async validate() {
       // this.valid = false
       this.setDocumentCreationMessage({ type: 'info', message: 'Validando documento' })
       if (this.valid) {
         this.setDocumentCreationMessage({ type: 'warning', message: 'Creando documento' })
         this.createLocalDocument({ name: this.document.name, upload: this.files })
+        this.$emit('document-added', this.documents[this.documents.length - 1])
+        console.log('Running validate')
         // TODO do some timeout and a loader to give better feedback
-        // TODO  Emit event of valid or not
       }
     },
   },

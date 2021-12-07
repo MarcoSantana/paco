@@ -12,8 +12,8 @@ export default {
   getEventById: state => eventId => find(state.events, event => event.id === eventId),
 
   /**
-  * Get event from user events
-  */
+   * Get event from user events
+   */
   getUserEvent: state => eventId => find(state.userEvents, event => event.id === eventId),
 
   /**
