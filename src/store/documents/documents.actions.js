@@ -106,7 +106,7 @@ export default {
                 })
                 .then(() => {
                   documentsURL.map(downloadURL => {
-                    const node = `documents.${documentName}`
+                    const node = `files.${documentName}`
                     return userDocumentDB.update(
                       {
                         ...createdDocument,
