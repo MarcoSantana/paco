@@ -68,7 +68,7 @@
           >Continuar</v-btn
         >
         <v-btn v-else color="success" @click="done()">Terminar</v-btn>
-        <v-btn text @click="curr = n">Atrás</v-btn>
+        <v-btn v-if="n > 0" text @click="curr = n">Atrás</v-btn>
       </v-stepper-content>
     </v-stepper>
     <!-- steps -->
