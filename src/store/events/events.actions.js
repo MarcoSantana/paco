@@ -36,6 +36,27 @@ export default {
   },
 
   /*
+   * Update event for user
+   */
+  updateUserEvent: async ({ rootState }, data) => {
+    const userEventsDb = new UserEventsDB(rootState.authentication.user.id)
+    console.log('data', data)
+    const { currentUserEvent } = data
+    delete data.currentUserEvent
+    const { documents } = data
+    delete data.documents
+    console.log('documents', documents)
+    // Must keep the files reference as a subcollection
+    const refName = `files.${documents.name}`
+    console.log('refName', refName)
+    console.log('documents', documents)
+    userEventsDb.update({
+      ...currentUserEvent,
+      [refName]: documents,
+    })
+  },
+
+  /*
    * Gets the event details for the given user if not exists create
    */
   setUserEvent: async ({ rootState, commit }, id) => {

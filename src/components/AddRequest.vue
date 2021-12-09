@@ -59,10 +59,10 @@
           :step="n + 1"
           :rules="[value => !!step.valid]"
           :color="stepStatus(n + 1)"
-          >{{ step.name }}</v-stepper-step
+          >{{ step.longName }}</v-stepper-step
         >
         <v-form :ref="'stepForm'" v-model="step.valid" lazy-validation>
-          <upload-document :document="step" :show-files="null" @document-added="updateUserEvent"></upload-document>
+          <upload-document :document="step" :show-files="null" @document-added="updateEvent"></upload-document>
         </v-form>
         <v-btn v-if="n + 1 < steps.length + 1" color="primary" :disabled="!step.valid" @click="nextStep(n)"
           >Continuar</v-btn
@@ -79,12 +79,6 @@ import { mapState, mapActions, mapGetters, mapMutations } from 'vuex'
 import { isNil } from 'lodash'
 import UploadDocument from '@/components/UploadDocument.vue'
 
-// TODO move this elsewhere 202112.02-17.22
-// Rules
-const required = value => !!value || 'Este campo es obligatorio'
-const maxSize = (value, max) => !value || value.size < max || `El archivo no puede exceder los ${max / 1000000} Mb`
-// const minSize = (value, min) => !value || value.size < min || `El archivo no puede ser menor a los ${min / 1000000} Mb`
-
 export default {
   components: { UploadDocument },
   props: {
@@ -99,15 +93,13 @@ export default {
     // <!--TODO: Move this elsewhere-->
     steps: [
       {
-        name: 'Copia del título y cédula profesional de la licenciatura en medicina.',
+        // TODO add short name
+        longName: 'Copia del título y cédula profesional de la licenciatura en medicina.',
         upload: true,
         // TODO separate this into functions to reuse them
-        rules: [value => required(value), value => maxSize(value, 2000000)],
         placeholder: 'Título profesional',
-        refName: 'titulo',
+        name: 'titulo',
         valid: false,
-        // TODO: Put here everything you need to create the upload event
-        // TODO put here the props for the image component
       },
       {
         name:
@@ -150,7 +142,7 @@ export default {
   methods: {
     ...mapActions('documents', ['triggerAddDocumentAction']),
     ...mapMutations('documents', ['setDocumentNameToCreate', 'setDocumentCreationMessage']),
-    ...mapActions('events', ['setUserEvent']),
+    ...mapActions('events', ['setUserEvent', 'updateUserEvent']),
     ...mapActions('documents', ['createUserDocument']),
 
     saveDocument(n) {
@@ -163,9 +155,11 @@ export default {
         this.setUserEvent(this.id)
       }
     },
-    updateUserEvent(val) {
-      // TODO ???
-      console.log('event document (last document in state)', val)
+    updateEvent(val) {
+      const data = {}
+      data.documents = val
+      data.currentUserEvent = this.currentUserEvent
+      this.updateUserEvent(data)
     },
     createLocalDocument(document, n) {
       if (isNil(document) || isNil(this.files[n])) return
