@@ -62,7 +62,6 @@ export default {
         document.status = 1
         try {
           createdDocument = await userDocumentDB.create(document)
-          console.log('createdDocument', createdDocument)
           commit('addDocument', createdDocument)
           commit('setDocumentCreationPending', false)
           commit('setDocumentCreationMessage', { type: 'info', message: 'Documento creado' })
@@ -87,7 +86,7 @@ export default {
             upload.forEach((element, index) => {
               const documentName = index
               storage()
-                .ref(`documents/${rootState.authentication.user.id}/${document.id}/${documentName}`)
+                .ref(`documents/${rootState.authentication.user.id}/${createdDocument.id}/${documentName}`)
                 .put(element)
                 .then(snapshot => {
                   return snapshot.ref.getDownloadURL()

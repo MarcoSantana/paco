@@ -62,7 +62,11 @@
           >{{ step.longName }}</v-stepper-step
         >
         <v-form :ref="'stepForm'" v-model="step.valid" lazy-validation>
-          <upload-document :document="step" :show-files="null" @document-added="updateEvent"></upload-document>
+          <upload-document
+            :document="step"
+            :show-files="getEventFiles(currentUserEvent.documents[step.name])"
+            @document-added="updateEvent"
+          ></upload-document>
         </v-form>
         <v-btn v-if="n + 1 < steps.length + 1" color="primary" :disabled="!step.valid" @click="nextStep(n)"
           >Continuar</v-btn
@@ -93,10 +97,8 @@ export default {
     // <!--TODO: Move this elsewhere-->
     steps: [
       {
-        // TODO add short name
         longName: 'Copia del título y cédula profesional de la licenciatura en medicina.',
         upload: true,
-        // TODO separate this into functions to reuse them
         placeholder: 'Título profesional',
         name: 'titulo',
         valid: false,
@@ -145,6 +147,9 @@ export default {
     ...mapActions('events', ['setUserEvent', 'updateUserEvent']),
     ...mapActions('documents', ['createUserDocument']),
 
+    getEventFiles(value) {
+      return !isNil(value) && !isNil(value.files) ? Object.values(value.files) : null
+    },
     saveDocument(n) {
       this.setDocumentNameToCreate(this.step[n].name)
       this.triggerAddDocumentAction(this.formModel)

@@ -38,7 +38,7 @@ export default {
   /*
    * Update event for user
    */
-  updateUserEvent: async ({ rootState }, data) => {
+  updateUserEvent: async ({ rootState, commit }, data) => {
     const userEventsDb = new UserEventsDB(rootState.authentication.user.id)
     console.log('data', data)
     const { currentUserEvent } = data
@@ -47,13 +47,14 @@ export default {
     delete data.documents
     console.log('documents', documents)
     // Must keep the files reference as a subcollection
-    const refName = `files.${documents.name}`
+    const refName = `documents.${documents.name}`
     console.log('refName', refName)
     console.log('documents', documents)
-    userEventsDb.update({
+    const createdEvent = userEventsDb.update({
       ...currentUserEvent,
       [refName]: documents,
     })
+    commit('addUserEvent', createdEvent)
   },
 
   /*
