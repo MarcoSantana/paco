@@ -67,8 +67,14 @@ export default {
   },
   data: () => ({
     valid: true,
-    files: [],
   }),
+  asyncComputed: {
+    async files() {
+      return Object.values(this.showFiles).forEach(async url => {
+        await fetch(url)
+      })
+    },
+  },
   computed: {
     ...mapState('documents', [
       'documents',
@@ -77,7 +83,6 @@ export default {
       'documentCreationMessage',
     ]),
   },
-
   methods: {
     ...mapActions('documents', ['triggerAddDocumentAction']),
     ...mapMutations('documents', ['setDocumentNameToCreate', 'setDocumentCreationMessage']),
