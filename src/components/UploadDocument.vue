@@ -91,6 +91,7 @@ export default {
     this.setDocumentCreationMessage({})
   },
   methods: {
+    // TODO useme
     ...mapActions('documents', ['triggerAddDocumentAction']),
     ...mapMutations('documents', ['setDocumentNameToCreate', 'setDocumentCreationMessage']),
     ...mapActions('documents', ['createUserDocument']),
