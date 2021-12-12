@@ -69,10 +69,13 @@ export default {
     valid: true,
   }),
   asyncComputed: {
-    async files() {
-      return Object.values(this.showFiles).forEach(async url => {
-        await fetch(url)
-      })
+    files() {
+      return !isNil(this.showFiles)
+        ? Object.values(this.showFiles).forEach(async url => {
+            await fetch(url)
+          })
+        : null
+      // TODO: manage 403 error in fetch
     },
   },
   computed: {
