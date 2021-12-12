@@ -63,6 +63,7 @@
         >
         <v-form :ref="'stepForm'" v-model="step.valid" lazy-validation>
           <upload-document
+            v-show="step.upload"
             :document="step"
             :show-files="getEventFiles(currentUserEvent.documents[step.name])"
             @document-added="updateEvent"
