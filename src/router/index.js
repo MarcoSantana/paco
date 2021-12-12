@@ -91,6 +91,13 @@ const router = new Router({
       component: () => import(/* webpackChunkName: "client-chunk-document-details" */ '@/views/admin/DocumentView.vue'),
     },
 
+    {
+      path: '/events/:id',
+      name: 'eventView',
+      props: true,
+      component: () => import(/* webpackChunkName: "client-chunk-document-details" */ '@/views/EventView.vue'),
+    },
+
     // Admin routes
     // // Show all users
     // {

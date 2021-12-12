@@ -30,47 +30,110 @@ export default {
     commit('setDocuments', documents)
   },
 
+  // uploadFile: async ({ rootState }, file) => {
+  //   try {
+  //     const storageRef = storage().ref(`documents/${rootState.authentication.user.id}`)
+  //       storageRef
+  //         .child(`${file.name}/${element}`)
+  //         .putString(upload[element], 'data_url')
+  //         .then(snapshot => console.log(snapshot))
+  //     })
+  //   } catch (error) {
+  //     commit('setDocumentCreationMessage', { type: 'error', message: error })
+  //     throw new Error('Error al subir el documento', error)
+  //   }
+  // },
+
   /**
    * Create a document for current loggedin user
    */
   createUserDocument: async ({ commit, rootState }, document) => {
-    const userDocumentDb = new UserDocumentsDB(rootState.authentication.user.id)
-    const documentsDB = new DocumentsDB(rootState.authentication.user.id)
+    let createdDocument = null
+    const userDocumentDB = new UserDocumentsDB(rootState.authentication.user.id)
+    // const documentsDB = new DocumentsDB(rootState.authentication.user.id)
     commit('setDocumentCreationPending', true)
-    commit('setDocumentCreationMessage', {})
-    const docUnique = await documentsDB.isUniqueUserDocument(document.name, rootState.authentication.user.id)
+    commit('setDocumentCreationMessage', { type: 'info', message: 'Creando documento' })
+    const docUnique = await userDocumentDB.isUniqueUserDocument(document.name, rootState.authentication.user.id)
+    const { upload } = document
+    delete document.upload
     try {
+      console.log('docUnique', docUnique)
       if (docUnique) {
-        const { upload } = document
-        delete document.upload
         document.status = 1
         try {
-          const createdDocument = await userDocumentDb.create(document)
+          createdDocument = await userDocumentDB.create(document)
           commit('addDocument', createdDocument)
           commit('setDocumentCreationPending', false)
           commit('setDocumentCreationMessage', { type: 'info', message: 'Documento creado' })
         } catch (error) {
+          commit('setDocumentCreationMessage', { type: 'error', message: 'Error al crear el documento' })
           throw new Error('Error al crear el documento', error)
         }
-        if (upload) {
+      } else {
+        try {
+          const result = await userDocumentDB.getDocumentByName(document.name)
+          createdDocument = result.shift()
+        } catch (error) {
+          throw new Error('Error al obtener el documento', error)
+        }
+      }
+      if (upload) {
+        try {
+          commit('setDocumentCreationPending', true)
+          commit('setDocumentCreationMessage', { type: 'warning', message: 'Guardando documento' })
+          const documentsURL = []
           try {
-            document.files = Object.keys(upload)
-            const storageRef = storage().ref(`documents/${rootState.authentication.user.id}`)
-            document.files.forEach(element => {
-              storageRef
-                .child(`${document.name}/${element}`)
-                .putString(upload[element], 'data_url')
-                .then(snapshot => console.log(snapshot))
+            upload.forEach((element, index) => {
+              const documentName = index
+              storage()
+                .ref(`documents/${rootState.authentication.user.id}/${createdDocument.id}/${documentName}`)
+                .put(element)
+                .then(snapshot => {
+                  return snapshot.ref.getDownloadURL()
+                })
+                .then(async downloadURL => {
+                  try {
+                    documentsURL.push(downloadURL)
+                    // await userDocumentDB.update({ ...createdDocument, documents: { [documentName]: downloadURL } })
+                  } catch (error) {
+                    commit('setDocumentCreationMessage', {
+                      type: 'danger',
+                      message: 'Error al actualizar el documento vuelva a intentar de nuevo más tarde',
+                    })
+                    commit('setDocumentCreationPending', false)
+                  }
+                })
+                .then(() => {
+                  documentsURL.map(downloadURL => {
+                    const node = `files.${documentName}`
+                    return userDocumentDB.update(
+                      {
+                        ...createdDocument,
+                        [node]: downloadURL,
+                      },
+                      { merge: true }
+                    )
+                  })
+                })
+                .finally(() => {
+                  commit('setDocumentCreationMessage', { type: 'success', message: 'Éxito' })
+                  commit('setDocumentCreationPending', false)
+                })
             })
           } catch (error) {
-            commit('setDocumentCreationMessage', { type: 'error', message: error })
-            throw new Error('Error al subir el documento', error)
+            commit('setDocumentCreationMessage', {
+              type: 'danger',
+              message: 'Error al crear el documento vuelva a intentar de nuevo más tarde',
+            })
+            commit('setDocumentCreationPending', false)
           }
+        } catch (error) {
+          commit('setDocumentCreationMessage', { type: 'error', message: error })
+          commit('setDocumentCreationPending', false)
+          throw new Error('Error al subir el documento', error)
         }
-        // return createdDocument
-      } else {
-        throw new Error('El documento ya existe')
       }
+      // return createdDocument
     } catch (error) {
       commit('setDocumentCreationMessage', { type: 'error', message: error })
       console.log('Error', error)
@@ -79,8 +142,8 @@ export default {
   },
 
   /** Update document status to "for revision"
-      this is fixed so de user can not accept her own documents
-       */
+this is fixed so de user can not accept her own documents
+ */
   setDocumentForReview: async ({ rootState, state }, data) => {
     if (isNil(data) || isNil(data.id)) return null
     async function getDocumentReference(id) {

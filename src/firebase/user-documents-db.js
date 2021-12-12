@@ -16,5 +16,28 @@ export default class UserDocumentsDB extends GenericDB {
     const result = await this.read(documentId)
     return !isNil(result)
   }
-  // Here you can extend UserDocumentsDB with custom methods
+
+  /**
+   * Queries the db for this item, returns bool
+   * @param documentName, userId
+   */
+  async isUniqueUserDocument(documentName) {
+    // TODO query for the document using userId, document name and status
+    // it should not be "toBeDeleted (4)"
+    // this is not bullet proof since qe can have some duplicated documents such as "Diploma"
+    const constraints = [
+      ['name', '==', documentName],
+    ]
+    const result = await this.readAll(constraints)
+    return result.length === 0
+  }
+
+  /*
+   * Get the document by name inside the userDocumentDB
+   */
+  async getDocumentByName(documentName) {
+    const constraints = [['name', '==', documentName]]
+    const docs = await this.readAll(constraints)
+    return docs
+  }
 }
