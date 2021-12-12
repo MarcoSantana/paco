@@ -18,6 +18,9 @@
         :data="getURL(file)"
       />
     </v-fade-transition>
+    <v-alert v-if="documentCreationMessage.message" text :type="documentCreationMessage.type">
+      {{ documentCreationMessage.message }}
+    </v-alert>
     <v-card-text>
       <v-file-input
         v-model="files"
@@ -34,9 +37,7 @@
         :rules="[val => required(val), val => maxSize(val, 2e6)]"
         @change="setDocumentCreationMessage({})"
       ></v-file-input>
-      <v-alert v-if="documentCreationMessage.message" dense text :type="documentCreationMessage.type">
-        {{ documentCreationMessage.message }}
-      </v-alert>
+
       <v-btn
         v-if="documentCreationMessage.type !== 'success'"
         color="success"
@@ -85,6 +86,9 @@ export default {
       'documentCreationPending',
       'documentCreationMessage',
     ]),
+  },
+  mounted() {
+    this.setDocumentCreationMessage({})
   },
   methods: {
     ...mapActions('documents', ['triggerAddDocumentAction']),
