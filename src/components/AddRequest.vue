@@ -103,6 +103,7 @@ export default {
         placeholder: 'Título profesional',
         name: 'titulo',
         valid: false,
+        fields: [{ label: 'La etiqueta', name: 'The name' }],
       },
       {
         name:

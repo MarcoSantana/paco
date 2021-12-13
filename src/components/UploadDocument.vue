@@ -22,6 +22,10 @@
       {{ documentCreationMessage.message }}
     </v-alert>
     <v-card-text>
+      <!--TODO: Create an object with the fields data and store them in firebase-->
+      <div v-for="field in document.fields" :key="field.name">
+        <v-text-field v-model="documentFields[field.name]" :label="field.label" hide-details="auto"></v-text-field>
+      </div>
       <v-file-input
         v-model="files"
         accept="image/png, image/jpeg, application/pdf"
@@ -37,7 +41,6 @@
         :rules="[val => required(val), val => maxSize(val, 2e6)]"
         @change="setDocumentCreationMessage({})"
       ></v-file-input>
-
       <v-btn
         v-if="documentCreationMessage.type !== 'success'"
         color="success"
@@ -69,11 +72,15 @@ export default {
   data: () => ({
     valid: true,
   }),
+
   asyncComputed: {
     files() {
       return !isNil(this.showFiles)
         ? Object.values(this.showFiles).forEach(async url => {
             await fetch(url)
+            // const res = await fetch(url)
+            // if (res.status === 403) return null
+            // return res
           })
         : null
       // TODO: manage 403 error in fetch
