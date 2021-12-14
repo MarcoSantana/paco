@@ -25,12 +25,12 @@ extend('confirmed', {
 
 extend('required', {
   ...required,
-  message: 'Este campo es obligatorio',
+  // message: 'El campo es obligatorio',
 })
 
 extend('numeric', {
   ...numeric,
-  message: 'Este campo debe ser numérico',
+  // message: 'Este campo debe ser numérico',
 })
 
 extend('length', {
@@ -39,7 +39,7 @@ extend('length', {
     if (string.length >= min && string.length <= max) {
       return true
     }
-    return 'Este campo debe ser de máximo {max} y mínimo {min} caracteres'
+    return 'El campo {_field_} debe ser de máximo {max} y mínimo {min} caracteres'
   },
   params: ['min', 'max'],
 })
@@ -57,5 +57,5 @@ extend('strong_password', {
 
 extend('size', {
   ...size,
-  message: 'El tamaño del archivo no debe exceder los:',
+  // message: 'El tamaño del archivo no debe exceder los:',
 })
