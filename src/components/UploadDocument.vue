@@ -89,7 +89,10 @@ export default {
     },
   },
   data: () => ({
+    error: {},
     valid: true,
+    // FIXME this is not a proper name
+    foo: [],
   }),
   asyncComputed: {
     files() {
