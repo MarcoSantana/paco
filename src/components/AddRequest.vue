@@ -103,14 +103,14 @@ export default {
       {
         longName: 'Copia del título y cédula profesional de la licenciatura en medicina.',
         upload: true,
-        placeholder: 'Título profesional',
         name: 'titulo',
         valid: false,
         fields: [
           {
             label: 'Título profesional',
             name: 'titulo',
-            // TODO puut the rules here
+            placeholder: 'Título profesional',
+            // TODO put the rules here
           },
         ],
       },

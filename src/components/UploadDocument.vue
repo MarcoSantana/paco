@@ -23,17 +23,17 @@
     </v-alert>
     <v-card-text class="ma-5">
       <div v-for="field in document.fields" :key="field.name" class="pr-5">
-        <validation-provider v-slot="{ errors }" rules="numeric|length:7,12|required">
+        <validation-provider v-slot="{ errors }" :name="field.name" rules="numeric|length:7,12|required">
           <span :class="{ error: errors[0] }">
             <v-text-field
-              ref="titulo"
+              :ref="field.name"
               v-model="foo[field.name]"
               :label="field.label"
+              :placeholder="field.placeholder"
               :error="errors.length > 0"
-              :error-messages="errors[0]"
+              :error-messages="errors"
               hide-details="auto"
               counter
-              placeholder="Número de cédula profesional"
               required
             ></v-text-field>
           </span>
