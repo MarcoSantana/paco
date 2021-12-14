@@ -61,14 +61,17 @@
           :color="stepStatus(n + 1)"
           >{{ step.longName }}</v-stepper-step
         >
-        <v-form :ref="'stepForm'" v-model="step.valid" lazy-validation>
-          <upload-document
-            v-show="step.upload"
-            :document="step"
-            :show-files="getEventFiles(currentUserEvent.documents[step.name])"
-            @document-added="updateEvent"
-          ></upload-document>
-        </v-form>
+
+        <validation-observer v-slot="{ invalid }">
+          <v-form :ref="'stepForm'" v-model="invalid" lazy-validation>
+            <upload-document
+              v-show="step.upload"
+              :document="step"
+              :show-files="getEventFiles(currentUserEvent.documents[step.name])"
+              @document-added="updateEvent"
+            ></upload-document>
+          </v-form>
+        </validation-observer>
         <v-btn v-if="n + 1 < steps.length + 1" color="primary" :disabled="!step.valid" @click="nextStep(n)"
           >Continuar</v-btn
         >

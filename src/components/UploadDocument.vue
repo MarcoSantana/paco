@@ -21,23 +21,45 @@
     <v-alert v-if="documentCreationMessage.message" text :type="documentCreationMessage.type">
       {{ documentCreationMessage.message }}
     </v-alert>
+    <v-card-text class="ma-5">
+      <div v-for="field in document.fields" :key="field.name" class="pr-5">
+        <validation-provider v-slot="{ errors }" rules="numeric|length:7,12|required">
+          <span :class="{ error: errors[0] }">
+            <v-text-field
+              ref="titulo"
+              v-model="foo[field.name]"
+              :label="field.label"
+              :error="errors.length > 0"
+              :error-messages="errors[0]"
+              hide-details="auto"
+              counter
+              placeholder="Número de cédula profesional"
+              required
+            ></v-text-field>
+          </span>
+        </validation-provider>
+      </div>
+    </v-card-text>
     <v-card-text>
-      <v-file-input
-        v-model="files"
-        accept="image/png, image/jpeg, application/pdf"
-        :placeholder="document.placeholder"
-        counter
-        chips
-        show-size
-        truncate-length="15"
-        required
-        small-chips
-        multiple
-        clearable
-        :rules="[val => required(val), val => maxSize(val, 2e6)]"
-        @change="setDocumentCreationMessage({})"
-      ></v-file-input>
-
+      <validation-provider v-slot="{ errors }" rules="required|size:2000">
+        <v-file-input
+          v-model="files"
+          data-vv-as="file"
+          accept="image/png, image/jpeg, application/pdf"
+          :placeholder="document.placeholder"
+          :error="errors.length > 0"
+          :error-messages="errors[0]"
+          counter
+          chips
+          show-size
+          truncate-length="15"
+          required
+          small-chips
+          multiple
+          clearable
+          @change="setDocumentCreationMessage({})"
+        ></v-file-input>
+      </validation-provider>
       <v-btn
         v-if="documentCreationMessage.type !== 'success'"
         color="success"
