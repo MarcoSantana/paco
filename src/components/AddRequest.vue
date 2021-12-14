@@ -106,6 +106,13 @@ export default {
         placeholder: 'Título profesional',
         name: 'titulo',
         valid: false,
+        fields: [
+          {
+            label: 'Título profesional',
+            name: 'titulo',
+            // TODO puut the rules here
+          },
+        ],
       },
       {
         name:
