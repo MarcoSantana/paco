@@ -41,7 +41,7 @@
       </div>
     </v-card-text>
     <v-card-text>
-      <validation-provider v-slot="{ errors }" rules="required|size:2000">
+      <validation-provider v-slot="{ errors }" :name="document.name" rules="required|size:2000">
         <v-file-input
           v-model="files"
           data-vv-as="file"
@@ -60,12 +60,8 @@
           @change="setDocumentCreationMessage({})"
         ></v-file-input>
       </validation-provider>
-      <v-btn
-        v-if="documentCreationMessage.type !== 'success'"
-        color="success"
-        :disabled="!valid || (files && files.length == 0)"
-        @click="validate()"
-      >
+      Invalid:>> {{ invalid }}
+      <v-btn v-if="documentCreationMessage.type !== 'success'" color="success" :disabled="!invalid" @click="fizz()">
         Guardar
         <v-icon right dark>mdi-cloud-upload</v-icon>
       </v-btn>
@@ -87,10 +83,14 @@ export default {
       type: Array,
       required: false,
     },
+    invalid: {
+      type: Boolean,
+      default: true,
+      required: true,
+    },
   },
   data: () => ({
     error: {},
-    valid: true,
     // FIXME this is not a proper name
     foo: [],
   }),
@@ -120,13 +120,6 @@ export default {
     ...mapActions('documents', ['triggerAddDocumentAction']),
     ...mapMutations('documents', ['setDocumentNameToCreate', 'setDocumentCreationMessage']),
     ...mapActions('documents', ['createUserDocument']),
-    maxSize(files, max) {
-      return !files || !files.some(file => file.size > max) || `El archivo no puede exceder los ${max / 1e6} Mb`
-    },
-    required(files) {
-      return !isNil(files) || 'Este campo es obligatorio'
-      // return !isNil(val) || 'Este campo es obligatorio'
-    },
     getURL(file) {
       if (!isNil(file)) {
         return URL.createObjectURL(file)
@@ -134,13 +127,21 @@ export default {
       return null
     },
     createLocalDocument(document) {
-      if (isNil(document) || isNil(this.files)) return
+      if (isNil(document) || isNil(this.files)) {
+        this.valid = false
+      }
       document.upload = this.files
       this.createUserDocument(document)
+    },
+    fizz() {
+      this.$emit('validate', 'foo')
     },
     async validate() {
       // this.valid = false
       this.setDocumentCreationMessage({ type: 'info', message: 'Validando documento' })
+      // TODO: Here we must trigger the validation for the full form
+      this.fizz()
+      this.$refs.stepForm.validate()
       if (this.valid) {
         this.setDocumentCreationMessage({ type: 'warning', message: 'Creando documento' })
         this.createLocalDocument({ name: this.document.name, upload: this.files })
