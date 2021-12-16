@@ -51,8 +51,7 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
-    <!-- TODO populate this with existing dat if any 202112.04-12.31 -->
-    <v-stepper v-model="curr" color="green">
+    <v-stepper v-model="curr" color="primary">
       <v-stepper-content v-for="(step, n) in steps" :key="n" :step="n + 1">
         <validation-observer v-slot="{ invalid }">
           <v-stepper-step
