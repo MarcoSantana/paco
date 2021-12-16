@@ -53,54 +53,28 @@
     </v-expansion-panels>
     <!-- TODO populate this with existing dat if any 202112.04-12.31 -->
     <v-stepper v-model="curr" color="green">
-      <ValidationObserver v-slot="{ invalid }">
-        <form @submit.prevent="onSubmit">
-          <ValidationProvider v-slot="{ errors }" name="E-mail" rules="required|email">
-            <input v-model="email" type="email" />
-            <span>{{ errors[0] }}</span>
-          </ValidationProvider>
-
-          <ValidationProvider v-slot="{ errors }" name="First Name" rules="required|alpha">
-            <input v-model="firstName" type="text" />
-            <span>{{ errors[0] }}</span>
-          </ValidationProvider>
-
-          <ValidationProvider v-slot="{ errors }" name="Last Name" rules="required|alpha">
-            <input v-model="lastName" type="text" />
-            <span>{{ errors[0] }}</span>
-          </ValidationProvider>
-
-          <button type="submit" :disabled="invalid">Submit</button>
-        </form>
-      </validation-observer>
-      <validation-observer :ref="'stepForm'" v-slot="{ invalid }">
-        <h1>invalid:>> {{ invalid }}</h1>
-        <v-form>
-          <v-stepper-content v-for="(step, n) in steps" :key="n" :step="n + 1">
-            <v-stepper-step
-              :complete="stepComplete(n + 1)"
-              :step="n + 1"
-              :rules="[value => invalid]"
-              :color="stepStatus(n + 1)"
-              >{{ step.longName }}</v-stepper-step
-            >
-            <upload-document
-              v-show="step.upload"
-              :document="step"
-              :invalid="invalid"
-              :show-files="getEventFiles(currentUserEvent.documents[step.name])"
-              @document-added="updateEvent"
-              @validate="validateForm"
-            ></upload-document>
-            <v-btn :disabled="invalid">Submit</v-btn>
-            <v-btn v-if="n + 1 < steps.length + 1" color="primary" :disabled="!invalid" @click="nextStep(n)"
-              >Continuar</v-btn
-            >
-            <v-btn v-else color="success" @click="done()">Terminar</v-btn>
-            <v-btn v-if="n > 0" text @click="curr = n">Atrás</v-btn>
-          </v-stepper-content>
-        </v-form>
-      </validation-observer>
+      <v-stepper-content v-for="(step, n) in steps" :key="n" :step="n + 1">
+        <validation-observer v-slot="{ invalid }">
+          <v-stepper-step
+            :complete="stepComplete(n + 1)"
+            :step="n + 1"
+            :rules="[value => !invalid]"
+            :color="stepStatus(n + 1)"
+            >{{ step.longName }}</v-stepper-step
+          >
+          <upload-document
+            v-show="step.upload"
+            :document="step"
+            :show-files="getEventFiles(currentUserEvent.documents[step.name])"
+            @document-added="updateEvent"
+          ></upload-document>
+          <v-btn v-if="n + 1 < steps.length + 1" color="primary" :disabled="invalid" @click="nextStep(n)"
+            >Continuar</v-btn
+          >
+          <v-btn v-else color="success" @click="done()">Terminar</v-btn>
+          <v-btn v-if="n > 0" text @click="curr = n">Atrás</v-btn>
+        </validation-observer>
+      </v-stepper-content>
     </v-stepper>
     <!-- steps -->
   </div>
@@ -119,6 +93,8 @@ export default {
     },
   },
   data: () => ({
+    //
+    invalid: true,
     curr: 1,
     files: [],
     // <!--TODO: Move this elsewhere-->
@@ -184,6 +160,7 @@ export default {
     async validateForm() {
       console.log('validating form from refs')
       const result = await this.$refs.stepForm.validate()
+      this.invalid = result
       return result
     },
     getEventFiles(value) {

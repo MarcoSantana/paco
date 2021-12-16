@@ -21,51 +21,54 @@
     <v-alert v-if="documentCreationMessage.message" text :type="documentCreationMessage.type">
       {{ documentCreationMessage.message }}
     </v-alert>
-    <v-card-text class="ma-5">
-      <div v-for="field in document.fields" :key="field.name" class="pr-5">
-        <validation-provider v-slot="{ errors }" :name="field.name" rules="numeric|length:7,12|required">
-          <span :class="{ error: errors[0] }">
-            <v-text-field
-              :ref="field.name"
-              v-model="foo[field.name]"
-              :label="field.label"
-              :placeholder="field.placeholder"
-              :error="errors.length > 0"
-              :error-messages="errors"
-              hide-details="auto"
-              counter
-              required
-            ></v-text-field>
-          </span>
+    <validation-observer v-slot="{ invalid }">
+      <v-card-text class="ma-5">
+        <div v-for="field in document.fields" :key="field.name" class="pr-5">
+          <validation-provider v-slot="{ errors }" :name="field.name" rules="numeric|length:7,12|required">
+            <span :class="{ error: errors[0] }">
+              <v-text-field
+                :ref="field.name"
+                v-model="foo[field.name]"
+                :data-vv-name="scope"
+                :label="field.label"
+                :placeholder="field.placeholder"
+                :error="errors.length > 0"
+                :error-messages="errors"
+                hide-details="auto"
+                counter
+                required
+              ></v-text-field>
+            </span>
+          </validation-provider>
+        </div>
+      </v-card-text>
+      <v-card-text>
+        <validation-provider v-slot="{ errors }" :name="document.name" rules="required|size:2000">
+          <v-file-input
+            v-model="files"
+            data-vv-as="file"
+            :data-vv-name="scope"
+            accept="image/png, image/jpeg, application/pdf"
+            :placeholder="document.placeholder"
+            :error="errors.length > 0"
+            :error-messages="errors[0]"
+            counter
+            chips
+            show-size
+            truncate-length="15"
+            required
+            small-chips
+            multiple
+            clearable
+            @change="setDocumentCreationMessage({})"
+          ></v-file-input>
         </validation-provider>
-      </div>
-    </v-card-text>
-    <v-card-text>
-      <validation-provider v-slot="{ errors }" :name="document.name" rules="required|size:2000">
-        <v-file-input
-          v-model="files"
-          data-vv-as="file"
-          accept="image/png, image/jpeg, application/pdf"
-          :placeholder="document.placeholder"
-          :error="errors.length > 0"
-          :error-messages="errors[0]"
-          counter
-          chips
-          show-size
-          truncate-length="15"
-          required
-          small-chips
-          multiple
-          clearable
-          @change="setDocumentCreationMessage({})"
-        ></v-file-input>
-      </validation-provider>
-      Invalid:>> {{ invalid }}
-      <v-btn v-if="documentCreationMessage.type !== 'success'" color="success" :disabled="!invalid" @click="fizz()">
-        Guardar
-        <v-icon right dark>mdi-cloud-upload</v-icon>
-      </v-btn>
-    </v-card-text>
+        <v-btn v-if="documentCreationMessage.type !== 'success'" color="success" :disabled="invalid" @click="fizz()">
+          Guardar
+          <v-icon right dark>mdi-cloud-upload</v-icon>
+        </v-btn>
+      </v-card-text>
+    </validation-observer>
   </v-card>
 </template>
 
@@ -83,13 +86,12 @@ export default {
       type: Array,
       required: false,
     },
-    invalid: {
-      type: Boolean,
-      default: true,
-      required: true,
-    },
+    scope: { type: String, required: false },
   },
   data: () => ({
+    email: null,
+    lastName: null,
+    firstName: null,
     error: {},
     // FIXME this is not a proper name
     foo: [],
