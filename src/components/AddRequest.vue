@@ -64,7 +64,13 @@
           <upload-document
             v-show="step.upload"
             :document="step"
-            :show-files="getEventFiles(currentUserEvent.documents[step.name])"
+            :show-files="
+              getEventFiles(
+                currentUserEvent.documents && currentUserEvent.documents[step.name]
+                  ? currentUserEvent.documents[step.name]
+                  : null
+              )
+            "
             @document-added="updateEvent"
           ></upload-document>
           <v-btn v-if="n + 1 < steps.length + 1" color="primary" :disabled="invalid" @click="nextStep(n)"
