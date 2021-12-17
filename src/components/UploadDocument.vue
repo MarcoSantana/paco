@@ -26,17 +26,19 @@
         <div v-for="field in document.fields" :key="field.name" class="pr-5">
           <validation-provider v-slot="{ errors }" :name="field.name" :rules="field.rules">
             <span :class="{ error: errors[0] }">
-              <component
-                :is="field.type"
-                :ref="field.name"
-                v-model="foo[field.name]"
-                :name="field.name"
-                :data-vv-name="scope"
-                :label="field.label"
-                :placeholder="field.placeholder"
-                :error="errors.length > 0"
-                :error-messages="errors"
-              ></component>
+              <keep-alive
+                ><component
+                  :is="field.type"
+                  :ref="field.name"
+                  v-model="foo[field.name]"
+                  :name="field.name"
+                  :data-vv-name="scope"
+                  :label="field.label"
+                  :placeholder="field.placeholder"
+                  :error="errors.length > 0"
+                  :error-messages="errors"
+                ></component
+              ></keep-alive>
             </span>
           </validation-provider>
         </div>

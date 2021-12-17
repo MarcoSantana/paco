@@ -108,7 +108,7 @@ export default {
             label: 'Título profesional',
             name: 'titulo',
             placeholder: 'Título profesional',
-            rules: { numeric: true, required: true },
+            rules: { numeric: true, required: true, length: { max: 12, min: 7 } },
             type: 'v-text-field',
           },
         ],
