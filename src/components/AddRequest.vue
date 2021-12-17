@@ -105,15 +105,15 @@ export default {
     // <!--TODO: Move this elsewhere-->
     steps: [
       {
-        longName: 'Copia del título y cédula profesional de la licenciatura en medicina.',
+        longName: 'Cédula profesional de licenciatura en medicina',
         upload: true,
-        name: 'titulo',
+        name: 'cédula',
         valid: false,
         fields: [
           {
-            label: 'Título profesional',
-            name: 'titulo',
-            placeholder: 'Título profesional',
+            label: 'Número de cédula profesional',
+            name: 'cédula',
+            placeholder: 'Cédula profesional',
             rules: { numeric: true, required: true, length: { max: 12, min: 7 } },
             type: 'v-text-field',
           },
@@ -172,6 +172,7 @@ export default {
       return result
     },
     getEventFiles(value) {
+      console.log('value in getEventFiles', value)
       return !isNil(value) && !isNil(value.files) ? Object.values(value.files) : null
     },
     saveDocument(n) {
