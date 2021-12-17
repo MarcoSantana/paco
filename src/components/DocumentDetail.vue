@@ -1,5 +1,9 @@
 <template>
-  <div class="container">
+  <v-container>
+    Me be the document details (user) document: {{ document }}
+    <div></div>
+  </v-container>
+  <!-- <div class="container">
     <h1>{{ document.name }}</h1>
     <h2>Estado: {{ document.status | docStatus }}</h2>
     <h3 v-show="editable"><small>Mensaje del administrador: </small>{{ document.message }}</h3>
@@ -77,134 +81,133 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 </template>
 
 <script>
-import { DateTime } from 'luxon'
-import { isNil } from 'lodash'
-import { mapActions, mapState } from 'vuex'
-import DocumentForm from '@/components/DocumentForm.vue'
+// import { DateTime } from 'luxon'
+// import { isNil } from 'lodash'
+// import { mapActions, mapState } from 'vuex'
+// import DocumentForm from '@/components/DocumentForm.vue'
 
 export default {
-  components: { DocumentForm },
-  filters: {
-    docStatus(value) {
-      if (!value) return ''
-      switch (value) {
-        case 1:
-          value = 'Por revisar'
-          break
-        case 2:
-          value = 'En revisión'
-          break
-        case 3:
-          value = 'Rechazado'
-          break
-        case 4:
-          value = 'Aceptado'
-          break
-        default:
-          break
-      }
-      value = value.toString()
-      return value.charAt(0).toUpperCase() + value.slice(1)
-    },
-    intlDate(date) {
-      return (
-        DateTime.fromJSDate(new Date(date))
-          .setLocale('es')
-          // .toLocaleString(DateTime.DATETIME_FULL)
-          .toLocaleString()
-      )
-    },
-
-    age(date) {
-      if (date) {
-        const dob = DateTime.fromISO(date)
-        return Math.floor(dob.diffNow('years').years * -1)
-      }
-      return null
-    },
-    ago(date) {
-      const newValueParsed = DateTime.fromJSDate(new Date(date))
-      const now = DateTime.now()
-      return Math.round(now.diff(newValueParsed, ['days']).days)
-    },
-    genderize: value => {
-      let gender = null
-      if (!isNil(value)) {
-        if (value.toString() === 'Hombre') {
-          gender = 'mdi mdi-gender-male icon'
-        }
-        if (value.toString() === 'Mujer') {
-          gender = 'mdi mdi-gender-female icon'
-        }
-        return gender
-      }
-      return value
-    },
-  },
+  // components: { DocumentForm },
+  // filters: {
+  //   docStatus(value) {
+  //     if (!value) return ''
+  //     switch (value) {
+  //       case 1:
+  //         value = 'Por revisar'
+  //         break
+  //       case 2:
+  //         value = 'En revisión'
+  //         break
+  //       case 3:
+  //         value = 'Rechazado'
+  //         break
+  //       case 4:
+  //         value = 'Aceptado'
+  //         break
+  //       default:
+  //         break
+  //     }
+  //     value = value.toString()
+  //     return value.charAt(0).toUpperCase() + value.slice(1)
+  //   },
+  //   intlDate(date) {
+  //     return (
+  //       DateTime.fromJSDate(new Date(date))
+  //         .setLocale('es')
+  //         // .toLocaleString(DateTime.DATETIME_FULL)
+  //         .toLocaleString()
+  //     )
+  //   },
+  //   age(date) {
+  //     if (date) {
+  //       const dob = DateTime.fromISO(date)
+  //       return Math.floor(dob.diffNow('years').years * -1)
+  //     }
+  //     return null
+  //   },
+  //   ago(date) {
+  //     const newValueParsed = DateTime.fromJSDate(new Date(date))
+  //     const now = DateTime.now()
+  //     return Math.round(now.diff(newValueParsed, ['days']).days)
+  //   },
+  //   genderize: value => {
+  //     let gender = null
+  //     if (!isNil(value)) {
+  //       if (value.toString() === 'Hombre') {
+  //         gender = 'mdi mdi-gender-male icon'
+  //       }
+  //       if (value.toString() === 'Mujer') {
+  //         gender = 'mdi mdi-gender-female icon'
+  //       }
+  //       return gender
+  //     }
+  //     return value
+  //   },
+  // },
   props: {
     document: Object,
   },
-  data: () => ({
-    requiredFiles: [
-      'avatar',
-      'degreeDiploma',
-      'enarm',
-      'license',
-      'postgraduateDiploma',
-      'postgraduateUniversitaryDiploma',
-      'residence',
-      'voucher',
-    ],
-    documentFileNames: {
-      avatar: 'Fotografía de título',
-      degreeDiploma: 'Diploma de licenciatura',
-      enarm: 'Constancia ENARM o similar',
-      license: 'Cédula profesional',
-      postgraduateUniversitaryDiploma: 'Diploma universitario de especialidad',
-      postgraduateDiploma: 'Diploma de especialidad',
-      residence: 'Diploma de residencia',
-      voucher: 'Comprobante de pago',
-    },
-    uploadFileError: null,
-    selectedFile: null,
-    currentFileName: null,
-    errors: [],
-    uploadValue: 0,
-    picture: null,
-  }),
-  computed: {
-    ...mapState('authentication', ['user']),
-    editable() {
-      console.log('this.document.status :>> ', this.document.status)
-      console.log('this.document.status === "3" :>> ', this.document.status === '3')
-      console.log('typeof document.status :>> ', typeof document.status)
-      return this.document.status === 3
-    },
-  },
-  methods: {
-    ...mapActions('documents', ['setDocumentForReview']),
-    ...mapActions('admin', ['readAllAsAdmin']),
-    async markForReview() {
-      console.clear()
-      console.log('this.document.id :>> ', this.document.id)
-      const data = { id: this.document.id }
-      await this.setDocumentForReview(data)
-        .then(result => {
-          console.log('result :>> ', result)
-        })
-        .then(res => {
-          console.log('res :>> ', res)
-          this.document.status = 1
-          // eslint-disable-next-line no-alert
-          alert('Documento marcado para ser revisado, este proceso puede tardar algunos días.')
-        })
-      // TODO change the local state to reflect the new status of this document 202108.08-12.09
-    },
-  },
+  // data: () => ({
+  //   requiredFiles: [
+  //     'avatar',
+  //     'degreeDiploma',
+  //     'enarm',
+  //     'license',
+  //     'postgraduateDiploma',
+  //     'postgraduateUniversitaryDiploma',
+  //     'residence',
+  //     'voucher',
+  //   ],
+  //   documentFileNames: {
+  //     avatar: 'Fotografía de título',
+  //     degreeDiploma: 'Diploma de licenciatura',
+  //     enarm: 'Constancia ENARM o similar',
+  //     license: 'Cédula profesional',
+  //     postgraduateUniversitaryDiploma: 'Diploma universitario de especialidad',
+  //     postgraduateDiploma: 'Diploma de especialidad',
+  //     residence: 'Diploma de residencia',
+  //     voucher: 'Comprobante de pago',
+  //   },
+  //   uploadFileError: null,
+  //   selectedFile: null,
+  //   currentFileName: null,
+  //   errors: [],
+  //   uploadValue: 0,
+  //   picture: null,
+  // }),
+  // computed: {
+  //   ...mapState('authentication', ['user']),
+  //   editable() {
+  //     console.log('this.document.status :>> ', this.document.status)
+  //     console.log('this.document.status === "3" :>> ', this.document.status === '3')
+  //     console.log('typeof document.status :>> ', typeof document.status)
+  //     return this.document.status === 3
+  //   },
+  // },
+  // methods: {
+  //   ...mapActions('documents', ['setDocumentForReview']),
+  //   ...mapActions('admin', ['readAllAsAdmin']),
+  //   async markForReview() {
+  //     console.clear()
+  //     console.log('this.document.id :>> ', this.document.id)
+  //     const data = { id: this.document.id }
+  //     await this.setDocumentForReview(data)
+  //       .then(result => {
+  //         console.log('result :>> ', result)
+  //       })
+  //       .then(res => {
+  //         console.log('res :>> ', res)
+  //         this.document.status = 1
+  //         // eslint-disable-next-line no-alert
+  //         alert('Documento marcado para ser revisado, este proceso puede tardar algunos días.')
+  //       })
+  //     // TODO change the local state to reflect the new status of this document 202108.08-12.09
+  //   },
+  // },
 }
 </script>
 
