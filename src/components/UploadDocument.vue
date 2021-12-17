@@ -1,6 +1,6 @@
 <template>
   <v-card class="mx-auto" max-width="500">
-    <v-fade-transition v-for="file in files" :key="file.name">
+    <div v-for="file in files" :key="file.name">
       <v-img
         v-if="file.type === 'image/png' || files.type === 'image/jpeg'"
         class="ma-5"
@@ -17,27 +17,26 @@
         style="max-width: 500px; min-width: 344px; min-height: 500px;"
         :data="getURL(file)"
       />
-    </v-fade-transition>
+    </div>
     <v-alert v-if="documentCreationMessage.message" text :type="documentCreationMessage.type">
       {{ documentCreationMessage.message }}
     </v-alert>
     <validation-observer v-slot="{ invalid }">
       <v-card-text class="ma-5">
         <div v-for="field in document.fields" :key="field.name" class="pr-5">
-          <validation-provider v-slot="{ errors }" :name="field.name" rules="numeric|length:7,12|required">
+          <validation-provider v-slot="{ errors }" :name="field.name" :rules="field.rules">
             <span :class="{ error: errors[0] }">
-              <v-text-field
+              <component
+                :is="field.type"
                 :ref="field.name"
                 v-model="foo[field.name]"
+                :name="field.name"
                 :data-vv-name="scope"
                 :label="field.label"
                 :placeholder="field.placeholder"
                 :error="errors.length > 0"
                 :error-messages="errors"
-                hide-details="auto"
-                counter
-                required
-              ></v-text-field>
+              ></component>
             </span>
           </validation-provider>
         </div>
@@ -74,9 +73,11 @@
 
 <script>
 import { mapState, mapActions, mapMutations } from 'vuex'
+import { VTextField } from 'vuetify/lib'
 import { isNil } from 'lodash'
 
 export default {
+  components: { VTextField },
   props: {
     document: {
       type: Object,

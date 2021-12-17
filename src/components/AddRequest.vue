@@ -108,13 +108,16 @@ export default {
             label: 'Título profesional',
             name: 'titulo',
             placeholder: 'Título profesional',
-            // TODO put the rules here
+            rules: { numeric: true, required: true },
+            type: 'v-text-field',
           },
         ],
       },
       {
-        name:
-          ' Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional para la Formación de Recursos Humanos para la Salud (CIFRHS); Copia de la constancia de haber efectuado y aprobado el Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional para la Formación de Recursos Humanos para la Salud (CIFRHS); ',
+        longName:
+          'Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional para la Formación de Recursos Humanos para la Salud (CIFRHS); Copia de la constancia de haber efectuado y aprobado el Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional para la Formación de Recursos Humanos para la Salud (CIFRHS); ',
+        name: 'enarm',
+        upload: true,
       },
       {
         name:
