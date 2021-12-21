@@ -7,6 +7,7 @@
       <small>Mensaje del administrador:</small>
       {{ document.message }}
     </h3>
+    <div class="text-capitalize">{{ $t('document.createTimestamp') }}: {{ document.createTimestamp | intlDate }}</div>
     <div v-show="editable">
       <h4>Enviar para revisión</h4>
       <div>
@@ -99,69 +100,69 @@
 </template>
 
 <script>
-// import { DateTime } from 'luxon'
+import { DateTime } from 'luxon'
 // import { isNil } from 'lodash'
 import { mapActions, mapState } from 'vuex'
 // import DocumentForm from '@/components/DocumentForm.vue'
 
 export default {
   // components: { DocumentForm },
-  // filters: {
-  //   docStatus(value) {
-  //     if (!value) return ''
-  //     switch (value) {
-  //       case 1:
-  //         value = 'Por revisar'
-  //         break
-  //       case 2:
-  //         value = 'En revisión'
-  //         break
-  //       case 3:
-  //         value = 'Rechazado'
-  //         break
-  //       case 4:
-  //         value = 'Aceptado'
-  //         break
-  //       default:
-  //         break
-  //     }
-  //     value = value.toString()
-  //     return value.charAt(0).toUpperCase() + value.slice(1)
-  //   },
-  //   intlDate(date) {
-  //     return (
-  //       DateTime.fromJSDate(new Date(date))
-  //         .setLocale('es')
-  //         // .toLocaleString(DateTime.DATETIME_FULL)
-  //         .toLocaleString()
-  //     )
-  //   },
-  //   age(date) {
-  //     if (date) {
-  //       const dob = DateTime.fromISO(date)
-  //       return Math.floor(dob.diffNow('years').years * -1)
-  //     }
-  //     return null
-  //   },
-  //   ago(date) {
-  //     const newValueParsed = DateTime.fromJSDate(new Date(date))
-  //     const now = DateTime.now()
-  //     return Math.round(now.diff(newValueParsed, ['days']).days)
-  //   },
-  //   genderize: value => {
-  //     let gender = null
-  //     if (!isNil(value)) {
-  //       if (value.toString() === 'Hombre') {
-  //         gender = 'mdi mdi-gender-male icon'
-  //       }
-  //       if (value.toString() === 'Mujer') {
-  //         gender = 'mdi mdi-gender-female icon'
-  //       }
-  //       return gender
-  //     }
-  //     return value
-  //   },
-  // },
+  filters: {
+    //   docStatus(value) {
+    //     if (!value) return ''
+    //     switch (value) {
+    //       case 1:
+    //         value = 'Por revisar'
+    //         break
+    //       case 2:
+    //         value = 'En revisión'
+    //         break
+    //       case 3:
+    //         value = 'Rechazado'
+    //         break
+    //       case 4:
+    //         value = 'Aceptado'
+    //         break
+    //       default:
+    //         break
+    //     }
+    //     value = value.toString()
+    //     return value.charAt(0).toUpperCase() + value.slice(1)
+    //   },
+    intlDate(date) {
+      return (
+        DateTime.fromJSDate(new Date(date))
+          .setLocale('es')
+          // .toLocaleString(DateTime.DATETIME_FULL)
+          .toLocaleString()
+      )
+    },
+    //   age(date) {
+    //     if (date) {
+    //       const dob = DateTime.fromISO(date)
+    //       return Math.floor(dob.diffNow('years').years * -1)
+    //     }
+    //     return null
+    //   },
+    //   ago(date) {
+    //     const newValueParsed = DateTime.fromJSDate(new Date(date))
+    //     const now = DateTime.now()
+    //     return Math.round(now.diff(newValueParsed, ['days']).days)
+    //   },
+    //   genderize: value => {
+    //     let gender = null
+    //     if (!isNil(value)) {
+    //       if (value.toString() === 'Hombre') {
+    //         gender = 'mdi mdi-gender-male icon'
+    //       }
+    //       if (value.toString() === 'Mujer') {
+    //         gender = 'mdi mdi-gender-female icon'
+    //       }
+    //       return gender
+    //     }
+    //     return value
+    //   },
+  },
   props: {
     document: Object,
   },
