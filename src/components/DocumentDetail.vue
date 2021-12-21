@@ -8,6 +8,7 @@
       {{ document.message }}
     </h3>
     <div class="text-capitalize">{{ $t('document.createTimestamp') }}: {{ document.createTimestamp | intlDate }}</div>
+    <show-file v-if="document.files" :files="document.files"></show-file>
     <div v-show="editable">
       <h4>Enviar para revisión</h4>
       <div>
@@ -104,9 +105,11 @@ import { DateTime } from 'luxon'
 // import { isNil } from 'lodash'
 import { mapActions, mapState } from 'vuex'
 // import DocumentForm from '@/components/DocumentForm.vue'
+import ShowFile from '@/components/ShowFile'
 
 export default {
   // components: { DocumentForm },
+  components: { ShowFile },
   filters: {
     //   docStatus(value) {
     //     if (!value) return ''
