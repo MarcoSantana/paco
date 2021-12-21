@@ -1,9 +1,23 @@
 <template>
   <v-container>
-    Me be the document details (user) document: {{ document }}
-    <div></div>
+    <h1 class="text-capitalize">{{ $t('document.name') }}: {{ document.name }}</h1>
+    <h2 class="text-capitalize">{{ $t('document.status') }}: {{ $t(`document.statusKey[${document.status}]`) }}</h2>
+
+    <h3 v-show="editable">
+      <small>Mensaje del administrador:</small>
+      {{ document.message }}
+    </h3>
+    <div v-show="editable">
+      <h4>Enviar para revisión</h4>
+      <div>
+        <v-btn color="accent" elevation="2" @click="markForReview">Enviar</v-btn>
+      </div>
+    </div>
   </v-container>
   <!-- <div class="container">
+      <h1>{{$t('document.createTimestamp')}}>> {{ document.createTimestamp }}</h1>
+      <h1>{{$t('document.updateTimestamp')}}>> {{ document.updateTimestamp }}</h1>
+      <h1>{{$t('document.id')}}>> {{ document.id }}</h1>
     <h1>{{ document.name }}</h1>
     <h2>Estado: {{ document.status | docStatus }}</h2>
     <h3 v-show="editable"><small>Mensaje del administrador: </small>{{ document.message }}</h3>
@@ -81,13 +95,13 @@
         </div>
       </div>
     </div>
-  </div> -->
+  </div>-->
 </template>
 
 <script>
 // import { DateTime } from 'luxon'
 // import { isNil } from 'lodash'
-// import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 // import DocumentForm from '@/components/DocumentForm.vue'
 
 export default {
@@ -179,40 +193,37 @@ export default {
   //   uploadValue: 0,
   //   picture: null,
   // }),
-  // computed: {
-  //   ...mapState('authentication', ['user']),
-  //   editable() {
-  //     console.log('this.document.status :>> ', this.document.status)
-  //     console.log('this.document.status === "3" :>> ', this.document.status === '3')
-  //     console.log('typeof document.status :>> ', typeof document.status)
-  //     return this.document.status === 3
-  //   },
-  // },
-  // methods: {
-  //   ...mapActions('documents', ['setDocumentForReview']),
-  //   ...mapActions('admin', ['readAllAsAdmin']),
-  //   async markForReview() {
-  //     console.clear()
-  //     console.log('this.document.id :>> ', this.document.id)
-  //     const data = { id: this.document.id }
-  //     await this.setDocumentForReview(data)
-  //       .then(result => {
-  //         console.log('result :>> ', result)
-  //       })
-  //       .then(res => {
-  //         console.log('res :>> ', res)
-  //         this.document.status = 1
-  //         // eslint-disable-next-line no-alert
-  //         alert('Documento marcado para ser revisado, este proceso puede tardar algunos días.')
-  //       })
-  //     // TODO change the local state to reflect the new status of this document 202108.08-12.09
-  //   },
-  // },
+  computed: {
+    ...mapState('authentication', ['user']),
+    editable() {
+      return this.document.status === 3
+    },
+  },
+  methods: {
+    ...mapActions('documents', ['setDocumentForReview']),
+    //   ...mapActions('admin', ['readAllAsAdmin']),
+    async markForReview() {
+      console.clear()
+      console.log('this.document.id :>> ', this.document.id)
+      const data = { id: this.document.id }
+      await this.setDocumentForReview(data)
+        .then(result => {
+          console.log('result :>> ', result)
+        })
+        .then(res => {
+          console.log('res :>> ', res)
+          this.document.status = 1
+          // eslint-disable-next-line no-alert
+          alert('Documento marcado para ser revisado, este proceso puede tardar algunos días.')
+        })
+      // TODO change the local state to reflect the new status of this document 202108.08-12.09
+    },
+  },
 }
 </script>
 
 <style lang="scss" scoped>
-@import '@/theme/variables.scss';
+/* @import '@/theme/variables.scss'; */
 .document-grid {
   display: grid;
   grid-gap: 0.75rem;
