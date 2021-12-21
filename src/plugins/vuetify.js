@@ -1,9 +1,16 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify/lib/framework'
-import es from 'vuetify/lib/locale/es'
+import VueI18n from 'vue-i18n'
+// import es from 'vuetify/lib/locale/es'
+import es from '@/locales/es'
+import en from 'vuetify/lib/locale/en'
 
 Vue.use(Vuetify)
+Vue.use(VueI18n)
 
 export default new Vuetify({
-  lang: { locales: { es }, current: 'es' },
+  lang: {
+    lolcales: { es, en },
+    current: 'es',
+  },
 })

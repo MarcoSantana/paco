@@ -37,5 +37,9 @@
     "unsupported",
     "wrong"
   ],
-  "cSpell.enabled": false
+  "cSpell.enabled": false,
+  "i18n-ally.localesPaths": [
+    "i18n",
+    "src/locales"
+  ]
 }

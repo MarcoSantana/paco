@@ -16,6 +16,9 @@ import es from 'vee-validate/dist/locale/es'
 import '@/misc/validation'
 import * as veeValidate from 'vee-validate'
 
+// Translation
+import VueI18n from 'vue-i18n'
+
 // Form generator
 import VueFormGenerator from 'vue-form-generator'
 import fieldPdf from '@/components/forms/fieldPdf'
@@ -29,6 +32,8 @@ import VueGoogleAutocomplete from 'vue-google-autocomplete'
 import AsyncComputed from 'vue-async-computed'
 // Modal
 import VModal from 'vue-js-modal'
+
+import myEs from '@/locales/es'
 
 import App from './App.vue'
 import router from './router'
@@ -44,12 +49,28 @@ import vuetify from './plugins/vuetify'
 
 Vue.config.productionTip = false
 // Vue.use(VeeValidate)
-
+// Ready translated locale messages
+const messages = {
+  es: {
+    ...myEs,
+  },
+  en: {
+    message: {
+      hello: 'hello world',
+    },
+    module,
+  },
+}
+const i18n = new VueI18n({
+  locale: 'es', // set locale
+  messages,
+})
 new Vue({
   router,
   store,
   components: { App },
   vuetify,
+  i18n,
   render: h => h(App),
 }).$mount('#app')
 
@@ -59,6 +80,7 @@ veeValidate.localize('es', es)
 
 Vue.use(VueFormGenerator)
 Vue.use(VueGoogleAutocomplete)
+Vue.use(VueI18n)
 Vue.use(AsyncComputed)
 Vue.use(VModal)
 
