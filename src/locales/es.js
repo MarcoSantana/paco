@@ -19,8 +19,15 @@ export default {
       1: 'por revisar',
       2: 'en revisión',
       3: 'rechazado',
-      4: 'aceptado'
-    }
+      4: 'aceptado',
+    },
+    types: {
+      degree: 'título',
+      license: 'cédula profesional',
+      college: 'universidad',
+      postGraduate: 'institución de posgrado',
+      voucher: 'comprobante de pago',
+      enarm: 'comprobante ENARM o similar',
+    },
   },
 }
-
