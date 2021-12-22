@@ -8,7 +8,10 @@
       {{ document.message }}
     </h3>
     <div class="text-capitalize">{{ $t('document.createTimestamp') }}: {{ document.createTimestamp | intlDate }}</div>
-    <show-file v-if="document.files" :files="document.files"></show-file>
+    <!-- <show-file v-if="document.files" :files="document.files"></show-file> -->
+    <div v-if="document.files">
+      <show-file v-for="file in document.files" :key="file" :url="file" />
+    </div>
     <div v-show="editable">
       <h4>Enviar para revisión</h4>
       <div>
