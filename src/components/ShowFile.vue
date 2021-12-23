@@ -19,7 +19,7 @@
         </v-card-text>
         <hr />
         <v-card-actions>
-          <v-progress-linear v-if="loadedRatio < 1" color="light-blue" height="10" :value="loadedRatio * 100" striped />
+          <v-progress-linear v-if="loadedRatio < 1" color="accent" height="10" :value="loadedRatio * 100" striped />
           <v-slider
             v-model="page"
             step="1"
@@ -31,11 +31,14 @@
             :thumb-size="20"
             ticks="always"
             tick-size="4"
-            @click:append="page += 1"
-            @click:prepend="page -= 1"
+            @click:append="page + 1 > numPages ? (page = numPages) : (page += 1)"
+            @click:prepend="page - 1 < 1 ? (page = 1) : (page -= 1)"
           />
         </v-card-actions>
       </div>
+      <v-snackbar v-model="snackbar" timeout="2000">
+        {{ snackbarMessage }}
+      </v-snackbar>
     </v-card>
     <v-skeleton-loader v-if="loading" type="card"></v-skeleton-loader>
   </v-container>
@@ -50,8 +53,10 @@ export default {
   data: () => ({
     file: null,
     loading: true,
-    // test
+    err: null,
     show: true,
+    snackbarMessage: null,
+    snackbar: false,
     currentPage: 0,
     pageCount: 0,
     rotate: 0,
@@ -65,16 +70,21 @@ export default {
 
   methods: {
     error(err) {
-      alert(`Error${err}`)
+      this.snackbar = true
+      this.snackbarMessage = err
     },
     async getFile(url) {
       this.loading = true
-      fetch(url)
-        .then(response => response.blob())
-        .then(blob => {
-          this.file = blob
-          this.loading = false
-        })
+      try {
+        fetch(url)
+          .then(response => response.blob())
+          .then(blob => {
+            this.file = blob
+            this.loading = false
+          })
+      } catch (err) {
+        this.error(err)
+      }
     },
   },
 }
