@@ -1,16 +1,25 @@
 <template>
   <v-container>
     <v-card v-if="file && file.type" class="mx-auto mt-5" max-width="80%">
-      <v-img v-if="file.type === 'image/jpeg'" :src="url"></v-img>
-      <div v-if="file.type === 'application/pdf'">
-        <div
-          v-if="loadedRatio > 0 && loadedRatio < 1"
-          style="background-color: green; color: white; text-align: center"
-          :style="{ width: loadedRatio * 100 + '%' }"
-        >
-          {{ Math.floor(loadedRatio * 100) }}%
-        </div>
-        <div style="width: 50%" class="justify-center mb-6">
+      <v-card-text>
+        <v-img v-if="file.type === 'image/jpeg'" :src="url"></v-img>
+      </v-card-text>
+      <div v-if="file.type === 'application/pdf'" class="justify-center mb-6">
+        <v-card-text>
+          <pdf
+            v-if="file.type === 'application/pdf'"
+            ref="myPdf"
+            :src="url"
+            :page="page"
+            @progress="loadedRatio = $event"
+            @error="error"
+            @num-pages="numPages = $event"
+            @link-clicked="page = $event"
+          />
+        </v-card-text>
+        <hr />
+        <v-card-actions>
+          <v-progress-linear v-if="loadedRatio < 1" color="light-blue" height="10" :value="loadedRatio * 100" striped />
           <v-slider
             v-model="page"
             step="1"
@@ -24,17 +33,8 @@
             tick-size="4"
             @click:append="page += 1"
             @click:prepend="page -= 1"
-          ></v-slider>
-          <pdf
-            ref="myPdf"
-            :src="url"
-            :page="page"
-            @progress="loadedRatio = $event"
-            @error="error"
-            @num-pages="numPages = $event"
-            @link-clicked="page = $event"
-          ></pdf>
-        </div>
+          />
+        </v-card-actions>
       </div>
     </v-card>
     <v-skeleton-loader v-if="loading" type="card"></v-skeleton-loader>
@@ -58,13 +58,15 @@ export default {
     page: 1,
     numPages: 0,
     loadedRatio: 0,
-    error: null,
   }),
   created() {
     this.getFile(this.url)
   },
 
   methods: {
+    error(err) {
+      alert(`Error${err}`)
+    },
     async getFile(url) {
       this.loading = true
       fetch(url)
