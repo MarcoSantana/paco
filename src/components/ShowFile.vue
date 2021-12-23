@@ -2,7 +2,7 @@
   <v-container>
     <v-card v-if="file && file.type" class="mx-auto mt-5" max-width="80%">
       <v-card-text>
-        <v-img v-if="file.type === 'image/jpeg'" :src="url"></v-img>
+        <v-img v-if="file.type === 'image/jpeg' || file.type === 'image/png'" :src="url"></v-img>
       </v-card-text>
       <div v-if="file.type === 'application/pdf'" class="justify-center mb-6">
         <v-card-text>
