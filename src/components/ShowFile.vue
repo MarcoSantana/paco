@@ -25,15 +25,23 @@
             step="1"
             min="1"
             :max="numPages"
-            append-icon="mdi-skip-next"
-            prepend-icon="mdi-skip-previous"
             thumb-label="always"
             :thumb-size="20"
             ticks="always"
             tick-size="4"
-            @click:append="page + 1 > numPages ? (page = numPages) : (page += 1)"
-            @click:prepend="page - 1 < 1 ? (page = 1) : (page -= 1)"
-          />
+          >
+            <template v-slot:append>
+              <v-icon large color="accent" @click="page + 1 > numPages ? (page = numPages) : (page += 1)">
+                mdi-plus
+              </v-icon>
+            </template>
+
+            <template v-slot:prepend>
+              <v-icon large color="accent" @click="page - 1 < 1 ? (page = 1) : (page -= 1)">
+                mdi-minus
+              </v-icon>
+            </template>
+          </v-slider>
         </v-card-actions>
       </div>
       <v-snackbar v-model="snackbar" timeout="2000">
