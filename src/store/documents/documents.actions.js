@@ -81,20 +81,18 @@ export default {
         try {
           commit('setDocumentCreationPending', true)
           commit('setDocumentCreationMessage', { type: 'warning', message: 'Guardando documento' })
-          const documentsURL = []
+          const documentsRef = []
           try {
             upload.forEach((element, index) => {
               const documentName = index
+              const refDoc = `documents/${rootState.authentication.user.id}/${createdDocument.id}/${documentName}`
+              // TODO refctor extract to func 202112.27-09.21
               storage()
-                .ref(`documents/${rootState.authentication.user.id}/${createdDocument.id}/${documentName}`)
+                .ref(refDoc)
                 .put(element)
-                .then(snapshot => {
-                  return snapshot.ref.getDownloadURL()
-                })
-                .then(async downloadURL => {
+                .then(async () => {
                   try {
-                    documentsURL.push(downloadURL)
-                    // await userDocumentDB.update({ ...createdDocument, documents: { [documentName]: downloadURL } })
+                    documentsRef.push(refDoc)
                   } catch (error) {
                     commit('setDocumentCreationMessage', {
                       type: 'danger',
@@ -104,16 +102,24 @@ export default {
                   }
                 })
                 .then(() => {
-                  documentsURL.map(downloadURL => {
-                    const node = `files.${documentName}`
-                    return userDocumentDB.update(
-                      {
-                        ...createdDocument,
-                        [node]: downloadURL,
-                      },
-                      { merge: true }
-                    )
-                  })
+                  try {
+                    documentsRef.map(documentRef => {
+                      const node = `files.${documentName}`
+                      return userDocumentDB.update(
+                        {
+                          ...createdDocument,
+                          [node]: documentRef,
+                        },
+                        { merge: true }
+                      )
+                    })
+                  } catch (error) {
+                    commit('setDocumentCreationMessage', {
+                      type: 'danger',
+                      message: 'Error al actualizar la referencia del documento vuelva a intentar de nuevo más tarde',
+                    })
+                    commit('setDocumentCreationPending', false)
+                  }
                 })
                 .finally(() => {
                   commit('setDocumentCreationMessage', { type: 'success', message: 'Éxito' })
