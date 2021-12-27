@@ -1,5 +1,7 @@
 <template>
   <v-card class="mx-auto" max-width="500">
+    <show-file v-for="file in docURLs" :key="file.i" :url="file.i" />
+    <!-- <show-file v-for="file in docURLs" :key="file" :url="getDownloadURL(file)" /> -->
     <div v-for="file in files" :key="file.name">
       <v-img
         v-if="file.type === 'image/png' || files.type === 'image/jpeg'"
@@ -8,13 +10,13 @@
         lazy-src="https://picsum.photos/id/11/10/6"
         max-height="150"
         max-width="250"
-        :src="getURL(file)"
+        :src="getURL(file) ? getURL(file) : null"
       />
       <!-- TODO Center this inside the card 202112.04-08.24 -->
       <object
         v-if="file.name && file.type === 'application/pdf'"
         class="ma-5"
-        style="max-width: 500px; min-width: 344px; min-height: 500px;"
+        style="max-width: 500px; min-width: 344px; min-height: 500px"
         :data="getURL(file)"
       />
     </div>
@@ -81,10 +83,12 @@
 <script>
 import { mapState, mapActions, mapMutations } from 'vuex'
 import { VTextField } from 'vuetify/lib'
+import { storage } from 'firebase'
 import { isNil } from 'lodash'
+import ShowFile from '@/components/ShowFile'
 
 export default {
-  components: { VTextField },
+  components: { VTextField, ShowFile },
   props: {
     document: {
       type: Object,
@@ -103,16 +107,18 @@ export default {
     error: {},
     // FIXME this is not a proper name
     foo: [],
+    files: [],
+    docURLs: [],
   }),
   asyncComputed: {
-    files() {
-      return !isNil(this.showFiles)
-        ? Object.values(this.showFiles).forEach(async url => {
-            await fetch(url)
-          })
-        : null
-      // TODO: manage 403 error in fetch
-    },
+    // files() {
+    //   return !isNil(this.showFiles)
+    //     ? Object.values(this.showFiles).forEach(async (url) => {
+    //         await fetch(url)
+    //       })
+    //     : null
+    //   // TODO: manage 403 error in fetch
+    // },
   },
   computed: {
     ...mapState('documents', [
@@ -124,6 +130,7 @@ export default {
   },
   mounted() {
     this.setDocumentCreationMessage({})
+    this.populateFiles(this.showFiles)
   },
   methods: {
     // TODO useme
@@ -132,6 +139,8 @@ export default {
     ...mapActions('documents', ['createUserDocument']),
     getURL(file) {
       if (!isNil(file)) {
+        console.log('typeof file: ', typeof file)
+        console.log(file)
         return URL.createObjectURL(file)
       }
       return null
@@ -153,6 +162,20 @@ export default {
         console.log('Running validate')
         // TODO do some timeout and a loader to give better feedback
       }
+    },
+    getDownloadURL(docRef) {
+      const storageRef = storage().ref(docRef)
+      return storageRef.getDownloadURL().then(result => {
+        return result
+      })
+    },
+    populateFiles(files) {
+      if (isNil(files)) return null
+      const foo = files.map(file => {
+        return this.docURLs.push(this.getDownloadURL(file))
+      })
+      console.log('foo', foo)
+      return true
     },
   },
 }
