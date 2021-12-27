@@ -7,7 +7,6 @@
       <div v-if="file.type === 'application/pdf'" class="justify-center mb-6">
         <v-card-text>
           <pdf
-            v-if="file.type === 'application/pdf'"
             ref="myPdf"
             :src="url"
             :page="page"
@@ -37,9 +36,7 @@
             </template>
 
             <template v-slot:prepend>
-              <v-icon large color="accent" @click="page - 1 < 1 ? (page = 1) : (page -= 1)">
-                mdi-minus
-              </v-icon>
+              <v-icon large color="accent" @click="page - 1 < 1 ? (page = 1) : (page -= 1)"> mdi-minus </v-icon>
             </template>
           </v-slider>
         </v-card-actions>
@@ -84,6 +81,7 @@ export default {
     async getFile(url) {
       this.loading = true
       try {
+        // TODO check for 403 status and manage error
         fetch(url)
           .then(response => response.blob())
           .then(blob => {
@@ -91,6 +89,7 @@ export default {
             this.loading = false
           })
       } catch (err) {
+        // <!--TODO: add snakbar-->
         this.error(err)
       }
     },

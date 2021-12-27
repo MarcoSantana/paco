@@ -57,7 +57,7 @@
           <v-stepper-step
             :complete="stepComplete(n + 1)"
             :step="n + 1"
-            :rules="[value => !invalid]"
+            :rules="[(value) => !invalid]"
             :color="stepStatus(n + 1)"
             >{{ step.longName }}</v-stepper-step
           >
@@ -124,20 +124,25 @@ export default {
           'Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional para la Formación de Recursos Humanos para la Salud (CIFRHS); Copia de la constancia de haber efectuado y aprobado el Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional para la Formación de Recursos Humanos para la Salud (CIFRHS); ',
         name: 'enarm',
         upload: true,
+        fields: [
+          {
+            label: 'Descripción',
+            name: 'description',
+            placeholder: 'Breve descripción del documento',
+            type: 'v-text-field',
+          },
+        ],
       },
       {
-        name:
-          ' En el caso de Urgencias Pediátricas deberá entregar además el diploma institucional y diploma de la institución educativa (universitaria) que lo avala en Pediatría. ',
+        name: ' En el caso de Urgencias Pediátricas deberá entregar además el diploma institucional y diploma de la institución educativa (universitaria) que lo avala en Pediatría. ',
       },
       {
-        name:
-          ' En el caso de Urgencias Pediátricas, constancia de haber terminado satisfactoriamente una residencia progresiva hospitalaria de por lo menos 2 años. ',
+        name: ' En el caso de Urgencias Pediátricas, constancia de haber terminado satisfactoriamente una residencia progresiva hospitalaria de por lo menos 2 años. ',
       },
       { name: 'Copia del diploma institucional en Medicina de Urgencias o en su caso Urgencias Pediatricas.' },
       { name: 'Copia del diploma de la institución educativa (Universitaria) que lo avala.' },
       {
-        name:
-          ' Tres fotografías oval tamaño diploma (5x7cm) blanco y negro, con fondo blanco, vestimenta formal. Con nombre completo al reverso (con tinta). ',
+        name: ' Tres fotografías oval tamaño diploma (5x7cm) blanco y negro, con fondo blanco, vestimenta formal. Con nombre completo al reverso (con tinta). ',
       },
       { name: 'Donativo no reembolsable de $ 5,700. 00/100 m.n.' },
       { name: 'Solicitud completa' },
@@ -181,6 +186,7 @@ export default {
       this.isFinished = true
     },
     setEvent() {
+      console.log('running setEvent: ', this.id)
       if (isNil(this.currentUserEvent)) {
         this.setUserEvent(this.id)
       }

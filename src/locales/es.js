@@ -2,6 +2,7 @@ import { es } from '../../node_modules/vuetify/es5/locale/es'
 
 export default {
   ...es,
+  // FIXME vuetify translation not working 202112.27-09.25
   $vuetify: { ...es },
   message: {
     hello: 'holas',
