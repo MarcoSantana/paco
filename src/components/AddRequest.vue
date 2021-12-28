@@ -57,7 +57,7 @@
           <v-stepper-step
             :complete="stepComplete(n + 1)"
             :step="n + 1"
-            :rules="[(value) => !invalid]"
+            :rules="[value => !invalid]"
             :color="stepStatus(n + 1)"
             >{{ step.longName }}</v-stepper-step
           >
@@ -134,15 +134,18 @@ export default {
         ],
       },
       {
-        name: ' En el caso de Urgencias Pediátricas deberá entregar además el diploma institucional y diploma de la institución educativa (universitaria) que lo avala en Pediatría. ',
+        name:
+          ' En el caso de Urgencias Pediátricas deberá entregar además el diploma institucional y diploma de la institución educativa (universitaria) que lo avala en Pediatría. ',
       },
       {
-        name: ' En el caso de Urgencias Pediátricas, constancia de haber terminado satisfactoriamente una residencia progresiva hospitalaria de por lo menos 2 años. ',
+        name:
+          ' En el caso de Urgencias Pediátricas, constancia de haber terminado satisfactoriamente una residencia progresiva hospitalaria de por lo menos 2 años. ',
       },
       { name: 'Copia del diploma institucional en Medicina de Urgencias o en su caso Urgencias Pediatricas.' },
       { name: 'Copia del diploma de la institución educativa (Universitaria) que lo avala.' },
       {
-        name: ' Tres fotografías oval tamaño diploma (5x7cm) blanco y negro, con fondo blanco, vestimenta formal. Con nombre completo al reverso (con tinta). ',
+        name:
+          ' Tres fotografías oval tamaño diploma (5x7cm) blanco y negro, con fondo blanco, vestimenta formal. Con nombre completo al reverso (con tinta). ',
       },
       { name: 'Donativo no reembolsable de $ 5,700. 00/100 m.n.' },
       { name: 'Solicitud completa' },
@@ -177,7 +180,6 @@ export default {
       return result
     },
     getEventFiles(value) {
-      console.log('value in getEventFiles', value)
       return !isNil(value) && !isNil(value.files) ? Object.values(value.files) : null
     },
     saveDocument(n) {
