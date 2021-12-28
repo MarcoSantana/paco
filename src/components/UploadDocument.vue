@@ -12,7 +12,7 @@
                 <component
                   :is="field.type"
                   :ref="field.name"
-                  v-model="foo[field.name]"
+                  v-model="fieldModel[field.name]"
                   :name="field.name"
                   :data-vv-name="scope"
                   :label="field.label"
@@ -87,21 +87,11 @@ export default {
     lastName: null,
     firstName: null,
     error: {},
-    // FIXME this is not a proper name
-    foo: [],
+    fieldModel: [],
     files: [],
     docURLs: [],
   }),
-  asyncComputed: {
-    // files() {
-    //   return !isNil(this.showFiles)
-    //     ? Object.values(this.showFiles).forEach(async (url) => {
-    //         await fetch(url)
-    //       })
-    //     : null
-    //   // TODO: manage 403 error in fetch
-    // },
-  },
+  asyncComputed: {},
   computed: {
     ...mapState('documents', [
       'documents',
@@ -132,16 +122,12 @@ export default {
       this.createUserDocument(document)
     },
     async validate() {
-      if (!this.valid) return null
+      if (!this.valid && this.invalid) return null
       this.setDocumentCreationMessage({ type: 'info', message: 'Validando documento' })
-      if (!this.invalid) {
-        this.setDocumentCreationMessage({ type: 'warning', message: 'Creando documento' })
-        this.createLocalDocument({ name: this.document.name, upload: this.files })
-        this.$emit('document-added', this.documents[this.documents.length - 1])
-        return true
-        // TODO do some timeout and a loader to give better feedback
-      }
-      return null
+      this.setDocumentCreationMessage({ type: 'warning', message: 'Creando documento' })
+      this.createLocalDocument({ name: this.document.name, upload: this.files })
+      this.$emit('document-added', this.documents[this.documents.length - 1])
+      return true
     },
     async getDownloadURL(docRef) {
       const storageRef = storage().ref(docRef)
