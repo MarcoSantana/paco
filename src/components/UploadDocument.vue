@@ -125,7 +125,7 @@ export default {
       if (!this.valid && this.invalid) return null
       this.setDocumentCreationMessage({ type: 'info', message: 'Validando documento' })
       this.setDocumentCreationMessage({ type: 'warning', message: 'Creando documento' })
-      this.createLocalDocument({ name: this.document.name, upload: this.files })
+      this.createLocalDocument({ name: this.document.name, ...this.fieldModel, upload: this.files })
       this.$emit('document-added', this.documents[this.documents.length - 1])
       return true
     },
