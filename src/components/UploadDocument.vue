@@ -27,7 +27,7 @@
       <v-card-text>
         <show-file v-for="(file, i) in docURLs" :key="`url-${i}`" :url="file" />
         <keep-alive
-          ><validation-provider v-slot="{ errors }" :name="document.name" rules="required|size:2000">
+          ><validation-provider v-slot="{ errors }" :name="`file-${document.name}`" rules="required|size:2000">
             <v-file-input
               v-model="files"
               data-vv-as="file"
@@ -120,36 +120,33 @@ export default {
     ...mapMutations('documents', ['setDocumentNameToCreate', 'setDocumentCreationMessage']),
     ...mapActions('documents', ['createUserDocument']),
     getURL(file) {
-      if (!isNil(file)) {
-        console.log('typeof file: ', typeof file)
-        console.log(file)
-        return URL.createObjectURL(file)
-      }
-      return null
+      if (isNil(file)) return null
+      return URL.createObjectURL(file)
     },
     createLocalDocument(document) {
       if (isNil(document) || isNil(this.files)) {
         this.valid = false
+        return
       }
       document.upload = this.files
       this.createUserDocument(document)
     },
     async validate() {
-      // this.valid = false
+      if (!this.valid) return null
       this.setDocumentCreationMessage({ type: 'info', message: 'Validando documento' })
       if (!this.invalid) {
         this.setDocumentCreationMessage({ type: 'warning', message: 'Creando documento' })
         this.createLocalDocument({ name: this.document.name, upload: this.files })
         this.$emit('document-added', this.documents[this.documents.length - 1])
-        console.log('Running validate')
+        return true
         // TODO do some timeout and a loader to give better feedback
       }
+      return null
     },
     async getDownloadURL(docRef) {
       const storageRef = storage().ref(docRef)
-      const foo = await storageRef.getDownloadURL()
-      console.log('foo', foo)
-      return foo
+      const url = await storageRef.getDownloadURL()
+      return url
     },
     populateLocalFiles(files) {
       if (isNil(files)) return null
@@ -161,7 +158,6 @@ export default {
       if (isNil(files)) return null
       return files.map(async file => {
         this.docURLs.push(await this.getDownloadURL(file))
-        return this.getDownloadURL(file)
       })
     },
   },
