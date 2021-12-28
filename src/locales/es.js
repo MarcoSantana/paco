@@ -4,11 +4,14 @@ export default {
   ...es,
   // FIXME vuetify translation not working 202112.27-09.25
   $vuetify: { ...es },
+  file: 'archivo',
   message: {
     hello: 'holas',
     bye: 'sales bye',
+    confirm: 'confirmar acción',
+    cannotUndo: 'esta acción no puede deshacerse',
   },
-  actions: { send: 'enviar', save: 'guardar', delete: 'borrar', mark: 'marcar' },
+  actions: { send: 'enviar', save: 'guardar', delete: 'borrar', mark: 'marcar', back: 'atras', forward: 'adelante' },
   document: {
     id: 'identificador',
     name: 'nombre',
