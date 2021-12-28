@@ -1,25 +1,5 @@
 <template>
   <v-card class="mx-auto" max-width="500">
-    <show-file v-for="file in docURLs" :key="file.i" :url="file.i" />
-    <!-- <show-file v-for="file in docURLs" :key="file" :url="getDownloadURL(file)" /> -->
-    <div v-for="file in files" :key="file.name">
-      <v-img
-        v-if="file.type === 'image/png' || files.type === 'image/jpeg'"
-        class="ma-5"
-        contain
-        lazy-src="https://picsum.photos/id/11/10/6"
-        max-height="150"
-        max-width="250"
-        :src="getURL(file) ? getURL(file) : null"
-      />
-      <!-- TODO Center this inside the card 202112.04-08.24 -->
-      <object
-        v-if="file.name && file.type === 'application/pdf'"
-        class="ma-5"
-        style="max-width: 500px; min-width: 344px; min-height: 500px"
-        :data="getURL(file)"
-      />
-    </div>
     <v-alert v-if="documentCreationMessage.message" text :type="documentCreationMessage.type">
       {{ documentCreationMessage.message }}
     </v-alert>
@@ -45,6 +25,7 @@
         </div>
       </v-card-text>
       <v-card-text>
+        <show-file v-for="(file, i) in docURLs" :key="`url-${i}`" :url="file" />
         <keep-alive
           ><validation-provider v-slot="{ errors }" :name="document.name" rules="required|size:2000">
             <v-file-input
@@ -63,7 +44,8 @@
               small-chips
               multiple
               clearable
-              @change="setDocumentCreationMessage({})"
+              @click="setDocumentCreationMessage({})"
+              @change="docURLs = populateLocalFiles(files)"
             ></v-file-input> </validation-provider
         ></keep-alive>
         <v-btn
@@ -130,7 +112,7 @@ export default {
   },
   mounted() {
     this.setDocumentCreationMessage({})
-    this.populateFiles(this.showFiles)
+    this.populateRemoteFiles(this.showFiles)
   },
   methods: {
     // TODO useme
@@ -163,19 +145,24 @@ export default {
         // TODO do some timeout and a loader to give better feedback
       }
     },
-    getDownloadURL(docRef) {
+    async getDownloadURL(docRef) {
       const storageRef = storage().ref(docRef)
-      return storageRef.getDownloadURL().then(result => {
-        return result
+      const foo = await storageRef.getDownloadURL()
+      console.log('foo', foo)
+      return foo
+    },
+    populateLocalFiles(files) {
+      if (isNil(files)) return null
+      return files.map(file => {
+        return URL.createObjectURL(file)
       })
     },
-    populateFiles(files) {
+    populateRemoteFiles(files) {
       if (isNil(files)) return null
-      const foo = files.map(file => {
-        return this.docURLs.push(this.getDownloadURL(file))
+      return files.map(async file => {
+        this.docURLs.push(await this.getDownloadURL(file))
+        return this.getDownloadURL(file)
       })
-      console.log('foo', foo)
-      return true
     },
   },
 }
