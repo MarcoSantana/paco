@@ -27,7 +27,6 @@
 
       <v-card-text>
         <show-file v-for="(file, i) in docURLs" :key="`url-${i}`" :url="file" />
-
         <keep-alive v-for="item in filesCounter" :key="`input-${item - 1}`">
           <validation-provider
             v-slot="{ errors }"
@@ -35,6 +34,8 @@
             rules="required|size:2000"
           >
             <v-file-input
+              v-if="inputsArray[item - 1]"
+              :ref="`fileInput-${item - 1}`"
               v-model="files[item - 1]"
               :name="`foo-${document.name}-${item - 1}`"
               :data-vv-as="`file-${item - 1}`"
@@ -52,11 +53,32 @@
               clearable
               @click="setDocumentCreationMessage({})"
               @change="docURLs.push(getURL(files[item - 1]))"
-            />
+            >
+              <v-icon
+                slot="append"
+                color="red"
+                @click="
+                  inputsArray[item - 1] = false
+                  filesCounter -= 1
+                "
+              >
+                mdi-minus
+              </v-icon>
+            </v-file-input>
           </validation-provider>
         </keep-alive>
-        <v-card-text class="pa-5 ma-5">
-          <v-btn class="pa-5 ma-5" fab dark small color="pink" absolute @click="filesCounter += 1">
+        <v-card-text class="text-right">
+          <v-btn
+            class="pa-5"
+            fab
+            dark
+            small
+            color="pink"
+            @click="
+              inputsArray[filesCounter] = true
+              filesCounter += 1
+            "
+          >
             <v-icon dark>
               mdi-plus
             </v-icon>
@@ -108,6 +130,7 @@ export default {
     files: [],
     docURLs: [],
     filesCounter: 1,
+    inputsArray: [true],
   }),
   asyncComputed: {},
   computed: {
@@ -128,10 +151,7 @@ export default {
     ...mapMutations('documents', ['setDocumentNameToCreate', 'setDocumentCreationMessage']),
     ...mapActions('documents', ['createUserDocument']),
     getURL(file) {
-      console.log('typeof file: ', typeof file)
-      console.log('file: ', file)
       if (isNil(file) || typeof file !== 'object') return null
-      console.log('file: ', file)
       return URL.createObjectURL(file)
     },
     createLocalDocument(document) {
@@ -168,6 +188,13 @@ export default {
       return files.map(async file => {
         this.docURLs.push(await this.getDownloadURL(file))
       })
+    },
+    clearFileInput(index) {
+      // console.log('refs', this.$refs[`fileInput-${index}`][0].$el)
+      const element = this.$refs[`fileInput-${index}`][0]
+      console.log('element: ', element)
+      this.$delete(element)
+      this.$destroy(element)
     },
   },
 }
