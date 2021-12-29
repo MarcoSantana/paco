@@ -24,13 +24,20 @@
           ></keep-alive>
         </div>
       </v-card-text>
+
       <v-card-text>
         <show-file v-for="(file, i) in docURLs" :key="`url-${i}`" :url="file" />
-        <keep-alive
-          ><validation-provider v-slot="{ errors }" :name="`file-${document.name}`" rules="required|size:2000">
+
+        <keep-alive v-for="item in filesCounter" :key="`input-${item - 1}`">
+          <validation-provider
+            v-slot="{ errors }"
+            :name="`file-${document.name}-${item - 1}`"
+            rules="required|size:2000"
+          >
             <v-file-input
-              v-model="files"
-              data-vv-as="file"
+              v-model="files[item - 1]"
+              :name="`foo-${document.name}-${item - 1}`"
+              :data-vv-as="`file-${item - 1}`"
               :data-vv-name="scope"
               accept="image/png, image/jpeg, application/pdf"
               :placeholder="document.placeholder"
@@ -42,21 +49,31 @@
               truncate-length="15"
               required
               small-chips
-              multiple
               clearable
               @click="setDocumentCreationMessage({})"
-              @change="docURLs = populateLocalFiles(files)"
-            ></v-file-input> </validation-provider
-        ></keep-alive>
-        <v-btn
-          v-if="documentCreationMessage.type !== 'success'"
-          color="success"
-          :disabled="invalid"
-          @click="validate()"
-        >
-          Guardar
-          <v-icon right dark>mdi-cloud-upload</v-icon>
-        </v-btn>
+              @change="docURLs.push(getURL(files[item - 1]))"
+            />
+          </validation-provider>
+        </keep-alive>
+        <v-card-text class="pa-5 ma-5">
+          <v-btn class="pa-5 ma-5" fab dark small color="pink" absolute @click="filesCounter += 1">
+            <v-icon dark>
+              mdi-plus
+            </v-icon>
+          </v-btn>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn
+            v-if="documentCreationMessage.type !== 'success'"
+            class="my-2"
+            color="success"
+            :disabled="invalid"
+            @click="validate()"
+          >
+            Guardar
+            <v-icon right dark>mdi-cloud-upload</v-icon>
+          </v-btn>
+        </v-card-actions>
       </v-card-text>
     </validation-observer>
   </v-card>
@@ -90,6 +107,7 @@ export default {
     fieldModel: [],
     files: [],
     docURLs: [],
+    filesCounter: 1,
   }),
   asyncComputed: {},
   computed: {
@@ -110,7 +128,10 @@ export default {
     ...mapMutations('documents', ['setDocumentNameToCreate', 'setDocumentCreationMessage']),
     ...mapActions('documents', ['createUserDocument']),
     getURL(file) {
-      if (isNil(file)) return null
+      console.log('typeof file: ', typeof file)
+      console.log('file: ', file)
+      if (isNil(file) || typeof file !== 'object') return null
+      console.log('file: ', file)
       return URL.createObjectURL(file)
     },
     createLocalDocument(document) {
@@ -136,9 +157,11 @@ export default {
     },
     populateLocalFiles(files) {
       if (isNil(files)) return null
-      return files.map(file => {
-        return URL.createObjectURL(file)
-      })
+      console.log('files: ', files)
+      return files.map(file => this.getURL(file))
+      // return files.map(file => {
+      //   return URL.createObjectURL(file)
+      // })
     },
     populateRemoteFiles(files) {
       if (isNil(files)) return null

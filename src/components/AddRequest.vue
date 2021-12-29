@@ -73,7 +73,7 @@
             "
             @document-added="updateEvent"
           ></upload-document>
-          <v-btn v-if="n + 1 < steps.length + 1" color="primary" :disabled="invalid" @click="nextStep(n)"
+          <v-btn v-if="n + 1 < steps.length + 1" color="primary"  @click="nextStep(n)"
             >Continuar</v-btn
           >
           <v-btn v-else color="success" @click="done()">Terminar</v-btn>
@@ -104,7 +104,7 @@ export default {
     files: [],
     // <!--TODO: Move this elsewhere-->
     steps: [
-      {
+      /* {
         longName: 'Cédula profesional de licenciatura en medicina',
         upload: true,
         name: 'cédula',
@@ -118,24 +118,32 @@ export default {
             type: 'v-text-field',
           },
         ],
-      },
+      }, */
       {
         longName:
-          'Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional para la Formación de Recursos Humanos para la Salud (CIFRHS); Copia de la constancia de haber efectuado y aprobado el Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional para la Formación de Recursos Humanos para la Salud (CIFRHS); ',
+          'Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional para la Formación de Recursos Humanos para la Salud (CIFRHS); Copia de la constancia de haber efectuado y aprobado el ENARM, CIFRHS',
         name: 'enarm',
         upload: true,
         fields: [
           {
             label: 'Descripción',
-            name: 'description',
+            name: 'enarmDescription',
             placeholder: 'Breve descripción del documento',
             type: 'v-text-field',
           },
         ],
       },
       {
-        name:
+        longName:
           ' En el caso de Urgencias Pediátricas deberá entregar además el diploma institucional y diploma de la institución educativa (universitaria) que lo avala en Pediatría. ',
+        name: 'diplomas',
+        upload: true,
+        fields: [{ 
+          label: 'Diploma(s) de especialidad',
+          name: 'diplomasDescription', 
+          placeholder: 'Breve descripción del documento',
+          type: 'v-text-field',
+        }]
       },
       {
         name:
