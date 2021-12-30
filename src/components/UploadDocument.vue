@@ -27,7 +27,7 @@
       </v-card-text>
 
       <v-card-text>
-        <show-file v-for="(file, i) in docURLs" :key="`url-${i}`" :url="file" />
+        <show-file v-for="(file, i) in docURLs" :key="`url-${i}-${inputsArray[item - 1]}`" :url="file" />
         <keep-alive v-for="item in filesCounter" :key="`input-${item - 1}`">
           <validation-provider
             v-slot="{ errors }"
@@ -35,7 +35,7 @@
             rules="required|size:2000"
           >
             <v-file-input
-              v-if="inputsArray[item - 1]"
+              :key="`${document.name}-${item - 1}-${inputsArray[item - 1]}`"
               :ref="`fileInput-${item - 1}`"
               v-model="files[item - 1]"
               :name="`foo-${document.name}-${item - 1}`"
@@ -53,14 +53,15 @@
               small-chips
               clearable
               @click="setDocumentCreationMessage({})"
-              @change="docURLs.push(getURL(files[item - 1]))"
+              @change="docURLs[item - 1] = getURL(files[item - 1])"
             >
               <v-icon
                 slot="append"
                 color="red"
                 @click="
+                  docURLs.splice(item - 1, 1)
                   inputsArray[item - 1] = false
-                  filesCounter -= 1
+                  filesCounter - 1 < 1 ? (filesCounter = 1) : (filesCounter -= 1)
                 "
               >
                 mdi-minus
