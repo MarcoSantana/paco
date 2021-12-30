@@ -15,7 +15,7 @@
                   v-model="fieldModel[field.name]"
                   :name="field.name"
                   :data-vv-name="scope"
-                  :label="field.label"
+                  :label="$t('document.' + field.label)"
                   :placeholder="field.placeholder"
                   :error="errors.length > 0"
                   :error-messages="errors"
