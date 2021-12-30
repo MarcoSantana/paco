@@ -160,7 +160,6 @@ export default {
         this.valid = false
         return
       }
-      document.upload = this.files
       this.createUserDocument(document)
     },
     async validate() {
