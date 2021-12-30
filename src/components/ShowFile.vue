@@ -19,7 +19,13 @@
           </v-card-text>
           <hr />
           <v-card-actions>
-            <v-progress-linear v-if="loadedRatio < 1" color="accent" height="10" :value="loadedRatio * 100" striped />
+            <v-progress-linear
+              v-if="loadedRatio < 1"
+              color="accent"
+              height="10"
+              :value="loadedRatio * 100"
+              striped
+            />
             <v-slider
               v-model="page"
               step="1"
@@ -31,38 +37,55 @@
               tick-size="4"
             >
               <template v-slot:append>
-                <v-icon large color="accent" @click="page + 1 > numPages ? (page = numPages) : (page += 1)">
-                  mdi-plus
-                </v-icon>
+                <v-icon
+                  large
+                  color="accent"
+                  @click="page + 1 > numPages ? (page = numPages) : (page += 1)"
+                >mdi-plus</v-icon>
               </template>
 
               <template v-slot:prepend>
-                <v-icon large color="accent" @click="page - 1 < 1 ? (page = 1) : (page -= 1)"> mdi-minus </v-icon>
+                <v-icon
+                  large
+                  color="accent"
+                  @click="page - 1 < 1 ? (page = 1) : (page -= 1)"
+                >mdi-minus</v-icon>
               </template>
             </v-slider>
           </v-card-actions>
         </div>
-        <v-snackbar v-model="snackbar" timeout="2000">
-          {{ snackbarMessage }}
-        </v-snackbar>
+        <v-snackbar v-model="snackbar" timeout="2000">{{ snackbarMessage }}</v-snackbar>
         <transition name="fade">
           <v-card-actions v-show="hover">
             <v-dialog v-model="dialog" width="500">
               <template v-slot:activator="{ on, attrs }">
-                <v-btn color="red lighten-2" dark v-bind="attrs" v-on="on">
-                  {{ $t('actions.delete') }}
-                </v-btn>
+                <v-btn
+                  color="red lighten-2"
+                  dark
+                  v-bind="attrs"
+                  v-on="on"
+                >{{ $t('actions.delete') }}</v-btn>
               </template>
               <v-card>
-                <v-card-title class="text-h5 warning lighten-2 capitalize">{{ $t('message.confirm') }}</v-card-title>
-                <v-card-text
-                  >{{ $t('actions.delete') }} {{ $t('file') }}: <br />
+                <v-card-title
+                  class="text-h5 warning lighten-2 capitalize"
+                >{{ $t('message.confirm') }}</v-card-title>
+                <v-card-text>
+                  {{ $t('actions.delete') }} {{ $t('file') }}:
+                  <br />
                   {{ $t('message.cannotUndo') }}
                 </v-card-text>
                 <v-divider></v-divider>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="error" text @click="dialog = false">{{ $t('actions.delete') }}</v-btn>
+                  <v-btn
+                    color="error"
+                    text
+                    @click="
+                      $emit('removeFile')
+                      dialog = false
+                    "
+                  >{{ $t('actions.delete') }}</v-btn>
                 </v-card-actions>
               </v-card>
             </v-dialog>
@@ -109,8 +132,8 @@ export default {
       try {
         // TODO check for 403 status and manage error
         fetch(url)
-          .then(response => response.blob())
-          .then(blob => {
+          .then((response) => response.blob())
+          .then((blob) => {
             this.file = blob
             this.loading = false
           })
