@@ -126,10 +126,12 @@ export default {
         upload: true,
         fields: [
           {
-            label: 'Descripción',
-            name: 'enarmDescription',
-            placeholder: 'Breve descripción del documento',
+            label: `comment`,
+            name: 'comment',
+            placeholder: 'Comentario sobre el documento',
             type: 'v-text-field',
+            rules: { required: false, length: { max: 160, min: 0 } },
+            counter: true,
           },
         ],
       },
@@ -138,12 +140,16 @@ export default {
           ' En el caso de Urgencias Pediátricas deberá entregar además el diploma institucional y diploma de la institución educativa (universitaria) que lo avala en Pediatría. ',
         name: 'diplomas',
         upload: true,
-        fields: [{ 
-          label: 'Diploma(s) de especialidad',
-          name: 'diplomasDescription', 
-          placeholder: 'Breve descripción del documento',
-          type: 'v-text-field',
-        }]
+        fields: [
+          {
+            label: 'comment',
+            name: 'comment',
+            placeholder: 'Comentario sobre el documento',
+            type: 'v-text-field',
+            rules: { required: false, length: { max: 160, min: 0 } },
+            counter: true,
+          },
+        ],
       },
       {
         name:

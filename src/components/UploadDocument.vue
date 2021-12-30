@@ -19,6 +19,7 @@
                   :placeholder="field.placeholder"
                   :error="errors.length > 0"
                   :error-messages="errors"
+                  :counter="field.counter"
                 ></component>
               </span> </validation-provider
           ></keep-alive>
