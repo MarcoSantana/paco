@@ -92,7 +92,7 @@
             :disabled="invalid"
             @click="validate()"
           >
-            Guardar
+            {{ $t('actions.save') }}
             <v-icon right dark>mdi-cloud-upload</v-icon>
           </v-btn>
         </v-card-actions>

@@ -73,8 +73,8 @@
             "
             @document-added="updateEvent"
           ></upload-document>
-          <v-btn v-if="n + 1 < steps.length + 1" color="primary"  @click="nextStep(n)"
-            >Continuar</v-btn
+          <v-btn v-if="n + 1 < steps.length + 1" color="primary" @click="nextStep(n)">
+            {{ $t('actions.continue') }}</v-btn
           >
           <v-btn v-else color="success" @click="done()">Terminar</v-btn>
           <v-btn v-if="n > 0" text @click="curr = n">Atrás</v-btn>
