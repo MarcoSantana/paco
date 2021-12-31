@@ -183,14 +183,14 @@ export default {
     populateLocalFiles(files) {
       if (isNil(files)) return null
       console.log('files: ', files)
-      return files.map((file) => this.getURL(file))
+      return files.map(file => this.getURL(file))
       // return files.map(file => {
       //   return URL.createObjectURL(file)
       // })
     },
     populateRemoteFiles(files) {
       if (isNil(files)) return null
-      return files.map(async (file) => {
+      return files.map(async file => {
         this.docURLs.push(await this.getDownloadURL(file))
       })
     },
