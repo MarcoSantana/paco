@@ -1,8 +1,10 @@
 <template>
   <v-card class="mx-auto" max-width="500">
-    <v-alert v-if="documentCreationMessage.message" text :type="documentCreationMessage.type">{{
-      documentCreationMessage.message
-    }}</v-alert>
+    <v-alert
+      v-if="documentCreationMessage.message"
+      text
+      :type="documentCreationMessage.type"
+    >{{ documentCreationMessage.message }}</v-alert>
     <validation-observer v-slot="{ invalid }">
       <v-card-text class="ma-5">
         <div v-for="field in document.fields" :key="field.name" class="pr-5">
@@ -26,7 +28,6 @@
           </keep-alive>
         </div>
       </v-card-text>
-
       <v-card-text>
         <show-file
           v-for="(file, i) in docURLs"
@@ -69,8 +70,7 @@
                   inputsArray[item - 1] = false
                   filesCounter - 1 < 1 ? (filesCounter = 1) : (filesCounter -= 1)
                 "
-                >mdi-minus</v-icon
-              >
+              >mdi-minus</v-icon>
             </v-file-input>
           </validation-provider>
         </keep-alive>
@@ -179,17 +179,18 @@ export default {
       const url = await storageRef.getDownloadURL()
       return url
     },
+
     populateLocalFiles(files) {
       if (isNil(files)) return null
       console.log('files: ', files)
-      return files.map(file => this.getURL(file))
+      return files.map((file) => this.getURL(file))
       // return files.map(file => {
       //   return URL.createObjectURL(file)
       // })
     },
     populateRemoteFiles(files) {
       if (isNil(files)) return null
-      return files.map(async file => {
+      return files.map(async (file) => {
         this.docURLs.push(await this.getDownloadURL(file))
       })
     },
