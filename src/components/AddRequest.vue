@@ -73,11 +73,27 @@
             "
             @document-added="updateEvent"
           ></upload-document>
-          <v-btn v-if="n + 1 < steps.length + 1" color="primary" @click="nextStep(n)">
+          <v-btn
+            v-if="n + 1 < steps.length + 1"
+            :disabled="!disableNext"
+            color="primary"
+            @click="
+              nextStep(n)
+              disableNext = false
+            "
+          >
             {{ $t('actions.continue') }}</v-btn
           >
           <v-btn v-else color="success" @click="done()">Terminar</v-btn>
-          <v-btn v-if="n > 0" text @click="curr = n">Atrás</v-btn>
+          <v-btn
+            v-if="n > 0"
+            text
+            @click="
+              curr = n
+              disableNext = true
+            "
+            >Atrás</v-btn
+          >
         </validation-observer>
       </v-stepper-content>
     </v-stepper>
@@ -100,6 +116,7 @@ export default {
   data: () => ({
     //
     invalid: true,
+    disableNext: false,
     curr: 1,
     files: [],
     // <!--TODO: Move this elsewhere-->
@@ -212,6 +229,7 @@ export default {
       data.documents = val
       data.currentUserEvent = this.currentUserEvent
       this.updateUserEvent(data)
+      this.disableNext = true
     },
     createLocalDocument(document, n) {
       if (isNil(document) || isNil(this.files[n])) return
