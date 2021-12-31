@@ -1,10 +1,8 @@
 <template>
   <v-card class="mx-auto" max-width="500">
-    <v-alert
-      v-if="documentCreationMessage.message"
-      text
-      :type="documentCreationMessage.type"
-    >{{ documentCreationMessage.message }}</v-alert>
+    <v-alert v-if="documentCreationMessage.message" text :type="documentCreationMessage.type">{{
+      documentCreationMessage.message
+    }}</v-alert>
     <validation-observer v-slot="{ invalid }">
       <v-card-text class="ma-5">
         <div v-for="field in document.fields" :key="field.name" class="pr-5">
@@ -32,9 +30,9 @@
       <v-card-text>
         <show-file
           v-for="(file, i) in docURLs"
-          @removeFile="file = null"
           :key="`url-${i}-${inputsArray[i - 1]}`"
           :url="file"
+          @removeFile="file = null"
         />
         <keep-alive v-for="item in filesCounter" :key="`input-${item - 1}`">
           <validation-provider
@@ -71,7 +69,8 @@
                   inputsArray[item - 1] = false
                   filesCounter - 1 < 1 ? (filesCounter = 1) : (filesCounter -= 1)
                 "
-              >mdi-minus</v-icon>
+                >mdi-minus</v-icon
+              >
             </v-file-input>
           </validation-provider>
         </keep-alive>

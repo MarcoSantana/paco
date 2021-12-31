@@ -5,6 +5,7 @@ export default {
   // FIXME vuetify translation not working 202112.27-09.25
   $vuetify: { ...es },
   file: 'archivo',
+  diploma: 'diploma',
   message: {
     hello: 'holas',
     bye: 'sales bye',
@@ -41,7 +42,10 @@ export default {
       postGraduate: 'institución de posgrado',
       voucher: 'comprobante de pago',
       enarm: 'comprobante ENARM o similar',
-      diploma: 'diploma',
+      specialtyDiploma: 'diploma de especialidad',
+      degreeDiploma: 'diploma universitario de licenciatura',
+      pediatricVoucher: 'comprobante de pediatría',
+      mugshot: 'fotografía',
     },
   },
 }

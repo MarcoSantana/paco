@@ -141,6 +141,7 @@ export default {
           'Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional para la Formación de Recursos Humanos para la Salud (CIFRHS); Copia de la constancia de haber efectuado y aprobado el ENARM, CIFRHS',
         name: 'enarm',
         upload: true,
+        required: true,
         fields: [
           {
             label: `comment`,
@@ -157,6 +158,7 @@ export default {
           ' En el caso de Urgencias Pediátricas deberá entregar además el diploma institucional y diploma de la institución educativa (universitaria) que lo avala en Pediatría. ',
         name: 'diplomas',
         upload: true,
+        required: false,
         fields: [
           {
             label: 'comment',
@@ -169,16 +171,86 @@ export default {
         ],
       },
       {
-        name:
+        longName:
           ' En el caso de Urgencias Pediátricas, constancia de haber terminado satisfactoriamente una residencia progresiva hospitalaria de por lo menos 2 años. ',
+        name: 'pediatricVoucher',
+        upload: true,
+        required: false,
+        fields: [
+          {
+            label: 'comment',
+            name: 'comment',
+            placeholder: 'Comentario sobre el documento',
+            type: 'v-text-field',
+            rules: { required: false, length: { max: 160, min: 0 } },
+            counter: true,
+          },
+        ],
       },
-      { name: 'Copia del diploma institucional en Medicina de Urgencias o en su caso Urgencias Pediatricas.' },
-      { name: 'Copia del diploma de la institución educativa (Universitaria) que lo avala.' },
       {
-        name:
-          ' Tres fotografías oval tamaño diploma (5x7cm) blanco y negro, con fondo blanco, vestimenta formal. Con nombre completo al reverso (con tinta). ',
+        longName: 'Copia del diploma institucional en Medicina de Urgencias o en su caso Urgencias Pediatricas.',
+        name: 'specialtyDiploma',
+        upload: true,
+        required: true,
+        fields: [
+          {
+            label: 'comment',
+            name: 'comment',
+            placeholder: 'Comentario sobre el documento',
+            type: 'v-text-field',
+            rules: { required: false, length: { max: 160, min: 0 } },
+            counter: true,
+          },
+        ],
       },
-      { name: 'Donativo no reembolsable de $ 5,700. 00/100 m.n.' },
+      {
+        longName: 'Copia del diploma de la institución educativa (Universitaria) que lo avala.',
+        name: 'degreeDiploma',
+        upload: true,
+        required: true,
+        fields: [
+          {
+            label: 'comment',
+            name: 'comment',
+            placeholder: 'Comentario sobre el documento',
+            type: 'v-text-field',
+            rules: { required: false, length: { max: 160, min: 0 } },
+            counter: true,
+          },
+        ],
+      },
+      {
+        longName: 'Fotografía oval tamaño diploma (5x7cm) blanco y negro, con fondo blanco, vestimenta formal.',
+        name: 'mugshot',
+        upload: true,
+        required: true,
+        fields: [
+          {
+            label: 'comment',
+            name: 'comment',
+            placeholder: 'Comentario sobre el documento',
+            type: 'v-text-field',
+            rules: { required: false, length: { max: 160, min: 0 } },
+            counter: true,
+          },
+        ],
+      },
+      {
+        longName: 'Donativo no reembolsable de $ 5,700. 00/100 m.n.',
+        name: 'voucher',
+        upload: true,
+        required: true,
+        fields: [
+          {
+            label: 'comment',
+            name: 'comment',
+            placeholder: 'Comentario sobre el documento',
+            type: 'v-text-field',
+            rules: { required: false, length: { max: 160, min: 0 } },
+            counter: true,
+          },
+        ],
+      },
       { name: 'Solicitud completa' },
     ],
     model: {},
