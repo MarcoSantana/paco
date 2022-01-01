@@ -154,23 +154,30 @@ export default {
     ...mapActions('documents', ['triggerAddDocumentAction']),
     ...mapMutations('documents', ['setDocumentNameToCreate', 'setDocumentCreationMessage']),
     ...mapActions('documents', ['createUserDocument']),
+    ...mapActions('events', ['updateUserEvent']),
     getURL(file) {
       if (isNil(file) || typeof file !== 'object') return null
       return URL.createObjectURL(file)
     },
-    createLocalDocument(document) {
+    async createLocalDocument(document) {
       if (isNil(document) || isNil(this.files)) {
         this.valid = false
-        return
+        return {}
       }
-      this.createUserDocument(document)
+      const createdDocument = await this.createUserDocument(document)
+      return createdDocument
     },
     async validate() {
       if (!this.valid && this.invalid) return null
       this.setDocumentCreationMessage({ type: 'info', message: 'Validando documento' })
       this.setDocumentCreationMessage({ type: 'warning', message: 'Creando documento' })
-      this.createLocalDocument({ name: this.document.name, ...this.fieldModel, upload: this.files })
-      this.$emit('document-added', this.documents[this.documents.length - 1])
+      const createdDocument = await this.createLocalDocument({
+        name: this.document.name,
+        ...this.fieldModel,
+        upload: this.files,
+      })
+      console.log('createdDocument', createdDocument)
+      this.$emit('document-created', createdDocument)
       return true
     },
     async getDownloadURL(docRef) {

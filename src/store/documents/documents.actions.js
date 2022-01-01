@@ -1,9 +1,9 @@
-import { isNil } from 'lodash'
-import UserDocumentsDB from '@/firebase/user-documents-db'
-import UsersDB from '@/firebase/users-db'
 import DocumentsDB from '@/firebase/documents-db'
 import { callUpdateDocumentStatus } from '@/firebase/functions'
+import UserDocumentsDB from '@/firebase/user-documents-db'
+import UsersDB from '@/firebase/users-db'
 import { storage } from 'firebase'
+import { isNil } from 'lodash'
 
 export default {
   /**
@@ -144,7 +144,7 @@ export default {
       commit('setDocumentCreationMessage', { type: 'error', message: error })
       console.log('Error', error)
     }
-    return null
+    return createdDocument
   },
 
   /** Update document status to "for revision"

@@ -5,5 +5,5 @@ export default {
   eventCreationPending: false,
   eventCreationMessage: {},
   userEvents: [],
-  curentEvent: {}
+  curentEvent: {},
 }
