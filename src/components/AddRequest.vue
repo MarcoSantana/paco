@@ -71,7 +71,7 @@
                   : null
               )
             "
-            @document-added="updateEvent"
+            @document-created="updateEvent"
           ></upload-document>
           <v-btn
             v-if="n + 1 < steps.length + 1"
@@ -81,8 +81,7 @@
               nextStep(n)
               disableNext = false
             "
-          >
-            {{ $t('actions.continue') }}</v-btn
+            >{{ $t('actions.continue') }}</v-btn
           >
           <v-btn v-else color="success" @click="done()">Terminar</v-btn>
           <v-btn
