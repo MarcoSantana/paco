@@ -264,6 +264,7 @@ export default {
     currentUserEvent() {
       return this.getUserEvent(this.id)
     },
+    // TODO disableNext with getter and setter to add the required feature so the user can skip some steps
   },
   watch: {},
   mounted() {

@@ -1,80 +1,48 @@
 <template>
   <v-container>
-    <v-hover v-slot="{ hover }" open-delay="200" close-delay="1000">
-      <v-card v-if="file && file.type" class="mx-auto mt-5" max-width="80%">
+    <v-card v-if="file && file.type" class="mx-auto mt-5" max-width="80%">
+      <v-card-text>
+        <v-img v-if="file.type === 'image/jpeg' || file.type === 'image/png'" :src="url"></v-img>
+      </v-card-text>
+      <div v-if="file.type === 'application/pdf'" class="justify-center mb-6">
         <v-card-text>
-          <v-img v-if="file.type === 'image/jpeg' || file.type === 'image/png'" :src="url"></v-img>
+          <pdf
+            ref="myPdf"
+            :src="url"
+            :page="page"
+            @progress="loadedRatio = $event"
+            @error="error"
+            @num-pages="numPages = $event"
+            @link-clicked="page = $event"
+          />
         </v-card-text>
-        <div v-if="file.type === 'application/pdf'" class="justify-center mb-6">
-          <v-card-text>
-            <pdf
-              ref="myPdf"
-              :src="url"
-              :page="page"
-              @progress="loadedRatio = $event"
-              @error="error"
-              @num-pages="numPages = $event"
-              @link-clicked="page = $event"
-            />
-          </v-card-text>
-          <hr />
-          <v-card-actions>
-            <v-progress-linear v-if="loadedRatio < 1" color="accent" height="10" :value="loadedRatio * 100" striped />
-            <v-slider
-              v-model="page"
-              step="1"
-              min="1"
-              :max="numPages"
-              thumb-label="always"
-              :thumb-size="20"
-              ticks="always"
-              tick-size="4"
-            >
-              <template v-slot:append>
-                <v-icon large color="accent" @click="page + 1 > numPages ? (page = numPages) : (page += 1)"
-                  >mdi-plus</v-icon
-                >
-              </template>
+        <hr />
+        <v-card-actions>
+          <v-progress-linear v-if="loadedRatio < 1" color="accent" height="10" :value="loadedRatio * 100" striped />
+          <v-slider
+            v-model="page"
+            step="1"
+            min="1"
+            :max="numPages"
+            thumb-label="always"
+            :thumb-size="20"
+            ticks="always"
+            tick-size="4"
+          >
+            <template v-slot:append>
+              <v-icon large color="accent" @click="page + 1 > numPages ? (page = numPages) : (page += 1)"
+                >mdi-plus</v-icon
+              >
+            </template>
 
-              <template v-slot:prepend>
-                <v-icon large color="accent" @click="page - 1 < 1 ? (page = 1) : (page -= 1)">mdi-minus</v-icon>
-              </template>
-            </v-slider>
-          </v-card-actions>
-        </div>
-        <v-snackbar v-model="snackbar" timeout="2000">{{ snackbarMessage }}</v-snackbar>
-        <transition name="fade">
-          <v-card-actions v-show="hover">
-            <v-dialog v-model="dialog" width="500">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn color="red lighten-2" dark v-bind="attrs" v-on="on">{{ $t('actions.delete') }}</v-btn>
-              </template>
-              <v-card>
-                <v-card-title class="text-h5 warning lighten-2 capitalize">{{ $t('message.confirm') }}</v-card-title>
-                <v-card-text>
-                  {{ $t('actions.delete') }} {{ $t('file') }}:
-                  <br />
-                  {{ $t('message.cannotUndo') }}
-                </v-card-text>
-                <v-divider></v-divider>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    color="error"
-                    text
-                    @click="
-                      $emit('removeFile')
-                      dialog = false
-                    "
-                    >{{ $t('actions.delete') }}</v-btn
-                  >
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-          </v-card-actions>
-        </transition>
-      </v-card>
-    </v-hover>
+            <template v-slot:prepend>
+              <v-icon large color="accent" @click="page - 1 < 1 ? (page = 1) : (page -= 1)">mdi-minus</v-icon>
+            </template>
+          </v-slider>
+        </v-card-actions>
+      </div>
+      <v-snackbar v-model="snackbar" timeout="2000">{{ snackbarMessage }}</v-snackbar>
+    </v-card>
     <v-skeleton-loader v-if="loading" type="card"></v-skeleton-loader>
   </v-container>
 </template>
