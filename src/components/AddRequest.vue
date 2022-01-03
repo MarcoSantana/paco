@@ -273,6 +273,7 @@ export default {
   methods: {
     ...mapActions('documents', ['triggerAddDocumentAction']),
     ...mapMutations('documents', ['setDocumentNameToCreate', 'setDocumentCreationMessage']),
+    ...mapMutations('events', ['setCurrentEvent']),
     ...mapActions('events', ['setUserEvent', 'updateUserEvent']),
     ...mapActions('documents', ['createUserDocument']),
 
