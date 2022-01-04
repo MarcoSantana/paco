@@ -216,7 +216,7 @@
 // Stardate: 202005.17 13:56
 // fileName: views/SignUp.vue
 
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapMutations, mapActions } from 'vuex'
 import { isNil } from 'lodash'
 
 import firebase from 'firebase/app'
@@ -320,11 +320,11 @@ export default {
   },
   mounted() {
     // this.documentAPI()
-    console.clear()
   },
   methods: {
     ...mapMutations('authentication', ['setUser']),
     ...mapMutations('app', ['setLoading', 'unsetLoading']),
+    ...mapActions('user', ['createUserProfile']),
     async login() {
       // TODO must remove scince it will be qith email/password login
       this.loginError = null
@@ -353,17 +353,42 @@ export default {
         .createUserWithEmailAndPassword(data.email, data.password)
         .then(userCredentials => {
           const { user } = userCredentials
-          console.log('user :>> ', user)
-          user
-            .updateProfile({
-              displayName: `${data.name} ${data.lastname1} ${data.lastname2}`,
-            })
-            .catch(error => {
-              this.errors.push(error)
-            })
-          user.sendEmailVerification()
+          user.updateProfile({
+            displayName: `${data.name} ${data.lastname1} ${data.lastname2}`,
+            license: data.license,
+            gender: data.gender,
+          })
+          return user
         })
-      // update user data
+        .then(user => {
+          const clonedData = data
+          clonedData.id = user.uid
+          delete clonedData.password
+          delete clonedData.passwordConfirmation
+          delete clonedData.email
+          delete clonedData.emailConfirmation
+          this.createUserProfile(clonedData)
+        })
+        .then(user => {
+          user.sendEmailVerification()
+          return user
+        })
+        .then(user => {
+          console.log('user', user)
+          return user
+        })
+        .then(user => {
+          data.id = user.uid
+          delete data.password
+          delete data.passwordConfirmation
+          delete data.email
+          delete data.emailConfirmation
+          console.log('data.id: ', data.id)
+          this.createUserProfile(data)
+        })
+        .catch(error => {
+          this.errors.push(error)
+        })
     },
     onSubmit() {
       // Submit values to API...
