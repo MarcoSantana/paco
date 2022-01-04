@@ -1,13 +1,4 @@
 <template>
-  <!--
-  _______ _______
-  |  |  | |______
-  |  |  | ______|
-author: mSantana
-createdAt 2020-05-17 13:56
-Stardate: 202005.17 13:56
-fileName: views/SignUp.vue -->
-
   <div class="page-wrapper" background-color="primary">
     <!-- Loader -->
     <div v-show="user === undefined" data-test="loader">Autenticando...</div>
@@ -217,6 +208,14 @@ fileName: views/SignUp.vue -->
 </template>
 
 <script>
+// _______ _______
+// |  |  | |______
+// |  |  | ______|
+// author: mSantana
+// createdAt 2020-05-17 13:56
+// Stardate: 202005.17 13:56
+// fileName: views/SignUp.vue
+
 import { mapState, mapMutations } from 'vuex'
 import { isNil } from 'lodash'
 
