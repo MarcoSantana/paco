@@ -1,7 +1,7 @@
-import GenericDB from './generic-d'
+import GenericDB from './generic-db'
 
 export default class UserDB extends GenericDB {
-  constructor() {
+  constructor(userId) {
     super(`users/${userId}`)
   }
 
