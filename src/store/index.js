@@ -9,6 +9,7 @@ import hospitals from './hospitals'
 import forms from './forms'
 import admin from './admin'
 import events from './events'
+import users from './users'
 
 Vue.use(Vuex)
 
@@ -26,5 +27,6 @@ export default new Vuex.Store({
     forms,
     admin,
     events,
+    users,
   },
 })
