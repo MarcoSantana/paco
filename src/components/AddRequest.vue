@@ -120,21 +120,6 @@ export default {
     files: [],
     // <!--TODO: Move this elsewhere-->
     steps: [
-      /* {
-        longName: 'Cédula profesional de licenciatura en medicina',
-        upload: true,
-        name: 'cédula',
-        valid: false,
-        fields: [
-          {
-            label: 'Número de cédula profesional',
-            name: 'cédula',
-            placeholder: 'Cédula profesional',
-            rules: { numeric: true, required: true, length: { max: 12, min: 7 } },
-            type: 'v-text-field',
-          },
-        ],
-      }, */
       {
         longName:
           'Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional para la Formación de Recursos Humanos para la Salud (CIFRHS); Copia de la constancia de haber efectuado y aprobado el ENARM, CIFRHS',
