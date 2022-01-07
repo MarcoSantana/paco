@@ -7,7 +7,7 @@ export default {
     return {
       showData: false,
       paginationStart: 1,
-      limit: 100,
+      limit: 800,
       constraints: null,
       // Sorting
       currentSort: 'userName',
@@ -18,7 +18,8 @@ export default {
         { text: 'Nombre', value: 'userName' },
         { text: 'Tipo de documento', value: 'name' },
         { text: 'Estado', value: 'status' },
-        { text: 'última modificación', value: 'data.createTimestamp' },
+        { text: 'Creado', value: 'data.updateTimestamp' },
+        { text: 'Última modificación', value: 'data.createTimestamp' },
       ],
     }
   },
@@ -88,7 +89,21 @@ export default {
         >Buscar en documentos <v-spacer />
         <v-text-field v-model="documentsSearch" append-icon="mdi-magnify"></v-text-field
       ></v-card-title>
-      <v-data-table :headers="documentHeaders" :items="documents" :search="documentsSearch"></v-data-table>
+      <v-data-table :headers="documentHeaders" :items="documents" :search="documentsSearch" dense>
+        <template v-slot:item.userName="{ item }">
+          <span>{{ item.userName }}</span>
+        </template>
+        <template v-slot:item.data.createTimestamp="{ item }">
+          <strong>
+            <span>{{ item.data.createTimestamp.toDate().toLocaleString() }}</span>
+          </strong>
+        </template>
+        <template v-slot:item.data.updateTimestamp="{ item }">
+          <strong>
+            <span>{{ item.data.updateTimestamp.toDate().toLocaleString() }}</span>
+          </strong>
+        </template>
+      </v-data-table>
     </v-card>
   </div>
 </template>
