@@ -3,6 +3,26 @@ import { mapState, mapActions } from 'vuex'
 // import { callCreateUserListSheet } from '@/firebase/functions'
 
 export default {
+  filters: {
+    capitalize: value => {
+      if (!value) return ''
+      return value
+        .split(' ')
+        .map(word => {
+          return (
+            word
+              .toLocaleLowerCase()
+              .charAt(0)
+              .toLocaleUpperCase() + word.slice(1).toLocaleLowerCase()
+          )
+        })
+        .join(' ')
+    },
+    removeTime: value => {
+      if (!value) return ''
+      return value.toLocaleString().split(' ')[0]
+    },
+  },
   data() {
     return {
       showData: false,
@@ -91,16 +111,16 @@ export default {
       ></v-card-title>
       <v-data-table :headers="documentHeaders" :items="documents" :search="documentsSearch" dense>
         <template v-slot:item.userName="{ item }">
-          <span>{{ item.userName }}</span>
+          <span>{{ item.userName | capitalize }}</span>
         </template>
         <template v-slot:item.data.createTimestamp="{ item }">
           <strong>
-            <span>{{ item.data.createTimestamp.toDate().toLocaleString() }}</span>
+            <span>{{ item.data.createTimestamp.toDate() | removeTime }}</span>
           </strong>
         </template>
         <template v-slot:item.data.updateTimestamp="{ item }">
           <strong>
-            <span>{{ item.data.updateTimestamp.toDate().toLocaleString() }}</span>
+            <span>{{ item.data.updateTimestamp.toDate() | removeTime }}</span>
           </strong>
         </template>
       </v-data-table>
