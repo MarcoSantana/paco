@@ -1,19 +1,25 @@
 <script>
 import { mapState, mapActions } from 'vuex'
-import DocumentDetails from '@/components/admin/DocumentDetails'
 // import { callCreateUserListSheet } from '@/firebase/functions'
 
 export default {
-  components: { DocumentDetails },
   data() {
     return {
       showData: false,
       paginationStart: 1,
-      limit: 10,
+      limit: 100,
       constraints: null,
       // Sorting
       currentSort: 'userName',
       currentSortDirection: 'asc',
+      documentsSearch: null,
+      documentHeaders: [
+        { text: 'identificador', value: 'id' },
+        { text: 'Nombre', value: 'userName' },
+        { text: 'Tipo de documento', value: 'name' },
+        { text: 'Estado', value: 'status' },
+        { text: 'última modificación', value: 'data.createTimestamp' },
+      ],
     }
   },
   computed: {
@@ -77,55 +83,13 @@ export default {
     <div>
       <h2>Documentos</h2>
     </div>
-    <!-- <div class="button" @click="paginateDocumentsForward()"> -->
-    <!--   Siguiente -->
-    <!-- </div> -->
-    <!-- <div class="button" @click="paginateDocumentsBackwards()"> -->
-    <!--   Atrás -->
-    <!-- </div> -->
-    <table>
-      <thead>
-        <th ref="header" class="selected"></th>
-        <th ref="userName" @click="sort('userName')">
-          Nombre
-          <small>
-            <i v-if="currentSortDirection === 'asc'" class="mdi icon mdi-sort-ascending"></i>
-            <i v-if="currentSortDirection === 'desc'" class="mdi icon mdi-sort-descending"></i>
-          </small>
-        </th>
-        <th ref="name" @click="sort('name')">
-          Documento
-          <small>
-            <i v-if="currentSortDirection === 'asc'" class="mdi icon mdi-sort-ascending"></i>
-            <i v-if="currentSortDirection === 'desc'" class="mdi icon mdi-sort-descending"></i>
-          </small>
-        </th>
-        <th ref="createTimestamp" @click="sort('createTimestamp')">
-          Creación
-          <small>
-            <i v-if="currentSortDirection === 'asc'" class="mdi icon mdi-sort-ascending"></i>
-            <i v-if="currentSortDirection === 'desc'" class="mdi icon mdi-sort-descending"></i>
-          </small>
-        </th>
-        <th ref="status" @click="sort('status')">
-          Estado
-          <small>
-            <i v-if="currentSortDirection === 'asc'" class="mdi icon mdi-sort-ascending"></i>
-            <i v-if="currentSortDirection === 'desc'" class="mdi icon mdi-sort-descending"></i>
-          </small>
-        </th>
-        <th>Aceptar</th>
-        <th>Por revisar</th>
-        <th>Rechazar</th>
-      </thead>
-      <document-details
-        v-for="document in documents"
-        :key="document.id"
-        :ref="document.id"
-        :document="document"
-        @deleteDocument="triggerSoftDeleteUserDocument"
-      ></document-details>
-    </table>
+    <v-card v-if="documents"
+      ><v-card-title
+        >Buscar en documentos <v-spacer />
+        <v-text-field v-model="documentsSearch" append-icon="mdi-magnify"></v-text-field
+      ></v-card-title>
+      <v-data-table :headers="documentHeaders" :items="documents" :search="documentsSearch"></v-data-table>
+    </v-card>
   </div>
 </template>
 
