@@ -35,7 +35,6 @@ export default {
       currentSortDirection: 'asc',
       documentsSearch: null,
       documentHeaders: [
-        { text: this.$t('document.id'), value: 'id', sortable: false },
         { text: 'Nombre', value: 'userName', sortable: true },
         { text: 'Tipo de documento', value: 'name', sortable: true },
         { text: 'Estado', value: 'status', sortable: true },
@@ -223,24 +222,27 @@ export default {
           <span>{{ item.data.updateTimestamp.toDate() | removeTime }}</span>
         </template>
         <template v-slot:no-data>
-          <v-btn color="primary" @click="paginateDocumentForward">
+          <v-btn outlined color="primary" @click="paginateDocumentForward">
             {{ $t('actions.reload') }}
           </v-btn>
         </template>
         <template v-slot:item.actions="{ item }">
-          <v-btn class="mr-2" x-small @click="documentStatusDialog = true">
-            <span class="md"> {{ $t('actions.changeStatus') }}</span>
-          </v-btn>
-          <v-btn
-            class="mr-2"
-            x-small
-            @click="
-              documentDeleteDialog = true
-              currentDocument = item
-            "
-          >
-            <v-icon color="error" light>mdi-delete</v-icon>
-          </v-btn>
+          <v-btn-toggle dense>
+            <v-btn x-small plain @click="currentDocument = item">
+              <v-icon light>mdi-eye</v-icon>
+            </v-btn>
+            <v-btn x-small plain @click="documentStatusDialog = true"> <v-icon>mdi-check</v-icon></v-btn>
+            <v-btn
+              x-small
+              plain
+              @click="
+                documentDeleteDialog = true
+                currentDocument = item
+              "
+            >
+              <v-icon light>mdi-delete</v-icon>
+            </v-btn>
+          </v-btn-toggle>
         </template>
       </v-data-table>
     </v-card>
