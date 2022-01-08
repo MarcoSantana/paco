@@ -34,13 +34,17 @@ export default {
       currentSortDirection: 'asc',
       documentsSearch: null,
       documentHeaders: [
-        { text: 'identificador', value: 'id' },
-        { text: 'Nombre', value: 'userName' },
-        { text: 'Tipo de documento', value: 'name' },
-        { text: 'Estado', value: 'status' },
-        { text: 'Creado', value: 'data.updateTimestamp' },
+        { text: 'identificador', value: 'id', sortable: false },
+        { text: 'Nombre', value: 'userName', sortable: true },
+        { text: 'Tipo de documento', value: 'name', sortable: true },
+        { text: 'Estado', value: 'status', sortable: true },
+        { text: 'Creado', value: 'data.updateTimestamp', sortable: true },
         { text: 'Última modificación', value: 'data.createTimestamp' },
+        { text: 'Acciones', value: 'actions', sortable: false },
       ],
+      documentDialogDelete: false,
+      currentDocument: {},
+      documentDeleteAccept: false,
     }
   },
   computed: {
@@ -61,6 +65,12 @@ export default {
     ...mapActions('admin', ['getAllDocuments', 'deleteUserDocument', 'triggerSoftDeleteUserDocument']),
     dispatchAllDocuments() {
       this.$store.dispatch('admin/getAllDocuments', null, { root: true })
+    },
+    quickViewDocument(identifier) {
+      console.log('identifier: ', identifier)
+    },
+    deleteDocument(item) {
+      console.log('item', item)
     },
     paginateDocumentsForward() {
       this.paginationStart += this.limit
@@ -90,9 +100,6 @@ export default {
       payload.limit = this.limit ? +this.limit : 10
       payload.orderBy = [[s, this.currentSortDirection]]
       this.$store.dispatch('admin/getAllDocuments', payload, { root: true })
-      // console.log('th', this.$refs[s])
-      // console.log('th class', this.$refs[s].classList)
-      // this.$refs[s].style['background-color'] = 'red'
       this.$refs[s].classList.add('selected')
       this.currentSort = s
     },
@@ -104,30 +111,117 @@ export default {
     <div>
       <h2>Documentos</h2>
     </div>
-    <v-card v-if="documents"
-      ><v-card-title
-        >Buscar en documentos <v-spacer />
-        <v-text-field v-model="documentsSearch" append-icon="mdi-magnify"></v-text-field
-      ></v-card-title>
+    <v-card v-if="documents">
       <v-data-table :headers="documentHeaders" :items="documents" :search="documentsSearch" dense>
+        <template v-slot:top>
+          <v-toolbar flat>
+            <v-card-title
+              >Buscar en documentos <v-spacer />
+              <v-spacer></v-spacer>
+              <v-text-field v-model="documentsSearch" class="mx-2" append-icon="mdi-magnify"></v-text-field
+            ></v-card-title>
+            <v-divider class="mx-4" inset vertical></v-divider>
+          </v-toolbar>
+          <v-dialog v-model="documentDialogDelete" max-width="500px">
+            <v-card>
+              <v-card-title class="text-h5 justify-center mb-2 warning light lighten-2">
+                {{ $t('message.confirm') | capitalize }}
+              </v-card-title>
+              <v-card-text>
+                <v-alert outlined type="warning" prominent border="left">
+                  {{ $t('message.cannotUndo') | capitalize }}
+                </v-alert>
+                <v-list-item two-line>
+                  <v-list-item-content>
+                    <v-list-item-title>
+                      {{ $t('file') | capitalize }}
+                    </v-list-item-title>
+                    <v-list-item-subtitle>
+                      {{ currentDocument.name }}
+                    </v-list-item-subtitle>
+                  </v-list-item-content>
+                </v-list-item>
+                <v-list-item two-line>
+                  <v-list-item-content>
+                    <v-list-item-title>
+                      {{ $t('user') | capitalize }}
+                    </v-list-item-title>
+                    <v-list-item-subtitle>
+                      {{ currentDocument.userName }}
+                    </v-list-item-subtitle>
+                  </v-list-item-content>
+                </v-list-item>
+                <v-list-item two-line>
+                  <v-list-item-content>
+                    <v-list-item-title> {{ $t('document.status') | capitalize }}</v-list-item-title>
+                    <v-list-item-subtitle>
+                      {{ $t('document.statusKey')[currentDocument.status] | capitalize }}
+                    </v-list-item-subtitle>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-card-text>
+              <v-card-actions>
+                <v-switch
+                  v-model="documentDeleteAccept"
+                  class="ma-2"
+                  :label="$t('actions.delete') | capitalize"
+                  color="error"
+                  :value="false"
+                  hide-details
+                ></v-switch>
+                <v-spacer></v-spacer>
+                <v-btn outlined color="primary darken-1" text @click="documentDialogDelete = false">{{
+                  $t('actions.cancel')
+                }}</v-btn>
+                <v-btn
+                  :disabled="!documentDeleteAccept"
+                  outlined
+                  color="error darken-1"
+                  text
+                  @click="deleteDocument(currentDocument.id)"
+                  >{{ $t('actions.accept') }}</v-btn
+                >
+                <v-spacer></v-spacer>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </template>
+        <template v-slot:item.status="{ item }">
+          {{ $t('document.statusKey')[item.status] | capitalize }}
+        </template>
         <template v-slot:item.userName="{ item }">
           <span>{{ item.userName | capitalize }}</span>
         </template>
         <template v-slot:item.data.createTimestamp="{ item }">
-          <strong>
-            <span>{{ item.data.createTimestamp.toDate() | removeTime }}</span>
-          </strong>
+          <span>{{ item.data.createTimestamp.toDate() | removeTime }}</span>
         </template>
         <template v-slot:item.data.updateTimestamp="{ item }">
-          <strong>
-            <span>{{ item.data.updateTimestamp.toDate() | removeTime }}</span>
-          </strong>
+          <span>{{ item.data.updateTimestamp.toDate() | removeTime }}</span>
+        </template>
+        <template v-slot:no-data>
+          <v-btn color="primary" @click="initialize">
+            {{ $t('actions.reload') }}
+          </v-btn>
+        </template>
+        <template v-slot:item.actions="{ item }">
+          <v-btn class="mr-2" x-small @click="quickViewDocument(item.id)">
+            <span class="md"> {{ $t('actions.quickView') }}</span>
+          </v-btn>
+          <v-btn
+            class="mr-2"
+            x-small
+            @click="
+              documentDialogDelete = true
+              currentDocument = item
+            "
+          >
+            <v-icon color="error" light>mdi-delete</v-icon>
+          </v-btn>
         </template>
       </v-data-table>
     </v-card>
   </div>
 </template>
-
 <style lang="scss" scoped>
 @import '@/theme/style.scss';
 @import '@/theme/variables.scss';

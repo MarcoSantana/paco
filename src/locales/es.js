@@ -6,6 +6,7 @@ export default {
   $vuetify: { ...es },
   file: 'archivo',
   diploma: 'diploma',
+  user: 'usuario',
   message: {
     hello: 'holas',
     bye: 'sales bye',
@@ -13,6 +14,8 @@ export default {
     cannotUndo: 'esta acción no puede deshacerse',
   },
   actions: {
+    accept: 'aceptar',
+    cancel: 'cancelar',
     send: 'enviar',
     save: 'guardar',
     delete: 'borrar',
@@ -20,6 +23,8 @@ export default {
     back: 'atras',
     forward: 'adelante',
     continue: 'continuar',
+    reload: 'recargar',
+    quickView: 'vista rápida',
   },
   document: {
     id: 'identificador',
