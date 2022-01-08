@@ -1,6 +1,6 @@
 <script>
 import { mapState, mapActions } from 'vuex'
-import { callUpdateDocumentStatus } from '@/firebase/functions'
+import { callUpdateDocumentStatus, callCreateUserListSheet } from '@/firebase/functions'
 // import { callCreateUserListSheet } from '@/firebase/functions'
 
 export default {
@@ -82,6 +82,10 @@ export default {
       })
       this.documentUpdateMessage = null
     },
+    async createUsersList() {
+      const response = await callCreateUserListSheet()
+      console.log('response: ', response)
+    },
     paginateDocumentsForward() {
       this.paginationStart += this.limit
       const payload = { constraints: this.constraints }
@@ -121,6 +125,9 @@ export default {
     <div>
       <h2>Documentos</h2>
     </div>
+    <v-card>
+      <v-btn x-small color="success" @click="createUsersList">Crear lista de usuarios para emma</v-btn>
+    </v-card>
     <v-card v-if="documents">
       <v-data-table :headers="documentHeaders" :items="documents" :search="documentsSearch" dense>
         <template v-slot:top>
