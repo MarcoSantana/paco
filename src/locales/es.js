@@ -16,6 +16,7 @@ export default {
   actions: {
     accept: 'aceptar',
     cancel: 'cancelar',
+    changeStatus: 'cambiar estado',
     send: 'enviar',
     save: 'guardar',
     delete: 'borrar',

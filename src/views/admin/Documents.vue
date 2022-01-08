@@ -1,5 +1,6 @@
 <script>
 import { mapState, mapActions } from 'vuex'
+import { callUpdateDocumentStatus } from '@/firebase/functions'
 // import { callCreateUserListSheet } from '@/firebase/functions'
 
 export default {
@@ -34,7 +35,7 @@ export default {
       currentSortDirection: 'asc',
       documentsSearch: null,
       documentHeaders: [
-        { text: 'identificador', value: 'id', sortable: false },
+        { text: this.$t('document.id'), value: 'id', sortable: false },
         { text: 'Nombre', value: 'userName', sortable: true },
         { text: 'Tipo de documento', value: 'name', sortable: true },
         { text: 'Estado', value: 'status', sortable: true },
@@ -42,7 +43,9 @@ export default {
         { text: 'Última modificación', value: 'data.createTimestamp' },
         { text: 'Acciones', value: 'actions', sortable: false },
       ],
-      documentDialogDelete: false,
+      documentDeleteDialog: false,
+      documentStatusDialog: false,
+      documentUpdateMessage: '',
       currentDocument: {},
       documentDeleteAccept: false,
     }
@@ -71,6 +74,14 @@ export default {
     },
     deleteDocument(item) {
       console.log('item', item)
+    },
+    async acceptDocument(document) {
+      this.documentUpdateMessage = 'Cambiando el estado del documento'
+      await callUpdateDocumentStatus(document.id, 4).then(result => {
+        console.log('result :>> ', result)
+        this.documentUpdateMessage = result.data.message
+      })
+      this.documentUpdateMessage = null
     },
     paginateDocumentsForward() {
       this.paginationStart += this.limit
@@ -122,9 +133,22 @@ export default {
             ></v-card-title>
             <v-divider class="mx-4" inset vertical></v-divider>
           </v-toolbar>
-          <v-dialog v-model="documentDialogDelete" max-width="500px">
+          <v-dialog v-model="documentStatusDialog" max-width="500px">
             <v-card>
-              <v-card-title class="text-h5 justify-center mb-2 warning light lighten-2">
+              <v-card-title class="text-h5 justify-center mb-2 primary lighten-2">
+                <span>{{ $t('actions.changeStatus') | capitalize }}</span>
+              </v-card-title>
+              <v-card-text>
+                <v-btn @click="acceptDocument(currentDocument)">
+                  {{ $t('actions.accept') | capitalize }}
+                  <i class="mdi mdi-check"></i>
+                </v-btn>
+              </v-card-text>
+            </v-card>
+          </v-dialog>
+          <v-dialog v-model="documentDeleteDialog" max-width="500px">
+            <v-card>
+              <v-card-title class="text-h5 justify-center mb-2 warning lighten-2">
                 {{ $t('message.confirm') | capitalize }}
               </v-card-title>
               <v-card-text>
@@ -170,7 +194,7 @@ export default {
                   hide-details
                 ></v-switch>
                 <v-spacer></v-spacer>
-                <v-btn outlined color="primary darken-1" text @click="documentDialogDelete = false">{{
+                <v-btn outlined color="primary darken-1" text @click="documentDeleteDialog = false">{{
                   $t('actions.cancel')
                 }}</v-btn>
                 <v-btn
@@ -199,19 +223,19 @@ export default {
           <span>{{ item.data.updateTimestamp.toDate() | removeTime }}</span>
         </template>
         <template v-slot:no-data>
-          <v-btn color="primary" @click="initialize">
+          <v-btn color="primary" @click="paginateDocumentForward">
             {{ $t('actions.reload') }}
           </v-btn>
         </template>
         <template v-slot:item.actions="{ item }">
-          <v-btn class="mr-2" x-small @click="quickViewDocument(item.id)">
-            <span class="md"> {{ $t('actions.quickView') }}</span>
+          <v-btn class="mr-2" x-small @click="documentStatusDialog = true">
+            <span class="md"> {{ $t('actions.changeStatus') }}</span>
           </v-btn>
           <v-btn
             class="mr-2"
             x-small
             @click="
-              documentDialogDelete = true
+              documentDeleteDialog = true
               currentDocument = item
             "
           >
@@ -226,34 +250,7 @@ export default {
 @import '@/theme/style.scss';
 @import '@/theme/variables.scss';
 
-table {
-  margin-top: 0.35rem;
-  border: 1px solid $main;
-  border-spacing: 0px;
-  border-radius: 0.5rem;
-  padding: 0.35rem;
-  width: 100%;
-  td {
-    margin-right: 0.35rem;
-    padding: 0.35rem;
-  }
-  th {
-    padding: 0.4rem;
-  }
-  th small {
-    visibility: hidden;
-    font-size: 0.35rem;
-  }
-  .selected {
-    background-color: $light-accent;
-    font-size: 1.2rem;
-    small {
-      visibility: visible;
-    }
-  }
-  // .selected small {
-  //   visibility: visible;
-  // }
+.documents-table {
   tr:nth-child(odd) {
     background-color: $light-accent;
     &:hover {
