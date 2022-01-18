@@ -35,6 +35,8 @@ export default {
       currentSortDirection: 'asc',
       documentsSearch: null,
       documentHeaders: [
+        { text: 'Id docuemnto', value: 'id', sortable: true },
+        { text: 'Id usuario', value: 'userId', sortable: true },
         { text: 'Nombre', value: 'userName', sortable: true },
         { text: 'Tipo de documento', value: 'name', sortable: true },
         { text: 'Estado', value: 'status', sortable: true },
@@ -83,6 +85,7 @@ export default {
       this.documentUpdateMessage = null
     },
     async createUsersList() {
+      console.log('Click from createUsersList')
       const response = await callCreateUserListSheet()
       console.log('response: ', response)
     },
@@ -125,9 +128,14 @@ export default {
     <div>
       <h2>Documentos</h2>
     </div>
-    <v-card>
-      <v-btn x-small color="success" @click="createUsersList">Crear lista de usuarios para emma</v-btn>
+    <v-card
+      ><v-card-text class="pa-2">
+        <v-btn class="ma-2" small outlined color="success" @click="createUsersList">
+          Crear lista de usuarios para emma
+        </v-btn>
+      </v-card-text>
     </v-card>
+
     <v-card v-if="documents">
       <v-data-table :headers="documentHeaders" :items="documents" :search="documentsSearch" dense>
         <template v-slot:top>
