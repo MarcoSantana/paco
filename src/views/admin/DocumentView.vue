@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <button class="btn" @click="$router.go(-1)">Volver</button>
-    <component :is="components[document.name]" :document="document"></component>
+    <certification-request :document="document"></certification-request>
     <button class="btn" @click="$router.go(-1)">Volver</button>
   </div>
 </template>
