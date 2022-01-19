@@ -71,7 +71,9 @@ export default {
     // gs://paco-1a08b.appspot.com/documents/pg8LuCJLh4Q4X7LyvVVHnZlmiWn1/Solicitud de certificacion/pediatricResidence
     documentFile() {
       console.info('licenseFile')
-      const storageRef = storage().ref(`documents/${this.$props.userId}/${this.$props.documentName}/${this.fileName}`)
+      let docName = this.$props.documentName
+      docName = docName.replace(/^(\w.+)( [0-9]+)/, '$1')
+      const storageRef = storage().ref(`documents/${this.$props.userId}/${docName}/${this.fileName}`)
       console.log('storageRef :>> ', storageRef)
       const url = storageRef.getDownloadURL().then(resUrl => {
         console.log(resUrl)
@@ -81,7 +83,9 @@ export default {
     },
     documentFileType() {
       console.info('documentFileType')
-      const storageRef = storage().ref(`documents/${this.$props.userId}/${this.$props.documentName}/${this.fileName}`)
+      let docName = this.$props.documentName
+      docName = docName.replace(/^(\w.+)( [0-9]+)/, '$1')
+      const storageRef = storage().ref(`documents/${this.$props.userId}/${docName}/${this.fileName}`)
       const metadata = storageRef
         .getMetadata()
         .then(resMetadata => {
