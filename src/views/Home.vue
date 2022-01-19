@@ -11,6 +11,9 @@
           <input id="admin-email" ref="adminEmail" type="email" required />
           <button @click.prevent="addRole">Hacer administrador</button>
         </form>
+        <div>
+          <button @click="changeDocumentsName">Me be button</button>
+        </div>
       </div>
     </div>
 
@@ -22,7 +25,7 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex'
-import { callAddAdminRole } from '@/firebase/functions'
+import { callAddAdminRole, callChangeDocumentsName } from '@/firebase/functions'
 
 export default {
   head() {
@@ -48,6 +51,9 @@ export default {
     async addRole() {
       const ref = this.$refs.adminEmail
       await callAddAdminRole(ref.value)
+    },
+    async changeDocumentsName() {
+      await callChangeDocumentsName()
     },
   },
 }

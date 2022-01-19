@@ -43,3 +43,15 @@ export async function callCreateUserListSheet() {
       return err
     })
 }
+
+export function callChangeDocumentsName() {
+  console.log('changing Documents name')
+  const changeDocumentsName = firebase.functions().httpsCallable('changeDocumentsName')
+  return changeDocumentsName()
+    .then(result => {
+      console.log('result', result)
+    })
+    .catch(err => {
+      console.error(err)
+    })
+}

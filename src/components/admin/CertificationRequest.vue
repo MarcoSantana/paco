@@ -96,7 +96,7 @@
               class="document-file"
               :document-name="document.name"
               :user-id="document.userId"
-              file-name="pediatricResidence"
+              file-name="residence"
             ></document-file>
           </div>
         </div>
@@ -109,6 +109,16 @@
             file-name="postgraduateDiploma"
           ></document-file>
         </div>
+      </div>
+      <!-- // postgraduateUniversitaryDiploma -->
+      <div>
+        <div>Diploma universitario en Medicina de Urgencias o en su caso Urgencias Pediatricas</div>
+        <document-file
+          class="document-file"
+          :document-name="document.name"
+          :user-id="document.userId"
+          file-name="postgraduateUniversitaryDiploma"
+        ></document-file>
       </div>
       <div>
         <h4>Práctica profesional</h4>
