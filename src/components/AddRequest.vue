@@ -187,7 +187,7 @@ export default {
         setTimeout(() => {
           this.setLoading(true)
           try {
-            this.setDocumentNameToCreate('Solicitud de certificacion')
+            this.setDocumentNameToCreate('Solicitud de certificacion 2022')
             this.triggerAddDocumentAction(this.model)
             this.errorMsg = null
             this.isFinished = true
