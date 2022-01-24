@@ -5,7 +5,13 @@
         <li>{{ error.field.label }} >> {{ error.error }}</li>
       </ul>
     </h2>
+    <h2>
+    <div v-if="currentRequest" class="error">
+      Usted ya ha realizado esta solicitud. <br/> Si desea ver los archivos de este documento, <br/> por favor diríjase a la sección de <router-link to="documents">"Mis Documentos"</router-link>
+    </div>
+    </h2>
     <form-wizard
+      v-if="!currentRequest"
       ref="wizard"
       shape="tab"
       step-size="xs"
@@ -139,9 +145,17 @@ export default {
   }),
   computed: {
     ...mapState('forms', ['currentForm', 'formNameToCreate']),
-    ...mapState('documents', ['documentCreationPending', 'documentCreationMessage']),
+    ...mapState('documents', ['documents', 'documentCreationPending', 'documentCreationMessage']),
     groups() {
       return this.schema.groups
+    },
+    currentRequest() {
+      console.log(this.documents)
+      const match = document => {
+        return RegExp('Solicitud de certificaci[oó]n *[0-9]*', 'i').test(document.name)
+      }
+      return this.documents.filter(document => match(document))
+      // return this.documents
     },
   },
   watch: {},

@@ -2,6 +2,9 @@
   <div class="container">
     <h1>{{ document.name }}</h1>
     <h2>Estado: {{ document.status | docStatus }}</h2>
+    <h2 v-show="!editable">
+      Recuerde que los archivos de sus documentos no pueden ser cambiados si la "solicitud de certificación" no ha sido marcada como "Rechazada" por el administrador.
+    </h2>
     <h3 v-show="editable"><small>Mensaje del administrador: </small>{{ document.message }}</h3>
     <div v-show="editable">
       <h4>Enviar para revisión</h4>

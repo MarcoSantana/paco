@@ -17,14 +17,14 @@
           <router-link to="/users" data-test="navbar-products-link">Usuarios</router-link>
         </div>
         <div v-if="isUserLoggedIn && networkOnLine" data-test="navbar-item-documents" class="nav-item ">
-          <router-link to="/documents" data-test="navbar-documents-link">Documentos</router-link>
+          <router-link to="/documents" data-test="navbar-documents-link">Mis Documentos</router-link>
         </div>
         <!-- <div v-if="isUserLoggedIn && networkOnLine" data-test="navbar-item-curriculum" class="nav-item ">
              <router-link to="/curriculum" data-test="navbar-curriculum-link">Curriculum</router-link>
              </div> -->
         <!-- Must validate accoirding to date if the user can request certification, and or it has an active request -->
         <div v-if="isUserLoggedIn && networkOnLine" data-test="navbar-item-request" class="nav-item ">
-          <router-link to="/request" data-test="navbar-request-link">Solicitud de examen</router-link>
+          <router-link to="/request" data-test="navbar-request-link">Solicitud de examen 2022</router-link>
         </div>
         <div v-if="!isUserLoggedIn && networkOnLine" data-test="navbar-item-login" class="nav-item">
           <router-link to="/login" data-test="navbar-login-link">Ingreso</router-link>
