@@ -5,14 +5,22 @@
       :id="getFieldID(schema)"
       v-model="searchInput"
       v-attributes="'input'"
-      type="text"
-      class="form-control"
       :name="schema.inputName"
       :required="schema.required"
+      type="text"
+      disabled
+    />
+    <input
+      v-model="input"
+      type="text"
+      class="form-control"
       :class="schema.fieldClasses"
       placeholder="Escriba el nombre del hospital"
-      @input="onChange"
+      @input="onChange()"
     />
+    <div>
+      <button v-show="searchInput || input" style=" background-color: red;" @click="reset">Borrar</button>
+    </div>
     <div v-show="isOpen" class="results">
       <ul v-show="isOpen" data-test="hospital-list">
         <li v-if="isLoading" class="loading">
@@ -35,6 +43,7 @@ export default {
   data() {
     return {
       searchInput: null,
+      input: null,
       results: [],
       isOpen: false,
       isLoading: false,
@@ -181,16 +190,18 @@ export default {
         return item
       }
     },
-    filterResults() {
+    filterResults(input) {
       const temp = Object.values(this.hospitals).map(item => item.name)
-      this.results = temp.filter(hospital => hospital.toLowerCase().indexOf(this.searchInput.toLowerCase()) > -1)
+      this.results = temp.filter(hospital => hospital.toLowerCase().indexOf(input.toLowerCase()) > -1)
     },
     // Change the input text to the selected item from the list and close de the list
     setResult(result) {
+      this.input = result
       this.searchInput = result
       this.isOpen = false
     },
-    onChange() {
+    onChange(foo) {
+      console.log('foo', foo)
       // Let's warn the parent that a change was made
       this.$emit('input', this.search)
 
@@ -199,9 +210,14 @@ export default {
         this.isLoading = true
       } else {
         // Let's search our flat array
-        this.filterResults()
+        this.filterResults(this.input)
         this.isOpen = true
       }
+    },
+    reset() {
+      this.input = null
+      this.searchInput = null
+      this.isOpen = false
     },
   },
 }

@@ -6,9 +6,11 @@
       </ul>
     </h2>
     <h2>
-    <div v-if="currentRequest" class="error">
-      Usted ya ha realizado esta solicitud. <br/> Si desea ver los archivos de este documento, <br/> por favor diríjase a la sección de <router-link to="documents">"Mis Documentos"</router-link>
-    </div>
+      <div v-if="currentRequest" class="error">
+        Usted ya ha realizado esta solicitud. <br />
+        Si desea ver los archivos de este documento, <br />
+        por favor diríjase a la sección de <router-link to="documents">"Mis Documentos"</router-link>
+      </div>
     </h2>
     <form-wizard
       v-if="!currentRequest"
@@ -154,7 +156,7 @@ export default {
       const match = document => {
         return RegExp('Solicitud de certificaci[oó]n *[0-9]*', 'i').test(document.name)
       }
-      return this.documents.filter(document => match(document))
+      return this.documents.filter(document => match(document))[0]
       // return this.documents
     },
   },
