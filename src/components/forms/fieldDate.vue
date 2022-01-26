@@ -18,6 +18,7 @@
             month: 'long',
             day: 'numeric',
           }"
+          :flow="['year', 'month', 'day']"
           :phrases="{ ok: 'Continuar', cancel: 'Salir' }"
           :week-start="1"
           use12-hour
