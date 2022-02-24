@@ -49,6 +49,8 @@ export default {
       documentPreviewDialog: false,
       documentUpdateMessage: '',
       currentDocument: {},
+      documentRejectReason: '',
+      documentRejectReasonDialog: false,
       documentDeleteAccept: false,
     }
   },
@@ -189,13 +191,31 @@ export default {
                   text
                   ripple
                   color="warning"
-                  @click="changeDocumentStatus(currentDocument.id, 4)"
+                  @click="documentRejectReasonDialog = true"
                 >
                   <i class="mdi mdi-check"></i>
                   {{ $t('actions.reject') | capitalize }}
                 </v-btn>
               </v-card-text>
             </v-card>
+            <v-dialog v-model="documentRejectReasonDialog" max-width="400px">
+              <v-card>
+                <v-card-title class="text-h5 white--text justify-center mb-2 warning">
+                  Razón de rechazo
+                </v-card-title>
+                <v-card-text>
+                  <v-textarea
+                    v-model="documentRejectReason"
+                    counter
+                    outlined
+                    label="Describa la razón del rechazo"
+                    hint="Sea breve pero preciso"
+                    required
+                    hide-details="auto"
+                  ></v-textarea>
+                </v-card-text>
+              </v-card>
+            </v-dialog>
           </v-dialog>
           <v-dialog v-model="documentDeleteDialog" max-width="500px">
             <v-card>
@@ -338,6 +358,7 @@ export default {
     </v-card>
   </div>
 </template>
+
 <style lang="scss" scoped>
 @import '@/theme/style.scss';
 @import '@/theme/variables.scss';
