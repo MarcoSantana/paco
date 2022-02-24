@@ -3,10 +3,7 @@
     <v-alert v-if="documentCreationMessage.message" text :type="documentCreationMessage.type">{{
       documentCreationMessage.message
     }}</v-alert>
-    <v-card-text>
-      Here i want to display all from the document
-      <h1 class="error">TODO use a prop to instruct this component to fetch the document data y id</h1>
-    </v-card-text>
+    <v-card-text> </v-card-text>
     <validation-observer v-slot="{ invalid }">
       <v-card-text class="ma-5">
         <div v-for="field in document.fields" :key="field.name" class="pr-5">
