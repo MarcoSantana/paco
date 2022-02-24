@@ -2,22 +2,25 @@
   <v-container>
     <h1 class="text-capitalize">{{ $t('document.name') }}: {{ document.name }}</h1>
     <h2 class="text-capitalize">{{ $t('document.status') }}: {{ $t(`document.statusKey[${document.status}]`) }}</h2>
-
     <h3 v-show="editable">
       <small>Mensaje del administrador:</small>
       {{ document.message }}
     </h3>
-    <div class="text-capitalize">{{ $t('document.createTimestamp') }}: {{ document.createTimestamp | intlDate }}</div>
-    <!-- <show-file v-if="document.files" :files="document.files"></show-file> -->
-    <div v-if="document.files">
-      <show-file v-for="file in document.files" :key="file" :url="file" />
-    </div>
-    <div v-show="editable">
-      <h4>Enviar para revisión</h4>
-      <div>
-        <v-btn color="accent" elevation="2" @click="markForReview">Enviar</v-btn>
-      </div>
-    </div>
+    <v-card>
+      <v-card-title>Estamos en mantenimiento</v-card-title>
+      <v-img src="/img/IT_Support_Two_Color.svg" alt="" />
+    </v-card>
+    <!-- <div class="text-capitalize">{{ $t('document.createTimestamp') }}: {{ document.createTimestamp | intlDate }}</div>
+         <show-file v-if="document.files" :files="document.files"></show-file>
+         <div v-if="document.files">
+         <show-file v-for="file in document.files" :key="file" :url="file" />
+         </div>
+         <div v-show="editable">
+         <h4>Enviar para revisión</h4>
+         <div>
+         <v-btn color="accent" elevation="2" @click="markForReview">Enviar</v-btn>
+         </div>
+         </div> -->
   </v-container>
   <!-- <div class="container">
       <h1>{{$t('document.createTimestamp')}}>> {{ document.createTimestamp }}</h1>
@@ -108,11 +111,11 @@ import { DateTime } from 'luxon'
 // import { isNil } from 'lodash'
 import { mapActions, mapState } from 'vuex'
 // import DocumentForm from '@/components/DocumentForm.vue'
-import ShowFile from '@/components/ShowFile'
+// import ShowFile from '@/components/ShowFile'
 
 export default {
   // components: { DocumentForm },
-  components: { ShowFile },
+  // components: { ShowFile },
   filters: {
     //   docStatus(value) {
     //     if (!value) return ''
