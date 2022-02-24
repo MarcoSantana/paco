@@ -10,6 +10,8 @@ $vue-color: #46bd87; //TODO refactor to a better name
 $danger-color: #ea4d46;
 $warning-color: #e2c65d;
 
+$warning-color-light: lighten($warning-color, 20%);
+$danger-color-light: lighten($danger-color, 30%);
 /* Navbar */
 
 $navbar-height: 3.6rem;
