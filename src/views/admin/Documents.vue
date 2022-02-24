@@ -1,7 +1,6 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { callUpdateDocumentStatus, callCreateUserListSheet } from '@/firebase/functions'
-// import { callCreateUserListSheet } from '@/firebase/functions'
 
 export default {
   filters: {
@@ -23,6 +22,9 @@ export default {
       if (!value) return ''
       return value.toLocaleString().split(' ')[0]
     },
+    zeroPadDate: value => {
+      return !value ? null : value.replace(/(^\d{1})\/(\d{1})/i, '0$1/0$2')
+    },
   },
   data() {
     return {
@@ -35,17 +37,16 @@ export default {
       currentSortDirection: 'asc',
       documentsSearch: null,
       documentHeaders: [
-        { text: 'Id docuemnto', value: 'id', sortable: true },
-        { text: 'Id usuario', value: 'userId', sortable: true },
         { text: 'Nombre', value: 'userName', sortable: true },
         { text: 'Tipo de documento', value: 'name', sortable: true },
         { text: 'Estado', value: 'status', sortable: true },
         { text: 'Creado', value: 'data.updateTimestamp', sortable: true },
-        { text: 'Última modificación', value: 'data.createTimestamp' },
+        { text: 'Última modificación', value: 'data.createTimestamp', sortable: true, filterable: true },
         { text: 'Acciones', value: 'actions', sortable: false },
       ],
       documentDeleteDialog: false,
       documentStatusDialog: false,
+      documentPreviewDialog: false,
       documentUpdateMessage: '',
       currentDocument: {},
       documentDeleteAccept: false,
@@ -76,13 +77,14 @@ export default {
     deleteDocument(item) {
       console.log('item', item)
     },
-    async acceptDocument(document) {
-      this.documentUpdateMessage = 'Cambiando el estado del documento'
-      await callUpdateDocumentStatus(document.id, 4).then(result => {
-        console.log('result :>> ', result)
-        this.documentUpdateMessage = result.data.message
+    async changeDocumentStatus(document, status) {
+      if (Object.values(document).length === 0 || !status) return
+      this.documentUpdateMessage = {}
+      this.documentUpdateMessage = { type: 'warning', message: 'Cambiando el estado del documento' }
+      // TODO: Update the state specifically for this document on successful transaction
+      await callUpdateDocumentStatus(document, status).then(result => {
+        this.documentUpdateMessage = result.data
       })
-      this.documentUpdateMessage = null
     },
     async createUsersList() {
       console.log('Click from createUsersList')
@@ -130,14 +132,14 @@ export default {
     </div>
     <v-card
       ><v-card-text class="pa-2">
-        <v-btn class="ma-2" small outlined color="success" @click="createUsersList">
-          Crear lista de usuarios para emma
-        </v-btn>
+        <!-- <v-btn class="ma-2" small outlined color="success" @click="createUsersList">
+           Crear lista de usuarios para emma
+           </v-btn> -->
       </v-card-text>
     </v-card>
 
     <v-card v-if="documents">
-      <v-data-table :headers="documentHeaders" :items="documents" :search="documentsSearch" dense>
+      <v-data-table :headers="documentHeaders" :items="documents" :search="documentsSearch" :items-per-page="50" dense>
         <template v-slot:top>
           <v-toolbar flat>
             <v-card-title
@@ -150,12 +152,47 @@ export default {
           <v-dialog v-model="documentStatusDialog" max-width="500px">
             <v-card>
               <v-card-title class="text-h5 justify-center mb-2 primary lighten-2">
-                <span>{{ $t('actions.changeStatus') | capitalize }}</span>
+                <span class="white--text">{{ $t('actions.changeStatus') | capitalize }}</span>
               </v-card-title>
+              <v-alert v-if="documentUpdateMessage !== ''" outlined :type="documentUpdateMessage.type" class="ma-5">
+                {{ documentUpdateMessage.message }}
+              </v-alert>
               <v-card-text>
-                <v-btn @click="acceptDocument(currentDocument)">
-                  {{ $t('actions.accept') | capitalize }}
+                <div>Documento: {{ currentDocument.name }}</div>
+                <div>Creado: {{ currentDocument.createTimestamp | removeTime | zeroPadDate }}</div>
+              </v-card-text>
+              <v-card-text class="text-center">
+                <v-btn
+                  text
+                  ripple
+                  color="error"
+                  @click="
+                    documentUpdateMessage = ''
+                    documentStatusDialog = false
+                  "
+                >
+                  <i class="mdi mdi-cancel"></i>
+                  {{ $t('actions.close') | capitalize }}
+                </v-btn>
+                <v-btn
+                  v-if="Object.keys(documentUpdateMessage).length === 0"
+                  text
+                  ripple
+                  color="primary"
+                  @click="changeDocumentStatus(currentDocument.id, 3)"
+                >
                   <i class="mdi mdi-check"></i>
+                  {{ $t('actions.accept') | capitalize }}
+                </v-btn>
+                <v-btn
+                  v-if="Object.keys(documentUpdateMessage).length === 0"
+                  text
+                  ripple
+                  color="warning"
+                  @click="changeDocumentStatus(currentDocument.id, 4)"
+                >
+                  <i class="mdi mdi-check"></i>
+                  {{ $t('actions.reject') | capitalize }}
                 </v-btn>
               </v-card-text>
             </v-card>
@@ -223,40 +260,78 @@ export default {
               </v-card-actions>
             </v-card>
           </v-dialog>
+          <v-dialog v-model="documentPreviewDialog" max-width="500px">
+            <v-card>
+              <v-card-title class="text-h5 white--text justify-center mb-2 primary">
+                Estamos en mantenimiento
+              </v-card-title>
+              <v-card-title
+                >Estamos mejorando esta funcion de PAD
+                <small>(Plataforma Administradora de Documentos)</small></v-card-title
+              >
+              <v-card-text>Pronto estará lista.</v-card-text>
+              <v-img src="/img/IT_Support_Two_Color.svg" alt="" />
+            </v-card>
+          </v-dialog>
         </template>
-        <template v-slot:item.status="{ item }">
+        <template v-slot:[`item.status`]="{ item }">
           {{ $t('document.statusKey')[item.status] | capitalize }}
         </template>
-        <template v-slot:item.userName="{ item }">
+        <template v-slot:[`item.userName`]="{ item }">
           <span>{{ item.userName | capitalize }}</span>
         </template>
-        <template v-slot:item.data.createTimestamp="{ item }">
-          <span>{{ item.data.createTimestamp.toDate() | removeTime }}</span>
+        <template v-slot:[`item.data.createTimestamp`]="{ item }">
+          <span>{{ item.data.createTimestamp.toDate() | removeTime | zeroPadDate }}</span>
         </template>
-        <template v-slot:item.data.updateTimestamp="{ item }">
-          <span>{{ item.data.updateTimestamp.toDate() | removeTime }}</span>
+        <template v-slot:[`item.data.updateTimestamp`]="{ item }">
+          <span>{{ item.data.updateTimestamp.toDate() | removeTime | zeroPadDate }}</span>
         </template>
         <template v-slot:no-data>
-          <v-btn outlined color="primary" @click="paginateDocumentForward">
+          <v-btn outlined color="primary" @click="paginateDocumentsForward">
             {{ $t('actions.reload') }}
           </v-btn>
         </template>
-        <template v-slot:item.actions="{ item }">
-          <v-btn-toggle dense>
-            <v-btn x-small plain @click="currentDocument = item">
-              <v-icon light>mdi-eye</v-icon>
-            </v-btn>
-            <v-btn x-small plain @click="documentStatusDialog = true"> <v-icon>mdi-check</v-icon></v-btn>
-            <v-btn
-              x-small
-              plain
-              @click="
-                documentDeleteDialog = true
-                currentDocument = item
-              "
-            >
-              <v-icon light>mdi-delete</v-icon>
-            </v-btn>
+        <template v-slot:[`item.actions`]="{ item }">
+          <v-btn-toggle dense tile group>
+            <v-hover v-slot="{ hover }">
+              <v-btn
+                :color="hover ? 'deep-orange darken-1 lighten-3' : ''"
+                x-small
+                plain
+                @click="
+                  currentDocument = item
+                  documentPreviewDialog = true
+                "
+              >
+                <v-icon light>mdi-eye</v-icon>
+              </v-btn>
+            </v-hover>
+            <v-hover v-slot="{ hover }">
+              <v-btn
+                :color="hover ? 'info' : ''"
+                x-small
+                plain
+                @click="
+                  documentStatusDialog = true
+                  currentDocument = item
+                "
+              >
+                <v-icon>mdi-check</v-icon>
+              </v-btn>
+            </v-hover>
+            <v-hover v-slot="{ hover }">
+              <v-btn
+                :color="hover ? 'error' : ''"
+                x-small
+                plain
+                @click="
+                  documentDeleteDialog = true
+                  currentDocument = item
+                "
+              >
+                <v-icon light>mdi-delete</v-icon>
+              </v-btn>
+            </v-hover>
           </v-btn-toggle>
         </template>
       </v-data-table>
