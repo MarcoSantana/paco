@@ -66,7 +66,6 @@ export default {
   },
   mounted() {
     this.paginateDocumentsForward()
-    // FIXME
   },
   methods: {
     ...mapActions('admin', ['getAllDocuments', 'deleteUserDocument', 'triggerSoftDeleteUserDocument']),
@@ -79,19 +78,18 @@ export default {
     deleteDocument(item) {
       console.log('item', item)
     },
-    async changeDocumentStatus(document, status) {
+    async changeDocumentStatus(document, status, message) {
       if (Object.values(document).length === 0 || !status) return
       this.documentUpdateMessage = {}
       this.documentUpdateMessage = { type: 'warning', message: 'Cambiando el estado del documento' }
       // TODO: Update the state specifically for this document on successful transaction
-      await callUpdateDocumentStatus(document, status).then(result => {
+      // TODO: Trigger the actions and mutations related with document update
+      await callUpdateDocumentStatus(document, status, message).then(result => {
         this.documentUpdateMessage = result.data
       })
     },
     async createUsersList() {
-      console.log('Click from createUsersList')
-      const response = await callCreateUserListSheet()
-      console.log('response: ', response)
+      await callCreateUserListSheet()
     },
     paginateDocumentsForward() {
       this.paginationStart += this.limit
@@ -99,6 +97,10 @@ export default {
       payload.startAt = this.documents ? this.lastDocument.id : null
       payload.startAfter = null
       payload.limit = this.limit ? Number(this.limit) : 10
+      this.$store.dispatch('admin/getAllDocuments', payload, { root: true })
+    },
+    reloadAllDocuments() {
+      const payload = { constraints: this.constraints }
       this.$store.dispatch('admin/getAllDocuments', payload, { root: true })
     },
 
@@ -112,6 +114,7 @@ export default {
     },
     sort(s) {
       // WIP
+      // TODO: Remove as it is unused thanks to vuetify datatable
       if (s === this.currentSort) {
         this.currentSortDirection = this.currentSortDirection === 'asc' ? 'desc' : 'asc'
       } else {
@@ -181,7 +184,8 @@ export default {
                   text
                   ripple
                   color="primary"
-                  @click="changeDocumentStatus(currentDocument.id, 3)"
+                  :disabled="currentDocument.status == 4"
+                  @click="changeDocumentStatus(currentDocument.id, 4, 'Documento aprobado')"
                 >
                   <i class="mdi mdi-check"></i>
                   {{ $t('actions.accept') | capitalize }}
@@ -206,14 +210,40 @@ export default {
                 <v-card-text>
                   <v-textarea
                     v-model="documentRejectReason"
-                    counter
+                    counter="320"
                     outlined
+                    background-color="amber lighten-4"
+                    color="orange orange-darken-4"
                     label="Describa la razón del rechazo"
-                    hint="Sea breve pero preciso"
+                    hint="Describa en 320 caracteres o menos la razón de rechazo"
                     required
                     hide-details="auto"
                   ></v-textarea>
                 </v-card-text>
+                <v-card-actions>
+                  <v-btn
+                    outlined
+                    color="error"
+                    text
+                    @click="
+                      documentRejectReasonDialog = false
+                      documentRejectReason = ''
+                    "
+                  >
+                    <i class="mdi mdi-cancel"></i>
+                    {{ $t('actions.cancel') }}
+                  </v-btn>
+                  <v-btn
+                    v-show="documentRejectReason"
+                    outlined
+                    color="primary"
+                    text
+                    @click="changeDocumentStatus(currentDocument.id, 3, documentRejectReason)"
+                  >
+                    <i class="mdi mdi-send"></i>
+                    {{ $t('actions.send') }}
+                  </v-btn>
+                </v-card-actions>
               </v-card>
             </v-dialog>
           </v-dialog>
@@ -274,8 +304,9 @@ export default {
                   color="error darken-1"
                   text
                   @click="deleteDocument(currentDocument.id)"
-                  >{{ $t('actions.accept') }}</v-btn
                 >
+                  {{ $t('actions.accept') }}
+                </v-btn>
                 <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>
@@ -307,7 +338,7 @@ export default {
           <span>{{ item.data.updateTimestamp.toDate() | removeTime | zeroPadDate }}</span>
         </template>
         <template v-slot:no-data>
-          <v-btn outlined color="primary" @click="paginateDocumentsForward">
+          <v-btn outlined color="primary" @click="reloadAllDocuments">
             {{ $t('actions.reload') }}
           </v-btn>
         </template>
