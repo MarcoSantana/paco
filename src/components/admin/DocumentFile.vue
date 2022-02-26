@@ -1,52 +1,35 @@
 <template>
-  <div>
-    <modal
-      :id="`${documentName}-id`"
-      :name="fileName"
-      :width="'80%'"
-      :height="'auto'"
-      :resizable="resizableModal"
-      :scrollable="scrollableModal"
-    >
-      <div
-        v-if="
-          documentFileType &&
-            (documentFileType.contentType == 'image/png' || documentFileType.contentType == 'image/jpeg')
-        "
-        class="image-container"
+  <v-container>
+    <v-dialog v-model="dialog" overlay-color="grey darken-1">
+      <v-card v-if="documentFileType" class="image-container">
+        <v-card-actions
+          ><v-btn outlined color="error" @click="dialog = false">
+            <i class="mdi mdi-close" />{{ $t('actions.close') }}
+          </v-btn></v-card-actions
+        >
+        <v-img
+          v-if="documentFileType.contentType == 'image/png' || documentFileType.contentType == 'image/jpeg'"
+          style="height: 80%;"
+          :src="documentFile"
+        />
+        <pdf
+          v-if="documentFileType.contentType == 'application/pdf'"
+          class="pdf-container"
+          style="height: 80%;"
+          :src="documentFile"
+        ></pdf>
+      </v-card>
+    </v-dialog>
+    <v-card v-if="documentFileType" class="text-center" @click="dialog = true">
+      <v-img
+        v-if="documentFileType.contentType == 'image/png' || documentFileType.contentType == 'image/jpeg'"
+        :src="documentFile"
+        @click="dialog = true"
       >
-        <img :src="documentFile" style="height: 80%;" />
-      </div>
-
-      <div v-if="documentFileType && documentFileType.contentType == 'application/pdf'" class="pdf-container">
-        <pdf style="height: 80%;" :src="documentFile"></pdf>
-      </div>
-
-      <div slot="top-right">
-        <button class="delete-btn" @click="$modal.hide(fileName)">
-          ❌
-        </button>
-      </div>
-      <button class="delete-btn" @click="hide()">
-        <i class="mdi mdi-close-box"></i>
-      </button>
-    </modal>
-    <div @click="show">
-      <div
-        v-if="
-          documentFileType &&
-            (documentFileType.contentType == 'image/png' || documentFileType.contentType == 'image/jpeg')
-        "
-        class="image-container"
-      >
-        <img :src="documentFile" alt="" @click="show()" />
-      </div>
-
-      <div v-if="documentFileType && documentFileType.contentType == 'application/pdf'" class="pdf-container">
-        <pdf :src="documentFile"></pdf>
-      </div>
-    </div>
-  </div>
+      </v-img>
+      <pdf v-if="documentFileType.contentType == 'application/pdf'" :src="documentFile" @click="dialog = true"></pdf>
+    </v-card>
+  </v-container>
 </template>
 
 <script>
@@ -60,12 +43,11 @@ export default {
     documentName: String,
     userId: String,
     fileName: String,
-    resizableModal: Boolean,
-    scrollableModal: Boolean,
   },
-  mount() {
-    // this.show()
-  },
+  data: () => ({
+    dialog: false,
+  }),
+  mount() {},
   mounted() {},
   asyncComputed: {
     // gs://paco-1a08b.appspot.com/documents/pg8LuCJLh4Q4X7LyvVVHnZlmiWn1/Solicitud de certificacion/pediatricResidence
@@ -95,29 +77,6 @@ export default {
       return metadata
     },
   },
-  methods: {
-    show() {
-      this.$modal.show(this.fileName)
-    },
-    hide() {
-      this.$modal.hide(this.fileName)
-    },
-  },
+  methods: {},
 }
 </script>
-
-<style lang="scss" scoped>
-@import '@/theme/style.scss';
-@import '@/theme/variables.scss';
-
-.image-container {
-  width: 100%;
-  max-width: 800px;
-  margin: 2rem;
-  border: $light-accent;
-  border-style: double;
-  img {
-    width: 100%;
-  }
-}
-</style>
