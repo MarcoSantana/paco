@@ -202,8 +202,6 @@
 import { DateTime } from 'luxon'
 import { isNil } from 'lodash'
 import DocumentFile from '@/components/admin/DocumentFile.vue'
-// TODO move this to a method that runs on mounted in a tiny component
-// import { storage } from 'firebase'
 
 export default {
   components: {
