@@ -2,7 +2,8 @@
   <div class="details-container">
     <div>
       <h3>Detalles del aspirante</h3>
-      <div>
+      <v-card>
+        <div>Nombres: {{ user.firstName }} {{ user.lastName1 }} {{ user.lastName2 ? user.lastName2 : '' }}</div>
         <div>
           <document-file
             class="document-file"
@@ -13,7 +14,6 @@
             file-name="avatar"
           ></document-file>
         </div>
-        <div>Nombres: {{ user.firstName }} {{ user.lastName1 }} {{ user.lastName2 ? user.lastName2 : '' }}</div>
         <div class="row">
           <div>Fecha de nacimiento: {{ user.dob | intlDate }}</div>
           <div>
@@ -30,7 +30,7 @@
         <div>Fax: {{ user.contact.fax }}</div>
         <div>Teléfono: {{ user.contact.telephone }}</div>
         <div>Dirección: {{ user.address }}</div>
-      </div>
+      </v-card>
       <h3>Detalles de solicitud</h3>
       <div>
         <div>{{ request.address }} {{ request.date | intlDate }}</div>

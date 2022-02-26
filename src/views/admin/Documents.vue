@@ -1,6 +1,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { callUpdateDocumentStatus, callCreateUserListSheet } from '@/firebase/functions'
+import DocumentView from '@/views/admin/DocumentView.vue'
 
 export default {
   filters: {
@@ -26,6 +27,7 @@ export default {
       return !value ? null : value.replace(/(^\d{1})\/(\d{1})/i, '0$1/0$2')
     },
   },
+  components: { DocumentView },
   data() {
     return {
       showData: false,
@@ -78,13 +80,13 @@ export default {
     deleteDocument(item) {
       console.log('item', item)
     },
-    async changeDocumentStatus(document, status, message) {
+    async changeDocumentStatus(document, status, messages) {
       if (Object.values(document).length === 0 || !status) return
       this.documentUpdateMessage = {}
-      this.documentUpdateMessage = { type: 'warning', message: 'Cambiando el estado del documento' }
+      this.documentUpdateMessage = { type: 'warning', messages: 'Cambiando el estado del documento' }
       // TODO: Update the state specifically for this document on successful transaction
       // TODO: Trigger the actions and mutations related with document update
-      await callUpdateDocumentStatus(document, status, message).then(result => {
+      await callUpdateDocumentStatus(document, status, messages).then(result => {
         this.documentUpdateMessage = result.data
       })
     },
@@ -250,11 +252,11 @@ export default {
           <v-dialog v-model="documentDeleteDialog" max-width="500px">
             <v-card>
               <v-card-title class="text-h5 justify-center mb-2 warning lighten-2">
-                {{ $t('message.confirm') | capitalize }}
+                {{ $t('messages.confirm') | capitalize }}
               </v-card-title>
               <v-card-text>
                 <v-alert outlined type="warning" prominent border="left">
-                  {{ $t('message.cannotUndo') | capitalize }}
+                  {{ $t('messages.cannotUndo') | capitalize }}
                 </v-alert>
                 <v-list-item two-line>
                   <v-list-item-content>
@@ -313,15 +315,17 @@ export default {
           </v-dialog>
           <v-dialog v-model="documentPreviewDialog" max-width="500px">
             <v-card>
-              <v-card-title class="text-h5 white--text justify-center mb-2 primary">
-                Estamos en mantenimiento
-              </v-card-title>
-              <v-card-title
-                >Estamos mejorando esta funcion de PAD
-                <small>(Plataforma Administradora de Documentos)</small></v-card-title
-              >
-              <v-card-text>Pronto estará lista.</v-card-text>
-              <v-img src="/img/IT_Support_Two_Color.svg" alt="" />
+              <v-card-title class="text-h5 white--text justify-center mb-2 primary">Vista previa</v-card-title>
+              <v-card-text>
+                <v-lazy v-model="documentPreviewDialog">
+                  <document-view :document="currentDocument"></document-view>
+                </v-lazy>
+              </v-card-text>
+              <v-card-actions>
+                <v-btn outlined color="error" @click="documentPreviewDialog = false">
+                  <i class="mdi mdi-close"></i>{{ $t('actions.close') }}
+                </v-btn>
+              </v-card-actions>
             </v-card>
           </v-dialog>
         </template>

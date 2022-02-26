@@ -4,10 +4,19 @@ export default {
   ...es,
   // FIXME vuetify translation not working 202112.27-09.25
   $vuetify: { ...es },
-  file: 'archivo',
+  createTimestamp: 'fecha de creación',
+  data: 'datos',
   diploma: 'diploma',
+  documentId: 'identificador del documento',
+  file: 'archivo',
+  message: 'mensaje',
+  name: 'nombre',
+  status: 'estado',
   user: 'usuario',
-  message: {
+  userId: 'identificador de usuario',
+  userName: 'nombre de usuario',
+
+  messages: {
     bye: 'sales bye',
     cannotUndo: 'esta acción no puede deshacerse',
     confirm: 'confirmar acción',
