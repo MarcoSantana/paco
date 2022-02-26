@@ -1,9 +1,9 @@
 <template>
   <div class="container">
     <v-card>
-      <v-card-title class="text-h5 white--text justify-center mb-2 indigo lighten-3">
-        Detalles del aspirante</v-card-title
-      >
+      <v-card-title class="text-h5 white--text justify-center mb-2 indigo lighten-3">{{
+        $t('documentDetails') | capitalize
+      }}</v-card-title>
       <v-list>
         <v-list-item class="text-center">
           <document-file
@@ -16,73 +16,83 @@
           />
         </v-list-item>
         <v-list-item>
-          <v-list-item-title>{{ $t('name') | capitalize }}:</v-list-item-title
-          ><v-list-item-subtitle>
+          <v-list-item-title>{{ $t('name') | capitalize }}</v-list-item-title>
+          <v-list-item-subtitle @click="copyText($event)">
             {{ user.firstName | capitalize }} {{ user.lastName1 | capitalize }}
             {{ user.lastName2 ? user.lastName2 : '' | capitalize }}
           </v-list-item-subtitle>
         </v-list-item>
         <v-list-item>
-          <v-list-item-title>Fecha de nacimiento:</v-list-item-title>
-          <v-list-item-subtitle>
+          <v-list-item-title>{{ $t('userData.dob') | capitalize }}</v-list-item-title>
+          <v-list-item-subtitle @click="copyText($event)">
             {{ user.dob | intlDate }}
-            <small>Edad: {{ user.dob | age }}</small>
+            <small>{{ $t('userData.age') | capitalize }} {{ user.dob | age }}</small>
           </v-list-item-subtitle>
         </v-list-item>
-        <v-list-item
-          ><v-list-item-title>Lugar de nacimiento:</v-list-item-title>
-          <v-list-item-subtitle>{{ user.nacionality }}</v-list-item-subtitle></v-list-item
-        >
-        <v-list-item
-          ><v-list-item-title>Género:</v-list-item-title>
-          <v-list-item-subtitle>{{ user.gender }} <i :class="user.gender | genderize"></i> </v-list-item-subtitle
-        ></v-list-item>
         <v-list-item>
-          <v-list-item-title>CURP:</v-list-item-title>
-          <v-list-item-subtitle>{{ user.curp }}</v-list-item-subtitle>
+          <v-list-item-title>{{ $t('userData.pob') | capitalize }}</v-list-item-title>
+          <v-list-item-subtitle @click="copyText($event)">{{ user.nacionality }}</v-list-item-subtitle></v-list-item
+        >
+        <v-list-item>
+          <v-list-item-title>{{ $t('userData.gender') | capitalize }}</v-list-item-title>
+          <v-list-item-subtitle>{{ user.gender }} <i :class="user.gender | genderize"></i> </v-list-item-subtitle>
         </v-list-item>
-        <v-list-item
-          ><v-list-item-title>RFC:</v-list-item-title>
-          <v-list-item-subtitle>{{ user.rfc }}</v-list-item-subtitle></v-list-item
+        <v-list-item>
+          <v-list-item-title>{{ $t('userData.curp') }}</v-list-item-title>
+          <v-list-item-subtitle @click="copyText($event)">{{ user.curp }}</v-list-item-subtitle>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-title>{{ $t('userData.rfc') }}</v-list-item-title>
+          <v-list-item-subtitle @click="copyText($event)">{{ user.rfc }}</v-list-item-subtitle></v-list-item
         >
         <v-divider></v-divider>
-        <v-list-item class="text-center"><v-list-item-title>Datos de contacto</v-list-item-title></v-list-item>
-        <v-list-item
-          ><v-list-item-title>Correo electrónico: </v-list-item-title
-          ><v-list-item-subtitle>{{ user.contact.email }}</v-list-item-subtitle></v-list-item
+        <v-list-item class="text-center"
+          ><v-list-item-title>{{ $t('userData.contactData') | capitalize }}</v-list-item-title></v-list-item
         >
         <v-list-item
-          ><v-list-item-title>Teléfono celular: </v-list-item-title
-          ><v-list-item-subtitle>{{ user.contact.cellphone }}</v-list-item-subtitle></v-list-item
+          ><v-list-item-title>{{ $t('userData.email') | capitalize }} </v-list-item-title
+          ><v-list-item-subtitle @click="copyText($event)">{{ user.contact.email }}</v-list-item-subtitle></v-list-item
         >
         <v-list-item
-          ><v-list-item-title>Fax: </v-list-item-title
-          ><v-list-item-subtitle>{{ user.contact.fax }}</v-list-item-subtitle></v-list-item
-        >
-        <v-list-item
-          ><v-list-item-title>Teléfono: </v-list-item-title
-          ><v-list-item-subtitle>{{ user.contact.telephone }}</v-list-item-subtitle></v-list-item
-        >
-        <v-list-item
-          ><v-list-item-title>Dirección: </v-list-item-title
-          ><v-list-item-subtitle>{{ user.address }}</v-list-item-subtitle></v-list-item
-        >
-        <v-divider />
-        <v-list-item><v-list-item-title class="text-center">Detalles de solicitud</v-list-item-title></v-list-item>
-        <v-list-item>
-          <v-list-item-title>Lugar de la solicitud: </v-list-item-title>
-          <v-list-item-subtitle>{{ request.address }}</v-list-item-subtitle>
+          ><v-list-item-title>{{ $t('userData.cellphone') | capitalize }}</v-list-item-title>
+          <v-list-item-subtitle>{{ user.contact.cellphone }}</v-list-item-subtitle>
         </v-list-item>
         <v-list-item
-          ><v-list-item-title>Fecha de la solicitud</v-list-item-title
-          ><v-list-item-subtitle>{{ request.date | intlDate }}</v-list-item-subtitle></v-list-item
+          ><v-list-item-title>{{ $t('userData.phone') | capitalize }} </v-list-item-title
+          ><v-list-item-subtitle @click="copyText($event)">{{ user.contact.phone }}</v-list-item-subtitle></v-list-item
+        >
+
+        <v-list-item
+          ><v-list-item-title>{{ $t('userData.fax') | capitalize }}</v-list-item-title
+          ><v-list-item-subtitle>{{ user.contact.fax }}</v-list-item-subtitle></v-list-item
+        >
+
+        <v-list-item
+          ><v-list-item-title>{{ $t('userData.address') | capitalize }}</v-list-item-title
+          ><v-list-item-subtitle> {{ user.contact.address }}</v-list-item-subtitle></v-list-item
+        >
+        <v-divider />
+        <v-list-item
+          ><v-list-item-title class="text-center">
+            {{ $t('request.details') | capitalize }}
+          </v-list-item-title></v-list-item
+        >
+        <v-list-item>
+          <v-list-item-title>{{ $t('request.place') | capitalize }}</v-list-item-title>
+          <v-list-item-subtitle @click="copyText($event)">{{ request.address }}</v-list-item-subtitle>
+        </v-list-item>
+        <v-list-item
+          ><v-list-item-title>{{ $t('request.date') | capitalize }} </v-list-item-title
+          ><v-list-item-subtitle>{{ request.date }}</v-list-item-subtitle></v-list-item
         >
         <v-list-item
-          ><v-list-item-title>Examen previo: </v-list-item-title
+          ><v-list-item-title>{{ $t('request.previous') | capitalize }}</v-list-item-title
           ><v-list-item-subtitle>{{ request.previousExam }}</v-list-item-subtitle></v-list-item
         >
         <v-divider />
-        <v-list-item class="text-center"><v-list-item-title>Recibo de pago</v-list-item-title></v-list-item>
+        <v-list-item class="text-center"
+          ><v-list-item-title>{{ $t('request.voucher') | capitalize }}</v-list-item-title></v-list-item
+        >
         <v-list-item class="text-center">
           <document-file
             class="document-file"
@@ -95,9 +105,13 @@
         </v-list-item>
         <v-divider />
         <v-list-item
-          ><v-list-item-title class="text-center">Estudios de licenciatura de medicina</v-list-item-title></v-list-item
+          ><v-list-item-title class="text-center">{{
+            $t('request.degree') | capitalize
+          }}</v-list-item-title></v-list-item
         >
-        <v-list-item><v-list-item-title>Título de la licenciatura en medicina</v-list-item-title></v-list-item>
+        <v-list-item
+          ><v-list-item-title>{{ $t('request.title') | capitalize }}</v-list-item-title></v-list-item
+        >
         <v-list-item class="text-center"
           ><document-file
             class="document-file"
@@ -108,7 +122,7 @@
             file-name="degreeDiploma"
         /></v-list-item>
         <v-list-item>
-          <v-list-item-title>Documento del ENARM (constancia de haber presentado o equivalente)</v-list-item-title>
+          <v-list-item-title>{{ $t('request.enarm') | capitalize }}</v-list-item-title>
         </v-list-item>
         <v-list-item class="text-center">
           <document-file
@@ -122,12 +136,18 @@
           </document-file>
         </v-list-item>
         <v-divider />
-        <v-list-item class="text-center"><v-list-item-title>Estudios de posgrado</v-list-item-title></v-list-item>
-        <v-list-item
-          ><v-list-item-title>Cédula profesional: </v-list-item-title
-          ><v-list-item-subtitle>{{ request.postgraduate.license }}</v-list-item-subtitle></v-list-item
+        <v-list-item class="text-center"
+          ><v-list-item-title>{{ $t('request.postDegree') | capitalize }}</v-list-item-title></v-list-item
         >
-        <v-list-item class="text-center"><v-list-item-title>Cédula</v-list-item-title></v-list-item>
+        <v-list-item>
+          <v-list-item-title>{{ $t('request.postDegreeLicense') | capitalize }}</v-list-item-title
+          ><v-list-item-subtitle @click="copyText($event)">{{
+            request.postgraduate.license
+          }}</v-list-item-subtitle></v-list-item
+        >
+        <v-list-item class="text-center"
+          ><v-list-item-title>{{ $t('request.license') | capitalize }}</v-list-item-title></v-list-item
+        >
         <v-list-item class="text-center">
           <document-file
             class="document-file"
@@ -141,22 +161,26 @@
         </v-list-item>
         <v-divider />
         <v-list-item
-          ><v-list-item-title>Especialidad: </v-list-item-title
+          ><v-list-item-title>{{ $t('request.specialty') | capitalize }}</v-list-item-title
           ><v-list-item-subtitle>{{ request.postgraduate.specialty }}</v-list-item-subtitle></v-list-item
         >
         <v-list-item
-          ><v-list-item-title>Hospital formativo: </v-list-item-title
-          ><v-list-item-subtitle>{{ request.postgraduate.hospital }}</v-list-item-subtitle></v-list-item
+          ><v-list-item-title>{{ $t('request.schoolHospital') | capitalize }}</v-list-item-title
+          ><v-list-item-subtitle @click="copyText($event)">{{
+            request.postgraduate.hospital
+          }}</v-list-item-subtitle></v-list-item
         >
         <v-list-item
-          ><v-list-item-title>Fecha de graduación: </v-list-item-title
+          ><v-list-item-title>{{ $t('request.specialtyGraduationDate') | capitalize }}</v-list-item-title
           ><v-list-item-subtitle>{{
             request.postgraduate.graduationDate | intlDate
           }}</v-list-item-subtitle></v-list-item
         >
         <v-divider />
         <v-list-item class="text-center"
-          ><v-list-item-title>Constancia de residencia progresiva hospitalaria</v-list-item-title></v-list-item
+          ><v-list-item-title>
+            {{ $t('request.postDegreeCertificate') | capitalize }}
+          </v-list-item-title></v-list-item
         >
         <v-list-item class="text-center">
           <document-file
@@ -167,9 +191,7 @@
           ></document-file>
         </v-list-item>
         <v-list-item class="text-center"
-          ><v-list-item-title
-            >Diploma institucional en Medicina de Urgencias o en su caso Urgencias Pediatricas</v-list-item-title
-          ></v-list-item
+          ><v-list-item-title>{{ $t('request.postDegreeDiploma') | capitalize }}</v-list-item-title></v-list-item
         >
         <v-list-item class="center">
           <document-file
@@ -180,20 +202,36 @@
           ></document-file>
         </v-list-item>
         <v-divider />
-        <v-list-item><v-list-item-title>Práctica profesional</v-list-item-title></v-list-item>
         <v-list-item
-          ><v-list-item-title>Hospital donde labora: </v-list-item-title
-          ><v-list-item-subtitle>{{ request.professionalExercise.hospital }}</v-list-item-subtitle></v-list-item
+          ><v-list-item-title>{{ $t('request.profesionalPractice') | capitalize }}</v-list-item-title></v-list-item
         >
         <v-list-item
-          ><v-list-item-title>Dirección: </v-list-item-title
-          ><v-list-item-subtitle>{{ request.professionalExercise.location }}</v-list-item-subtitle></v-list-item
+          ><v-list-item-title>{{ $t('request.professionalExerciseHospital') | capitalize }}</v-list-item-title
+          ><v-list-item-subtitle @click="copyText($event)">{{
+            request.professionalExercise.hospital
+          }}</v-list-item-subtitle></v-list-item
         >
         <v-list-item
-          ><v-list-item-title>Cargo: </v-list-item-title
-          ><v-list-item-subtitle>{{ request.professionalExercise.charge }}</v-list-item-subtitle></v-list-item
+          ><v-list-item-title>{{
+            $t('request.professionalExerciseLocation') | capitalize
+          }}</v-list-item-title></v-list-item
+        >
+        <v-list-item
+          ><v-list-item-title>{{ $t('request.professionalExerciseCharge') | capitalize }}</v-list-item-title
+          ><v-list-item-subtitle @click="copyText($event)">{{
+            request.professionalExercise.charge
+          }}</v-list-item-subtitle></v-list-item
         >
       </v-list>
+      <v-snackbar v-model="copySnackbar" timeout="2000">
+        {{ copyMessage }}
+
+        <template v-slot:action="{ attrs }">
+          <v-btn color="error" text v-bind="attrs" @click="copySnackbar = false">
+            {{ $t('actions.close') | capitalize }}
+          </v-btn>
+        </template>
+      </v-snackbar>
     </v-card>
   </div>
 </template>
@@ -202,8 +240,6 @@
 import { DateTime } from 'luxon'
 import { isNil } from 'lodash'
 import DocumentFile from '@/components/admin/DocumentFile.vue'
-// TODO move this to a method that runs on mounted in a tiny component
-// import { storage } from 'firebase'
 
 export default {
   components: {
@@ -215,6 +251,11 @@ export default {
   filters: {
     intlDate(date) {
       const newDate = new Date(date)
+      console.log('newDate', newDate)
+      if (!date || Number.isNaN(newDate)) {
+        // return this.$t('errors.missingData')
+        return 'Datos faltantes'
+      }
       return DateTime.fromJSDate(newDate)
         .setLocale('es')
         .toLocaleString()
@@ -250,11 +291,27 @@ export default {
       request: this.document.data.request,
       user: this.document.data.user,
       documentName: this.document.data.name,
+      copyMessage: '',
+      copySnackbar: false,
     }
   },
   computed: {},
   mounted() {},
-  methods: {},
+  methods: {
+    copyText(event) {
+      navigator.clipboard
+        .writeText(event.target.innerHTML)
+        .then(() => {
+          this.copyMessage = 'Texto copiado!'
+        })
+        .catch(err => {
+          this.copyMessage = `Error al copiar ${err}'`
+        })
+        .finally(() => {
+          this.copySnackbar = true
+        })
+    },
+  },
 }
 </script>
 
