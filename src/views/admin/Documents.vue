@@ -313,7 +313,7 @@ export default {
               </v-card-actions>
             </v-card>
           </v-dialog>
-          <v-dialog v-model="documentPreviewDialog" max-width="500px">
+          <v-dialog v-model="documentPreviewDialog" max-width="100%">
             <v-card>
               <v-card-title class="text-h5 white--text justify-center mb-2 primary">Vista previa</v-card-title>
               <v-card-text>
