@@ -1,5 +1,6 @@
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
+const { google } = require('googleapis')
 // const {firestore} = require("firebase-admin");
 
 admin.initializeApp()
@@ -39,7 +40,7 @@ exports.updateDocumentStatus = functions.https.onCall((data, context) => {
     console.log('Error>> ', error)
     return {
       type: 'error',
-      message: 'Error al actualizar estado',
+      message: `Error al actualizar estado. Error: ${error}`,
     }
   }
 })
@@ -167,88 +168,83 @@ exports.syncDocuments = functions.firestore
   })
 
 // When a document is deleted by admin the user's document is also deleted
-exports.syncDeleteDocuments = functions.firestore
-  .document("documents/{documentId}")
-  .onDelete((snapshot) => {
-    const userId = snapshot.data().userId;
-    const documentId = snapshot.data().documentId;
-    const documentsQuery = admin.firestore()
-      .collection("users")
-      .doc(userId)
-      .collection("documents")
-      .doc(documentId)
-      .delete();
-    return documentsQuery;
-  });
+exports.syncDeleteDocuments = functions.firestore.document('documents/{documentId}').onDelete(snapshot => {
+  // const userId = snapshot.data().userId;
+  const { userId } = snapshot.data()
+  const { documentId } = snapshot.data()
+  const documentsQuery = admin
+    .firestore()
+    .collection('users')
+    .doc(userId)
+    .collection('documents')
+    .doc(documentId)
+    .delete()
+  return documentsQuery
+})
 
 // googleSheets
 
 // createUserListSheet
 exports.createUserListSheet = functions.https.onCall(async (data, context) => {
   const auth = await google.auth.getClient({
-    scopes: [
-      "https://www.googleapis.com/auth/spreadsheets",
-      "https://www.googleapis.com/auth/devstorage.read_only",
-    ],
-  });
-  const spreadsheetId = "16LOr6OdFbMrbNfj_qHs4L0_xz9Crj36AX4LWJPnLz7E";
-  const sheetsAPI = google.sheets({ version: "v4", auth });
+    scopes: ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/devstorage.read_only'],
+  })
+  // const spreadsheetId = "16LOr6OdFbMrbNfj_qHs4L0_xz9Crj36AX4LWJPnLz7E";
+  const spreadsheetId = '1SWQUJF_E02V93AWHLNLEalhmaCGFjWItwRy0nt04FFw'
+  const sheetsAPI = google.sheets({ version: 'v4', auth })
   // const getSheets = sheetsAPI.spreadsheets
   // console.log('auth :>> ', auth);
   // console.log('getSheets :>> ', await getSheets);
 
-  const documents = [];
+  const documents = []
+  // slime
+  const previuosExam = new Date(2021, 8, 14)
 
-  await admin.firestore()
-    .collection("documents")
-    .where("status", "==", 4)
+  await admin
+    .firestore()
+    .collection('documents')
+    .where('status', '==', 4)
+    .where('createTimestamp', '>', previuosExam)
     .orderBy('createTimestamp')
     .get()
-    .then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        const { userName } = doc.data();
-        const { userId } = doc.data();
-        const { request } = doc.data().data;
+    .then(querySnapshot => {
+      querySnapshot.forEach(doc => {
+        const { userName } = doc.data()
+        const { userId } = doc.data()
+        const { request } = doc.data().data
         const { college } = doc.data().data.request.postgraduate || {}
         const { collegeId } = college || 'Missing'
         const { hospital } = doc.data().data.request.postgraduate || {}
-        let graduationDate = doc.data().data.request.postgraduate.graduationDate || {}
+        let graduationDate = doc.data().data.request.postgraduate.graduationDate || Date.now()
         graduationDate = new Date(graduationDate).getFullYear().toString()
 
-        const docData = doc.data().data
-        const { user } = docData
-        const userEmail = user.contact.email
-        // console.log('request.postgraduate :>> ', request.postgraduate);
-        // .toDate()
-        if (userName != null && userName.length > 0) {
-          documents.push([userId, userName, userEmail, collegeId, graduationDate, hospital])
-        }
-      });
-    })
-  // console.log('documents :>> ', documents);
-  // console.log('finalDocs :>> ', finalDocs);
+        // const docData = doc.data()
+        const { user } = doc.data().data
+        const { firstName } = user
+        const { lastName1 } = user
+        const { lastName2 } = user
+        const lastName = lastName1 + ' ' + lastName2
+        const { gender } = user
+        const { email } = user.contact
+        const { telephone } = user.contact
+        const { cellphone } = user.contact
 
-  // let numRows = 0; // get the last row to write new data
-  // const sheetVals = await getSheets
-  //   .values
-  //   .get({
-  //     spreadsheetId: spreadsheetId,
-  //     range: 'Hoja 1!A1:E1'
-  //   });
-  // if (sheetVals.status < 200 || sheetVals.status > 299) {
-  //   console.log('error reading sheet')
-  //   return
-  // }
-  // numRows = sheetVals.data.values ? sheetVals.data.values.length : 0;
-  // const metadata = await getSheets.get({ auth, spreadsheetId})
-  await sheetsAPI.spreadsheets.values.append({
-    auth,
-    spreadsheetId,
-    range: `Sheet1!A2:E2`,
-    valueInputOption: 'RAW',
-    requestBody: { values: documents, majorDimension: "ROWS" }
-  }, {})
-  return documents;
+        if (userName != null && userName.length > 0) {
+          documents.push([firstName, lastName, hospital, email, graduationDate, telephone, cellphone, foo])
+        }
+      })
+    })
+  await sheetsAPI.spreadsheets.values.append(
+    {
+      auth,
+      spreadsheetId,
+      range: `Sheet1!A2:L2`,
+      valueInputOption: 'RAW',
+      requestBody: { values: documents, majorDimension: 'ROWS' },
+    },
+    {}
+  )
+  return documents
   // const payload = {
   //   auth,
   //   spreadsheetId,
@@ -291,43 +287,4 @@ exports.createUserListSheet = functions.https.onCall(async (data, context) => {
   //   message.type = "error";
   //   return message;
   // }
-});
-exports.syncDeleteDocuments = functions.firestore.document('documents/{documentId}').onDelete(snapshot => {
-  const userId = snapshot.data().userId
-  const documentId = snapshot.data().documentId
-  const documentsQuery = admin
-    .firestore()
-    .collection('users')
-    .doc(userId)
-    .collection('documents')
-    .doc(documentId)
-    .delete()
-  return documentsQuery
-})
-
-exports.changeDocumentsName = functions.https.onCall((data, context) => {
-  const previousExam = new Date(2021, 8, 14)
-  return admin
-    .firestore()
-    .collection('documents')
-    .where('createTimestamp', '>', previousExam)
-    .where('name', '!=', 'Solicitud de certificacion 2022')
-    .where('name', '!=', 'Solicitud de certificacion 2021')
-    .orderBy('createTimestamp')
-    .get()
-    .then(querySnapshot => {
-      querySnapshot.forEach(async doc => {
-        // console.log('document name', doc.data().name)
-        if (
-          doc.data().name !== 'Solicitud de certificacion 2021' &&
-          doc.data().name !== 'Solicitud de certificacion 2022'
-        ) {
-          const docRef = await admin
-            .firestore()
-            .collection('documents')
-            .doc(doc.id)
-          docRef.update({ name: doc.data().name + ' 2022' })
-        }
-      })
-    })
 })

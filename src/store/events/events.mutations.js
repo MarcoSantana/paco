@@ -1,7 +1,7 @@
 //  _______ _______
 //  |  |  | |______
 //  |  |  | ______|
-/* 
+/*
  author 🥋: mSantana
  directory 📁: ~/Development/paco/src/store/events
  filename 📄: events.mutations.js
@@ -14,6 +14,7 @@ export default {
   /* Events */
   setEvents: (state, events) => (state.events = events),
   setUserEvents: (state, userEvents) => (state.userEvents = userEvents),
+  setCurretnEvent: (state, currentEvent) => (state.currentEvent = currentEvent),
   addEvent: (state, event) => state.events.push(event),
   addUserEvent: (state, event) => state.userEvents.push(event),
   removeEventById: (state, eventId) => {

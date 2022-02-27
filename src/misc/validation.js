@@ -11,7 +11,7 @@ Every error message must begin with 'Este campo es obligatorio / Este campo debe
 */
 
 import { extend } from 'vee-validate'
-import { required, email, numeric, confirmed } from 'vee-validate/dist/rules'
+import { required, email, numeric, confirmed, size } from 'vee-validate/dist/rules'
 
 extend('email', {
   ...email,
@@ -25,12 +25,12 @@ extend('confirmed', {
 
 extend('required', {
   ...required,
-  message: 'Este campo es obligatorio',
+  // message: 'El campo es obligatorio',
 })
 
 extend('numeric', {
   ...numeric,
-  message: 'Este campo debe ser numérico',
+  // message: 'Este campo debe ser numérico',
 })
 
 extend('length', {
@@ -39,7 +39,7 @@ extend('length', {
     if (string.length >= min && string.length <= max) {
       return true
     }
-    return 'Este campo debe ser de máximo {max} y mínimo {min} caracteres'
+    return 'El campo {_field_} debe ser de máximo {max} y mínimo {min} caracteres'
   },
   params: ['min', 'max'],
 })
@@ -55,6 +55,7 @@ extend('strong_password', {
   },
 })
 
+<<<<<<< HEAD
 extend('curp_regex', {
   validate(value) {
     debugger
@@ -64,4 +65,9 @@ extend('curp_regex', {
       ? true
       : 'No es un formato de CURP válido'
   },
+=======
+extend('size', {
+  ...size,
+  // message: 'El tamaño del archivo no debe exceder los:',
+>>>>>>> feature/fixCertificationReq
 })

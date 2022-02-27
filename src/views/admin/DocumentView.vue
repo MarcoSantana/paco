@@ -1,23 +1,52 @@
 <template>
   <div class="container">
+<<<<<<< HEAD
     <button class="btn" @click="$router.go(-1)">Volver</button>
     <certification-request :document="document"></certification-request>
     <button class="btn" @click="$router.go(-1)">Volver</button>
+=======
+    <v-card>
+      <v-card-title>{{ document.name }}</v-card-title>
+      <v-card-text>
+        <v-list dense>
+          <v-list-item>{{ $t('userName') | capitalize }}: {{ document.userName }}</v-list-item>
+          <v-list-item>
+            {{ $t('createTimestamp') | capitalize }}: {{ document.createTimestamp | removeTime }}
+          </v-list-item>
+          <v-list-item>
+            {{ $t('status') | capitalize }}: {{ $t('document.statusKey')[document.status] | capitalize }}
+          </v-list-item>
+          <v-list-item v-show="document.message">
+            {{ $t('message') | capitalize }}: {{ document.message }}
+          </v-list-item>
+        </v-list>
+      </v-card-text>
+    </v-card>
+    <v-card
+      ><component :is="components[document.name.replaceAll(' 2022', '')]" :document="document"></component
+    ></v-card>
+>>>>>>> feature/fixCertificationReq
   </div>
 </template>
 
 <script>
 import * as components from '@/components/admin/componentsList.json'
 import CertificationRequest from '@/components/admin/CertificationRequest'
+import capitalize from '@/filters/capitalize'
+import removeTime from '@/filters/removeTime'
 
 console.log('components :>> ', components.default['Solicitud de certificación'])
 export default {
   components: { CertificationRequest },
+  filters: { capitalize, removeTime },
   props: { document: Object },
   data() {
     return {
       components: components.default,
     }
+  },
+  mounted() {
+    console.log(this.document)
   },
 }
 </script>

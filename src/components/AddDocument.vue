@@ -16,7 +16,7 @@
     >
       <tab-content title="Tipo de documento" :before-change="validateAsync" icon="ti-file">
         <span id="create-document-type-span" class="{ error: errors[0] }">
-          <label for="document-type" class="tip"> Tipo de documento </label>
+          <label for="document-type" class="tip">Tipo de documento</label>
           <select id="document-type" v-model="documentType" name="document-type" @change="reset">
             <option>Seleccione un documento</option>
             <option v-for="item in documents" :key="item.name" :value="item">{{ item.name }}</option>
@@ -29,8 +29,11 @@
       >
         <span v-if="documentType">
           <h2 v-if="documentType">Formulario para anexar {{ documentType.name }}</h2>
-          <vue-form-generator :schema="documentType.schema" :model="formModel" :options="formOptions">
-          </vue-form-generator>
+          <vue-form-generator
+            :schema="documentType.schema"
+            :model="formModel"
+            :options="formOptions"
+          ></vue-form-generator>
         </span>
       </tab-content>
       <tab-content title="Guardar">
@@ -40,11 +43,9 @@
           :disabled="documentCreationPending || isFinished"
           class="form-wizard-button"
           @click="saveDocument()"
-        >
-          Guardar
-        </button>
+        >Guardar</button>
       </tab-content>
-      <tab-content title="Fin" icon="ti-check"> </tab-content>
+      <tab-content title="Fin" icon="ti-check"></tab-content>
       <div v-if="loadingWizard" class="loader"></div>
       <div v-if="errorMsg">
         <span class="error">{{ errorMsg }}</span>

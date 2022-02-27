@@ -56,29 +56,49 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
-    <!-- TODO populate this with existing dat if any 202112.04-12.31 -->
-    <v-stepper v-model="curr" color="green">
+    <v-stepper v-model="curr" color="primary">
       <v-stepper-content v-for="(step, n) in steps" :key="n" :step="n + 1">
-        <v-stepper-step
-          :complete="stepComplete(n + 1)"
-          :step="n + 1"
-          :rules="[value => !!step.valid]"
-          :color="stepStatus(n + 1)"
-          >{{ step.longName }}</v-stepper-step
-        >
-        <v-form :ref="'stepForm'" v-model="step.valid" lazy-validation>
+        <validation-observer v-slot="{ invalid }">
+          <v-stepper-step
+            :complete="stepComplete(n + 1)"
+            :step="n + 1"
+            :rules="[value => !invalid]"
+            :color="stepStatus(n + 1)"
+            >{{ step.longName }}</v-stepper-step
+          >
           <upload-document
             v-show="step.upload"
             :document="step"
-            :show-files="getEventFiles(currentUserEvent.documents[step.name])"
-            @document-added="updateEvent"
+            :show-files="
+              getEventFiles(
+                currentUserEvent.documents && currentUserEvent.documents[step.name]
+                  ? currentUserEvent.documents[step.name]
+                  : null
+              )
+            "
+            @document-created="updateEvent"
           ></upload-document>
-        </v-form>
-        <v-btn v-if="n + 1 < steps.length + 1" color="primary" :disabled="!step.valid" @click="nextStep(n)"
-          >Continuar</v-btn
-        >
-        <v-btn v-else color="success" @click="done()">Terminar</v-btn>
-        <v-btn v-if="n > 0" text @click="curr = n">Atrás</v-btn>
+          <v-btn
+            v-if="n + 1 < steps.length + 1"
+            :disabled="!disableNext"
+            color="primary"
+            @click="
+              nextStep(n)
+              disableNext = false
+            "
+            >{{ $t('actions.continue') }}</v-btn
+          >
+          <v-btn v-else color="success" @click="done()">Terminar</v-btn>
+          <v-btn
+            v-if="n > 0"
+            text
+            @click="
+              curr = n
+              disableNext = true
+            "
+            >Atrás</v-btn
+          >
+        </validation-observer>
       </v-stepper-content>
     </v-stepper>
     <!-- steps -->
@@ -98,37 +118,128 @@ export default {
     },
   },
   data: () => ({
+    //
+    invalid: true,
+    disableNext: false,
     curr: 1,
     files: [],
     // <!--TODO: Move this elsewhere-->
     steps: [
       {
-        longName: 'Copia del título y cédula profesional de la licenciatura en medicina.',
+        longName:
+          'Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional para la Formación de Recursos Humanos para la Salud (CIFRHS); Copia de la constancia de haber efectuado y aprobado el ENARM, CIFRHS',
+        name: 'enarm',
         upload: true,
-        placeholder: 'Título profesional',
-        name: 'titulo',
-        valid: false,
-        fields: [{ label: 'La etiqueta', name: 'The name' }],
+        required: true,
+        fields: [
+          {
+            label: `comment`,
+            name: 'comment',
+            placeholder: 'Comentario sobre el documento',
+            type: 'v-text-field',
+            rules: { required: false, length: { max: 160, min: 0 } },
+            counter: true,
+          },
+        ],
       },
       {
-        name:
-          ' Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional para la Formación de Recursos Humanos para la Salud (CIFRHS); Copia de la constancia de haber efectuado y aprobado el Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional para la Formación de Recursos Humanos para la Salud (CIFRHS); ',
-      },
-      {
-        name:
+        longName:
           ' En el caso de Urgencias Pediátricas deberá entregar además el diploma institucional y diploma de la institución educativa (universitaria) que lo avala en Pediatría. ',
+        name: 'diplomas',
+        upload: true,
+        required: false,
+        fields: [
+          {
+            label: 'comment',
+            name: 'comment',
+            placeholder: 'Comentario sobre el documento',
+            type: 'v-text-field',
+            rules: { required: false, length: { max: 160, min: 0 } },
+            counter: true,
+          },
+        ],
       },
       {
-        name:
+        longName:
           ' En el caso de Urgencias Pediátricas, constancia de haber terminado satisfactoriamente una residencia progresiva hospitalaria de por lo menos 2 años. ',
+        name: 'pediatricVoucher',
+        upload: true,
+        required: false,
+        fields: [
+          {
+            label: 'comment',
+            name: 'comment',
+            placeholder: 'Comentario sobre el documento',
+            type: 'v-text-field',
+            rules: { required: false, length: { max: 160, min: 0 } },
+            counter: true,
+          },
+        ],
       },
-      { name: 'Copia del diploma institucional en Medicina de Urgencias o en su caso Urgencias Pediatricas.' },
-      { name: 'Copia del diploma de la institución educativa (Universitaria) que lo avala.' },
       {
-        name:
-          ' Tres fotografías oval tamaño diploma (5x7cm) blanco y negro, con fondo blanco, vestimenta formal. Con nombre completo al reverso (con tinta). ',
+        longName: 'Copia del diploma institucional en Medicina de Urgencias o en su caso Urgencias Pediatricas.',
+        name: 'specialtyDiploma',
+        upload: true,
+        required: true,
+        fields: [
+          {
+            label: 'comment',
+            name: 'comment',
+            placeholder: 'Comentario sobre el documento',
+            type: 'v-text-field',
+            rules: { required: false, length: { max: 160, min: 0 } },
+            counter: true,
+          },
+        ],
       },
-      { name: 'Donativo no reembolsable de $ 5,700. 00/100 m.n.' },
+      {
+        longName: 'Copia del diploma de la institución educativa (Universitaria) que lo avala.',
+        name: 'degreeDiploma',
+        upload: true,
+        required: true,
+        fields: [
+          {
+            label: 'comment',
+            name: 'comment',
+            placeholder: 'Comentario sobre el documento',
+            type: 'v-text-field',
+            rules: { required: false, length: { max: 160, min: 0 } },
+            counter: true,
+          },
+        ],
+      },
+      {
+        longName: 'Fotografía oval tamaño diploma (5x7cm) blanco y negro, con fondo blanco, vestimenta formal.',
+        name: 'mugshot',
+        upload: true,
+        required: true,
+        fields: [
+          {
+            label: 'comment',
+            name: 'comment',
+            placeholder: 'Comentario sobre el documento',
+            type: 'v-text-field',
+            rules: { required: false, length: { max: 160, min: 0 } },
+            counter: true,
+          },
+        ],
+      },
+      {
+        longName: 'Donativo no reembolsable de $ 5,700. 00/100 m.n.',
+        name: 'voucher',
+        upload: true,
+        required: true,
+        fields: [
+          {
+            label: 'comment',
+            name: 'comment',
+            placeholder: 'Comentario sobre el documento',
+            type: 'v-text-field',
+            rules: { required: false, length: { max: 160, min: 0 } },
+            counter: true,
+          },
+        ],
+      },
       { name: 'Solicitud completa' },
     ],
     model: {},
@@ -143,14 +254,7 @@ export default {
     currentUserEvent() {
       return this.getUserEvent(this.id)
     },
-    currentRequest() {
-      console.log(this.documents)
-      const match = document => {
-        return RegExp('Solicitud de certificaci[oó]n *[0-9]*', 'i').test(document.name)
-      }
-      return this.documents.filter(document => match(document))[0]
-      // return this.documents
-    },
+    // TODO disableNext with getter and setter to add the required feature so the user can skip some steps
   },
   watch: {},
   mounted() {
@@ -159,9 +263,16 @@ export default {
   methods: {
     ...mapActions('documents', ['triggerAddDocumentAction']),
     ...mapMutations('documents', ['setDocumentNameToCreate', 'setDocumentCreationMessage']),
+    ...mapMutations('events', ['setCurrentEvent']),
     ...mapActions('events', ['setUserEvent', 'updateUserEvent']),
     ...mapActions('documents', ['createUserDocument']),
 
+    async validateForm() {
+      console.log('validating form from refs')
+      const result = await this.$refs.stepForm.validate()
+      this.invalid = result
+      return result
+    },
     getEventFiles(value) {
       return !isNil(value) && !isNil(value.files) ? Object.values(value.files) : null
     },
@@ -171,6 +282,7 @@ export default {
       this.isFinished = true
     },
     setEvent() {
+      console.log('running setEvent: ', this.id)
       if (isNil(this.currentUserEvent)) {
         this.setUserEvent(this.id)
       }
@@ -180,6 +292,7 @@ export default {
       data.documents = val
       data.currentUserEvent = this.currentUserEvent
       this.updateUserEvent(data)
+      this.disableNext = true
     },
     createLocalDocument(document, n) {
       if (isNil(document) || isNil(this.files[n])) return

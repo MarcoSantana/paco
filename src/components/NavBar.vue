@@ -7,7 +7,7 @@
       <span class="site-name title-mobile">{{ appShortTitle }}</span>
     </router-link>
 
-    <div v-if="isUserLoggedIn && networkOnLine && isUserAdmin" data-test="navbar-products" class="nav-item ">
+    <div v-if="isUserLoggedIn && networkOnLine && isUserAdmin" data-test="navbar-products" class="nav-item pa-5 ma-5">
       Administrador
       <i class="mdi mdi-badge-account icon"></i>
     </div>
@@ -16,18 +16,34 @@
         <div v-if="isUserLoggedIn && networkOnLine && isUserAdmin" data-test="navbar-products" class="nav-item ">
           <router-link to="/users" data-test="navbar-products-link">Usuarios</router-link>
         </div>
+<<<<<<< HEAD
         <div v-if="isUserLoggedIn && networkOnLine" data-test="navbar-item-documents" class="nav-item ">
           <router-link to="/documents" data-test="navbar-documents-link">Mis Documentos</router-link>
+=======
+        <div v-if="isUserLoggedIn && networkOnLine && !isUserAdmin" data-test="navbar-item-documents" class="nav-item ">
+          <router-link to="/documents" data-test="navbar-documents-link">Documentos</router-link>
+>>>>>>> feature/fixCertificationReq
         </div>
         <!-- <div v-if="isUserLoggedIn && networkOnLine" data-test="navbar-item-curriculum" class="nav-item ">
              <router-link to="/curriculum" data-test="navbar-curriculum-link">Curriculum</router-link>
              </div> -->
         <!-- Must validate accoirding to date if the user can request certification, and or it has an active request -->
+<<<<<<< HEAD
         <div v-if="isUserLoggedIn && networkOnLine" data-test="navbar-item-request" class="nav-item ">
           <router-link to="/request" data-test="navbar-request-link">Solicitud de examen 2022</router-link>
+=======
+        <div v-if="isUserLoggedIn && networkOnLine && !isUserAdmin" data-test="navbar-item-request" class="nav-item ">
+          <router-link to="/request" data-test="navbar-request-link">Solicitud de examen</router-link>
+>>>>>>> feature/fixCertificationReq
         </div>
         <div v-if="!isUserLoggedIn && networkOnLine" data-test="navbar-item-login" class="nav-item">
           <router-link to="/login" data-test="navbar-login-link">Ingreso</router-link>
+        </div>
+        <div v-if="!isUserAdmin" class="nav-item">
+          <a href="http://cmmu.org.mx/web/aviso-de-privacidad/" target="_blank">
+            Aviso de privacidad
+            <i class="mdi mdi-info" />
+          </a>
         </div>
         <div v-if="!isUserLoggedIn && networkOnLine" data-test="navbar-item-signUp" class="nav-item">
           <router-link to="/signUp" data-test="navbar-signUp-link">Crear cuenta</router-link>
@@ -43,15 +59,10 @@
         <div v-if="!networkOnLine" data-test="navbar-item-offlineLabel" class="nav-item offline-label">
           Sin conexión
         </div>
+        <div v-if="isUserLoggedIn && networkOnLine && user.photoURL" class="nav-item">
+          <img data-test="navbar-item-avatar" class="user-picture can-hide" :src="user.photoURL" alt="Avatar" />
+        </div>
       </nav>
-
-      <img
-        v-if="isUserLoggedIn && networkOnLine"
-        data-test="navbar-item-avatar"
-        class="user-picture can-hide"
-        :src="user.photoURL"
-        alt="Avatar"
-      />
     </div>
   </header>
 </template>

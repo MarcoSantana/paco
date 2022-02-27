@@ -1,9 +1,11 @@
 <template>
-  <div class="details-container">
-    <div>
-      <h3>Detalles del aspirante</h3>
-      <div>
-        <div>
+  <div class="container">
+    <v-card>
+      <v-card-title class="text-h5 white--text justify-center mb-2 indigo lighten-3">{{
+        $t('documentDetails') | capitalize
+      }}</v-card-title>
+      <v-list>
+        <v-list-item class="text-center">
           <document-file
             class="document-file"
             :document-name="documentName"
@@ -11,56 +13,118 @@
             :scrollable-modal="true"
             :resizable-modal="true"
             file-name="avatar"
-          ></document-file>
-        </div>
-        <div>Nombres: {{ user.firstName }} {{ user.lastName1 }} {{ user.lastName2 ? user.lastName2 : '' }}</div>
-        <div class="row">
-          <div>Fecha de nacimiento: {{ user.dob | intlDate }}</div>
-          <div>
-            <small>Edad: {{ user.dob | age }}</small>
-          </div>
-        </div>
-        <div>País de nacimiento: {{ user.nacionality }}</div>
-        <div>Género: {{ user.gender }} <i :class="user.gender | genderize"></i></div>
-        <div>CURP: {{ user.curp }}</div>
-        <div>RFC: {{ user.rfc }}</div>
-        <h4>Datos de contacto</h4>
-        <div>Correo electrónico: {{ user.contact.email }}</div>
-        <div>Teléfono celular: {{ user.contact.cellphone }}</div>
-        <div>Fax: {{ user.contact.fax }}</div>
-        <div>Teléfono: {{ user.contact.telephone }}</div>
-        <div>Dirección: {{ user.address }}</div>
-      </div>
-      <h3>Detalles de solicitud</h3>
-      <div>
-        <div>{{ request.address }} {{ request.date | intlDate }}</div>
-        <div>Examen previo: {{ request.previousExam }}</div>
-      </div>
-      <h3>Recibo de pago</h3>
-      <div>
-        <document-file
-          class="document-file"
-          :document-name="documentName"
-          :user-id="document.userId"
-          :scrollable-modal="true"
-          :resizable-modal="true"
-          file-name="voucher"
-        ></document-file>
-      </div>
-      <h3>Estudios de licenciatura de medicina</h3>
-      <div>
-        <div>Título de la licenciatura en medicina</div>
-        <document-file
-          class="document-file"
-          :document-name="document.name"
-          :user-id="document.userId"
-          :scrollable-modal="true"
-          :resizable-modal="true"
-          file-name="degreeDiploma"
+          />
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-title>{{ $t('name') | capitalize }}</v-list-item-title>
+          <v-list-item-subtitle @click="copyText($event)">
+            {{ user.firstName | capitalize }} {{ user.lastName1 | capitalize }}
+            {{ user.lastName2 ? user.lastName2 : '' | capitalize }}
+          </v-list-item-subtitle>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-title>{{ $t('userData.dob') | capitalize }}</v-list-item-title>
+          <v-list-item-subtitle @click="copyText($event)">
+            {{ user.dob | intlDate }}
+            <small>{{ $t('userData.age') | capitalize }} {{ user.dob | age }}</small>
+          </v-list-item-subtitle>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-title>{{ $t('userData.pob') | capitalize }}</v-list-item-title>
+          <v-list-item-subtitle @click="copyText($event)">{{ user.nacionality }}</v-list-item-subtitle></v-list-item
         >
-        </document-file>
-        <div>
-          <div>Documento del ENARM (constancia de haber presentado o equivalente)</div>
+        <v-list-item>
+          <v-list-item-title>{{ $t('userData.gender') | capitalize }}</v-list-item-title>
+          <v-list-item-subtitle>{{ user.gender }} <i :class="user.gender | genderize"></i> </v-list-item-subtitle>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-title>{{ $t('userData.curp') }}</v-list-item-title>
+          <v-list-item-subtitle @click="copyText($event)">{{ user.curp }}</v-list-item-subtitle>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-title>{{ $t('userData.rfc') }}</v-list-item-title>
+          <v-list-item-subtitle @click="copyText($event)">{{ user.rfc }}</v-list-item-subtitle></v-list-item
+        >
+        <v-divider></v-divider>
+        <v-list-item class="text-center"
+          ><v-list-item-title>{{ $t('userData.contactData') | capitalize }}</v-list-item-title></v-list-item
+        >
+        <v-list-item
+          ><v-list-item-title>{{ $t('userData.email') | capitalize }} </v-list-item-title
+          ><v-list-item-subtitle @click="copyText($event)">{{ user.contact.email }}</v-list-item-subtitle></v-list-item
+        >
+        <v-list-item
+          ><v-list-item-title>{{ $t('userData.cellphone') | capitalize }}</v-list-item-title>
+          <v-list-item-subtitle>{{ user.contact.cellphone }}</v-list-item-subtitle>
+        </v-list-item>
+        <v-list-item
+          ><v-list-item-title>{{ $t('userData.phone') | capitalize }} </v-list-item-title
+          ><v-list-item-subtitle @click="copyText($event)">{{ user.contact.phone }}</v-list-item-subtitle></v-list-item
+        >
+
+        <v-list-item
+          ><v-list-item-title>{{ $t('userData.fax') | capitalize }}</v-list-item-title
+          ><v-list-item-subtitle>{{ user.contact.fax }}</v-list-item-subtitle></v-list-item
+        >
+
+        <v-list-item
+          ><v-list-item-title>{{ $t('userData.address') | capitalize }}</v-list-item-title
+          ><v-list-item-subtitle> {{ user.contact.address }}</v-list-item-subtitle></v-list-item
+        >
+        <v-divider />
+        <v-list-item
+          ><v-list-item-title class="text-center">
+            {{ $t('request.details') | capitalize }}
+          </v-list-item-title></v-list-item
+        >
+        <v-list-item>
+          <v-list-item-title>{{ $t('request.place') | capitalize }}</v-list-item-title>
+          <v-list-item-subtitle @click="copyText($event)">{{ request.address }}</v-list-item-subtitle>
+        </v-list-item>
+        <v-list-item
+          ><v-list-item-title>{{ $t('request.date') | capitalize }} </v-list-item-title
+          ><v-list-item-subtitle>{{ request.date }}</v-list-item-subtitle></v-list-item
+        >
+        <v-list-item
+          ><v-list-item-title>{{ $t('request.previous') | capitalize }}</v-list-item-title
+          ><v-list-item-subtitle>{{ request.previousExam }}</v-list-item-subtitle></v-list-item
+        >
+        <v-divider />
+        <v-list-item class="text-center"
+          ><v-list-item-title>{{ $t('request.voucher') | capitalize }}</v-list-item-title></v-list-item
+        >
+        <v-list-item class="text-center">
+          <document-file
+            class="document-file"
+            :document-name="documentName"
+            :user-id="document.userId"
+            :scrollable-modal="true"
+            :resizable-modal="true"
+            file-name="voucher"
+          ></document-file>
+        </v-list-item>
+        <v-divider />
+        <v-list-item
+          ><v-list-item-title class="text-center">{{
+            $t('request.degree') | capitalize
+          }}</v-list-item-title></v-list-item
+        >
+        <v-list-item
+          ><v-list-item-title>{{ $t('request.title') | capitalize }}</v-list-item-title></v-list-item
+        >
+        <v-list-item class="text-center"
+          ><document-file
+            class="document-file"
+            :document-name="document.name"
+            :user-id="document.userId"
+            :scrollable-modal="true"
+            :resizable-modal="true"
+            file-name="degreeDiploma"
+        /></v-list-item>
+        <v-list-item>
+          <v-list-item-title>{{ $t('request.enarm') | capitalize }}</v-list-item-title>
+        </v-list-item>
+        <v-list-item class="text-center">
           <document-file
             class="document-file"
             :document-name="document.name"
@@ -70,13 +134,21 @@
             file-name="enarm"
           >
           </document-file>
-        </div>
-      </div>
-      <div>
-        <h4>Estudios de posgrado</h4>
-        <div>
-          <div>Cédula profesional: {{ request.postgraduate.license }}</div>
-          <div>Cédula</div>
+        </v-list-item>
+        <v-divider />
+        <v-list-item class="text-center"
+          ><v-list-item-title>{{ $t('request.postDegree') | capitalize }}</v-list-item-title></v-list-item
+        >
+        <v-list-item>
+          <v-list-item-title>{{ $t('request.postDegreeLicense') | capitalize }}</v-list-item-title
+          ><v-list-item-subtitle @click="copyText($event)">{{
+            request.postgraduate.license
+          }}</v-list-item-subtitle></v-list-item
+        >
+        <v-list-item class="text-center"
+          ><v-list-item-title>{{ $t('request.license') | capitalize }}</v-list-item-title></v-list-item
+        >
+        <v-list-item class="text-center">
           <document-file
             class="document-file"
             :document-name="document.name"
@@ -86,6 +158,7 @@
             file-name="license"
           >
           </document-file>
+<<<<<<< HEAD
           <div>Universidad</div>
           <div>Especialidad: {{ request.postgraduate.specialty }}</div>
           <div>Hospital formativo: {{ request.postgraduate.hospital }}</div>
@@ -102,12 +175,51 @@
         </div>
         <div>
           <div>Diploma institucional en Medicina de Urgencias o en su caso Urgencias Pediatricas</div>
+=======
+        </v-list-item>
+        <v-divider />
+        <v-list-item
+          ><v-list-item-title>{{ $t('request.specialty') | capitalize }}</v-list-item-title
+          ><v-list-item-subtitle>{{ request.postgraduate.specialty }}</v-list-item-subtitle></v-list-item
+        >
+        <v-list-item
+          ><v-list-item-title>{{ $t('request.schoolHospital') | capitalize }}</v-list-item-title
+          ><v-list-item-subtitle @click="copyText($event)">{{
+            request.postgraduate.hospital
+          }}</v-list-item-subtitle></v-list-item
+        >
+        <v-list-item
+          ><v-list-item-title>{{ $t('request.specialtyGraduationDate') | capitalize }}</v-list-item-title
+          ><v-list-item-subtitle>{{
+            request.postgraduate.graduationDate | intlDate
+          }}</v-list-item-subtitle></v-list-item
+        >
+        <v-divider />
+        <v-list-item class="text-center"
+          ><v-list-item-title>
+            {{ $t('request.postDegreeCertificate') | capitalize }}
+          </v-list-item-title></v-list-item
+        >
+        <v-list-item class="text-center">
+          <document-file
+            class="document-file"
+            :document-name="document.name"
+            :user-id="document.userId"
+            file-name="pediatricResidence"
+          ></document-file>
+        </v-list-item>
+        <v-list-item class="text-center"
+          ><v-list-item-title>{{ $t('request.postDegreeDiploma') | capitalize }}</v-list-item-title></v-list-item
+        >
+        <v-list-item class="center">
+>>>>>>> feature/fixCertificationReq
           <document-file
             class="document-file"
             :document-name="document.name"
             :user-id="document.userId"
             file-name="postgraduateDiploma"
           ></document-file>
+<<<<<<< HEAD
         </div>
       </div>
       <!-- // postgraduateUniversitaryDiploma -->
@@ -127,6 +239,41 @@
         <div>Cargo: {{ request.professionalExercise.charge }}</div>
       </div>
     </div>
+=======
+        </v-list-item>
+        <v-divider />
+        <v-list-item
+          ><v-list-item-title>{{ $t('request.profesionalPractice') | capitalize }}</v-list-item-title></v-list-item
+        >
+        <v-list-item
+          ><v-list-item-title>{{ $t('request.professionalExerciseHospital') | capitalize }}</v-list-item-title
+          ><v-list-item-subtitle @click="copyText($event)">{{
+            request.professionalExercise.hospital
+          }}</v-list-item-subtitle></v-list-item
+        >
+        <v-list-item
+          ><v-list-item-title>{{
+            $t('request.professionalExerciseLocation') | capitalize
+          }}</v-list-item-title></v-list-item
+        >
+        <v-list-item
+          ><v-list-item-title>{{ $t('request.professionalExerciseCharge') | capitalize }}</v-list-item-title
+          ><v-list-item-subtitle @click="copyText($event)">{{
+            request.professionalExercise.charge
+          }}</v-list-item-subtitle></v-list-item
+        >
+      </v-list>
+      <v-snackbar v-model="copySnackbar" timeout="2000">
+        {{ copyMessage }}
+
+        <template v-slot:action="{ attrs }">
+          <v-btn color="error" text v-bind="attrs" @click="copySnackbar = false">
+            {{ $t('actions.close') | capitalize }}
+          </v-btn>
+        </template>
+      </v-snackbar>
+    </v-card>
+>>>>>>> feature/fixCertificationReq
   </div>
 </template>
 
@@ -134,8 +281,6 @@
 import { DateTime } from 'luxon'
 import { isNil } from 'lodash'
 import DocumentFile from '@/components/admin/DocumentFile.vue'
-// TODO move this to a method that runs on mounted in a tiny component
-// import { storage } from 'firebase'
 
 export default {
   components: {
@@ -147,6 +292,11 @@ export default {
   filters: {
     intlDate(date) {
       const newDate = new Date(date)
+      console.log('newDate', newDate)
+      if (!date || Number.isNaN(newDate)) {
+        // return this.$t('errors.missingData')
+        return 'Datos faltantes'
+      }
       return DateTime.fromJSDate(newDate)
         .setLocale('es')
         .toLocaleString()
@@ -182,11 +332,27 @@ export default {
       request: this.document.data.request,
       user: this.document.data.user,
       documentName: this.document.data.name,
+      copyMessage: '',
+      copySnackbar: false,
     }
   },
   computed: {},
   mounted() {},
-  methods: {},
+  methods: {
+    copyText(event) {
+      navigator.clipboard
+        .writeText(event.target.innerHTML)
+        .then(() => {
+          this.copyMessage = 'Texto copiado!'
+        })
+        .catch(err => {
+          this.copyMessage = `Error al copiar ${err}'`
+        })
+        .finally(() => {
+          this.copySnackbar = true
+        })
+    },
+  },
 }
 </script>
 

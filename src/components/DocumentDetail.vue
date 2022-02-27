@@ -1,5 +1,31 @@
 <template>
-  <div class="container">
+  <v-container>
+    <h1 class="text-capitalize">{{ $t('document.name') }}: {{ document.name }}</h1>
+    <h2 class="text-capitalize">{{ $t('document.status') }}: {{ $t(`document.statusKey[${document.status}]`) }}</h2>
+    <h3 v-show="editable">
+      <small>Mensaje del administrador:</small>
+      {{ document.message }}
+    </h3>
+    <v-card>
+      <v-card-title>Estamos en mantenimiento</v-card-title>
+      <v-img src="/img/IT_Support_Two_Color.svg" alt="" />
+    </v-card>
+    <!-- <div class="text-capitalize">{{ $t('document.createTimestamp') }}: {{ document.createTimestamp | intlDate }}</div>
+         <show-file v-if="document.files" :files="document.files"></show-file>
+         <div v-if="document.files">
+         <show-file v-for="file in document.files" :key="file" :url="file" />
+         </div>
+         <div v-show="editable">
+         <h4>Enviar para revisión</h4>
+         <div>
+         <v-btn color="accent" elevation="2" @click="markForReview">Enviar</v-btn>
+         </div>
+         </div> -->
+  </v-container>
+  <!-- <div class="container">
+      <h1>{{$t('document.createTimestamp')}}>> {{ document.createTimestamp }}</h1>
+      <h1>{{$t('document.updateTimestamp')}}>> {{ document.updateTimestamp }}</h1>
+      <h1>{{$t('document.id')}}>> {{ document.id }}</h1>
     <h1>{{ document.name }}</h1>
     <h2>Estado: {{ document.status | docStatus }}</h2>
     <h2 v-show="!editable">
@@ -80,39 +106,41 @@
         </div>
       </div>
     </div>
-  </div>
+  </div>-->
 </template>
 
 <script>
 import { DateTime } from 'luxon'
-import { isNil } from 'lodash'
+// import { isNil } from 'lodash'
 import { mapActions, mapState } from 'vuex'
-import DocumentForm from '@/components/DocumentForm.vue'
+// import DocumentForm from '@/components/DocumentForm.vue'
+// import ShowFile from '@/components/ShowFile'
 
 export default {
-  components: { DocumentForm },
+  // components: { DocumentForm },
+  // components: { ShowFile },
   filters: {
-    docStatus(value) {
-      if (!value) return ''
-      switch (value) {
-        case 1:
-          value = 'Por revisar'
-          break
-        case 2:
-          value = 'En revisión'
-          break
-        case 3:
-          value = 'Rechazado'
-          break
-        case 4:
-          value = 'Aceptado'
-          break
-        default:
-          break
-      }
-      value = value.toString()
-      return value.charAt(0).toUpperCase() + value.slice(1)
-    },
+    //   docStatus(value) {
+    //     if (!value) return ''
+    //     switch (value) {
+    //       case 1:
+    //         value = 'Por revisar'
+    //         break
+    //       case 2:
+    //         value = 'En revisión'
+    //         break
+    //       case 3:
+    //         value = 'Rechazado'
+    //         break
+    //       case 4:
+    //         value = 'Aceptado'
+    //         break
+    //       default:
+    //         break
+    //     }
+    //     value = value.toString()
+    //     return value.charAt(0).toUpperCase() + value.slice(1)
+    //   },
     intlDate(date) {
       return (
         DateTime.fromJSDate(new Date(date))
@@ -121,76 +149,72 @@ export default {
           .toLocaleString()
       )
     },
-
-    age(date) {
-      if (date) {
-        const dob = DateTime.fromISO(date)
-        return Math.floor(dob.diffNow('years').years * -1)
-      }
-      return null
-    },
-    ago(date) {
-      const newValueParsed = DateTime.fromJSDate(new Date(date))
-      const now = DateTime.now()
-      return Math.round(now.diff(newValueParsed, ['days']).days)
-    },
-    genderize: value => {
-      let gender = null
-      if (!isNil(value)) {
-        if (value.toString() === 'Hombre') {
-          gender = 'mdi mdi-gender-male icon'
-        }
-        if (value.toString() === 'Mujer') {
-          gender = 'mdi mdi-gender-female icon'
-        }
-        return gender
-      }
-      return value
-    },
+    //   age(date) {
+    //     if (date) {
+    //       const dob = DateTime.fromISO(date)
+    //       return Math.floor(dob.diffNow('years').years * -1)
+    //     }
+    //     return null
+    //   },
+    //   ago(date) {
+    //     const newValueParsed = DateTime.fromJSDate(new Date(date))
+    //     const now = DateTime.now()
+    //     return Math.round(now.diff(newValueParsed, ['days']).days)
+    //   },
+    //   genderize: value => {
+    //     let gender = null
+    //     if (!isNil(value)) {
+    //       if (value.toString() === 'Hombre') {
+    //         gender = 'mdi mdi-gender-male icon'
+    //       }
+    //       if (value.toString() === 'Mujer') {
+    //         gender = 'mdi mdi-gender-female icon'
+    //       }
+    //       return gender
+    //     }
+    //     return value
+    //   },
   },
   props: {
     document: Object,
   },
-  data: () => ({
-    requiredFiles: [
-      'avatar',
-      'degreeDiploma',
-      'enarm',
-      'license',
-      'postgraduateDiploma',
-      'postgraduateUniversitaryDiploma',
-      'residence',
-      'voucher',
-    ],
-    documentFileNames: {
-      avatar: 'Fotografía de título',
-      degreeDiploma: 'Diploma de licenciatura',
-      enarm: 'Constancia ENARM o similar',
-      license: 'Cédula profesional',
-      postgraduateUniversitaryDiploma: 'Diploma universitario de especialidad',
-      postgraduateDiploma: 'Diploma de especialidad',
-      residence: 'Diploma de residencia',
-      voucher: 'Comprobante de pago',
-    },
-    uploadFileError: null,
-    selectedFile: null,
-    currentFileName: null,
-    errors: [],
-    uploadValue: 0,
-    picture: null,
-  }),
+  // data: () => ({
+  //   requiredFiles: [
+  //     'avatar',
+  //     'degreeDiploma',
+  //     'enarm',
+  //     'license',
+  //     'postgraduateDiploma',
+  //     'postgraduateUniversitaryDiploma',
+  //     'residence',
+  //     'voucher',
+  //   ],
+  //   documentFileNames: {
+  //     avatar: 'Fotografía de título',
+  //     degreeDiploma: 'Diploma de licenciatura',
+  //     enarm: 'Constancia ENARM o similar',
+  //     license: 'Cédula profesional',
+  //     postgraduateUniversitaryDiploma: 'Diploma universitario de especialidad',
+  //     postgraduateDiploma: 'Diploma de especialidad',
+  //     residence: 'Diploma de residencia',
+  //     voucher: 'Comprobante de pago',
+  //   },
+  //   uploadFileError: null,
+  //   selectedFile: null,
+  //   currentFileName: null,
+  //   errors: [],
+  //   uploadValue: 0,
+  //   picture: null,
+  // }),
   computed: {
     ...mapState('authentication', ['user']),
     editable() {
-      console.log('this.document.status :>> ', this.document.status)
-      console.log('this.document.status === "3" :>> ', this.document.status === '3')
-      console.log('typeof document.status :>> ', typeof document.status)
       return this.document.status === 3
     },
   },
   methods: {
     ...mapActions('documents', ['setDocumentForReview']),
-    ...mapActions('admin', ['readAllAsAdmin']),
+    //   ...mapActions('admin', ['readAllAsAdmin']),
     async markForReview() {
       console.clear()
       console.log('this.document.id :>> ', this.document.id)
@@ -212,7 +236,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/theme/variables.scss';
+/* @import '@/theme/variables.scss'; */
 .document-grid {
   display: grid;
   grid-gap: 0.75rem;
