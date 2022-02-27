@@ -94,7 +94,6 @@
           ><v-list-item-title>{{ $t('request.voucher') | capitalize }}</v-list-item-title></v-list-item
         >
         <v-list-item class="text-center">
-          user id {{ document.userId }}
           <document-file
             class="document-file"
             :document-name="documentName"
