@@ -1,10 +1,5 @@
 <template>
   <div class="container">
-<<<<<<< HEAD
-    <button class="btn" @click="$router.go(-1)">Volver</button>
-    <certification-request :document="document"></certification-request>
-    <button class="btn" @click="$router.go(-1)">Volver</button>
-=======
     <v-card>
       <v-card-title>{{ document.name }}</v-card-title>
       <v-card-text>
@@ -25,7 +20,6 @@
     <v-card
       ><component :is="components[document.name.replaceAll(' 2022', '')]" :document="document"></component
     ></v-card>
->>>>>>> feature/fixCertificationReq
   </div>
 </template>
 

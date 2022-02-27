@@ -1,58 +1,5 @@
 <template>
   <v-card class="mx-auto" max-width="500">
-<<<<<<< HEAD
-    <v-fade-transition v-for="file in files" :key="file.name">
-      <v-img
-        v-if="file.type === 'image/png' || files.type === 'image/jpeg'"
-        class="ma-5"
-        contain
-        lazy-src="https://picsum.photos/id/11/10/6"
-        max-height="150"
-        max-width="250"
-        :src="getURL(file)"
-      />
-      <!-- TODO Center this inside the card 202112.04-08.24 -->
-      <object
-        v-if="file.name && file.type === 'application/pdf'"
-        class="ma-5"
-        style="max-width: 500px; min-width: 344px; min-height: 500px;"
-        :data="getURL(file)"
-      />
-    </v-fade-transition>
-    <v-alert v-if="documentCreationMessage.message" text :type="documentCreationMessage.type">
-      {{ documentCreationMessage.message }}
-    </v-alert>
-    <v-card-text>
-      <!--TODO: Create an object with the fields data and store them in firebase-->
-      <div v-for="field in document.fields" :key="field.name">
-        <v-text-field v-model="documentFields[field.name]" :label="field.label" hide-details="auto"></v-text-field>
-      </div>
-      <v-file-input
-        v-model="files"
-        accept="image/png, image/jpeg, application/pdf"
-        :placeholder="document.placeholder"
-        counter
-        chips
-        show-size
-        truncate-length="15"
-        required
-        small-chips
-        multiple
-        clearable
-        :rules="[val => required(val), val => maxSize(val, 2e6)]"
-        @change="setDocumentCreationMessage({})"
-      ></v-file-input>
-      <v-btn
-        v-if="documentCreationMessage.type !== 'success'"
-        color="success"
-        :disabled="!valid || (files && files.length == 0)"
-        @click="validate()"
-      >
-        Guardar
-        <v-icon right dark>mdi-cloud-upload</v-icon>
-      </v-btn>
-    </v-card-text>
-=======
     <v-alert v-if="documentCreationMessage.message" text :type="documentCreationMessage.type">{{
       documentCreationMessage.message
     }}</v-alert>
@@ -156,7 +103,6 @@
         </v-card-actions>
       </v-card-text>
     </validation-observer>
->>>>>>> feature/fixCertificationReq
   </v-card>
 </template>
 
@@ -191,7 +137,6 @@ export default {
     filesCounter: 1,
     inputsArray: [true],
   }),
-<<<<<<< HEAD
 
   asyncComputed: {
     files() {
@@ -206,9 +151,6 @@ export default {
       // TODO: manage 403 error in fetch
     },
   },
-=======
-  asyncComputed: {},
->>>>>>> feature/fixCertificationReq
   computed: {
     ...mapState('documents', [
       'documents',

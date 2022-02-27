@@ -94,6 +94,7 @@
           ><v-list-item-title>{{ $t('request.voucher') | capitalize }}</v-list-item-title></v-list-item
         >
         <v-list-item class="text-center">
+          user id {{ document.userId }}
           <document-file
             class="document-file"
             :document-name="documentName"
@@ -158,24 +159,6 @@
             file-name="license"
           >
           </document-file>
-<<<<<<< HEAD
-          <div>Universidad</div>
-          <div>Especialidad: {{ request.postgraduate.specialty }}</div>
-          <div>Hospital formativo: {{ request.postgraduate.hospital }}</div>
-          <div>Fecha de graduación: {{ request.postgraduate.graduationDate | intlDate }}</div>
-          <div>
-            <div>Constancia de residencia progresiva hospitalaria</div>
-            <document-file
-              class="document-file"
-              :document-name="document.name"
-              :user-id="document.userId"
-              file-name="residence"
-            ></document-file>
-          </div>
-        </div>
-        <div>
-          <div>Diploma institucional en Medicina de Urgencias o en su caso Urgencias Pediatricas</div>
-=======
         </v-list-item>
         <v-divider />
         <v-list-item
@@ -205,41 +188,19 @@
             class="document-file"
             :document-name="document.name"
             :user-id="document.userId"
-            file-name="pediatricResidence"
+            file-name="residence"
           ></document-file>
         </v-list-item>
         <v-list-item class="text-center"
           ><v-list-item-title>{{ $t('request.postDegreeDiploma') | capitalize }}</v-list-item-title></v-list-item
         >
         <v-list-item class="center">
->>>>>>> feature/fixCertificationReq
           <document-file
             class="document-file"
             :document-name="document.name"
             :user-id="document.userId"
             file-name="postgraduateDiploma"
           ></document-file>
-<<<<<<< HEAD
-        </div>
-      </div>
-      <!-- // postgraduateUniversitaryDiploma -->
-      <div>
-        <div>Diploma universitario en Medicina de Urgencias o en su caso Urgencias Pediatricas</div>
-        <document-file
-          class="document-file"
-          :document-name="document.name"
-          :user-id="document.userId"
-          file-name="postgraduateUniversitaryDiploma"
-        ></document-file>
-      </div>
-      <div>
-        <h4>Práctica profesional</h4>
-        <div>Hospital donde labora: {{ request.professionalExercise.hospital }}</div>
-        <div>Dirección: {{ request.professionalExercise.location }}</div>
-        <div>Cargo: {{ request.professionalExercise.charge }}</div>
-      </div>
-    </div>
-=======
         </v-list-item>
         <v-divider />
         <v-list-item
@@ -251,8 +212,9 @@
             request.professionalExercise.hospital
           }}</v-list-item-subtitle></v-list-item
         >
-        <v-list-item
-          ><v-list-item-title>{{
+
+        <v-list-item>
+          <v-list-item-title>{{
             $t('request.professionalExerciseLocation') | capitalize
           }}</v-list-item-title></v-list-item
         >
@@ -273,7 +235,6 @@
         </template>
       </v-snackbar>
     </v-card>
->>>>>>> feature/fixCertificationReq
   </div>
 </template>
 

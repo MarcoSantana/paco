@@ -64,14 +64,13 @@ export default {
       return url
     },
     documentFileType() {
-      console.info('documentFileType')
       let docName = this.$props.documentName
       docName = docName.replace(/^(\w.+)( [0-9]+)/, '$1')
-      const storageRef = storage().ref(`documents/${this.$props.userId}/${docName}/${this.fileName}`)
+      const ref = `/documents/${this.$props.userId}/${docName}/${this.fileName}`
+      const storageRef = storage().ref(ref)
       const metadata = storageRef
         .getMetadata()
         .then(resMetadata => {
-          console.log('resMetadata', resMetadata)
           return resMetadata
         })
         .catch(error => {
