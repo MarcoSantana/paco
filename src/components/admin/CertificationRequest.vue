@@ -64,12 +64,12 @@
 
         <v-list-item
           ><v-list-item-title>{{ $t('userData.fax') | capitalize }}</v-list-item-title
-          ><v-list-item-subtitle>{{ user.contact.fax }}</v-list-item-subtitle></v-list-item
+          ><v-list-item-subtitle @click="copyText($event)">{{ user.contact.fax }}</v-list-item-subtitle></v-list-item
         >
 
         <v-list-item
           ><v-list-item-title>{{ $t('userData.address') | capitalize }}</v-list-item-title
-          ><v-list-item-subtitle> {{ user.address }}</v-list-item-subtitle></v-list-item
+          ><v-list-item-subtitle @click="copyText($event)"> {{ user.address }}</v-list-item-subtitle></v-list-item
         >
         <v-divider />
         <v-list-item
