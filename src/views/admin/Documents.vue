@@ -315,7 +315,9 @@ export default {
           </v-dialog>
           <v-dialog v-model="documentPreviewDialog" max-width="100%">
             <v-card>
-              <v-card-title class="text-h5 white--text justify-center mb-2 primary">Vista previa</v-card-title>
+              <v-card-title class="text-h5 white--text justify-center mb-2 primary">{{
+                $t('preview') | capitalize
+              }}</v-card-title>
               <v-card-text>
                 <v-lazy v-model="documentPreviewDialog">
                   <document-view :document="currentDocument"></document-view>

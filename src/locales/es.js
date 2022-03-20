@@ -18,6 +18,7 @@ export default {
   user: 'usuario',
   userId: 'identificador de usuario',
   userName: 'nombre de usuario',
+  preview: 'vista previa',
 
   errors: { missingData: 'datos faltantes' },
   userData: {
