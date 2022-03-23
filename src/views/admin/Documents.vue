@@ -1,7 +1,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { callUpdateDocumentStatus, callCreateUserListSheet } from '@/firebase/functions'
-import DocumentView from '@/views/admin/DocumentView.vue'
+import DocumentPreview from './DocumentPreview.vue'
 
 export default {
   filters: {
@@ -27,7 +27,7 @@ export default {
       return !value ? null : value.replace(/(^\d{1})\/(\d{1})/i, '0$1/0$2')
     },
   },
-  components: { DocumentView },
+  components: { DocumentPreview },
   data() {
     return {
       showData: false,
@@ -134,26 +134,24 @@ export default {
 </script>
 <template>
   <div style="width: 100%">
-    <div>
-      <h2>Documentos</h2>
-    </div>
-    <v-card
-      ><v-card-text class="pa-2">
-        <!-- <v-btn class="ma-2" small outlined color="success" @click="createUsersList">
-           Crear lista de usuarios para emma
-           </v-btn> -->
+    <div><h2>Documentos</h2></div>
+    <v-card>
+      <v-card-text class="pa-2">
+        <!--<v-btn class="ma-2" small outlined color="success" @click="createUsersList">
+Crear lista de usuarios para emma
+</v-btn> -->
       </v-card-text>
     </v-card>
-
     <v-card v-if="documents">
       <v-data-table :headers="documentHeaders" :items="documents" :search="documentsSearch" :items-per-page="50" dense>
         <template v-slot:top>
           <v-toolbar flat>
-            <v-card-title
-              >Buscar en documentos <v-spacer />
+            <v-card-title>
+              Buscar en documentos
               <v-spacer></v-spacer>
-              <v-text-field v-model="documentsSearch" class="mx-2" append-icon="mdi-magnify"></v-text-field
-            ></v-card-title>
+              <v-spacer></v-spacer>
+              <v-text-field v-model="documentsSearch" class="mx-2" append-icon="mdi-magnify"></v-text-field>
+            </v-card-title>
             <v-divider class="mx-4" inset vertical></v-divider>
           </v-toolbar>
           <v-dialog v-model="documentStatusDialog" max-width="500px">
@@ -161,7 +159,7 @@ export default {
               <v-card-title class="text-h5 justify-center mb-2 primary lighten-2">
                 <span class="white--text">{{ $t('actions.changeStatus') | capitalize }}</span>
               </v-card-title>
-              <v-alert v-if="documentUpdateMessage !== ''" outlined :type="documentUpdateMessage.type" class="ma-5">
+              <v-alert v-if="documentUpdateMessage !== ''" class="ma-5" outlined :type="documentUpdateMessage.type">
                 {{ documentUpdateMessage.message }}
               </v-alert>
               <v-card-text>
@@ -206,9 +204,7 @@ export default {
             </v-card>
             <v-dialog v-model="documentRejectReasonDialog" max-width="400px">
               <v-card>
-                <v-card-title class="text-h5 white--text justify-center mb-2 warning">
-                  Razón de rechazo
-                </v-card-title>
+                <v-card-title class="text-h5 white--text justify-center mb-2 warning">Razón de rechazo</v-card-title>
                 <v-card-text>
                   <v-textarea
                     v-model="documentRejectReason"
@@ -260,27 +256,19 @@ export default {
                 </v-alert>
                 <v-list-item two-line>
                   <v-list-item-content>
-                    <v-list-item-title>
-                      {{ $t('file') | capitalize }}
-                    </v-list-item-title>
-                    <v-list-item-subtitle>
-                      {{ currentDocument.name }}
-                    </v-list-item-subtitle>
+                    <v-list-item-title>{{ $t('file') | capitalize }}</v-list-item-title>
+                    <v-list-item-subtitle>{{ currentDocument.name }}</v-list-item-subtitle>
                   </v-list-item-content>
                 </v-list-item>
                 <v-list-item two-line>
                   <v-list-item-content>
-                    <v-list-item-title>
-                      {{ $t('user') | capitalize }}
-                    </v-list-item-title>
-                    <v-list-item-subtitle>
-                      {{ currentDocument.userName }}
-                    </v-list-item-subtitle>
+                    <v-list-item-title>{{ $t('user') | capitalize }}</v-list-item-title>
+                    <v-list-item-subtitle>{{ currentDocument.userName }}</v-list-item-subtitle>
                   </v-list-item-content>
                 </v-list-item>
                 <v-list-item two-line>
                   <v-list-item-content>
-                    <v-list-item-title> {{ $t('document.status') | capitalize }}</v-list-item-title>
+                    <v-list-item-title>{{ $t('document.status') | capitalize }}</v-list-item-title>
                     <v-list-item-subtitle>
                       {{ $t('document.statusKey')[currentDocument.status] | capitalize }}
                     </v-list-item-subtitle>
@@ -297,9 +285,9 @@ export default {
                   hide-details
                 ></v-switch>
                 <v-spacer></v-spacer>
-                <v-btn outlined color="primary darken-1" text @click="documentDeleteDialog = false">{{
-                  $t('actions.cancel')
-                }}</v-btn>
+                <v-btn outlined color="primary darken-1" text @click="documentDeleteDialog = false">
+                  {{ $t('actions.cancel') }}
+                </v-btn>
                 <v-btn
                   :disabled="!documentDeleteAccept"
                   outlined
@@ -310,23 +298,6 @@ export default {
                   {{ $t('actions.accept') }}
                 </v-btn>
                 <v-spacer></v-spacer>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-          <v-dialog v-model="documentPreviewDialog" max-width="100%">
-            <v-card>
-              <v-card-title class="text-h5 white--text justify-center mb-2 primary">{{
-                $t('preview') | capitalize
-              }}</v-card-title>
-              <v-card-text>
-                <v-lazy v-model="documentPreviewDialog">
-                  <document-view :document="currentDocument"></document-view>
-                </v-lazy>
-              </v-card-text>
-              <v-card-actions>
-                <v-btn outlined color="error" @click="documentPreviewDialog = false">
-                  <i class="mdi mdi-close"></i>{{ $t('actions.close') }}
-                </v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -344,9 +315,7 @@ export default {
           <span>{{ item.data.updateTimestamp.toDate() | removeTime | zeroPadDate }}</span>
         </template>
         <template v-slot:no-data>
-          <v-btn outlined color="primary" @click="reloadAllDocuments">
-            {{ $t('actions.reload') }}
-          </v-btn>
+          <v-btn outlined color="primary" @click="reloadAllDocuments">{{ $t('actions.reload') }}</v-btn>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-btn-toggle dense tile group>
@@ -392,6 +361,7 @@ export default {
           </v-btn-toggle>
         </template>
       </v-data-table>
+      <document-preview :document="currentDocument" :show-dialog="documentPreviewDialog" />
     </v-card>
   </div>
 </template>
