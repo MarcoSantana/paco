@@ -11,15 +11,13 @@
           <v-list-item>
             {{ $t('status') | capitalize }}: {{ $t('document.statusKey')[document.status] | capitalize }}
           </v-list-item>
-          <v-list-item v-show="document.message">
-            {{ $t('message') | capitalize }}: {{ document.message }}
-          </v-list-item>
+          <v-list-item v-show="document.message">{{ $t('message') | capitalize }}: {{ document.message }}</v-list-item>
         </v-list>
       </v-card-text>
     </v-card>
-    <v-card
-      ><component :is="components[document.name.replaceAll(' 2022', '')]" :document="document"></component
-    ></v-card>
+    <v-card>
+      <component :is="components[document.name.replaceAll(' 2022', '')]" :document="document"></component>
+    </v-card>
   </div>
 </template>
 
