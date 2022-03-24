@@ -39,12 +39,18 @@ export default {
       currentSortDirection: 'asc',
       documentsSearch: null,
       documentHeaders: [
-        { text: 'Nombre', value: 'userName', sortable: true },
-        { text: 'Tipo de documento', value: 'name', sortable: true },
-        { text: 'Estado', value: 'status', sortable: true },
-        { text: 'Creado', value: 'data.updateTimestamp', sortable: true },
-        { text: 'Última modificación', value: 'data.createTimestamp', sortable: true, filterable: true },
-        { text: 'Acciones', value: 'actions', sortable: false },
+        { text: this.$t('name'), value: 'userName', sortable: true, class: 'text-capitalize' },
+        { text: this.$t('documentType'), value: 'name', sortable: true, class: 'text-capitalize' },
+        { text: this.$t('status'), value: 'status', sortable: true, class: 'text-capitalize' },
+        { text: this.$t('created'), value: 'data.updateTimestamp', sortable: true, class: 'text-capitalize' },
+        {
+          text: this.$t('lastModified'),
+          value: 'data.createTimestamp',
+          sortable: true,
+          filterable: true,
+          class: 'text-capitalize',
+        },
+        { text: this.$t('functions'), value: 'actions', sortable: false, class: 'text-capitalize' },
       ],
       documentDeleteDialog: false,
       documentStatusDialog: false,
@@ -369,7 +375,10 @@ Crear lista de usuarios para emma
 <style lang="scss" scoped>
 @import '@/theme/style.scss';
 @import '@/theme/variables.scss';
-
+.capitalize {
+  text-transform: capitalize;
+  color: red;
+}
 .documents-table {
   tr:nth-child(odd) {
     background-color: $light-accent;
