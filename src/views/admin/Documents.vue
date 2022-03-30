@@ -375,22 +375,4 @@ Crear lista de usuarios para emma
 <style lang="scss" scoped>
 @import '@/theme/style.scss';
 @import '@/theme/variables.scss';
-.capitalize {
-  text-transform: capitalize;
-  color: red;
-}
-.documents-table {
-  tr:nth-child(odd) {
-    background-color: $light-accent;
-    &:hover {
-      background-color: lighten($light-accent, 15%);
-    }
-  }
-  tr:nth-child(even) {
-    background-color: $light-accent-1;
-    &:hover {
-      background-color: lighten($light-accent, 15%);
-    }
-  }
-} // table
 </style>

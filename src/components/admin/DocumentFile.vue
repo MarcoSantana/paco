@@ -2,13 +2,15 @@
   <v-container>
     <v-dialog v-model="dialog" overlay-color="grey darken-1">
       <v-card v-if="documentFileType" class="image-container">
-        <v-card-actions
-          ><v-btn outlined color="error" @click="dialog = false">
-            <i class="mdi mdi-close" />{{ $t('actions.close') }}
-          </v-btn></v-card-actions
-        >
+        <v-card-actions>
+          <v-btn outlined color="error" @click="dialog = false">
+            <i class="mdi mdi-close" />
+            {{ $t('actions.close') }}
+          </v-btn>
+        </v-card-actions>
         <v-img
           v-if="documentFileType.contentType == 'image/png' || documentFileType.contentType == 'image/jpeg'"
+          lazy-src="img/logo_cmmu.9ca8d5e0.png"
           style="height: 80%;"
           :src="documentFile"
         />
@@ -23,10 +25,10 @@
     <v-card v-if="documentFileType" class="text-center" @click="dialog = true">
       <v-img
         v-if="documentFileType.contentType == 'image/png' || documentFileType.contentType == 'image/jpeg'"
+        lazy-src="img/logo_cmmu.9ca8d5e0.png"
         :src="documentFile"
         @click="dialog = true"
-      >
-      </v-img>
+      ></v-img>
       <pdf v-if="documentFileType.contentType == 'application/pdf'" :src="documentFile" @click="dialog = true"></pdf>
     </v-card>
   </v-container>
