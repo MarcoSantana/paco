@@ -80,6 +80,9 @@ export default {
     dispatchAllDocuments() {
       this.$store.dispatch('admin/getAllDocuments', null, { root: true })
     },
+    closePreviewDialog() {
+      this.documentPreviewDialog = false
+    },
     quickViewDocument(identifier) {
       console.log('identifier: ', identifier)
     },
@@ -367,7 +370,7 @@ Crear lista de usuarios para emma
           </v-btn-toggle>
         </template>
       </v-data-table>
-      <document-preview :document="currentDocument" :show-dialog="documentPreviewDialog" />
+      <document-preview :document="currentDocument" :show-dialog="documentPreviewDialog" @close="closePreviewDialog" />
     </v-card>
   </div>
 </template>
