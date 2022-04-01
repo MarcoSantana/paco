@@ -5,20 +5,25 @@ import DocumentPreview from './DocumentPreview.vue'
 
 export default {
   filters: {
-    capitalize: (value) => {
+    capitalize: value => {
       if (!value) return ''
       return value
         .split(' ')
-        .map((word) => {
-          return word.toLocaleLowerCase().charAt(0).toLocaleUpperCase() + word.slice(1).toLocaleLowerCase()
+        .map(word => {
+          return (
+            word
+              .toLocaleLowerCase()
+              .charAt(0)
+              .toLocaleUpperCase() + word.slice(1).toLocaleLowerCase()
+          )
         })
         .join(' ')
     },
-    removeTime: (value) => {
+    removeTime: value => {
       if (!value) return ''
       return value.toLocaleString().split(' ')[0]
     },
-    zeroPadDate: (value) => {
+    zeroPadDate: value => {
       return !value ? null : value.replace(/(^\d{1})\/(\d{1})/i, '0$1/0$2')
     },
   },
@@ -90,7 +95,7 @@ export default {
       this.documentUpdateMessage = { type: 'warning', messages: 'Cambiando el estado del documento' }
       // TODO: Update the state specifically for this document on successful transaction
       // TODO: Trigger the actions and mutations related with document update
-      await callUpdateDocumentStatus(document, status, messages).then((result) => {
+      await callUpdateDocumentStatus(document, status, messages).then(result => {
         this.documentUpdateMessage = result.data
       })
     },
@@ -149,13 +154,7 @@ Crear lista de usuarios para emma
       </v-card-text>
     </v-card>
     <v-card v-if="documents">
-      <v-data-table
-        :headers="documentHeaders"
-        :items="documents"
-        :search="documentsSearch"
-        :items-per-page="50"
-        dense
-      >
+      <v-data-table :headers="documentHeaders" :items="documents" :search="documentsSearch" :items-per-page="50" dense>
         <template v-slot:top>
           <v-toolbar flat>
             <v-card-title>
@@ -171,12 +170,9 @@ Crear lista de usuarios para emma
               <v-card-title class="text-h5 justify-center mb-2 primary lighten-2">
                 <span class="white--text">{{ $t('actions.changeStatus') | capitalize }}</span>
               </v-card-title>
-              <v-alert
-                v-if="documentUpdateMessage !== ''"
-                class="ma-5"
-                outlined
-                :type="documentUpdateMessage.type"
-              >{{ documentUpdateMessage.message }}</v-alert>
+              <v-alert v-if="documentUpdateMessage !== ''" class="ma-5" outlined :type="documentUpdateMessage.type">
+                {{ documentUpdateMessage.message }}
+              </v-alert>
               <v-card-text>
                 <div>Documento: {{ currentDocument.name }}</div>
                 <div>Creado: {{ currentDocument.createTimestamp | removeTime | zeroPadDate }}</div>
@@ -219,9 +215,7 @@ Crear lista de usuarios para emma
             </v-card>
             <v-dialog v-model="documentRejectReasonDialog" max-width="400px">
               <v-card>
-                <v-card-title
-                  class="text-h5 white--text justify-center mb-2 warning"
-                >Razón de rechazo</v-card-title>
+                <v-card-title class="text-h5 white--text justify-center mb-2 warning">Razón de rechazo</v-card-title>
                 <v-card-text>
                   <v-textarea
                     v-model="documentRejectReason"
@@ -264,16 +258,13 @@ Crear lista de usuarios para emma
           </v-dialog>
           <v-dialog v-model="documentDeleteDialog" max-width="500px">
             <v-card>
-              <v-card-title
-                class="text-h5 justify-center mb-2 warning lighten-2"
-              >{{ $t('messages.confirm') | capitalize }}</v-card-title>
+              <v-card-title class="text-h5 justify-center mb-2 warning lighten-2">
+                {{ $t('messages.confirm') | capitalize }}
+              </v-card-title>
               <v-card-text>
-                <v-alert
-                  outlined
-                  type="warning"
-                  prominent
-                  border="left"
-                >{{ $t('messages.cannotUndo') | capitalize }}</v-alert>
+                <v-alert outlined type="warning" prominent border="left">
+                  {{ $t('messages.cannotUndo') | capitalize }}
+                </v-alert>
                 <v-list-item two-line>
                   <v-list-item-content>
                     <v-list-item-title>{{ $t('file') | capitalize }}</v-list-item-title>
@@ -289,7 +280,9 @@ Crear lista de usuarios para emma
                 <v-list-item two-line>
                   <v-list-item-content>
                     <v-list-item-title>{{ $t('document.status') | capitalize }}</v-list-item-title>
-                    <v-list-item-subtitle>{{ $t('document.statusKey')[currentDocument.status] | capitalize }}</v-list-item-subtitle>
+                    <v-list-item-subtitle>
+                      {{ $t('document.statusKey')[currentDocument.status] | capitalize }}
+                    </v-list-item-subtitle>
                   </v-list-item-content>
                 </v-list-item>
               </v-card-text>
@@ -303,40 +296,39 @@ Crear lista de usuarios para emma
                   hide-details
                 ></v-switch>
                 <v-spacer></v-spacer>
-                <v-btn
-                  outlined
-                  color="primary darken-1"
-                  text
-                  @click="documentDeleteDialog = false"
-                >{{ $t('actions.cancel') }}</v-btn>
+                <v-btn outlined color="primary darken-1" text @click="documentDeleteDialog = false">
+                  {{ $t('actions.cancel') }}
+                </v-btn>
                 <v-btn
                   :disabled="!documentDeleteAccept"
                   outlined
                   color="error darken-1"
                   text
                   @click="deleteDocument(currentDocument.id)"
-                >{{ $t('actions.accept') }}</v-btn>
+                >
+                  {{ $t('actions.accept') }}
+                </v-btn>
                 <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>
           </v-dialog>
         </template>
-        <template
-          v-slot:[&#x60;item.status&#x60;]="{ item }"
-        >{{ $t('document.statusKey')[item.status] | capitalize }}</template>
-        <template v-slot:[&#x60;item.userName&#x60;]="{ item }">
+        <template v-slot:item.status="{ item }">
+          {{ $t('document.statusKey')[item.status] | capitalize }}
+        </template>
+        <template v-slot:item.userName="{ item }">
           <span>{{ item.userName | capitalize }}</span>
         </template>
-        <template v-slot:[&#x60;item.data.createTimestamp&#x60;]="{ item }">
+        <template v-slot:item.data.createTimestamp="{ item }">
           <span>{{ item.data.createTimestamp.toDate() | removeTime | zeroPadDate }}</span>
         </template>
-        <template v-slot:[&#x60;item.data.updateTimestamp&#x60;]="{ item }">
+        <template v-slot:item.data.updateTimestamp="{ item }">
           <span>{{ item.data.updateTimestamp.toDate() | removeTime | zeroPadDate }}</span>
         </template>
         <template v-slot:no-data>
           <v-btn outlined color="primary" @click="reloadAllDocuments">{{ $t('actions.reload') }}</v-btn>
         </template>
-        <template v-slot:[&#x60;item.actions&#x60;]="{ item }">
+        <template v-slot:item.actions="{ item }">
           <v-btn-toggle dense tile group>
             <v-hover v-slot="{ hover }">
               <v-btn
@@ -380,11 +372,7 @@ Crear lista de usuarios para emma
           </v-btn-toggle>
         </template>
       </v-data-table>
-      <document-preview
-        :document="currentDocument"
-        :show-dialog="documentPreviewDialog"
-        @close="closePreviewDialog"
-      />
+      <document-preview :document="currentDocument" :show-dialog="documentPreviewDialog" @close="closePreviewDialog" />
     </v-card>
   </div>
 </template>
