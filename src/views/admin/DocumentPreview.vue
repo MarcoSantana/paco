@@ -14,7 +14,7 @@
         </v-lazy>
       </v-card-text>
       <v-card-actions>
-        <v-btn outlined color="error" @click="hide">
+        <v-btn outlined color="error" @click="$emit('close')">
           <i class="mdi mdi-close"></i>
           {{ $t('actions.close') }}
         </v-btn>

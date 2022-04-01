@@ -25,7 +25,7 @@
         ></pdf>
       </v-card>
     </v-dialog>
-    <v-card v-if="documentFileType" class="text-center">
+    <v-card v-if="documentFileType && !loading" class="text-center" @click="dialog = true">
       <v-img
         v-if="documentFileType.contentType == 'image/png' || documentFileType.contentType == 'image/jpeg'"
         lazy-src="img/logo_cmmu.9ca8d5e0.png"
@@ -47,6 +47,7 @@
         </v-btn>
       </v-card-actions>
     </v-card>
+    <v-skeleton-loader v-if="loading" class="mx-auto" max-width="300" type="card"></v-skeleton-loader>
   </v-container>
 </template>
 
@@ -64,6 +65,7 @@ export default {
   },
   data: () => ({
     dialog: false,
+    loading: false,
   }),
   mount() {},
   mounted() {},
@@ -79,6 +81,8 @@ export default {
         console.log(resUrl)
         return resUrl
       })
+
+      this.loading = false
       return url
     },
     documentFileType() {
