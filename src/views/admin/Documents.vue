@@ -367,7 +367,7 @@ Crear lista de usuarios para emma
           </v-btn-toggle>
         </template>
       </v-data-table>
-      <document-preview :document="currentDocument" :show-dialog="documentPreviewDialog" />
+      <document-preview v-if="documentPreviewDialog" :document="currentDocument" />
     </v-card>
   </div>
 </template>
