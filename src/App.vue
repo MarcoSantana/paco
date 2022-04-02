@@ -1,12 +1,12 @@
 <template>
-  <v-app
-    ><v-main>
+  <v-app>
+    <v-main>
       <loading v-if="loading"></loading>
       <nav-bar></nav-bar>
       <div class="main-wrapper">
         <router-view />
       </div>
-
+      <!-- Change me to vuetify toaster -->
       <new-content-available-toastr
         v-if="newContentAvailable"
         class="new-content-available-toastr"
@@ -17,9 +17,9 @@
         v-if="showAddToHomeScreenModalForApple"
         class="apple-add-to-home-screen-modal"
         @close="closeAddToHomeScreenModalForApple(false)"
-      >
-      </apple-add-to-home-screen-modal> </v-main
-  ></v-app>
+      ></apple-add-to-home-screen-modal>
+    </v-main>
+  </v-app>
 </template>
 <script>
 import NavBar from '@/components/NavBar'
