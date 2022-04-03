@@ -1,6 +1,6 @@
 <template>
   <v-app-bar :color="networkOnLine ? 'primary' : 'error'" app dark>
-    <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+    <v-app-bar-nav-icon @click="$emit('toggleDrawer')"></v-app-bar-nav-icon>
     <img alt="logo-cmmu" class="logo" src="@/assets/img/logo_cmmu.png" />
     <v-toolbar-title class="site-name d-none d-md-flex">{{ appTitle }}</v-toolbar-title>
     <v-toolbar-title class="site-name d-md-none">{{ appShortTitle }}</v-toolbar-title>
