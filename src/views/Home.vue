@@ -1,15 +1,36 @@
 <template>
-  <v-container class="ma-5">
-    <v-row class="ma-5">
-      <v-col cols="2" offset="1" class="text-center">
+  <v-container>
+    <v-row align="center" justify="center">
+      <v-col cols="12" align="center" justify="center">
         <v-img alt="logo-bento" width="250px" src="@/assets/img/logo_cmmu.png" />
       </v-col>
-      <v-col cols="4" offset="1">
-        <h1 class="home-page-title">{{ appTitle }}</h1>
-        <h2 class="home-page-title">{{ clientName }}</h2>
+    </v-row>
+    <v-row align="center" justify="center">
+      <v-col class="text-center" cols="12">
+        <h1 class="text-h4 font-weight-thin mb-4">
+          {{ appTitle }}
+        </h1>
+        <h4 class="subheading">
+          {{ clientName }}
+        </h4>
       </v-col>
     </v-row>
-
+    <v-row v-if="!isUserLoggedIn" class="ma-3">
+      <v-col cols="6">
+        <v-row align="center" justify="center">
+          <v-btn outlined color="success" to="login">
+            Ya tengo cuenta
+          </v-btn>
+        </v-row>
+      </v-col>
+      <v-col cols="6">
+        <v-row align="center" justify="center">
+          <v-btn outlined color="error" to="/signup">
+            No tengo cuenta
+          </v-btn>
+        </v-row>
+      </v-col>
+    </v-row>
     <v-card v-if="isUserAdmin && isUserLoggedIn" width="80%">
       <form>
         <v-text-field
