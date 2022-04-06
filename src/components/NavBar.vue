@@ -7,10 +7,6 @@
     <v-spacer />
     <v-toolbar-title v-if="!networkOnLine"><small>Fuera de línea</small></v-toolbar-title>
     <v-spacer />
-    <v-toolbar-title v-if="isUserLoggedIn && networkOnLine && isUserAdmin" data-test="navbar-products">
-      <small class="d-none d-md-flex">Administrador</small>
-      <v-icon color="warning" class="d-md-none">mdi-badge-account</v-icon>
-    </v-toolbar-title>
     <v-menu v-if="isUserLoggedIn && networkOnLine" bottom left>
       <template v-slot:activator="{ on, attrs }">
         <v-btn icon color="secondary" v-bind="attrs" v-on="on">
