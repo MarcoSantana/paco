@@ -19,15 +19,20 @@
         @close="closeAddToHomeScreenModalForApple(false)"
       ></apple-add-to-home-screen-modal>
     </v-main>
-    <v-navigation-drawer v-model="drawer" app class="indigo lighten-4">
+    <v-navigation-drawer v-if="user" v-model="drawer" app class="indigo lighten-4">
       <v-sheet color="grey lighten-4" class="pa-4">
-        <v-avatar class="mb-4" color="grey darken-1" size="64">
-          <v-img v-if="user.photoURL" :src="user.photoURL"></v-img>
-          <v-img
-            v-else
-            :src="`https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${user.displayName}`"
-          ></v-img>
-        </v-avatar>
+        <v-badge bordered color="orange accent-4" overlap :value="isUserAdmin">
+          <template v-slot:badge>
+            <v-icon>mdi-badge-account</v-icon>
+          </template>
+          <v-avatar class="mb-4" color="grey darken-1" size="64">
+            <v-img v-if="user.photoURL" :src="user.photoURL"></v-img>
+            <v-img
+              v-else
+              :src="`https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${user.displayName}`"
+            ></v-img>
+          </v-avatar>
+        </v-badge>
         <div>
           {{ user.displayName }}
           <small>
@@ -37,8 +42,8 @@
       </v-sheet>
 
       <v-divider></v-divider>
-
-      <v-list>
+      <!-- This is a stub planned for regular users must plan something for admins -->
+      <v-list v-if="!isUserAdmin">
         <v-list-item v-for="[icon, text] in links" :key="icon" link>
           <v-list-item-icon>
             <v-icon>{{ icon }}</v-icon>
@@ -49,6 +54,9 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
+      <!-- <v-list v-if="isUserAdmin">
+           Lista de enlaces para administradores
+           </v-list> -->
     </v-navigation-drawer>
   </v-app>
 </template>
@@ -74,6 +82,7 @@ export default {
   },
   computed: {
     ...mapGetters('app', ['newContentAvailable', 'loading']),
+    ...mapGetters('authentication', ['isUserLoggedIn', 'isUserAdmin']),
     ...mapState('app', ['showAddToHomeScreenModalForApple', 'refreshingApp', 'loading']),
     ...mapState('authentication', ['user']),
   },
@@ -81,7 +90,6 @@ export default {
     ...mapActions('app', ['closeAddToHomeScreenModalForApple', 'serviceWorkerSkipWaiting']),
     toggleDrawer() {
       this.drawer = !this.drawer
-      console.log('Drawer', this.drawer)
     },
   },
 }
