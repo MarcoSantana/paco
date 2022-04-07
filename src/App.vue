@@ -20,19 +20,15 @@
       ></apple-add-to-home-screen-modal>
     </v-main>
     <v-navigation-drawer v-if="user" v-model="drawer" app class="indigo lighten-4">
-      <v-sheet color="grey lighten-4" class="pa-4">
-        <v-badge bordered color="orange accent-4" overlap :value="isUserAdmin">
-          <template v-slot:badge>
-            <v-icon>mdi-badge-account</v-icon>
-          </template>
-          <v-avatar class="mb-4" color="grey darken-1" size="64">
-            <v-img v-if="user.photoURL" :src="user.photoURL"></v-img>
-            <v-img
-              v-else
-              :src="`https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${user.displayName}`"
-            ></v-img>
-          </v-avatar>
-        </v-badge>
+      <v-sheet :color="isUserAdmin ? 'orange lighten-4' : ''" class="pa-4">
+        <v-avatar class="mb-4" color="grey darken-1" size="64">
+          <v-img v-if="user.photoURL" :src="user.photoURL"></v-img>
+          <v-img
+            v-else
+            :src="`https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${user.displayName}`"
+          ></v-img>
+        </v-avatar>
+
         <div>
           {{ user.displayName }}
           <small>
