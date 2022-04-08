@@ -20,6 +20,7 @@
   "dependencies": {
     "@vue/babel-preset-app": "^4.5.13",
     "axios": "^0.19.2",
+    "chart.js": "^3.7.1",
     "core-js": "^3.6.5",
     "firebase": "^6.6.2",
     "is_js": "^0.9.0",
@@ -30,6 +31,7 @@
     "vee-validate": "^3.3.0",
     "vue": "^2.6.11",
     "vue-async-computed": "^3.9.0",
+    "vue-chartjs": "^4.0.5",
     "vue-datetime": "^1.0.0-beta.14",
     "vue-form-generator": "^2.3.4",
     "vue-form-wizard": "^0.8.4",
