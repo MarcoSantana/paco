@@ -1,12 +1,12 @@
 <template>
-  <v-app
-    ><v-main>
+  <v-app>
+    <v-main>
       <loading v-if="loading"></loading>
-      <nav-bar></nav-bar>
+      <nav-bar @toggleDrawer="toggleDrawer"></nav-bar>
       <div class="main-wrapper">
         <router-view />
       </div>
-
+      <!-- Change me to vuetify toaster -->
       <new-content-available-toastr
         v-if="newContentAvailable"
         class="new-content-available-toastr"
@@ -17,9 +17,50 @@
         v-if="showAddToHomeScreenModalForApple"
         class="apple-add-to-home-screen-modal"
         @close="closeAddToHomeScreenModalForApple(false)"
-      >
-      </apple-add-to-home-screen-modal> </v-main
-  ></v-app>
+      ></apple-add-to-home-screen-modal>
+    </v-main>
+    <v-navigation-drawer v-if="user" v-model="drawer" app class="indigo lighten-4">
+      <v-sheet :color="isUserAdmin ? 'orange lighten-4' : ''" class="pa-4">
+        <v-avatar class="mb-4" color="grey darken-1" size="64">
+          <v-img v-if="user.photoURL" :src="user.photoURL"></v-img>
+          <v-img
+            v-else
+            :src="`https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${user.displayName}`"
+          ></v-img>
+        </v-avatar>
+
+        <div>
+          {{ user.displayName }}
+          <small>
+            {{ user.email }}
+          </small>
+        </div>
+      </v-sheet>
+
+      <v-divider></v-divider>
+      <v-list v-if="!isUserAdmin">
+        <v-list-item v-for="[icon, text] in links" :key="icon" link>
+          <v-list-item-icon>
+            <v-icon>{{ icon }}</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>{{ text }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+      <v-list v-if="isUserAdmin">
+        <v-list-item v-for="[icon, text, to] in adminLinks" :key="icon" link :to="to">
+          <v-list-icon>
+            <v-icon>{{ icon }}</v-icon>
+          </v-list-icon>
+          <v-list-item-content>
+            <v-list-item-title>{{ text }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
+  </v-app>
 </template>
 <script>
 import NavBar from '@/components/NavBar'
@@ -30,11 +71,30 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 
 export default {
   components: { Loading, NavBar, NewContentAvailableToastr, AppleAddToHomeScreenModal },
+  data() {
+    return {
+      drawer: true,
+      links: [
+        ['mdi-inbox-arrow-down', 'Mensajes'],
+        ['mdi-cloud-upload', 'Cargar documentos'],
+        ['mdi-folder-account', 'Perfil'],
+        // ['mdi-alert-octagon', 'Spam'],
+      ],
+      adminLinks: [['mdi-view-dashboard', 'Centro de control', 'admin/dashboard']],
+    }
+  },
   computed: {
     ...mapGetters('app', ['newContentAvailable', 'loading']),
+    ...mapGetters('authentication', ['isUserLoggedIn', 'isUserAdmin']),
     ...mapState('app', ['showAddToHomeScreenModalForApple', 'refreshingApp', 'loading']),
+    ...mapState('authentication', ['user']),
   },
-  methods: mapActions('app', ['closeAddToHomeScreenModalForApple', 'serviceWorkerSkipWaiting']),
+  methods: {
+    ...mapActions('app', ['closeAddToHomeScreenModalForApple', 'serviceWorkerSkipWaiting']),
+    toggleDrawer() {
+      this.drawer = !this.drawer
+    },
+  },
 }
 </script>
 

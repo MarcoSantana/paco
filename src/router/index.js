@@ -112,6 +112,13 @@ const router = new Router({
       name: 'adminHome',
       component: () => import(/* webpackChunkName: "client-chunk-main-details" */ '@/views/admin/Main.vue'),
     },
+    // Admin dashboard
+    {
+      path: '/admin/dashboard',
+      name: 'adminDashboard',
+      component: () =>
+        import(/* webpackChunkName: "client-chunk-main-details" */ '@/views/admin/dashboard/Dashboard.vue'),
+    },
 
     {
       // https://paco-1a08b.firebaseapp.com/home?mode=resetPassword&oobCode=tRiYs5S8Ry5pwQrd7SH5-qQr9Zlv7Hkg2yzX9HyQyhIAAAF6-Fh59g&apiKey=AIzaSyAge4gR03bNsbvhOtyRSuw4qtGBgE4pX_U&lang=es-419
@@ -133,13 +140,8 @@ const router = new Router({
  */
 // eslint-disable-next-line consistent-return
 router.beforeEach((to, from, next) => {
-  console.log('to.query :>> ', to.query)
-  // DONE Capture the route query to detect the password rest attempt 202107.30-16.15
   if (!isNil(to.query)) {
-    // const { mode, oobCode, lang } = to.query
     const { mode, oobCode, lang, apiKey } = to.query
-    // console.log('oobCode :>> ', oobCode)
-    // console.log('lang :>> ', lang)
     if (mode === 'resetPassword') {
       return router.push({
         name: 'resetPassword',

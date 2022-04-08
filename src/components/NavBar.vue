@@ -1,60 +1,38 @@
 <template>
-  <header class="navbar" :class="{ offline: !networkOnLine }">
-    <router-link :to="`/${isUserAdmin ? 'admin/home' : 'home'}`">
-      <!-- <img alt="logo-bento" class="logo" src="@/assets/img/bento-starter.svg" /> -->
-      <img alt="logo-bento" class="logo" src="@/assets/img/logo_cmmu.png" />
-      <span class="site-name title-desktop">{{ appTitle }}</span>
-      <span class="site-name title-mobile">{{ appShortTitle }}</span>
-    </router-link>
-
-    <div v-if="isUserLoggedIn && networkOnLine && isUserAdmin" data-test="navbar-products" class="nav-item pa-5 ma-5">
-      Administrador
-      <i class="mdi mdi-badge-account icon"></i>
-    </div>
-    <div class="links">
-      <nav class="nav-links">
-        <div v-if="isUserLoggedIn && networkOnLine && isUserAdmin" data-test="navbar-products" class="nav-item ">
-          <router-link to="/users" data-test="navbar-products-link">Usuarios</router-link>
-        </div>
-        <div v-if="isUserLoggedIn && networkOnLine && !isUserAdmin" data-test="navbar-item-documents" class="nav-item ">
-          <router-link to="/documents" data-test="navbar-documents-link">Documentos</router-link>
-        </div>
-        <!-- <div v-if="isUserLoggedIn && networkOnLine" data-test="navbar-item-curriculum" class="nav-item ">
-             <router-link to="/curriculum" data-test="navbar-curriculum-link">Curriculum</router-link>
-             </div> -->
-        <!-- Must validate accoirding to date if the user can request certification, and or it has an active request -->
-        <div v-if="isUserLoggedIn && networkOnLine && !isUserAdmin" data-test="navbar-item-request" class="nav-item ">
-          <router-link to="/request" data-test="navbar-request-link">Solicitud de examen</router-link>
-        </div>
-        <div v-if="!isUserLoggedIn && networkOnLine" data-test="navbar-item-login" class="nav-item">
-          <router-link to="/login" data-test="navbar-login-link">Ingreso</router-link>
-        </div>
-        <div v-if="!isUserAdmin" class="nav-item">
-          <a href="http://cmmu.org.mx/web/aviso-de-privacidad/" target="_blank">
-            Aviso de privacidad
-            <i class="mdi mdi-info" />
-          </a>
-        </div>
-        <div v-if="!isUserLoggedIn && networkOnLine" data-test="navbar-item-signUp" class="nav-item">
-          <router-link to="/signUp" data-test="navbar-signUp-link">Crear cuenta</router-link>
-        </div>
-        <div
-          v-if="isUserLoggedIn && networkOnLine"
-          data-test="navbar-item-signUp"
-          class="nav-item logout-item"
-          @click="logout"
-        >
-          <a>Salir</a>
-        </div>
-        <div v-if="!networkOnLine" data-test="navbar-item-offlineLabel" class="nav-item offline-label">
-          Sin conexión
-        </div>
-        <div v-if="isUserLoggedIn && networkOnLine && user.photoURL" class="nav-item">
-          <img data-test="navbar-item-avatar" class="user-picture can-hide" :src="user.photoURL" alt="Avatar" />
-        </div>
-      </nav>
-    </div>
-  </header>
+  <v-app-bar :color="networkOnLine ? 'primary' : 'error'" app dark>
+    <v-app-bar-nav-icon @click="$emit('toggleDrawer')"></v-app-bar-nav-icon>
+    <img alt="logo-cmmu" class="logo" src="@/assets/img/logo_cmmu.png" />
+    <v-toolbar-title class="site-name d-none d-md-flex">{{ appTitle }}</v-toolbar-title>
+    <v-toolbar-title class="site-name d-md-none">{{ appShortTitle }}</v-toolbar-title>
+    <v-spacer />
+    <v-toolbar-title v-if="!networkOnLine"><small>Fuera de línea</small></v-toolbar-title>
+    <v-spacer />
+    <v-menu v-if="isUserLoggedIn && networkOnLine" bottom left>
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn icon color="secondary" v-bind="attrs" v-on="on">
+          <v-icon>mdi-dots-vertical</v-icon>
+        </v-btn>
+      </template>
+      <v-list dense>
+        <v-list-item>
+          <v-list-item-icon><v-icon>mdi-information</v-icon></v-list-item-icon>
+          <v-list-item-title>
+            <a href="http://cmmu.org.mx/web/aviso-de-privacidad/" target="_blank">
+              Aviso de privacidad
+            </a>
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item @click="logout">
+          <v-list-item-icon><v-icon>mdi-exit-run</v-icon></v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>
+              Salir
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-menu>
+  </v-app-bar>
 </template>
 
 <script>
@@ -62,6 +40,7 @@ import firebase from 'firebase/app'
 import { mapGetters, mapState } from 'vuex'
 
 export default {
+  data: () => ({}),
   computed: {
     ...mapGetters('authentication', ['isUserLoggedIn', 'isUserAdmin']),
     ...mapState('authentication', ['user']),
@@ -78,11 +57,23 @@ export default {
 <style lang="scss" scoped>
 @import '@/theme/variables.scss';
 
+.logo {
+  height: 24px;
+  padding-right: 8px;
+}
+
+.site-name {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: $light-accent;
+  // text-shadow: 1px 1px $secondary;
+  position: relative;
+}
 .navbar {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 20;
+  /* z-index: 20; */
   right: 0;
   height: $navbar-height;
   background-color: $navbar-color;
@@ -120,25 +111,12 @@ export default {
     }
   }
 
-  .site-name {
-    font-size: 1.3rem;
-    font-weight: 600;
-    color: $light-accent;
-    // text-shadow: 1px 1px $secondary;
-    position: relative;
-  }
-
-  .logo {
-    height: 24px;
-    padding-right: 8px;
-  }
-
   .links {
     padding-left: 1.5rem;
     box-sizing: border-box;
     white-space: nowrap;
     font-size: 0.9rem;
-    position: absolute;
+    /* position: absolute; */
     right: 1.5rem;
     top: 0.7rem;
     display: flex;

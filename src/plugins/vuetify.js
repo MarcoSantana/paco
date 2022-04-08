@@ -14,4 +14,13 @@ export default new Vuetify({
     lolcales: { es, en },
     current: 'es',
   },
+  theme: {
+    themes: {
+      light: {
+        primary: '#0c466d',
+        secondary: '#2596c7',
+        editable: '#c88719',
+      },
+    },
+  },
 })
