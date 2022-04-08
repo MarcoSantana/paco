@@ -38,7 +38,6 @@
       </v-sheet>
 
       <v-divider></v-divider>
-      <!-- This is a stub planned for regular users must plan something for admins -->
       <v-list v-if="!isUserAdmin">
         <v-list-item v-for="[icon, text] in links" :key="icon" link>
           <v-list-item-icon>
@@ -50,9 +49,16 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
-      <!-- <v-list v-if="isUserAdmin">
-           Lista de enlaces para administradores
-           </v-list> -->
+      <v-list v-if="isUserAdmin">
+        <v-list-item v-for="[icon, text, to] in adminLinks" :key="icon" link :to="to">
+          <v-list-icon>
+            <v-icon>{{ icon }}</v-icon>
+          </v-list-icon>
+          <v-list-item-content>
+            <v-list-item-title>{{ text }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
     </v-navigation-drawer>
   </v-app>
 </template>
@@ -74,6 +80,7 @@ export default {
         ['mdi-folder-account', 'Perfil'],
         // ['mdi-alert-octagon', 'Spam'],
       ],
+      adminLinks: [['mdi-view-dashboard', 'Centro de control', 'admin/dashboard']],
     }
   },
   computed: {

@@ -97,7 +97,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapMutations, mapGetters } from 'vuex'
 import { isNil } from 'lodash'
 import firebase from 'firebase/app'
 // import { desktop as isDekstop } from 'is_js'
@@ -134,12 +134,14 @@ export default {
   computed: {
     ...mapState('authentication', ['user']),
     ...mapState('app', ['networkOnLine', 'appTitle']),
+    ...mapGetters('authentication', ['isUserLoggedIn', 'isUserAdmin']),
   },
   watch: {
     user: {
       handler(user) {
         if (!isNil(user)) {
-          const redirectUrl = isNil(this.$route.query.redirectUrl) ? '/home' : this.$route.query.redirectUrl
+          const route = this.isUserAdmin ? '/admin/dashboard' : '/home'
+          const redirectUrl = isNil(this.$route.query.redirectUrl) ? route : this.$route.query.redirectUrl
           this.$router.push(redirectUrl)
         }
       },
