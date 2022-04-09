@@ -30,38 +30,19 @@ exports.addAdminRole = functions.https.onCall((data, context) => {
 // return a wellformed JSON to be directly consumed by charts.js
 // To be called from elsewhere like ~adminRole~
 
-const authUserCountTrigger = functions.auth.user();
-
-exports.incrementUsersCounter = authUserCountTrigger.onCreate(async () => {
-  console.log('incrementUsersCounter called')
+async function updateRegisteredUserCount(delta) {
   await admin
     .firestore()
     .collection('counters')
     .doc('users')
-    .set({ registered: firestore.FieldValue.increment(+1), updateTimestamp: firestore.FieldValue.serverTimestamp() }, { merge: true });
+    .collection('registered')
+    .set({ count: firestore.FieldValue.increment(delta), updateTimestamp: firestore.FieldValue.serverTimestamp() }, { merge: true });
+}
 
-})
-exports.decrementUsersCounter = authUserCountTrigger.onDelete( async () => {
-  console.log('decrementUsersCounter called')
-  await admin
-    .firestore()
-    .collection('counters')
-    .doc("users")
-    .set({ registered: firestore.FieldValue.increment(-1), updateTimestamp: firestore.FieldValue.serverTimestamp() }, { merge: true });
-})
-// exports.updateUsersCounter = functions.auth.user().onCreate((user) => {
-//   const fruitTrigger = functions.firestore.document("fruits/{id}");
+const authUserCountTrigger = functions.auth.user();
+exports.incrementUsersCounter = authUserCountTrigger.onCreate(() => updateRegisteredUserCount(+1))
+exports.decrementUsersCounter = authUserCountTrigger.onDelete(() => updateRegisteredUserCount(-1))
 
-//   export const onCreate = fruitTrigger.onCreate(() => updateCount(+1));
-
-//   export const onDelete = fruitTrigger.onDelete(() => updateCount(-1));
-
-//   async function updateCount(delta: number) {
-//     await admin
-//       .firestore()
-//       .doc("simple_fruits_counter/counter")
-//       .set({ registered: firestore.FieldValue.increment(delta) }, { merge: true });
-// }
 
 // Update document status
 exports.updateDocumentStatus = functions.https.onCall((data, context) => {
