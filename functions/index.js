@@ -1,10 +1,11 @@
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 const { google } = require('googleapis')
-// const {firestore} = require("firebase-admin");
+const { firestore } = require("firebase-admin");
 
 admin.initializeApp()
 
+// Gives admin privileges to give user by email
 exports.addAdminRole = functions.https.onCall((data, context) => {
   // console.log(context);
   // get user and add custom claim (admin)
@@ -21,6 +22,46 @@ exports.addAdminRole = functions.https.onCall((data, context) => {
       return error
     })
 })
+
+// Gets the amount of users in the given period
+
+// params: date range (from, to)
+// Check if if caller is admin
+// return a wellformed JSON to be directly consumed by charts.js
+// To be called from elsewhere like ~adminRole~
+
+const authUserCountTrigger = functions.auth.user();
+
+exports.incrementUsersCounter = authUserCountTrigger.onCreate(async () => {
+  console.log('incrementUsersCounter called')
+  await admin
+    .firestore()
+    .collection('counters')
+    .doc('users')
+    .set({ registered: firestore.FieldValue.increment(+1), updateTimestamp: firestore.FieldValue.serverTimestamp() }, { merge: true });
+
+})
+exports.decrementUsersCounter = authUserCountTrigger.onDelete( async () => {
+  console.log('decrementUsersCounter called')
+  await admin
+    .firestore()
+    .collection('counters')
+    .doc("users")
+    .set({ registered: firestore.FieldValue.increment(-1), updateTimestamp: firestore.FieldValue.serverTimestamp() }, { merge: true });
+})
+// exports.updateUsersCounter = functions.auth.user().onCreate((user) => {
+//   const fruitTrigger = functions.firestore.document("fruits/{id}");
+
+//   export const onCreate = fruitTrigger.onCreate(() => updateCount(+1));
+
+//   export const onDelete = fruitTrigger.onDelete(() => updateCount(-1));
+
+//   async function updateCount(delta: number) {
+//     await admin
+//       .firestore()
+//       .doc("simple_fruits_counter/counter")
+//       .set({ registered: firestore.FieldValue.increment(delta) }, { merge: true });
+// }
 
 // Update document status
 exports.updateDocumentStatus = functions.https.onCall((data, context) => {
