@@ -23,19 +23,12 @@ exports.addAdminRole = functions.https.onCall((data, context) => {
     })
 })
 
-// Gets the amount of users in the given period
-
-// params: date range (from, to)
-// Check if if caller is admin
-// return a wellformed JSON to be directly consumed by charts.js
-// To be called from elsewhere like ~adminRole~
 
 async function updateRegisteredUserCount(delta) {
   await admin
     .firestore()
     .collection('counters')
-    .doc('users')
-    .collection('registered')
+    .doc('registeredUsers')
     .set({ count: firestore.FieldValue.increment(delta), updateTimestamp: firestore.FieldValue.serverTimestamp() }, { merge: true });
 }
 
