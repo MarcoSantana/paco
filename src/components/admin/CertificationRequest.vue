@@ -111,7 +111,7 @@
           <v-list-item-title class="text-center">{{ $t('request.degree') | capitalize }}</v-list-item-title>
         </v-list-item>
         <v-list-item>
-          <v-list-item-title>{{ $t('request.title') | capitalize }}</v-list-item-title>
+          <v-list-item-title>{{ $t('request.degreeDiploma') | capitalize }}</v-list-item-title>
         </v-list-item>
         <v-list-item class="text-center">
           <document-file
