@@ -1,10 +1,11 @@
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 const { google } = require('googleapis')
-// const {firestore} = require("firebase-admin");
+const { firestore } = require("firebase-admin");
 
 admin.initializeApp()
 
+// Gives admin privileges to give user by email
 exports.addAdminRole = functions.https.onCall((data, context) => {
   // console.log(context);
   // get user and add custom claim (admin)
@@ -21,6 +22,20 @@ exports.addAdminRole = functions.https.onCall((data, context) => {
       return error
     })
 })
+
+
+async function updateRegisteredUserCount(delta) {
+  await admin
+    .firestore()
+    .collection('counters')
+    .doc('registeredUsers')
+    .set({ count: firestore.FieldValue.increment(delta), updateTimestamp: firestore.FieldValue.serverTimestamp() }, { merge: true });
+}
+
+const authUserCountTrigger = functions.auth.user();
+exports.incrementUsersCounter = authUserCountTrigger.onCreate(() => updateRegisteredUserCount(+1))
+exports.decrementUsersCounter = authUserCountTrigger.onDelete(() => updateRegisteredUserCount(-1))
+
 
 // Update document status
 exports.updateDocumentStatus = functions.https.onCall((data, context) => {

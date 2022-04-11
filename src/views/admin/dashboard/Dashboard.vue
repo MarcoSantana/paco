@@ -45,36 +45,17 @@
         </v-card>
       </v-col>
       <v-col cols="4">
-        <v-card class="d-flex flex-column" max-width="400" height="400">
-          <v-card-title>
-            <v-icon large left>
-              mdi-file-multiple
-            </v-icon>
-            <span class="text-h6 font-weight-light">Estado de documentos</span>
-          </v-card-title>
-          <v-spacer></v-spacer>
-          <v-card-text class="text-h5 font-weight-bold" style="height: 200;">
-            <p class="text-h1 text-center">34</p>
-            <p class="caption text-center">Por revisar</p>
-          </v-card-text>
-          <v-spacer></v-spacer>
-          <v-card-actions>
-            <v-list-item class="grow" to="/users">
-              <v-list-item-content>
-                <v-list-item-title>Ver detalle</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </v-card-actions>
-        </v-card>
+        <registered-users></registered-users>
       </v-col>
     </v-row>
   </v-container>
 </template>
 <script>
 import BarChart from './BarChart.vue'
+import RegisteredUsers from './RegisteredUsers.vue'
 
 export default {
-  components: { BarChart },
+  components: { BarChart, RegisteredUsers },
   data() {
     return {}
   },
