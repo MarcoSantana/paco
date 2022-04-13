@@ -31,9 +31,7 @@
 
         <div>
           {{ user.displayName }}
-          <small>
-            {{ user.email }}
-          </small>
+          <small>{{ user.email }}</small>
         </div>
       </v-sheet>
 
@@ -80,7 +78,10 @@ export default {
         ['mdi-folder-account', 'Perfil'],
         // ['mdi-alert-octagon', 'Spam'],
       ],
-      adminLinks: [['mdi-view-dashboard', 'Centro de control', 'admin/dashboard']],
+      adminLinks: [
+        ['mdi-view-dashboard', 'Centro de control', 'admin/dashboard'],
+        ['mdi-text-box-search-outline', 'Ver solicitudes', 'admin/home'],
+      ],
     }
   },
   computed: {

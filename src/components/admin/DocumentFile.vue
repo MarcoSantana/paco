@@ -42,7 +42,7 @@
         @click="dialog = true"
       ></pdf>
       <v-card-actions>
-        <v-btn fab color="info" :href="documentFile" download target="_blank">
+        <v-btn fab x-small color="info" :href="documentFile" download target="_blank">
           <v-icon>mdi-cloud-download</v-icon>
         </v-btn>
       </v-card-actions>
