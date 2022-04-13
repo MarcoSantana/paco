@@ -1,9 +1,9 @@
 <template>
   <div class="container">
     <v-card>
-      <v-card-title class="text-h5 white--text justify-center mb-2 indigo lighten-3">
-        {{ $t('documentDetails') | capitalize }}
-      </v-card-title>
+      <v-card-title
+        class="text-h5 white--text justify-center mb-2 indigo lighten-3"
+      >{{ $t('documentDetails') | capitalize }}</v-card-title>
       <v-list>
         <v-list-item class="text-center">
           <document-file
@@ -76,9 +76,7 @@
         </v-list-item>
         <v-divider />
         <v-list-item>
-          <v-list-item-title class="text-center">
-            {{ $t('request.details') | capitalize }}
-          </v-list-item-title>
+          <v-list-item-title class="text-center">{{ $t('request.details') | capitalize }}</v-list-item-title>
         </v-list-item>
         <v-list-item>
           <v-list-item-title>{{ $t('request.place') | capitalize }}</v-list-item-title>
@@ -111,7 +109,7 @@
           <v-list-item-title class="text-center">{{ $t('request.degree') | capitalize }}</v-list-item-title>
         </v-list-item>
         <v-list-item>
-          <v-list-item-title>{{ $t('request.title') | capitalize }}</v-list-item-title>
+          <v-list-item-title>{{ $t('request.postDegreeDiploma') | capitalize }}</v-list-item-title>
         </v-list-item>
         <v-list-item class="text-center">
           <document-file
@@ -122,6 +120,9 @@
             :resizable-modal="true"
             file-name="degreeDiploma"
           />
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-title class="text-center">{{ $t('request.degree') | capitalize }}</v-list-item-title>
         </v-list-item>
         <v-list-item>
           <v-list-item-title>{{ $t('request.enarm') | capitalize }}</v-list-item-title>
@@ -139,6 +140,19 @@
         <v-divider />
         <v-list-item class="text-center">
           <v-list-item-title>{{ $t('request.postDegree') | capitalize }}</v-list-item-title>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-title>{{ $t('request.postgraduateUniversitaryDiploma') | capitalize }}</v-list-item-title>
+        </v-list-item>
+        <v-list-item class="text-center">
+          <document-file
+            class="document-file"
+            :document-name="document.name"
+            :user-id="document.userId"
+            :scrollable-modal="true"
+            :resizable-modal="true"
+            file-name="postgraduateUniversitaryDiploma"
+          />
         </v-list-item>
         <v-list-item>
           <v-list-item-title>{{ $t('request.postDegreeLicense') | capitalize }}</v-list-item-title>
@@ -172,9 +186,7 @@
         </v-list-item>
         <v-divider />
         <v-list-item class="text-center">
-          <v-list-item-title>
-            {{ $t('request.postDegreeCertificate') | capitalize }}
-          </v-list-item-title>
+          <v-list-item-title>{{ $t('request.postDegreeCertificate') | capitalize }}</v-list-item-title>
         </v-list-item>
         <v-list-item class="text-center">
           <document-file
@@ -201,9 +213,9 @@
         </v-list-item>
         <v-list-item>
           <v-list-item-title>{{ $t('request.professionalExerciseHospital') | capitalize }}</v-list-item-title>
-          <v-list-item-subtitle @click="copyText($event)">
-            {{ request.professionalExercise.hospital }}
-          </v-list-item-subtitle>
+          <v-list-item-subtitle
+            @click="copyText($event)"
+          >{{ request.professionalExercise.hospital }}</v-list-item-subtitle>
         </v-list-item>
 
         <v-list-item>
@@ -211,18 +223,18 @@
         </v-list-item>
         <v-list-item>
           <v-list-item-title>{{ $t('request.professionalExerciseCharge') | capitalize }}</v-list-item-title>
-          <v-list-item-subtitle @click="copyText($event)">
-            {{ request.professionalExercise.charge }}
-          </v-list-item-subtitle>
+          <v-list-item-subtitle @click="copyText($event)">{{ request.professionalExercise.charge }}</v-list-item-subtitle>
         </v-list-item>
       </v-list>
       <v-snackbar v-model="copySnackbar" timeout="2000">
         {{ copyMessage }}
-
         <template v-slot:action="{ attrs }">
-          <v-btn color="error" text v-bind="attrs" @click="copySnackbar = false">
-            {{ $t('actions.close') | capitalize }}
-          </v-btn>
+          <v-btn
+            color="error"
+            text
+            v-bind="attrs"
+            @click="copySnackbar = false"
+          >{{ $t('actions.close') | capitalize }}</v-btn>
         </template>
       </v-snackbar>
     </v-card>
@@ -249,9 +261,7 @@ export default {
         // return this.$t('errors.missingData')
         return 'Datos faltantes'
       }
-      return DateTime.fromJSDate(newDate)
-        .setLocale('es')
-        .toLocaleString()
+      return DateTime.fromJSDate(newDate).setLocale('es').toLocaleString()
     },
     age(date) {
       if (date) {
@@ -261,7 +271,7 @@ export default {
       return null
     },
 
-    genderize: value => {
+    genderize: (value) => {
       let gender = null
       if (!isNil(value)) {
         if (value.toString() === 'Hombre') {
@@ -297,7 +307,7 @@ export default {
         .then(() => {
           this.copyMessage = 'Texto copiado!'
         })
-        .catch(err => {
+        .catch((err) => {
           this.copyMessage = `Error al copiar ${err}'`
         })
         .finally(() => {
