@@ -30,8 +30,6 @@ import 'vue-form-generator/dist/vfg.css'
 import VueGoogleAutocomplete from 'vue-google-autocomplete'
 // Async computed
 import AsyncComputed from 'vue-async-computed'
-// Modal
-import VModal from 'vue-js-modal'
 
 import myEs from '@/locales/es'
 
@@ -82,7 +80,6 @@ Vue.use(VueFormGenerator)
 Vue.use(VueGoogleAutocomplete)
 Vue.use(VueI18n)
 Vue.use(AsyncComputed)
-Vue.use(VModal)
 
 Vue.component('field-pdf', fieldPdf)
 Vue.component('field-university', fieldUniversity)
