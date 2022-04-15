@@ -2,6 +2,7 @@ const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 const { google } = require('googleapis')
 const { firestore } = require("firebase-admin");
+
 exports.logging = require('./logging');
 
 admin.initializeApp()

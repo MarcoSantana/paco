@@ -10,6 +10,8 @@
     "deploy": "npm run build && firebase deploy",
     "bundlesize": "bundlesize",
     "deploy:hosting": "npm run build && firebase deploy --only hosting",
+    "serve:firebase": "firebase serve",
+    "emulators": "firebase emulators:start",
     "firebase:deploy:ci": "firebase deploy --non-interactive --token $FIREBASE_TOKEN",
     "prettier:check": "prettier \"**/*.{vue,scss,sass,js,json}\" --list-different",
     "prettier:format-all": "prettier --write \"**/*.{vue,scss,sass,js,json}\"",
