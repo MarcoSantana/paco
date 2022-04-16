@@ -48,51 +48,60 @@
               </div>
             </span>
           </validation-provider>
-
+          <div data-test="login-btn">Foo</div>
           <validation-provider v-slot="{ errors }" rules="required">
-            <button
+            <!-- v-if="networkOnLine && isUserLoggedIn" -->
+            <v-btn
+              color="primary"
               type="submit"
-              name="signup_submit"
+              name="login-btn"
               :disabled="invalid"
-              data-test="signup-submit"
+              data-test="login-btn"
               @click.prevent="loginWithEmailPassword"
             >
               Ingresar
-            </button>
+            </v-btn>
           </validation-provider>
         </form>
       </validation-observer>
-      <div :disabled="invalid" data-test="signup-submit" @click.prevent="showResetPassword">
+      <div :disabled="invalid" data-test="signup-submit" @click.prevent="showResetMessage = true">
         <small>Olvidé mi contraseña</small>
       </div>
       <template>
-        <modal name="reset-password">
-          <div><h2>Recuperar contraseña</h2></div>
-          <div v-if="!showResetMessage">
-            <validation-observer>
-              <validation-provider v-slot="{ errors }">
-                <input
-                  ref="resetPasswordEmail"
-                  required
-                  type="text"
-                  :model="resetEmail"
-                  name="reset-password-email"
-                  placeholder="A este correo enviaremos instrucciones"
-                  data-test="reset-password-email"
-                />
-                <button class="btn" name="reset-password-submit" data-test="signup-submit" @click="resetPassword">
-                  Cambiar contraseña
-                </button>
-              </validation-provider>
-            </validation-observer>
-          </div>
-          <div v-else>
-            <h3>Correo enviado</h3>
-            Por favor revise su correo electrónico y siga instrucciones para cambiar su contraseña.
-          </div>
-        </modal>
+        <v-dialog v-model="showResetMessage" name="reset-password">
+          <v-card>
+            <v-card-title><h2 class="text-center">Recuperar contraseña</h2></v-card-title>
+            <v-card-text>
+              <validation-observer>
+                <validation-provider v-slot="{ errors }">
+                  <input
+                    ref="resetPasswordEmail"
+                    required
+                    type="text"
+                    :model="resetEmail"
+                    name="reset-password-email"
+                    placeholder="A este correo enviaremos instrucciones"
+                    data-test="reset-password-email"
+                  />
+                  <button class="btn" name="reset-password-submit" data-test="signup-submit" @click="resetPassword">
+                    Cambiar contraseña
+                  </button>
+                </validation-provider>
+              </validation-observer>
+            </v-card-text>
+          </v-card>
+        </v-dialog>
       </template>
     </div>
+    <v-snackbar v-model="sentMailSnack">
+      <h3>Correo enviado</h3>
+      Por favor revise su correo electrónico y siga instrucciones para cambiar su contraseña.
+      <template v-slot:action="{ attrs }">
+        <v-btn color="pink" text v-bind="attrs" @click="sentMailSnack = false">
+          {{ $t('actions.close') }}
+        </v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 
@@ -116,6 +125,7 @@ export default {
     },
     resetEmail: null,
     showResetMessage: false,
+    sentMailSnack: false,
   }),
   head() {
     return {
@@ -186,18 +196,6 @@ export default {
         })
     },
 
-    showResetPassword() {
-      this.$modal.show('reset-password')
-    },
-    hideResetPassword() {
-      this.$modal.hide('reset-password')
-    },
-    test() {
-      // eslint-disable-next-line no-alert
-      alert('click')
-      console.log('this.$refs :>> ', this.$refs.resetPasswordEmail.value)
-    },
-    // sendResetPasswordEmail: async element => {
     async resetPassword() {
       const email = this.$refs.resetPasswordEmail.value
       if (!isNil(email)) {
@@ -205,8 +203,8 @@ export default {
           .auth()
           .sendPasswordResetEmail(email)
           .then(() => {
-            console.log('Password reset mail sent!! :>> ')
-            this.showResetMessage = true
+            this.sentMailSnack = true
+            this.showResetMessage = false
           })
           .catch(error => {
             const errorCode = error.code
