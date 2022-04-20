@@ -113,8 +113,8 @@ fileName: views/SignUp.vue -->
                   <span>{{ errors[0] }}</span>
                   <i class="mdi mdi-gender-male-female icon"></i>
                   <select v-model="registrationData.gender" data-test="registration-gender">
-                    <option v-for="item in genders" :key="item.text" :value="item.value" :selected="item.selected"
-                      >{{ item.text }}
+                    <option v-for="item in genders" :key="item.text" :value="item.value" :selected="item.selected">
+                      {{ item.text }}
                     </option>
                   </select>
                   <i v-if="registrationData.gender" :class="$options.filters.genderize(registrationData.gender)"></i>
@@ -142,8 +142,8 @@ fileName: views/SignUp.vue -->
             </validation-provider>
             <!-- email -->
             <validation-provider v-slot="{ errors }" rules="confirmed:register-email-valitator">
-              <span name="registration-email-confirmation-span" :class="{ error: errors[0] }"
-                ><span>{{ errors[0] }}</span>
+              <span name="registration-email-confirmation-span" :class="{ error: errors[0] }">
+                <span>{{ errors[0] }}</span>
                 <label for="email-confirmation" class="tip">Confirmación de e-mail</label>
                 <div class="input-container">
                   <i class="mdi mdi-email icon"></i>
@@ -184,8 +184,8 @@ fileName: views/SignUp.vue -->
             <!-- password -->
 
             <validation-provider v-slot="{ errors }" rules="confirmed:password-validator">
-              <span name="registration-password-span" :class="{ error: errors[0] }"
-                ><span>{{ errors[0] }}</span>
+              <span name="registration-password-span" :class="{ error: errors[0] }">
+                <span>{{ errors[0] }}</span>
                 <label for="password-confirmation" class="tip">Confirmación de contraseña</label>
                 <div class="input-container">
                   <i class="mdi mdi-form-textbox-password icon"></i>
@@ -352,12 +352,12 @@ export default {
       await firebase
         .auth()
         .createUserWithEmailAndPassword(data.email, data.password)
-        .then(userCredentials => {
-          const { user } = userCredentials
-          console.log('user :>> ', user)
+        .then(userCredential => {
+          const { user } = userCredential
           user
             .updateProfile({
               displayName: `${data.name} ${data.lastname1} ${data.lastname2}`,
+              active: true,
             })
             .catch(error => {
               this.errors.push(error)

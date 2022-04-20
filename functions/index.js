@@ -3,9 +3,10 @@ const admin = require('firebase-admin')
 const { google } = require('googleapis')
 const { firestore } = require("firebase-admin");
 
-exports.logging = require('./logging');
 
 admin.initializeApp()
+
+exports.logging = require('./logging');
 
 // Gives admin privileges to give user by email
 exports.addAdminRole = functions.https.onCall((data, context) => {

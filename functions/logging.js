@@ -1,37 +1,32 @@
 const functions = require('firebase-functions');
-const admin = require('firebase-admin');
 const { firestore } = require('firebase-admin');
-
-
-
 
 const authUserTrigger = functions.auth.user()
 
 exports.userSignup = authUserTrigger.onCreate((user) => {
-  functions.logger('Adding user')
-  functions.logger('user email', user.email)
-  functions.logger('user displayName', user.displayName)
-  // storeUser(user)
+  signUser(user, 'signup')
 })
-
 
 exports.userDelete = authUserTrigger.onDelete((user) => {
-  functions.logger('Deleting user')
-  functions.logger('user email', user.email)
-  functions.logger('user displayName', user.displayName)
-  // storeUser(user)
+  signUser(user, 'signout')
 })
 
-
-
-async function storeUser(user) {
-  functions.logger('user', user)
-  await admin.firestore
+async function signUser(user, delta) {
+  return firestore()
     .collection('logs')
     .doc('users')
-    .collection('signup')
-    .set({
-      user: user,
-      createTimestamp: firestore.FieldValue.serverTimestamp()
+    .collection(delta)
+    .add({
+      uid: user.uid,
+      createTimestamp: firestore.FieldValue.serverTimestamp(),
     }, { merge: true })
+    .then(() =>{
+      firestore()
+        .collection('users')
+        .doc(user.uid)
+        .update({
+          active: delta === 'signup' ? true : false,
+        })
+    })
+
 };
