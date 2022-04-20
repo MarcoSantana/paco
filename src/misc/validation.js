@@ -25,7 +25,7 @@ extend('confirmed', {
 
 extend('required', {
   ...required,
-  // message: 'El campo es obligatorio',
+  message: 'El campo es obligatorio',
 })
 
 extend('numeric', {
@@ -34,14 +34,14 @@ extend('numeric', {
 })
 
 extend('length', {
+  params: ['min', 'max'],
   validate(value, { min, max }) {
     const string = value.toString()
     if (string.length >= min && string.length <= max) {
       return true
     }
-    return 'El campo {_field_} debe ser de máximo {max} y mínimo {min} caracteres'
+    return 'El campo debe tener máximo {max} y mínimo {min} caracteres'
   },
-  params: ['min', 'max'],
 })
 
 extend('strong_password', {
@@ -51,7 +51,7 @@ extend('strong_password', {
     if (strongRegex.test(string)) {
       return true
     }
-    return 'La contraseña debe contener al menos: una letra mayúscula, una letra minúscula y un número'
+    return 'La contraseña debe contener al menos: una letra mayúscula, una letra minúscula y un número.'
   },
 })
 
@@ -63,5 +63,14 @@ extend('curp_regex', {
     ).test(value.toString)
       ? true
       : 'No es un formato de CURP válido'
+  },
+})
+
+extend('cellphone', {
+  validate(value) {
+    // eslint-disable-next-line
+    return RegExp('(52)?1?(([2-9][1-9][1-8]\\d{7})|([2-9][1-9][1-9][1-8]\\d{6}))').test(value)
+      ? true
+      : 'No es un formato válido de teléfono'
   },
 })

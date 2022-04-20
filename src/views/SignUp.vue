@@ -160,6 +160,25 @@ fileName: views/SignUp.vue -->
             </validation-provider>
             <!-- email-confirmation -->
 
+            <validation-provider v-slot="{ errors }" rules="cellphone|numeric|required|length:10,14">
+              <span name="cellphone-registration-span" :class="{ error: errors[0] }">
+                <label for="cellphone" class="tip">Teléfono celular principal</label>
+                <div class="input-container">
+                  <span>{{ errors[0] }}</span>
+                  <i class="mdi mdi-cellphone-basic icon"></i>
+                  <input
+                    id="registration-cellphone"
+                    v-model="registrationData.cellphone"
+                    type="text"
+                    data-vv-as="teléfono celular"
+                    placeholder="Número de teléfono celular principal"
+                    data-test="registration-cellphone"
+                  />
+                </div>
+              </span>
+            </validation-provider>
+            <!-- cellphone -->
+
             <validation-provider
               v-slot="{ errors }"
               rules="required|length:8,16|strong_password"
@@ -220,11 +239,13 @@ fileName: views/SignUp.vue -->
 import { mapState, mapMutations } from 'vuex'
 import { isNil } from 'lodash'
 
+import phone from '@/filters/phone'
 import firebase from 'firebase/app'
 import { desktop as isDekstop } from 'is_js'
 
 export default {
   filters: {
+    phone,
     zeroPad: value => {
       return value.toString().padStart(8, '0')
     },
@@ -358,6 +379,11 @@ export default {
             .updateProfile({
               displayName: `${data.name} ${data.lastname1} ${data.lastname2}`,
               active: true,
+              gender: data.gender,
+              name: { data },
+              lastname1: { data },
+              lastname2: { data },
+              license: { data },
             })
             .catch(error => {
               this.errors.push(error)
