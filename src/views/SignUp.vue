@@ -11,6 +11,9 @@ fileName: views/SignUp.vue -->
   <div class="page-wrapper" background-color="primary">
     <!-- Loader -->
     <div v-show="user === undefined" data-test="loader">Autenticando...</div>
+    <v-overlay :value="loading">
+      <v-progress-circular indeterminate size="64"></v-progress-circular>
+    </v-overlay>
 
     <!-- Offline instruction -->
     <div v-show="!networkOnLine" data-test="offline-instruction">
@@ -269,6 +272,7 @@ export default {
     error: {},
     loginError: null,
     apiError: null,
+    loading: false,
     // Move all these to an object
     registrationData: {
       name: null,
@@ -370,6 +374,7 @@ export default {
       const data = this.registrationData
       // Check if the registration data is complete
       // Use the resgistration data to create a new account via firebase auth
+      this.loading = true
       await firebase
         .auth()
         .createUserWithEmailAndPassword(data.email, data.password)
@@ -384,9 +389,16 @@ export default {
               lastname1: { data },
               lastname2: { data },
               license: { data },
+              data,
+            })
+            .then(foo => {
+              console.log('foo after updateProfile', foo)
             })
             .catch(error => {
               this.errors.push(error)
+            })
+            .finally(() => {
+              this.loading = false
             })
           user.sendEmailVerification()
         })
