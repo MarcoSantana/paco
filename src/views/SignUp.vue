@@ -6,7 +6,7 @@
 author: mSantana
 createdAt 2020-05-17 13:56
 Stardate: 202005.17 13:56
-fileName: views/SignUp.vue -->
+  fileName: views/SignUp.vue-->
 
   <div class="page-wrapper" background-color="primary">
     <!-- Loader -->
@@ -16,9 +16,10 @@ fileName: views/SignUp.vue -->
     </v-overlay>
 
     <!-- Offline instruction -->
-    <div v-show="!networkOnLine" data-test="offline-instruction">
-      Por favor revise su conexión, la característica de ingreso no está disponible fuera de línea.
-    </div>
+    <div
+      v-show="!networkOnLine"
+      data-test="offline-instruction"
+    >Por favor revise su conexión, la característica de ingreso no está disponible fuera de línea.</div>
 
     <p v-if="loginError">{{ loginError }}</p>
     <p v-if="apiError">{{ apiError }}</p>
@@ -116,17 +117,27 @@ fileName: views/SignUp.vue -->
                   <span>{{ errors[0] }}</span>
                   <i class="mdi mdi-gender-male-female icon"></i>
                   <select v-model="registrationData.gender" data-test="registration-gender">
-                    <option v-for="item in genders" :key="item.text" :value="item.value" :selected="item.selected">
-                      {{ item.text }}
-                    </option>
+                    <option
+                      v-for="item in genders"
+                      :key="item.text"
+                      :value="item.value"
+                      :selected="item.selected"
+                    >{{ item.text }}</option>
                   </select>
-                  <i v-if="registrationData.gender" :class="$options.filters.genderize(registrationData.gender)"></i>
+                  <i
+                    v-if="registrationData.gender"
+                    :class="$options.filters.genderize(registrationData.gender)"
+                  ></i>
                 </div>
               </span>
             </validation-provider>
             <!--gender-->
 
-            <validation-provider v-slot="{ errors }" rules="email|required" name="register-email-valitator">
+            <validation-provider
+              v-slot="{ errors }"
+              rules="email|required"
+              name="register-email-valitator"
+            >
               <span name="registration-email-span" :class="{ error: errors[0] }">
                 <label for="email" class="tip">Email</label>
                 <div class="input-container">
@@ -163,7 +174,10 @@ fileName: views/SignUp.vue -->
             </validation-provider>
             <!-- email-confirmation -->
 
-            <validation-provider v-slot="{ errors }" rules="cellphone|numeric|required|length:10,14">
+            <validation-provider
+              v-slot="{ errors }"
+              rules="cellphone|numeric|required|length:10,14"
+            >
               <span name="cellphone-registration-span" :class="{ error: errors[0] }">
                 <label for="cellphone" class="tip">Teléfono celular principal</label>
                 <div class="input-container">
@@ -224,9 +238,12 @@ fileName: views/SignUp.vue -->
             </validation-provider>
             <!-- password-confirmation -->
 
-            <button type="submit" name="signup_submit" :disabled="invalid" data-test="signup-submit">
-              Registrarse
-            </button>
+            <button
+              type="submit"
+              name="signup_submit"
+              :disabled="invalid"
+              data-test="signup-submit"
+            >Registrarse</button>
 
             <!-- TODO -->
           </form>
@@ -243,17 +260,17 @@ import { mapState, mapMutations } from 'vuex'
 import { isNil } from 'lodash'
 
 import phone from '@/filters/phone'
-import firebase from 'firebase/app'
+import firebase, { firestore } from 'firebase/app'
 import { desktop as isDekstop } from 'is_js'
 
 export default {
   filters: {
     phone,
-    zeroPad: value => {
+    zeroPad: (value) => {
       return value.toString().padStart(8, '0')
     },
     // Returns the string for each gender based on the REST API
-    genderize: value => {
+    genderize: (value) => {
       let gender = null
       if (!isNil(value)) {
         if (value.toString() === '1') {
@@ -329,7 +346,7 @@ export default {
       // if (!this.errors.license) {
       //   this.errors.license = 'El numero de cédula profesional es obligatorio'
       // }
-      const isEmpty = Object.values(this.errors).some(x => x !== null && x !== '')
+      const isEmpty = Object.values(this.errors).some((x) => x !== null && x !== '')
       return isEmpty
     },
   },
@@ -378,29 +395,35 @@ export default {
       await firebase
         .auth()
         .createUserWithEmailAndPassword(data.email, data.password)
-        .then(userCredential => {
+        .then((userCredential) => {
           const { user } = userCredential
-          user
-            .updateProfile({
-              displayName: `${data.name} ${data.lastname1} ${data.lastname2}`,
-              active: true,
-              gender: data.gender,
-              name: { data },
-              lastname1: { data },
-              lastname2: { data },
-              license: { data },
-              data,
-            })
-            .then(foo => {
-              console.log('foo after updateProfile', foo)
-            })
-            .catch(error => {
-              this.errors.push(error)
-            })
-            .finally(() => {
-              this.loading = false
-            })
+          user.updateProfile({
+            displayName: `${data.name} ${data.lastname1} ${data.lastname2}`,
+          })
           user.sendEmailVerification()
+          return user
+        })
+        .then((user) => {
+          console.log('user from createUserWithEmailAndPassword', user.uid)
+          try {
+            firestore()
+              .collection('users')
+              .doc(user.uid)
+              .get()
+              .then((doc) => console.log('doc.data', doc.data()))
+            firestore().collection('users').doc(user.uid).update({ gender: data.gender, license: data.license })
+          } catch (error) {
+            debugger
+            console.error(error)
+            this.loginError = error
+          }
+        })
+        .catch((error) => {
+          // this.errors.push(error)
+          this.loginError = error
+        })
+        .finally(() => {
+          this.loading = false
         })
       // update user data
     },
