@@ -190,9 +190,8 @@ Stardate: 202005.17 13:56
               rules="cellphone|numeric|required|length:10,14"
             >
               <span name="cellphone-registration-span" :class="{ error: errors[0] }">
-                <label for="cellphone" class="tip">Teléfono celular principal</label>
                 <div class="input-container">
-                  <span>{{ errors[0] }}</span>
+                  <span class="error-text font-weight-medium">{{ errors[0] }}</span>
                   <i class="mdi mdi-cellphone-basic icon"></i>
                   <input
                     id="registration-cellphone"
@@ -212,10 +211,10 @@ Stardate: 202005.17 13:56
               rules="required|length:8,16|strong_password"
               name="password-validator"
             >
+              <label for="password" class="tip">Contraseña</label>
               <span name="registration-password-span" :class="{ error: errors[0] }">
-                <label for="password" class="tip">Contraseña</label>
                 <div class="input-container">
-                  <span>{{ errors[0] }}</span>
+                  <span class="error-text font-weight-medium">{{ errors[0] }}</span>
                   <i class="mdi mdi-form-textbox-password icon"></i>
                   <input
                     id="registration-password"
@@ -253,15 +252,21 @@ Stardate: 202005.17 13:56
                     :type="showConfirmPassword ? 'text' : 'password'"
                     @click:append="showConfirmPassword = !showConfirmPassword"
                   />
-                </span>
-              </validation-provider>
-              <!-- password-confirmation -->
-            </v-card-text>
-            <v-card-actions>
-              <v-btn color="primary" type="submit" name="signup_submit" :disabled="invalid" data-test="signup-submit">
-                Registrarse
-              </v-btn>
-            </v-card-actions>
+                </div>
+              </span>
+            </validation-provider>
+            <!-- password-confirmation -->
+
+            <v-btn
+              ripple
+              color="primary"
+              type="submit"
+              name="signup_submit"
+              :disabled="invalid"
+              data-test="signup-submit"
+            >
+              Registrarse
+            </v-btn>
           </form>
         </validation-observer>
       </v-card>
