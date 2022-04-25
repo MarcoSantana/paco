@@ -11,8 +11,14 @@ Stardate: 202005.17 13:56
   <div class="page-wrapper" background-color="primary">
     <!-- Loader -->
     <div v-show="user === undefined" data-test="loader">Autenticando...</div>
-    <v-overlay :value="loading">
-      <v-progress-circular indeterminate size="64"></v-progress-circular>
+    <v-overlay :value="loading" opacity="0.8" color="secondary lighten-5">
+      <v-progress-circular color="secondary" rotate="180" indeterminate size="200" width="10">
+        <v-progress-circular size="160" color="editable" width="10" indeterminate rotate="90">
+          <v-progress-circular color="primary" rotate="270" indeterminate size="128" width="10">
+            <div class="text-capitalize font-weight-medium">{{ $t('messages.processing') }}</div>
+          </v-progress-circular>
+        </v-progress-circular>
+      </v-progress-circular>
     </v-overlay>
 
     <!-- Offline instruction -->
