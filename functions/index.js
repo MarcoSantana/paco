@@ -5,6 +5,8 @@ const { firestore } = require("firebase-admin");
 
 admin.initializeApp()
 
+exports.licenseAPI = require('./licenseCheck');
+
 // Gives admin privileges to give user by email
 exports.addAdminRole = functions.https.onCall((data, context) => {
   // console.log(context);

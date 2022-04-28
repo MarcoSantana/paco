@@ -6,7 +6,7 @@
 author: mSantana
 createdAt 2020-05-17 13:56
 Stardate: 202005.17 13:56
-fileName: views/SignUp.vue -->
+  fileName: views/SignUp.vue-->
 
   <div class="page-wrapper" background-color="primary">
     <!-- Loader -->
@@ -42,6 +42,7 @@ fileName: views/SignUp.vue -->
                     type="text"
                     name="license"
                     placeholder="Cédula profesional de licenciatura en medicina"
+                    @keyup="licenseCheck"
                   />
                 </div>
                 <div class="error info">{{ errors[0] }}</div>
@@ -113,8 +114,8 @@ fileName: views/SignUp.vue -->
                   <span>{{ errors[0] }}</span>
                   <i class="mdi mdi-gender-male-female icon"></i>
                   <select v-model="registrationData.gender" data-test="registration-gender">
-                    <option v-for="item in genders" :key="item.text" :value="item.value" :selected="item.selected"
-                      >{{ item.text }}
+                    <option v-for="item in genders" :key="item.text" :value="item.value" :selected="item.selected">
+                      {{ item.text }}
                     </option>
                   </select>
                   <i v-if="registrationData.gender" :class="$options.filters.genderize(registrationData.gender)"></i>
@@ -142,8 +143,8 @@ fileName: views/SignUp.vue -->
             </validation-provider>
             <!-- email -->
             <validation-provider v-slot="{ errors }" rules="confirmed:register-email-valitator">
-              <span name="registration-email-confirmation-span" :class="{ error: errors[0] }"
-                ><span>{{ errors[0] }}</span>
+              <span name="registration-email-confirmation-span" :class="{ error: errors[0] }">
+                <span>{{ errors[0] }}</span>
                 <label for="email-confirmation" class="tip">Confirmación de e-mail</label>
                 <div class="input-container">
                   <i class="mdi mdi-email icon"></i>
@@ -184,8 +185,8 @@ fileName: views/SignUp.vue -->
             <!-- password -->
 
             <validation-provider v-slot="{ errors }" rules="confirmed:password-validator">
-              <span name="registration-password-span" :class="{ error: errors[0] }"
-                ><span>{{ errors[0] }}</span>
+              <span name="registration-password-span" :class="{ error: errors[0] }">
+                <span>{{ errors[0] }}</span>
                 <label for="password-confirmation" class="tip">Confirmación de contraseña</label>
                 <div class="input-container">
                   <i class="mdi mdi-form-textbox-password icon"></i>
@@ -326,6 +327,27 @@ export default {
   methods: {
     ...mapMutations('authentication', ['setUser']),
     ...mapMutations('app', ['setLoading', 'unsetLoading']),
+    async licenseCheck() {
+      // 🌠🚀: 202204.27-23.20 Working
+      // TODO add throttle
+      const data = this.registrationData
+      // 4273560
+      console.log('data.license.length', data.license.length)
+      if (data.license.length >= 7 && data.license.length <= 8) {
+        this.setLoading()
+        fetch(`https://us-central1-paco-1a08b.cloudfunctions.net/licenseAPI-licenseAPI/${data.license}`, {})
+          .then(response => response.json())
+          .then(foo => {
+            // TODO rename to proper name (foo) 202204.27-23.19
+            // TODO format UI to proper case
+            this.registrationData.name = foo.name
+            this.registrationData.lastname1 = foo.lastname
+            this.registrationData.lastname2 = foo.lastname2
+            this.registrationData.gender = foo.gender
+          })
+          .finally(() => this.unsetLoading())
+      }
+    },
     async login() {
       // TODO must remove scince it will be qith email/password login
       this.loginError = null
