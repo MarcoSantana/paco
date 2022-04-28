@@ -6,7 +6,7 @@
 author: mSantana
 createdAt 2020-05-17 13:56
 Stardate: 202005.17 13:56
-fileName: views/SignUp.vue -->
+  fileName: views/SignUp.vue-->
 
   <div class="page-wrapper" background-color="primary">
     <!-- Loader -->
@@ -30,7 +30,7 @@ fileName: views/SignUp.vue -->
         <validation-observer v-slot="{ invalid }">
           <form @submit.prevent="onSubmit">
             <h1>Registrarse</h1>
-            <validation-provider v-slot="{ errors }" rules="numeric|length:3,30|required">
+            <validation-provider v-slot="{ errors }" rules="numeric|length:7,10|required">
               <span id="registration-license-span" :class="{ error: errors[0] }">
                 <label for="license" class="tip">Cédula profesional</label>
                 <div class="input-container">
@@ -42,6 +42,7 @@ fileName: views/SignUp.vue -->
                     type="text"
                     name="license"
                     placeholder="Cédula profesional de licenciatura en medicina"
+                    @keyup="debouncedLicenseCheck(licenseCheck)"
                   />
                 </div>
                 <div class="error info">{{ errors[0] }}</div>
@@ -113,8 +114,8 @@ fileName: views/SignUp.vue -->
                   <span>{{ errors[0] }}</span>
                   <i class="mdi mdi-gender-male-female icon"></i>
                   <select v-model="registrationData.gender" data-test="registration-gender">
-                    <option v-for="item in genders" :key="item.text" :value="item.value" :selected="item.selected"
-                      >{{ item.text }}
+                    <option v-for="item in genders" :key="item.text" :value="item.value" :selected="item.selected">
+                      {{ item.text }}
                     </option>
                   </select>
                   <i v-if="registrationData.gender" :class="$options.filters.genderize(registrationData.gender)"></i>
@@ -142,8 +143,8 @@ fileName: views/SignUp.vue -->
             </validation-provider>
             <!-- email -->
             <validation-provider v-slot="{ errors }" rules="confirmed:register-email-valitator">
-              <span name="registration-email-confirmation-span" :class="{ error: errors[0] }"
-                ><span>{{ errors[0] }}</span>
+              <span name="registration-email-confirmation-span" :class="{ error: errors[0] }">
+                <span>{{ errors[0] }}</span>
                 <label for="email-confirmation" class="tip">Confirmación de e-mail</label>
                 <div class="input-container">
                   <i class="mdi mdi-email icon"></i>
@@ -184,8 +185,8 @@ fileName: views/SignUp.vue -->
             <!-- password -->
 
             <validation-provider v-slot="{ errors }" rules="confirmed:password-validator">
-              <span name="registration-password-span" :class="{ error: errors[0] }"
-                ><span>{{ errors[0] }}</span>
+              <span name="registration-password-span" :class="{ error: errors[0] }">
+                <span>{{ errors[0] }}</span>
                 <label for="password-confirmation" class="tip">Confirmación de contraseña</label>
                 <div class="input-container">
                   <i class="mdi mdi-form-textbox-password icon"></i>
@@ -201,7 +202,6 @@ fileName: views/SignUp.vue -->
               </span>
             </validation-provider>
             <!-- password-confirmation -->
-
             <button type="submit" name="signup_submit" :disabled="invalid" data-test="signup-submit">
               Registrarse
             </button>
@@ -218,7 +218,7 @@ fileName: views/SignUp.vue -->
 
 <script>
 import { mapState, mapMutations } from 'vuex'
-import { isNil } from 'lodash'
+import _, { isNil } from 'lodash'
 
 import firebase from 'firebase/app'
 import { desktop as isDekstop } from 'is_js'
@@ -319,13 +319,29 @@ export default {
       immediate: true,
     },
   },
-  mounted() {
-    // this.documentAPI()
-    console.clear()
-  },
+  mounted() {},
   methods: {
     ...mapMutations('authentication', ['setUser']),
     ...mapMutations('app', ['setLoading', 'unsetLoading']),
+    debouncedLicenseCheck: _.debounce(function() {
+      this.licenseCheck(this)
+    }, 1000),
+    licenseCheck: async that => {
+      const data = that.registrationData
+      if (data.license.length >= 7 && data.license.length <= 8) {
+        that.setLoading()
+        fetch(`https://us-central1-paco-1a08b.cloudfunctions.net/licenseAPI-licenseAPI/${data.license}`, {})
+          .then(response => response.json())
+          .then(json => {
+            // TODO format UI to proper case
+            that.registrationData.name = json.name
+            that.registrationData.lastname1 = json.lastname
+            that.registrationData.lastname2 = json.lastname2
+            that.registrationData.gender = json.gender
+          })
+          .finally(() => that.unsetLoading())
+      }
+    },
     async login() {
       // TODO must remove scince it will be qith email/password login
       this.loginError = null
