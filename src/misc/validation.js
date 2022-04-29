@@ -6,7 +6,7 @@
 // Stardate: 202005.20 16.10
 // fileName: misc/validation.js
 
-/* 
+/*
 Every error message must begin with 'Este campo es obligatorio / Este campo debe ser XXXXX
 */
 
@@ -30,7 +30,7 @@ extend('required', {
 
 extend('numeric', {
   ...numeric,
-  // message: 'Este campo debe ser numérico',
+  message: 'Este campo debe ser numérico',
 })
 
 extend('length', {

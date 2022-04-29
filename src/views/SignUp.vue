@@ -36,11 +36,11 @@ Stardate: 202005.17 13:56
             <v-card-title class="text-h4">Registrarse</v-card-title>
             <v-card-text class="pa-3 my-2">
               <validation-provider v-slot="{ errors }" rules="numeric|length:7,10|required">
-                <!-- <i class="mdi mdi-badge-account icon"></i> -->
                 <span id="registration-license-span" :class="{ error: errors[0] }">
                   <v-text-field
                     id="registration-license"
                     v-model="registrationData.license"
+                    autocomplete="off"
                     class="my-1"
                     counter="10"
                     data-test="license"
@@ -63,6 +63,7 @@ Stardate: 202005.17 13:56
                   <v-text-field
                     id="registration-name"
                     v-model="registrationData.name"
+                    autocomplete="off"
                     class="my-1"
                     label="Nombre"
                     hint="ej. Juan Carlos"
@@ -84,6 +85,7 @@ Stardate: 202005.17 13:56
                   <v-text-field
                     id="registration-lastname-1"
                     v-model="registrationData.lastname1"
+                    autocomplete="off"
                     class="my-1"
                     counter="30"
                     data-test="registration-lastname-1"
@@ -105,6 +107,7 @@ Stardate: 202005.17 13:56
                   <v-text-field
                     id="registration-lastname-2"
                     v-model="registrationData.lastname2"
+                    autocomplete="off"
                     counter="30"
                     data-test="registration-lastname-2"
                     hint="Segundo apellido (opcional)"
@@ -123,6 +126,7 @@ Stardate: 202005.17 13:56
                 <span v-if="genders" name="registration-gender-span" :class="{ error: errors[0] }">
                   <v-select
                     v-model="registrationData.gender"
+                    autocomplete="off"
                     :items="genders"
                     data-test="registration-gender"
                     label="Género"
@@ -143,6 +147,7 @@ Stardate: 202005.17 13:56
                   <v-text-field
                     id="registration-email"
                     v-model="registrationData.email"
+                    autocomplete="off"
                     label="Correo electrónico"
                     hint="Debe ser una dirección válida"
                     type="email"
@@ -155,11 +160,12 @@ Stardate: 202005.17 13:56
                 </span>
               </validation-provider>
               <!-- email -->
-              <validation-provider v-slot="{ errors }" rules="confirmed:register-email-valitator">
+              <validation-provider v-slot="{ errors }" rules="required|confirmed:register-email-valitator">
                 <span name="registration-email-confirmation-span" :class="{ error: errors[0] }">
                   <v-text-field
                     id="registration-email-confirmation"
                     v-model="registrationData.emailConfirmation"
+                    autocomplete="off"
                     data-test="registration-email-confirmation"
                     hint="Debe ser una dirección válida"
                     label="Confirmación de correo electrónico"
@@ -208,38 +214,45 @@ Stardate: 202005.17 13:56
                   <input
                     id="registration-password"
                     v-model="registrationData.password"
+                    :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                    autocomplete="off"
                     data-test="registration-password"
                     hint="Debe ser de al menos 8 caracteres e incluir mínimo un número y una letra mayúscula"
                     label="Contraseña"
                     name="password"
                     placeholder="Contraseña"
                     prepend-icon="mdi-form-textbox-password"
-                    type="password"
+                    :type="showPassword ? 'text' : 'password'"
+                    @click:append="showPassword = !showPassword"
                   />
                   <span class="error--text error lighten-4">{{ errors[0] }}</span>
                 </span>
               </validation-provider>
               <!-- password -->
 
-              <validation-provider v-slot="{ errors }" rules="confirmed:password-validator">
+              <validation-provider v-slot="{ errors }" rules="confirmed:password-validator|required">
                 <span name="registration-password-span" :class="{ error: errors[0] }">
                   <v-text-field
                     id="registration-password-confirmation"
                     v-model="registrationData.passwordConfirmation"
+                    :append-icon="showConfirmPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                    autocomplete="off"
                     data-test="registration-password-confirmation"
+                    data-vv-as="password"
                     hint="Confirme su contraseña"
                     label="Confirmación de contraseña"
                     name="password-confirmation"
                     placeholder="Confirme su contraseña"
                     prepend-icon="mdi-form-textbox-password"
-                    type="password"
+                    :type="showConfirmPassword ? 'text' : 'password'"
+                    @click:append="showConfirmPassword = !showConfirmPassword"
                   />
                 </span>
               </validation-provider>
               <!-- password-confirmation -->
             </v-card-text>
             <v-card-actions>
-              <v-btn type="submit" name="signup_submit" :disabled="invalid" data-test="signup-submit">
+              <v-btn color="primary" type="submit" name="signup_submit" :disabled="invalid" data-test="signup-submit">
                 Registrarse
               </v-btn>
             </v-card-actions>
@@ -286,8 +299,8 @@ export default {
     error: {},
     loginError: null,
     apiError: null,
-    loading: false,
-    // Move all these to an object
+    showPassword: false,
+    showConfirmPassword: false,
     registrationData: {
       name: null,
       lastname1: null,
