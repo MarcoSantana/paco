@@ -1,11 +1,13 @@
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 const { google } = require('googleapis')
-const { firestore } = require("firebase-admin");
+const { firestore } = require("firebase-admin")
+
 
 admin.initializeApp()
 
 exports.licenseAPI = require('./licenseCheck');
+exports.logging = require('./logging');
 
 // Gives admin privileges to give user by email
 exports.addAdminRole = functions.https.onCall((data, context) => {

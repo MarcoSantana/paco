@@ -46,6 +46,7 @@ export default {
     bye: 'sales bye',
     cannotUndo: 'esta acción no puede deshacerse',
     confirm: 'confirmar acción',
+    processing: 'procesando',
     hello: 'holas',
   },
   actions: {

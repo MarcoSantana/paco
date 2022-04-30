@@ -11,11 +11,21 @@ Stardate: 202005.17 13:56
   <div class="page-wrapper" background-color="primary">
     <!-- Loader -->
     <div v-show="user === undefined" data-test="loader">Autenticando...</div>
+    <v-overlay :value="loading" opacity="0.8" color="secondary lighten-5">
+      <v-progress-circular color="secondary" rotate="180" indeterminate size="200" width="10">
+        <v-progress-circular size="160" color="editable" width="10" indeterminate rotate="90">
+          <v-progress-circular color="primary" rotate="270" indeterminate size="128" width="10">
+            <div class="text-capitalize font-weight-medium">{{ $t('messages.processing') }}</div>
+          </v-progress-circular>
+        </v-progress-circular>
+      </v-progress-circular>
+    </v-overlay>
 
     <!-- Offline instruction -->
-    <div v-show="!networkOnLine" data-test="offline-instruction">
-      Por favor revise su conexión, la característica de ingreso no está disponible fuera de línea.
-    </div>
+    <div
+      v-show="!networkOnLine"
+      data-test="offline-instruction"
+    >Por favor revise su conexión, la característica de ingreso no está disponible fuera de línea.</div>
 
     <p v-if="loginError">{{ loginError }}</p>
     <p v-if="apiError">{{ apiError }}</p>
@@ -217,15 +227,19 @@ Stardate: 202005.17 13:56
                     :type="showConfirmPassword ? 'text' : 'password'"
                     @click:append="showConfirmPassword = !showConfirmPassword"
                   />
-                </span>
-              </validation-provider>
-              <!-- password-confirmation -->
-            </v-card-text>
-            <v-card-actions>
-              <v-btn color="primary" type="submit" name="signup_submit" :disabled="invalid" data-test="signup-submit">
-                Registrarse
-              </v-btn>
-            </v-card-actions>
+                </div>
+              </span>
+            </validation-provider>
+            <!-- password-confirmation -->
+
+            <v-btn
+              ripple
+              color="primary"
+              type="submit"
+              name="signup_submit"
+              :disabled="invalid"
+              data-test="signup-submit"
+            >Registrarse</v-btn>
           </form>
         </validation-observer>
       </v-card>
@@ -239,16 +253,18 @@ Stardate: 202005.17 13:56
 import { mapState, mapMutations } from 'vuex'
 import _, { isNil } from 'lodash'
 
-import firebase from 'firebase/app'
+import phone from '@/filters/phone'
+import firebase, { firestore } from 'firebase/app'
 import { desktop as isDekstop } from 'is_js'
 
 export default {
   filters: {
-    zeroPad: value => {
+    phone,
+    zeroPad: (value) => {
       return value.toString().padStart(8, '0')
     },
     // Returns the string for each gender based on the REST API
-    genderize: value => {
+    genderize: (value) => {
       let gender = null
       if (!isNil(value)) {
         if (value.toString() === '1') {
@@ -279,9 +295,8 @@ export default {
       password: null,
       passwordConfirmation: null,
       gender: null,
-    },
-    // Form values
-    // Validation
+      phoneNumber: null,
+    }, // Validation
     errors: [],
     // Genders
     genders: [
@@ -324,14 +339,14 @@ export default {
       // if (!this.errors.license) {
       //   this.errors.license = 'El numero de cédula profesional es obligatorio'
       // }
-      const isEmpty = Object.values(this.errors).some(x => x !== null && x !== '')
+      const isEmpty = Object.values(this.errors).some((x) => x !== null && x !== '')
       return isEmpty
     },
   },
   watch: {
     user: {
       handler(user) {
-        if (!isNil(user)) {
+        if (!isNil(user) && !isNil(user.id) && !isNil(user.phoneNumber)) {
           const redirectUrl = isNil(this.$route.query.redirectUrl) ? '/documents' : this.$route.query.redirectUrl
           this.$router.push(redirectUrl)
         }
@@ -383,30 +398,53 @@ export default {
     }, // login
     async createAccount() {
       const data = this.registrationData
-      // Check if the registration data is complete
-      // Use the resgistration data to create a new account via firebase auth
+      this.setLoading()
       await firebase
         .auth()
         .createUserWithEmailAndPassword(data.email, data.password)
-        .then(userCredentials => {
-          const { user } = userCredentials
-          console.log('user :>> ', user)
+        .then((userCredential) => {
+          const { user } = userCredential
           user
             .updateProfile({
               displayName: `${data.name} ${data.lastname1} ${data.lastname2}`,
+              phoneNumber: data.phoneNumber,
             })
-            .catch(error => {
+            .catch((error) => {
               this.errors.push(error)
             })
           user.sendEmailVerification()
+          return user
         })
-      // update user data
+        .then((user) => {
+          console.log('user from createUserWithEmailAndPassword', user.uid)
+          try {
+            firestore()
+              .collection('users')
+              .doc(user.uid)
+              .get()
+              .then((doc) => console.log('doc.data', doc.data()))
+            firestore().collection('users').doc(user.uid).update({ gender: data.gender, license: data.license })
+          } catch (error) {
+            debugger
+            console.error(error)
+            this.loginError = error
+          }
+        })
+        .catch((error) => {
+          // this.errors.push(error)
+          this.loginError = error
+        })
+        .finally(() => {
+          this.loading = false
+        })
+        .catch((error) => {
+          console.log('Error creating new account', error)
+        })
+        .finally(() => {
+          this.unsetLoading()
+        })
     },
     onSubmit() {
-      // Submit values to API...
-      // eslint-disable-next-line no-alert
-      // alert(JSON.stringify(values, null, 2))
-      // console.log('values :>> ', values)
       this.createAccount()
     },
   },

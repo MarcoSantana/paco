@@ -6,7 +6,7 @@
 // Stardate: 202005.20 16.10
 // fileName: misc/validation.js
 
-/* 
+/*
 Every error message must begin with 'Este campo es obligatorio / Este campo debe ser XXXXX
 */
 
@@ -34,6 +34,7 @@ extend('numeric', {
 })
 
 extend('length', {
+  params: ['min', 'max'],
   validate(value, { min, max }) {
     const string = value.toString()
     if (string.length >= min && string.length <= max) {
@@ -41,7 +42,6 @@ extend('length', {
     }
     return 'El campo debe ser de máximo {max} y mínimo {min} caracteres'
   },
-  params: ['min', 'max'],
 })
 
 extend('strong_password', {
@@ -51,7 +51,7 @@ extend('strong_password', {
     if (strongRegex.test(string)) {
       return true
     }
-    return 'La contraseña debe contener al menos: una letra mayúscula, una letra minúscula y un número'
+    return 'La contraseña debe contener al menos: una letra mayúscula, una letra minúscula y un número.'
   },
 })
 
@@ -63,5 +63,14 @@ extend('curp_regex', {
     ).test(value.toString)
       ? true
       : 'No es un formato de CURP válido'
+  },
+})
+
+extend('cellphone', {
+  validate(value) {
+    // eslint-disable-next-line
+    return RegExp('(52)?1?(([2-9][1-9][1-8]\\d{7})|([2-9][1-9][1-9][1-8]\\d{6}))').test(value)
+      ? true
+      : 'No es un formato válido de teléfono'
   },
 })
