@@ -6,6 +6,7 @@ const { firestore } = require("firebase-admin");
 
 admin.initializeApp()
 
+exports.licenseAPI = require('./licenseCheck');
 exports.logging = require('./logging');
 
 // Gives admin privileges to give user by email

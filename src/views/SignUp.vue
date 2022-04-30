@@ -46,6 +46,7 @@ Stardate: 202005.17 13:56
                     type="text"
                     name="license"
                     placeholder="Cédula profesional de licenciatura en medicina"
+                    @keyup="licenseCheck"
                   />
                 </div>
                 <div class="error info">{{ errors[0] }}</div>
@@ -368,6 +369,27 @@ export default {
   methods: {
     ...mapMutations('authentication', ['setUser']),
     ...mapMutations('app', ['setLoading', 'unsetLoading']),
+    async licenseCheck() {
+      // 🌠🚀: 202204.27-23.20 Working
+      // TODO add throttle
+      const data = this.registrationData
+      // 4273560
+      console.log('data.license.length', data.license.length)
+      if (data.license.length >= 7 && data.license.length <= 8) {
+        this.setLoading()
+        fetch(`https://us-central1-paco-1a08b.cloudfunctions.net/licenseAPI-licenseAPI/${data.license}`, {})
+          .then(response => response.json())
+          .then(foo => {
+            // TODO rename to proper name (foo) 202204.27-23.19
+            // TODO format UI to proper case
+            this.registrationData.name = foo.name
+            this.registrationData.lastname1 = foo.lastname
+            this.registrationData.lastname2 = foo.lastname2
+            this.registrationData.gender = foo.gender
+          })
+          .finally(() => this.unsetLoading())
+      }
+    },
     async login() {
       // TODO must remove scince it will be qith email/password login
       this.loginError = null
