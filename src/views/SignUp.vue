@@ -62,6 +62,7 @@ Stardate: 202005.17 13:56
                   <span class="error--text error lighten-4">{{ errors[0] }}</span>
                 </span>
               </validation-provider>
+            </v-card-text>
               <!-- license -->
 
               <validation-provider v-slot="{ errors }" rules="required|length:3,30">
@@ -227,7 +228,6 @@ Stardate: 202005.17 13:56
                     :type="showConfirmPassword ? 'text' : 'password'"
                     @click:append="showConfirmPassword = !showConfirmPassword"
                   />
-                </div>
               </span>
             </validation-provider>
             <!-- password-confirmation -->
