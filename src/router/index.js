@@ -153,13 +153,18 @@ router.beforeEach((to, from, next) => {
       })
     }
   }
-  // TODO Add component to show the screen 202107.30-12.06
   // TODO Create handleResetPassword 202107.30-16.28
   // TODO Add store action to use firebase an call auth.confirmPasswordReset 202107.30-12.06
   if (!(to.meta && to.meta.authNotRequired) && isNil(store.state.authentication.user)) {
-    const path = store.state.authentication.user === null ? '/login' : '/check-login'
+    const path = store.state.authentication.user === null ? '/home' : '/check-login'
     return next(`${path}?redirectUrl=${to.path}`)
   }
+
+  // To ensure the user completes her registration
+  // TODO get the claims for the user
+  // TODO set some snackbar/toast to inform the incompleteness
+  // TODO push the route to the new complete user form
+
   next()
 })
 

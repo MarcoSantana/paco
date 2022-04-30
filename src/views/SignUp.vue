@@ -194,17 +194,17 @@ Stardate: 202005.17 13:56
                   <span class="error-text font-weight-medium">{{ errors[0] }}</span>
                   <i class="mdi mdi-cellphone-basic icon"></i>
                   <input
-                    id="registration-cellphone"
-                    v-model="registrationData.cellphone"
+                    id="registration-phoneNumber"
+                    v-model="registrationData.phoneNumber"
                     type="text"
                     data-vv-as="teléfono celular"
                     placeholder="Número de teléfono celular principal"
-                    data-test="registration-cellphone"
+                    data-test="registration-phoneNumber"
                   />
                 </div>
               </span>
             </validation-provider>
-            <!-- cellphone -->
+            <!-- phoneNumber -->
 
             <validation-provider
               v-slot="{ errors }"
@@ -264,9 +264,7 @@ Stardate: 202005.17 13:56
               name="signup_submit"
               :disabled="invalid"
               data-test="signup-submit"
-            >
-              Registrarse
-            </v-btn>
+            >Registrarse</v-btn>
           </form>
         </validation-observer>
       </v-card>
@@ -322,9 +320,8 @@ export default {
       password: null,
       passwordConfirmation: null,
       gender: null,
-    },
-    // Form values
-    // Validation
+      phoneNumber: null,
+    }, // Validation
     errors: [],
     // Genders
     genders: [
@@ -374,7 +371,7 @@ export default {
   watch: {
     user: {
       handler(user) {
-        if (!isNil(user)) {
+        if (!isNil(user) && !isNil(user.id) && !isNil(user.phoneNumber)) {
           const redirectUrl = isNil(this.$route.query.redirectUrl) ? '/documents' : this.$route.query.redirectUrl
           this.$router.push(redirectUrl)
         }
@@ -426,17 +423,20 @@ export default {
     }, // login
     async createAccount() {
       const data = this.registrationData
-      // Check if the registration data is complete
-      // Use the resgistration data to create a new account via firebase auth
-      this.loading = true
+      this.setLoading()
       await firebase
         .auth()
         .createUserWithEmailAndPassword(data.email, data.password)
         .then((userCredential) => {
           const { user } = userCredential
-          user.updateProfile({
-            displayName: `${data.name} ${data.lastname1} ${data.lastname2}`,
-          })
+          user
+            .updateProfile({
+              displayName: `${data.name} ${data.lastname1} ${data.lastname2}`,
+              phoneNumber: data.phoneNumber,
+            })
+            .catch((error) => {
+              this.errors.push(error)
+            })
           user.sendEmailVerification()
           return user
         })
@@ -462,13 +462,14 @@ export default {
         .finally(() => {
           this.loading = false
         })
-      // update user data
+        .catch((error) => {
+          console.log('Error creating new account', error)
+        })
+        .finally(() => {
+          this.unsetLoading()
+        })
     },
     onSubmit() {
-      // Submit values to API...
-      // eslint-disable-next-line no-alert
-      // alert(JSON.stringify(values, null, 2))
-      // console.log('values :>> ', values)
       this.createAccount()
     },
   },
