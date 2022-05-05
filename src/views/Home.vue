@@ -2,12 +2,8 @@
   <v-container>
     <v-row align="center" justify="center">
       <v-col class="text-center" cols="12">
-        <h1 class="text-h4 font-weight-thin mb-4">
-          {{ appTitle }}
-        </h1>
-        <h4 class="subheading">
-          {{ clientName }}
-        </h4>
+        <h1 class="text-h4 font-weight-thin mb-4">{{ appTitle }}</h1>
+        <h4 class="subheading">{{ clientName }}</h4>
       </v-col>
     </v-row>
     <v-row align="center" justify="center">
@@ -49,9 +45,7 @@
           v-bind="attrs"
           v-on="on"
         >
-          <v-icon dark>
-            mdi-information
-          </v-icon>
+          <v-icon dark>mdi-information</v-icon>
         </v-btn>
       </template>
       <span>Aviso de confidencialidad</span>
@@ -76,6 +70,7 @@
 <script>
 import { mapGetters, mapState } from 'vuex'
 import { callAddAdminRole } from '@/firebase/functions'
+// import {isNil} from 'lodash'
 
 export default {
   head() {
@@ -94,8 +89,20 @@ export default {
   },
   computed: {
     ...mapState('app', ['appTitle', 'clientName']),
-    ...mapState('authentication', ['user']),
-    ...mapGetters('authentication', ['isUserLoggedIn', 'isUserAdmin']),
+    ...mapState('authentication', ['user', 'userClaims']),
+    ...mapGetters('authentication', ['isUserLoggedIn', 'isUserAdmin', 'isUserIncomplete', 'userClaims']),
+  },
+  mounted() {
+    console.log('Mounted Home')
+    const foo = this.getUserClaims()
+    console.log('foo', foo)
+    console.log('this.userClaims', this.userClaims)
+
+    // console.log('this.userClaims.icomplete', this.userClaims.incomplete)
+    if (this.userClaims && this.userClaims.incomplete) {
+      console.log('Router push')
+      this.$router.push('/userEdit')
+    }
   },
   methods: {
     async addRole() {

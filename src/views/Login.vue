@@ -159,7 +159,8 @@ export default {
     },
   },
   methods: {
-    ...mapMutations('authentication', ['setUser']),
+    ...mapMutations('authentication', ['setUser', 'setUserClaims']),
+    ...mapActions('authentication', ['login', 'setClaims']),
     // async login() {
     //   this.loginError = null
     //   const provider = new firebase.auth.GoogleAuthProvider()
