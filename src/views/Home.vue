@@ -90,13 +90,21 @@ export default {
   computed: {
     ...mapState('app', ['appTitle', 'clientName']),
     ...mapState('authentication', ['user', 'userClaims']),
-    ...mapGetters('authentication', ['isUserLoggedIn', 'isUserAdmin', 'isUserIncomplete', 'userClaims']),
+    ...mapGetters('authentication', ['isUserLoggedIn', 'isUserAdmin', 'isUserIncomplete', 'getUserClaims']),
+  },
+  watch: {
+    userClaims: {
+      handler(userClaims) {
+        console.log('userClaims', userClaims)
+        if (this.isUserIncomplete) this.$router.push('/userEdit')
+      },
+    },
   },
   mounted() {
     console.log('Mounted Home')
-    const foo = this.getUserClaims()
-    console.log('foo', foo)
     console.log('this.userClaims', this.userClaims)
+    console.log('this.isUserIncomplete', this.isUserIncomplete)
+    console.log('this.user', this.user)
 
     // console.log('this.userClaims.icomplete', this.userClaims.incomplete)
     if (this.userClaims && this.userClaims.incomplete) {

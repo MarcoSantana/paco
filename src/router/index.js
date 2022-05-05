@@ -134,7 +134,7 @@ const router = new Router({
     {
       path: '/userEdit',
       name: 'userEdit',
-      component: () => import(/* webpackChunkName: "client-chunk-main-details" */ '@/views/UserEdit.vue'),
+      component: () => import(/* webpackChunkName: "client-chunk-main-details" */ '@/views/userEdit/UserEdit.vue'),
       props: true,
       meta: {
         authNotRequired: false,
@@ -163,7 +163,6 @@ router.beforeEach((to, from, next) => {
       })
     }
   }
-
 
   // TODO Create handleResetPassword 202107.30-16.28
   // TODO Add store action to use firebase an call auth.confirmPasswordReset 202107.30-12.06

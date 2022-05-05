@@ -9,10 +9,11 @@ import { mapState } from 'vuex'
 import { isNil } from 'lodash'
 
 export default {
-  computed: mapState('authentication', ['user']),
+  computed: mapState('authentication', ['user', 'userClaims']),
   watch: {
     user: {
       handler(user) {
+        console.log('this.userClaims', this.userClaims)
         if (user === undefined) return
 
         if (isNil(user.emailConfirmed)) {

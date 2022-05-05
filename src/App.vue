@@ -86,7 +86,7 @@ export default {
   },
   computed: {
     ...mapGetters('app', ['newContentAvailable', 'loading']),
-    ...mapGetters('authentication', ['isUserLoggedIn', 'isUserAdmin']),
+    ...mapGetters('authentication', ['isUserLoggedIn', 'isUserAdmin', 'isUserIncomplete']),
     ...mapState('app', ['showAddToHomeScreenModalForApple', 'refreshingApp', 'loading']),
     ...mapState('authentication', ['user']),
   },

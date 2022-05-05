@@ -15,16 +15,20 @@ export default {
     console.log('state.claims', state.claims)
     return state.userClaims.incomplete
   },
-  userClaims: state => {
-    console.log('state.claims', state.claims)
+  getUserClaims: (state, { commit }) => {
+    // console.log('state.claims', state.claims)
+    console.log('getUserClaims')
+    console.log('state', state)
     if (isNil(state.user.claims)) {
-      return auth().currentUser.getIdTokenResult().then((idTokenResult) => {
-        console.log('idTokenResult', idTokenResult)
-        // commit('setUserClaims', idTokenResult)
-        state.userClaims = idTokenResult.claims
-        return idTokenResult.claims
-      })
+      return auth()
+        .currentUser.getIdTokenResult()
+        .then(idTokenResult => {
+          console.log('idTokenResult', idTokenResult)
+          commit('setClaims', idTokenResult.claims)
+          return idTokenResult.claims
+        })
     }
     return state.userClaims
   },
+  getUser: state => ({ ...state.user }),
 }

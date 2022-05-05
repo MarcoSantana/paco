@@ -425,42 +425,67 @@ export default {
         .then(() => {
           // const { user } = userCredential
           const user = firebase.auth().currentUser
+
           user
             .updateProfile({
               displayName: `${data.name} ${data.lastname1} ${data.lastname2}`,
+              photoURL: 'https://example.com/jane-q-user/profile.jpg',
             })
             .then(() => {
-              console.log('Updating user data just after update profile')
-              console.log('user.uid', user.uid)
+              // Update successful
               firestore()
                 .collection('users')
                 .doc(user.uid)
-                .update({ gender: data.gender, license: data.license })
+                .set({
+                  name: data.name,
+                  photoURL: 'https://example.com/jane-q-user/profile.jpg',
+                  displayName: `${data.name} ${data.lastname1} ${data.lastname2}`,
+                  lastname1: data.lastname1,
+                  lastname2: data.lastname2,
+                  license: data.license,
+                  email: data.email,
+                  phoneNumber: data.cellphone,
+                })
+              // ...
             })
+            .then(() => {
+              this.$router.push('/checkLogin')
+            })
+            .catch(error => {
+              // An error occurred
+              console.error('error in example from docs', error)
+              // ...
+            })
+
+            // const user = firebase.auth().currentUser
+            // user
+            //   .updateProfile({
+            //     displayName: `${data.name} ${data.lastname1} ${data.lastname2}`,
+            //   })
+            // .then(res => {
+            //   console.log('updated user', res)
+            //   firestore()
+            //     .collection('users')
+            //     .doc(user.uid)
+            //     .set({
+            //       name: data.name,
+            //       lastname1: data.lastname1,
+            //       lastname2: data.lastname2,
+            //       license: data.license,
+            //       email: data.email,
+            //     })
+            // })
+            // .then(() => {
+            //   console.log('Updating user data just after update profile')
+            //   console.log('user.uid', user.uid)
+            //   firestore()
+            //     .collection('users')
+            //     .doc(user.uid)
+            //     .update({ gender: data.gender, license: data.license })
+            // })
             .catch(error => {
               this.errors.push(error)
             })
-        })
-        .then(() => {
-          console.log('Updating user data')
-          const user = firebase.auth().currentUser
-          if (!isNil(user.uid)) {
-            try {
-              firestore()
-                .collection('users')
-                .doc(user.uid)
-                .get()
-                .then(doc => console.log('doc.data', doc.data()))
-              firestore()
-                .collection('users')
-                .doc(user.uid)
-                .update({ gender: data.gender, license: data.license })
-            } catch (error) {
-              debugger
-              console.error(error)
-              this.loginError = error
-            }
-          }
         })
         .catch(error => {
           // this.errors.push(error)

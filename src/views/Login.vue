@@ -106,7 +106,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations, mapGetters } from 'vuex'
+import { mapState, mapMutations, mapGetters, mapActions } from 'vuex'
 import { isNil } from 'lodash'
 import firebase from 'firebase/app'
 // import { desktop as isDekstop } from 'is_js'
