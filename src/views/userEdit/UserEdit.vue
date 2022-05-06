@@ -1,40 +1,7 @@
 <template>
   <v-container>
-    <v-dialog v-model="dialog" width="500">
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn fab color="info" dark v-bind="attrs" v-on="on">
-          <v-icon>mdi-help-circle</v-icon>
-        </v-btn>
-      </template>
-
-      <v-card>
-        <v-card-title class="text-h5 primary lighten-2 white--text">
-          ¿Por qué veo esta pantalla?
-        </v-card-title>
-
-        <v-card-text class="pt-2">
-          <p>Para poder almacenar sus datos adecuadamente, necesitamos tenerlos todos y de forma correcta.</p>
-          <p>
-            Los datos obligatorios están marcados con una estrella
-            <v-icon>mdi-star</v-icon>
-          </p>
-
-          <p>
-            Puede cambiar los datos de este formulario y una vez que esté completo puede dar click en el botón de
-            "Guardar cambios"
-          </p>
-        </v-card-text>
-
-        <v-divider></v-divider>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="primary" text @click="dialog = false">
-            Entiendo
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <!-- Shows a brief description of this page -->
+    <info-dialog />
     <v-row>
       <v-sheet class=" col-sm-12 col-md-4">
         <v-card class="mx-auto" max-width="200">
@@ -144,7 +111,6 @@
                     type="text"
                   />
                 </span>
-
                 <span class="error--text error lighten-4">{{ errors[0] }}</span>
               </validation-provider>
               <validation-provider v-slot="{ errors }" rules="required|length:3,30">
@@ -187,8 +153,13 @@
                 </span>
                 <span class="error--text lighten-4">{{ errors[0] }}</span>
               </validation-provider>
-              <v-card-actions>
-                <v-btn block color="success" outlined :disabled="invalid || !changed">Guardar cambios</v-btn>
+              <v-card-actions class="d-flex justify-center">
+                <v-sheet>
+                  <v-btn class="mx-3" tile color="success" outlined :disabled="invalid || !changed">
+                    Guardar cambios
+                  </v-btn>
+                  <v-btn class="mx-3" tile color="warning" outlined :disabled="!changed">Borrar formulario</v-btn>
+                </v-sheet>
               </v-card-actions>
             </form>
           </validation-observer>
@@ -200,15 +171,17 @@
 <script>
 import { mapState, mapMutations, mapGetters } from 'vuex'
 import capitalize from '@/filters/capitalize'
+import InfoDialog from './InfoDialog.vue'
 
 export default {
+  components: { InfoDialog },
   filters: { capitalize },
   data() {
     return {
       localUser: this.getUser(),
       errors: null,
       valid: true,
-      dialog: false,
+      infoDialog: false,
     }
   },
   computed: {
