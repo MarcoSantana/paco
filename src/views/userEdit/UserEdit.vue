@@ -3,22 +3,8 @@
     <!-- Shows a brief description of this page -->
     <info-dialog />
     <v-row>
-      <v-sheet class=" col-sm-12 col-md-4">
-        <v-card class="mx-auto" max-width="200">
-          <v-img :src="localUser.photoURL" max-width="200px" max-height="300px" />
-          <v-card-text class="pt-6" style="position: relative;">
-            <v-btn absolute color="info" class="white--text" fab medium right top>
-              <v-icon>mdi-camera</v-icon>
-            </v-btn>
-          </v-card-text>
-          <v-card-title class="text-capitalize">
-            {{ localUser.name | capitalize }}
-            <br />
-            {{ localUser.lastname1 | capitalize }}
-            <br />
-            {{ localUser.lastname2 | capitalize }}
-          </v-card-title>
-        </v-card>
+      <v-sheet class="col-sm-12 col-md-4">
+        <profile-photo :model="localUser" />
       </v-sheet>
 
       <v-sheet class="col-sm-12 col-md-8">
@@ -155,10 +141,20 @@
               </validation-provider>
               <v-card-actions class="d-flex justify-center">
                 <v-sheet>
-                  <v-btn class="mx-3" tile color="success" outlined :disabled="invalid || !changed">
-                    Guardar cambios
-                  </v-btn>
-                  <v-btn class="mx-3" tile color="warning" outlined :disabled="!changed">Borrar formulario</v-btn>
+                  <v-btn
+                    class="mx-3"
+                    tile
+                    color="success"
+                    outlined
+                    :disabled="invalid || !changed"
+                  >Guardar cambios</v-btn>
+                  <v-btn
+                    class="mx-3"
+                    tile
+                    color="warning"
+                    outlined
+                    :disabled="!changed"
+                  >Borrar formulario</v-btn>
                 </v-sheet>
               </v-card-actions>
             </form>
@@ -172,9 +168,10 @@
 import { mapState, mapMutations, mapGetters } from 'vuex'
 import capitalize from '@/filters/capitalize'
 import InfoDialog from './InfoDialog.vue'
+import ProfilePhoto from './ProfilePhoto.vue'
 
 export default {
-  components: { InfoDialog },
+  components: { InfoDialog, ProfilePhoto },
   filters: { capitalize },
   data() {
     return {
