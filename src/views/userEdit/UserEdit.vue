@@ -11,150 +11,18 @@
         <v-card class="px-5" width="100%">
           <validation-observer v-slot="{ invalid, changed }">
             <form @submit.prevent="submit">
-              <validation-provider v-slot="{ errors }" rules="numeric|length:7,10|required">
-                <span id="registration-license-span" :class="{ error: errors[0] }">
-                  <v-text-field
-                    id="userEdit-license"
-                    v-model="localUser.license"
-                    append-icon="mdi-star"
-                    autocomplete="off"
-                    class="my-1"
-                    clearable
-                    counter="10"
-                    data-test="license"
-                    hint="Nivel licenciatura tipo C1 (de 7 a 10 dígitos)"
-                    label="Cédula profesional"
-                    name="license"
-                    placeholder="Cédula profesional de licenciatura en medicina"
-                    prepend-inner-icon="mdi-badge-account"
-                    type="text"
-                    disabled
-                  />
-                </span>
-                <span class="error--text error lighten-4">{{ errors[0] }}</span>
-              </validation-provider>
-
-              <validation-provider v-slot="{ errors }" rules="required|email">
-                <span name="userEdit-email-span" :class="{ error: errors[0] }">
-                  <v-text-field
-                    id="userEdit-email"
-                    v-model="localUser.email"
-                    append-icon="mdi-star"
-                    autocomplete="off"
-                    clearable
-                    data-test="userEdit-email"
-                    disabled
-                    hint="Debe ser una dirección válida"
-                    label="Correo electrónico"
-                    name="email"
-                    placeholder="E-mail (ej. correoejemplo@dominio.com)"
-                    prepend-icon="mdi-email"
-                    type="email"
-                  />
-                </span>
-                <span class="error--text error lighten-4">{{ errors[0] }}</span>
-              </validation-provider>
-
-              <validation-provider v-slot="{ errors, required }" rules="required|length:3,30">
-                <span name="userEdit-name-span" :class="{ error: errors[0] }">
-                  <v-text-field
-                    id="userEdit-name"
-                    v-model="localUser.name"
-                    :append-icon="required ? 'mdi-star' : ''"
-                    autocomplete="off"
-                    class="my-1 { error: errors[0]}"
-                    clearable
-                    counter="30"
-                    data-test="userEdit-name"
-                    hide-details="auto"
-                    hint="ej. Juan Carlos"
-                    label="Nombre"
-                    name="name"
-                    placeholder="Nombres (ej. Juan Carlos)"
-                    prepend-icon="mdi-face"
-                    type="text"
-                  />
-                </span>
-                <span class="error--text error lighten-4">{{ errors[0] }}</span>
-              </validation-provider>
-
-              <validation-provider v-slot="{ errors }" rules="required|length:3,30">
-                <span name="userEdit-lastname1-span" :class="{ error: errors[0] }">
-                  <v-text-field
-                    id="userEdit-lastname-1"
-                    v-model="localUser.lastname1"
-                    append-icon="mdi-star"
-                    autocomplete="off"
-                    class="my-1"
-                    clearable
-                    counter="30"
-                    data-test="userEdit-lastname-1"
-                    hint="Primer apellido"
-                    label="Apellido paterno"
-                    name="lastname-1"
-                    placeholder="Apellido Paterno (ej. González)"
-                    prepend-icon="mdi-form-textbox"
-                    type="text"
-                  />
-                </span>
-                <span class="error--text error lighten-4">{{ errors[0] }}</span>
-              </validation-provider>
-              <validation-provider v-slot="{ errors }" rules="required|length:3,30">
-                <span name="userEdit-lastname2-span" :class="{ error: errors[0] }">
-                  <v-text-field
-                    id="userEdit-lastname-2"
-                    v-model="localUser.lastname2"
-                    append-icon="mdi-star"
-                    autocomplete="off"
-                    class="my-1"
-                    clearable
-                    counter="30"
-                    data-test="userEdit-lastname-2"
-                    hint="Primer apellido"
-                    label="Apellido materno"
-                    name="lastname-1"
-                    placeholder="Apellido materno (ej. González)"
-                    prepend-icon="mdi-form-textbox"
-                    type="text"
-                  />
-                </span>
-                <span class="error--text error lighten-4">{{ errors[0] }}</span>
-              </validation-provider>
-
-              <validation-provider v-slot="{ errors }" rules="required|cellphone">
-                <span name="userEdit-phoneNumber-span" :class="{ error: errors[0] }">
-                  <v-text-field
-                    id="registration-phoneNumber"
-                    ref="phoneNumber"
-                    v-model="localUser.phoneNumber"
-                    append-icon="mdi-star"
-                    autcomplete="off"
-                    clearable
-                    data-test="registration-phoneNumber"
-                    hint="Debe ser un teléfono celular válido en México"
-                    label="Teléfono celular"
-                    name="phoneNumber"
-                    prepend-icon="mdi-cellphone-basic"
-                  />
-                </span>
-                <span class="error--text lighten-4">{{ errors[0] }}</span>
-              </validation-provider>
+              <user-field :model="localUser" disabled name="license" rules="numeric|length:7,10|required" type="text" />
+              <user-field :model="localUser" disabled name="email" rules="required|email" type="email" />
+              <user-field :model="localUser" name="name" rules="required|length:2,30" type="text" />
+              <user-field :model="localUser" name="lastname1" rules="required|length:2,30" type="text" />
+              <user-field :model="localUser" name="lastname2" rules="required|length:2,30" type="text" />
+              <user-field :model="localUser" name="phoneNumber" rules="required|cellphone" type="tel" />
               <v-card-actions class="d-flex justify-center">
                 <v-sheet>
-                  <v-btn
-                    class="mx-3"
-                    tile
-                    color="success"
-                    outlined
-                    :disabled="invalid || !changed"
-                  >Guardar cambios</v-btn>
-                  <v-btn
-                    class="mx-3"
-                    tile
-                    color="warning"
-                    outlined
-                    :disabled="!changed"
-                  >Borrar formulario</v-btn>
+                  <v-btn class="mx-3" tile color="success" outlined :disabled="invalid || !changed">
+                    Guardar cambios
+                  </v-btn>
+                  <v-btn class="mx-3" tile color="warning" outlined :disabled="!changed">Borrar formulario</v-btn>
                 </v-sheet>
               </v-card-actions>
             </form>
@@ -169,9 +37,10 @@ import { mapState, mapMutations, mapGetters } from 'vuex'
 import capitalize from '@/filters/capitalize'
 import InfoDialog from './InfoDialog.vue'
 import ProfilePhoto from './ProfilePhoto.vue'
+import UserField from './UserField.vue'
 
 export default {
-  components: { InfoDialog, ProfilePhoto },
+  components: { InfoDialog, ProfilePhoto, UserField },
   filters: { capitalize },
   data() {
     return {

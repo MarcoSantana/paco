@@ -111,4 +111,42 @@ export default {
     title: 'título de la licenciatura en medicina',
     voucher: 'recibo de pago',
   },
+  userEdit: {
+    license: {
+      hint: 'Nivel licenciatura tipo C1 (de 7 a 10 dígitos)',
+      icon: 'mdi-badge-account',
+      label: 'Cédula profesional',
+      placeholder: 'Cédula profesional de licenciatura en medicina',
+    },
+    email: {
+      hint: 'Debe ser una dirección válida',
+      icon: 'mdi-email',
+      label: 'Correo electrónico',
+      placeholder: 'juan.carlos@correo.com',
+    },
+    name: {
+      hint: 'ej. Juan Carlos',
+      icon: 'mdi-face',
+      label: 'Nombre',
+      placeholder: 'Nombres (ej. Juan Carlos)',
+    },
+    lastname1: {
+      hint: 'Primer apellido',
+      icon: 'mdi-form-textbox',
+      label: 'Apellido paterno',
+      placeholder: 'Apellido Paterno (ej. González)',
+    },
+    lastname2: {
+      hint: 'Segundo apellido',
+      icon: 'mdi-form-textbox',
+      label: 'Apellido materno',
+      placeholder: 'Apellido Paterno (ej. González)',
+    },
+    phoneNumber: {
+      hint: ' Debe ser un número de teléfono válido en México',
+      icon: 'mdi-cellphone-basic',
+      label: 'Teléfono celular',
+      placeholder: '##########',
+    },
+  },
 }
