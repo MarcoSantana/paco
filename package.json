@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@vue/babel-preset-app": "^4.5.13",
+    "@vue/runtime-dom": "latest",
     "axios": "^0.19.2",
     "chart.js": "^3.7.1",
     "core-js": "^3.6.5",
