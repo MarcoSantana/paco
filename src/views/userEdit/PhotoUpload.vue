@@ -68,13 +68,12 @@ export default {
         .put(file)
         .then(snapshot => {
           this.loadingPercentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-          return snapshot.ref.getDownloadURL()
+          return storageRef.getDownloadURL()
         })
         .then(downloadURL => {
           this.uploadComplete = true
-          console.log('File available at ', downloadURL)
+          this.updateProfilePhoto(downloadURL)
         })
-        .then(this.updateProfilePhoto)
         .catch(err => {
           console.error('Error al cargar el archivo', err)
         })
@@ -82,14 +81,13 @@ export default {
       // TODO update user state to reflect changes
       // TODO emit message for toast
     },
-    async updateProfilePhoto() {
-      console.log('update profile photo')
+    async updateProfilePhoto(url) {
       await firestore()
         .collection('users')
         .doc(this.user.id)
-        .update({ photoURL: `https://us-central1-paco-1a08b.cloudfunctions.net/profile/${this.user.license}/photo` })
+        .update({ photoURL: `${url}` })
       await auth().currentUser.updateProfile({
-        photoURL: `https://us-central1-paco-1a08b.cloudfunctions.net/profile${this.user.license}/photo`,
+        photoURL: `${url}`,
       })
     },
   },
