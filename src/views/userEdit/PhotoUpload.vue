@@ -37,7 +37,7 @@
 <script>
 import { isNil } from 'lodash'
 import { auth, storage, firestore } from 'firebase'
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 
 export default {
   name: 'PhotoUpload',
@@ -58,6 +58,7 @@ export default {
   },
   mounted() {},
   methods: {
+    ...mapMutations('authentication', ['setUser', 'updateUser']),
     uploadPhoto(file) {
       this.uploadLoading = true
       const fileExtension = file.type.split('/').pop()
@@ -66,15 +67,15 @@ export default {
       this.uploadComplete = false
       storageRef
         .put(file)
-        .then(snapshot => {
+        .then((snapshot) => {
           this.loadingPercentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
           return storageRef.getDownloadURL()
         })
-        .then(downloadURL => {
+        .then((downloadURL) => {
           this.uploadComplete = true
           this.updateProfilePhoto(downloadURL)
         })
-        .catch(err => {
+        .catch((err) => {
           console.error('Error al cargar el archivo', err)
         })
         .finally(() => (this.uploadLoading = false))
@@ -86,9 +87,24 @@ export default {
         .collection('users')
         .doc(this.user.id)
         .update({ photoURL: `${url}` })
-      await auth().currentUser.updateProfile({
-        photoURL: `${url}`,
-      })
+
+      console.log('current user', auth().currentUser.displayName)
+
+      const myUser = auth().currentUser
+      await myUser
+        .updateProfile({ photoURL: url })
+        .then(function () {
+          console.log(myUser)
+        })
+        .then(() => this.updateUser({ photoURL: url }))
+        .catch(function (error) {
+          console.log(error)
+        })
+      // await auth()
+      //   .currentUser.updateProfile({
+      //     photoURL: url,
+      //   })
+      //   .then((user) => this.setUser({ ...user, photoURL: url }))
     },
   },
 }
