@@ -3,8 +3,17 @@
     <v-card class="mx-auto" max-width="200" outlined>
       <v-img :src="model.photoURL" max-width="200px" max-height="300px" />
       <v-card-text class="pt-6" style="position: relative;">
-        <v-btn absolute color="info" class="white--text" fab medium right top @click.stop="dialog = true">
-          <v-icon>mdi-camera</v-icon>
+        <v-btn
+          absolute
+          color="info"
+          class="white--text"
+          fab
+          medium
+          right
+          top
+          @click.stop="dialog = true"
+        >
+          <v-icon>mdi-pencil</v-icon>
         </v-btn>
       </v-card-text>
       <v-card-title class="text-capitalize">
@@ -24,7 +33,7 @@
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-app-bar>
-        <photo-upload></photo-upload>
+        <photo-upload @done="dialog = false"></photo-upload>
       </v-card>
     </v-dialog>
   </v-container>

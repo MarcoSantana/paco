@@ -78,8 +78,10 @@ export default {
         .catch((err) => {
           console.error('Error al cargar el archivo', err)
         })
-        .finally(() => (this.uploadLoading = false))
-      // TODO update user state to reflect changes
+        .finally(() => {
+          this.uploadLoading = false
+          this.$emit('done')
+        })
       // TODO emit message for toast
     },
     async updateProfilePhoto(url) {
@@ -87,8 +89,6 @@ export default {
         .collection('users')
         .doc(this.user.id)
         .update({ photoURL: `${url}` })
-
-      console.log('current user', auth().currentUser.displayName)
 
       const myUser = auth().currentUser
       await myUser
