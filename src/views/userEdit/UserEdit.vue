@@ -52,6 +52,7 @@
                     color="success"
                     outlined
                     :disabled="invalid || !changed"
+                    @click="save"
                   >Guardar cambios</v-btn>
                   <v-btn
                     class="mx-3"
@@ -70,7 +71,7 @@
   </v-container>
 </template>
 <script>
-import { mapState, mapMutations, mapGetters } from 'vuex'
+import { mapState, mapMutations, mapGetters, mapActions } from 'vuex'
 import capitalize from '@/filters/capitalize'
 import InfoDialog from './InfoDialog.vue'
 import ProfilePhoto from './ProfilePhoto.vue'
@@ -81,10 +82,11 @@ export default {
   filters: { capitalize },
   data() {
     return {
-      localUser: this.getUser(),
       errors: null,
-      valid: true,
       infoDialog: false,
+      localSaving: false,
+      localUser: this.getUser(),
+      valid: true,
     }
   },
   computed: {
@@ -101,6 +103,12 @@ export default {
   methods: {
     ...mapMutations('authentication', ['setUser']),
     ...mapGetters('authentication', ['getUser']),
+    ...mapActions('user', ['updateUser']),
+    save() {
+      this.localSaving = true
+      this.updateUser(this.localUser)
+      this.localSaving = false
+    },
   },
 }
 </script>
