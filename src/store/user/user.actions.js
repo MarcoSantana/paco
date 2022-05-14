@@ -8,11 +8,12 @@ export default {
     commit('setUserUpdatePending', data.id, false)
   },
   // TODO getUserData(){}
-  updateUser: async ({ commit }, data) => {
+  updateUser: async ({ rootState }, data) => {
     // if (getters.isUserUpdatePending(rootState.authentication.user.id)) return
-    const userDb = new UserDB(data.id)
-    commit('setUserUpdatePending', data.id, true)
+    // const userDb = new UserDB(data.id)
+    const userDb = new UserDB(rootState.authentication.user.id)
+    // comit('setUserUpdatePending', data.id, true)
     userDb.update(data)
-    commit('setUserUpdatePending', data.id, false)
+    // comit('setUserUpdatePending', data.id, false)
   },
 }

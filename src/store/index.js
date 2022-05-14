@@ -1,14 +1,15 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import authentication from './authentication'
-import app from './app'
-import products from './products'
-import documents from './documents'
-import colleges from './colleges'
-import hospitals from './hospitals'
-import forms from './forms'
 import admin from './admin'
+import app from './app'
+import authentication from './authentication'
+import colleges from './colleges'
+import documents from './documents'
 import events from './events'
+import forms from './forms'
+import hospitals from './hospitals'
+import products from './products'
+import user from './user'
 
 Vue.use(Vuex)
 
@@ -17,14 +18,15 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   strict: process.env.NODE_ENV !== 'production',
   modules: {
-    authentication,
+    admin,
     app,
-    products,
+    authentication,
     colleges,
     documents,
-    hospitals,
-    forms,
-    admin,
     events,
+    forms,
+    hospitals,
+    products,
+    user,
   },
 })
