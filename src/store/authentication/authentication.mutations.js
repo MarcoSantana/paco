@@ -6,4 +6,3 @@ export default {
     state.userClaims = value
   },
 }
-
