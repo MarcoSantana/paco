@@ -1,7 +1,9 @@
 <template>
   <v-container>
     <v-card class="mx-auto" max-width="200" outlined>
-      <v-img :src="model.photoURL" max-width="200px" max-height="300px" />
+      <v-avatar size="200">
+        <v-img :src="model.photoURL" max-width="200px" max-height="300px" />
+      </v-avatar>
       <v-card-text class="pt-6" style="position: relative;">
         <v-btn
           absolute

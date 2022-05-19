@@ -1,12 +1,12 @@
 import { isNil } from 'lodash'
 import { auth, storage, firestore } from 'firebase'
 import { mapState, mapMutations } from 'vuex'
-import { Cropper } from 'vue-advanced-cropper'
+import { Cropper, Preview } from 'vue-advanced-cropper'
 import 'vue-advanced-cropper/dist/style.css'
 
 export default {
   name: 'PhotoUpload',
-  components: { Cropper },
+  components: { Cropper, Preview },
   data() {
     return {
       imgValue: null,
