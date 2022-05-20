@@ -12,8 +12,8 @@ export default {
     return false
   },
   isUserIncomplete: state => {
-    console.log('state.claims', state.claims)
-    return state.userClaims.incomplete
+    return state.user.incomplete
+    // return state.userClaims.incomplete
   },
   getUserClaims: (state, { commit }) => {
     // console.log('state.claims', state.claims)

@@ -40,4 +40,4 @@
     </v-dialog>
   </v-container>
 </template>
-<script src="./profilePhoto.comp.js" />
+<script src="@/views/userEdit/profilePhoto.comp.js" />

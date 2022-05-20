@@ -64,7 +64,7 @@ export default {
       await firestore()
         .collection('users')
         .doc(this.user.id)
-        .update({ photoURL: `${url}` })
+        .update({ photoURL: `${url}`, incomplete: false })
       const myUser = auth().currentUser
       await myUser
         .updateProfile({ photoURL: url })

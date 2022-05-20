@@ -22,9 +22,10 @@ Stardate: 202005.17 13:56
     </v-overlay>
 
     <!-- Offline instruction -->
-    <div v-show="!networkOnLine" data-test="offline-instruction">
-      Por favor revise su conexión, la característica de ingreso no está disponible fuera de línea.
-    </div>
+    <div
+      v-show="!networkOnLine"
+      data-test="offline-instruction"
+    >Por favor revise su conexión, la característica de ingreso no está disponible fuera de línea.</div>
 
     <p v-if="loginError">{{ loginError }}</p>
     <p v-if="apiError">{{ apiError }}</p>
@@ -63,7 +64,6 @@ Stardate: 202005.17 13:56
               </validation-provider>
             </v-card-text>
             <!-- license -->
-
             <validation-provider v-slot="{ errors }" rules="required|length:3,30">
               <span name="registration-name-span" :class="{ error: errors[0] }">
                 <v-text-field
@@ -148,7 +148,11 @@ Stardate: 202005.17 13:56
               </span>
             </validation-provider>
             <!--gender-->
-            <validation-provider v-slot="{ errors }" rules="email|required" name="register-email-valitator">
+            <validation-provider
+              v-slot="{ errors }"
+              rules="email|required"
+              name="register-email-valitator"
+            >
               <span name="registration-email-span" :class="{ error: errors[0] }">
                 <v-text-field
                   id="registration-email"
@@ -166,7 +170,10 @@ Stardate: 202005.17 13:56
               </span>
             </validation-provider>
             <!-- email -->
-            <validation-provider v-slot="{ errors }" rules="required|confirmed:register-email-valitator">
+            <validation-provider
+              v-slot="{ errors }"
+              rules="required|confirmed:register-email-valitator"
+            >
               <span name="registration-email-confirmation-span" :class="{ error: errors[0] }">
                 <v-text-field
                   id="registration-email-confirmation"
@@ -185,7 +192,11 @@ Stardate: 202005.17 13:56
             </validation-provider>
             <!-- email-confirmation -->
 
-            <validation-provider v-slot="{ errors }" rules="cellphone|required" name="cellphone-validator">
+            <validation-provider
+              v-slot="{ errors }"
+              rules="cellphone|required"
+              name="cellphone-validator"
+            >
               <span name="registration-cellphone-span" :class="{ error: errors[0] }">
                 <v-text-field
                   id="registration-cellphone"
@@ -255,9 +266,7 @@ Stardate: 202005.17 13:56
               name="signup_submit"
               :disabled="invalid"
               data-test="signup-submit"
-            >
-              Registrarse
-            </v-btn>
+            >Registrarse</v-btn>
           </form>
         </validation-observer>
       </v-card>
@@ -277,13 +286,14 @@ import firebase, { firestore } from 'firebase/app'
 import { desktop as isDekstop } from 'is_js'
 
 export default {
+  name: 'Signup',
   filters: {
     phone,
-    zeroPad: value => {
+    zeroPad: (value) => {
       return value.toString().padStart(8, '0')
     },
     // Returns the string for each gender based on the REST API
-    genderize: value => {
+    genderize: (value) => {
       let gender = null
       if (!isNil(value)) {
         if (value.toString() === '1') {
@@ -358,7 +368,7 @@ export default {
       // if (!this.errors.license) {
       //   this.errors.license = 'El numero de cédula profesional es obligatorio'
       // }
-      const isEmpty = Object.values(this.errors).some(x => x !== null && x !== '')
+      const isEmpty = Object.values(this.errors).some((x) => x !== null && x !== '')
       return isEmpty
     },
   },
@@ -378,17 +388,18 @@ export default {
   methods: {
     ...mapMutations('authentication', ['setUser']),
     ...mapMutations('app', ['setLoading', 'unsetLoading']),
-    debouncedLicenseCheck: _.debounce(function() {
+    debouncedLicenseCheck: _.debounce(function () {
       this.licenseCheck(this)
     }, 1000),
-    licenseCheck: async that => {
+    licenseCheck: async (that) => {
       const data = that.registrationData
       if (data.license.length >= 7 && data.license.length <= 8) {
         that.setLoading()
         fetch(`https://us-central1-paco-1a08b.cloudfunctions.net/licenseAPI-licenseAPI/${data.license}`, {})
-          .then(response => response.json())
-          .then(json => {
+          .then((response) => response.json())
+          .then((json) => {
             // TODO format UI to proper case
+            // TODO check for licesne type C1
             that.registrationData.name = json.name
             that.registrationData.lastname1 = json.lastname
             that.registrationData.lastname2 = json.lastname2
@@ -429,7 +440,7 @@ export default {
           user
             .updateProfile({
               displayName: `${data.name} ${data.lastname1} ${data.lastname2}`,
-              photoURL: 'https://example.com/jane-q-user/profile.jpg',
+              photoURL: `https://ui-avatars.com/api/?background=random&name=${data.name}+${data.lastname1}`,
             })
             .then(() => {
               // Update successful
@@ -438,20 +449,21 @@ export default {
                 .doc(user.uid)
                 .set({
                   name: data.name,
-                  photoURL: 'https://example.com/jane-q-user/profile.jpg',
+                  photoURL: `https://ui-avatars.com/api/?background=random&name=${data.name}+${data.lastname1}`,
                   displayName: `${data.name} ${data.lastname1} ${data.lastname2}`,
                   lastname1: data.lastname1,
                   lastname2: data.lastname2,
                   license: data.license,
                   email: data.email,
                   phoneNumber: data.cellphone,
+                  incomplete: true,
                 })
               // ...
             })
             .then(() => {
               this.$router.push('/checkLogin')
             })
-            .catch(error => {
+            .catch((error) => {
               // An error occurred
               console.error('error in example from docs', error)
               // ...
@@ -483,18 +495,18 @@ export default {
             //     .doc(user.uid)
             //     .update({ gender: data.gender, license: data.license })
             // })
-            .catch(error => {
+            .catch((error) => {
               this.errors.push(error)
             })
         })
-        .catch(error => {
+        .catch((error) => {
           // this.errors.push(error)
           this.loginError = error
         })
         .finally(() => {
           this.unsetLoading()
         })
-        .catch(error => {
+        .catch((error) => {
           console.log('Error creating new account', error)
         })
     },

@@ -9,5 +9,8 @@ exports.setup = authUserTrigger.onCreate((user) => {
 })
 
 const setupUser = async (user) => {
-  await admin.auth().setCustomUserClaims(user.uid, {incomplete: true})
+  // As the claims are a thing muhc more inmutable by the user
+  // we will use a field in the db
+  // await admin.auth().setCustomUserClaims(user.uid, {incomplete: true})
+  await admin.firestore().collection('users').doc(user.uid).update({ incomplete: true })
 }

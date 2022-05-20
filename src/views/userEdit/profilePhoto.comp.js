@@ -1,10 +1,12 @@
 import { storage } from 'firebase'
 import { mapGetters } from 'vuex'
 import { isNil } from 'lodash'
-import PhotoUpload from './PhotoUpload.vue'
+import PhotoUpload from '@/views/userEdit/PhotoUpload.vue'
+import capitalize from '@/filters/capitalize'
 
 export default {
   components: { PhotoUpload },
+  fileters: { capitalize },
   mounted() {
     console.log('this.user', this.user)
   },
