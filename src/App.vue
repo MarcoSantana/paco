@@ -36,12 +36,12 @@
       </v-sheet>
 
       <v-divider></v-divider>
-      <v-list v-if="!isUserAdmin">
-        <v-list-item v-for="[icon, text] in links" :key="icon" link>
+      <v-list v-if="!isUserAdmin" nav dense>
+        <router-link to="userEdit">Foo</router-link>
+        <v-list-item v-for="[icon, text, to] in links" :key="icon" link :to="to">
           <v-list-item-icon>
             <v-icon>{{ icon }}</v-icon>
           </v-list-item-icon>
-
           <v-list-item-content>
             <v-list-item-title>{{ text }}</v-list-item-title>
           </v-list-item-content>
@@ -73,9 +73,11 @@ export default {
     return {
       drawer: true,
       links: [
-        ['mdi-inbox-arrow-down', 'Mensajes'],
-        ['mdi-cloud-upload', 'Cargar documentos'],
-        ['mdi-folder-account', 'Perfil'],
+        // ['mdi-inbox-arrow-down', 'Mensajes'],
+        // ['mdi-cloud-upload', 'Cargar documentos'],
+        ['mdi-home', 'Inicio', 'home'],
+        ['mdi-folder-account', 'Editar perfil académico'],
+        ['mdi-account-edit', 'Editar datos personales', 'userEdit'],
         // ['mdi-alert-octagon', 'Spam'],
       ],
       adminLinks: [
