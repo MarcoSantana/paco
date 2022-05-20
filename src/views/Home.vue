@@ -15,14 +15,16 @@
       <v-col cols="6">
         <v-row align="center" justify="center">
           <v-btn block color="primary" tile ripple icon to="/login">
-            <v-icon>mdi-login</v-icon>Ingresar
+            <v-icon>mdi-login</v-icon>
+            Ingresar
           </v-btn>
         </v-row>
       </v-col>
       <v-col cols="6">
         <v-row align="center" justify="center">
           <v-btn color="primary" block tile ripple icon to="/signup">
-            <v-icon>mdi-account-plus</v-icon>Crear cuenta
+            <v-icon>mdi-account-plus</v-icon>
+            Crear cuenta
           </v-btn>
         </v-row>
       </v-col>
@@ -68,18 +70,18 @@
 <script>
 import { mapGetters, mapState } from 'vuex'
 import { callAddAdminRole } from '@/firebase/functions'
-// import {isNil} from 'lodash'
+import { isNil } from 'lodash'
 
 export default {
   head() {
     return {
       title: {
-        inner: 'Home',
+        inner: 'Inicio',
       },
       meta: [
         {
-          name: 'description',
-          content: `${this.appTitle} home page`,
+          name: 'Página inicial',
+          content: `${this.appTitle}, página de inicio`,
           id: 'desc',
         },
       ],
@@ -93,7 +95,7 @@ export default {
   watch: {
     userClaims: {
       handler(userClaims) {
-        console.log('userClaims', userClaims)
+        if (isNil(userClaims)) return
         if (this.isUserIncomplete) this.$router.push('/userEdit')
       },
     },
