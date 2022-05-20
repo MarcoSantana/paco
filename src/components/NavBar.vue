@@ -5,7 +5,9 @@
     <v-toolbar-title class="site-name d-none d-md-flex">{{ appTitle }}</v-toolbar-title>
     <v-toolbar-title class="site-name d-md-none">{{ appShortTitle }}</v-toolbar-title>
     <v-spacer />
-    <v-toolbar-title v-if="!networkOnLine"><small>Fuera de línea</small></v-toolbar-title>
+    <v-toolbar-title v-if="!networkOnLine">
+      <small>Fuera de línea</small>
+    </v-toolbar-title>
     <v-spacer />
     <v-menu v-if="isUserLoggedIn && networkOnLine" bottom left>
       <template v-slot:activator="{ on, attrs }">
@@ -15,19 +17,22 @@
       </template>
       <v-list dense>
         <v-list-item>
-          <v-list-item-icon><v-icon>mdi-information</v-icon></v-list-item-icon>
+          <v-list-item-icon>
+            <v-icon>mdi-information</v-icon>
+          </v-list-item-icon>
           <v-list-item-title>
-            <a href="http://cmmu.org.mx/web/aviso-de-privacidad/" target="_blank">
-              Aviso de privacidad
-            </a>
+            <a
+              href="http://cmmu.org.mx/web/aviso-de-privacidad/"
+              target="_blank"
+            >Aviso de privacidad</a>
           </v-list-item-title>
         </v-list-item>
         <v-list-item @click="logout">
-          <v-list-item-icon><v-icon>mdi-exit-run</v-icon></v-list-item-icon>
+          <v-list-item-icon>
+            <v-icon>mdi-exit-run</v-icon>
+          </v-list-item-icon>
           <v-list-item-content>
-            <v-list-item-title>
-              Salir
-            </v-list-item-title>
+            <v-list-item-title>Salir</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
