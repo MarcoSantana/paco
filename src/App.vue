@@ -37,7 +37,6 @@
 
       <v-divider></v-divider>
       <v-list v-if="!isUserAdmin" nav dense>
-        <router-link to="userEdit">Foo</router-link>
         <v-list-item v-for="[icon, text, to] in links" :key="icon" link :to="to">
           <v-list-item-icon>
             <v-icon>{{ icon }}</v-icon>
@@ -76,7 +75,7 @@ export default {
         // ['mdi-inbox-arrow-down', 'Mensajes'],
         // ['mdi-cloud-upload', 'Cargar documentos'],
         ['mdi-home', 'Inicio', 'home'],
-        ['mdi-folder-account', 'Editar perfil académico'],
+        ['mdi-folder-account', 'Editar perfil académico', 'academicProfile'],
         ['mdi-account-edit', 'Editar datos personales', 'userEdit'],
         // ['mdi-alert-octagon', 'Spam'],
       ],
