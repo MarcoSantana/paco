@@ -11,7 +11,13 @@ Stardate: 202005.17 13:56
   <div class="page-wrapper" background-color="primary">
     <!-- Loader -->
     <div v-show="user === undefined" data-test="loader">Autenticando...</div>
-    <v-overlay :value="loading" opacity="0.8" color="secondary lighten-5">
+    <v-overlay
+      id="loading-ovelay"
+      data-test="registration-loading-overlay"
+      :value="loading"
+      opacity="0.8"
+      color="secondary lighten-5"
+    >
       <v-progress-circular color="secondary" rotate="180" indeterminate size="200" width="10">
         <v-progress-circular size="160" color="editable" width="10" indeterminate rotate="90">
           <v-progress-circular color="primary" rotate="270" indeterminate size="128" width="10">
@@ -40,20 +46,21 @@ Stardate: 202005.17 13:56
           <form @submit.prevent="onSubmit">
             <v-card-title class="text-h4">Registrarse</v-card-title>
             <v-card-text class="pa-3 my-2">
-              <validation-provider v-slot="{ errors }" rules="numeric|length:7,10|required">
+              <validation-provider v-slot="{ errors, valid }" rules="numeric|length:7,10|required">
+                {{ (validLicense = valid) }}
                 <span id="registration-license-span" :class="{ error: errors[0] }">
                   <v-text-field
                     id="registration-license"
                     v-model="registrationData.license"
                     autocomplete="off"
                     class="my-1"
-                    counter="10"
-                    data-test="license"
+                    counter="30"
+                    data-test="registration-license"
                     hide-details="auto"
-                    hint="Nivel licenciatura tipo C1 (de 7 a 10 dígitos)"
+                    hint="Cédula profesional"
                     label="Cédula profesional"
                     name="license"
-                    placeholder="Cédula profesional de licenciatura en medicina"
+                    placeholder="Cedula profesional de licenciatura"
                     prepend-inner-icon="mdi-badge-account"
                     type="text"
                     @keyup="debouncedLicenseCheck(licenseCheck)"
@@ -71,22 +78,21 @@ Stardate: 202005.17 13:56
                   v-model="registrationData.name"
                   autocomplete="off"
                   class="my-1"
-                  label="Nombre"
-                  hint="ej. Juan Carlos"
-                  type="text"
-                  prepend-icon="mdi-face"
-                  name="name"
                   counter="30"
-                  placeholder="Nombres (ej. Juan Carlos)"
                   data-test="registration-name"
                   hide-details="auto"
+                  hint="ej. Juan Carlos"
+                  label="Nombre"
+                  name="name"
+                  placeholder="Nombres (ej. Juan Carlos)"
+                  prepend-icon="mdi-face"
+                  type="text"
                 />
                 <span class="error--text error lighten-4">{{ errors[0] }}</span>
               </span>
             </validation-provider>
             <!-- name -->
-
-            <validation-provider v-slot="{ errors }" rules="required|length:2,30">
+            <validation-provider v-slot="{ errors }" rules="required|length:3,30">
               <span name="registration-lastname-1-span" :class="{ error: errors[0] }">
                 <v-text-field
                   id="registration-lastname-1"
@@ -95,19 +101,18 @@ Stardate: 202005.17 13:56
                   class="my-1"
                   counter="30"
                   data-test="registration-lastname-1"
-                  hint="Primer apellido"
-                  label="Apellido paterno"
+                  hide-details="auto"
+                  hint="ej. Juan Carlos"
+                  label="Apellido Paterno"
                   name="lastname-1"
                   placeholder="Apellido Paterno (ej. González)"
                   prepend-icon="mdi-form-textbox"
                   type="text"
                 />
-
                 <span class="error--text error lighten-4">{{ errors[0] }}</span>
               </span>
             </validation-provider>
-            <!-- lastname-1 -->
-
+            <!-- last-name-1 -->
             <validation-provider v-slot="{ errors }" rules="length:2,30">
               <span name="regsitration-lastname-2-span" :class="{ error: errors[0] }">
                 <v-text-field
@@ -304,6 +309,7 @@ export default {
     apiError: null,
     showPassword: false,
     showConfirmPassword: false,
+    validLicense: false,
     registrationData: {
       name: null,
       lastname1: null,
@@ -317,6 +323,7 @@ export default {
       cellphone: null,
     }, // Validation
     errors: [],
+    license: undefined,
     // Genders
     genders: [
       { text: 'Seleccione uno por favor', value: null, selected: true },
@@ -383,12 +390,14 @@ export default {
     }, 1000),
     licenseCheck: async that => {
       const data = that.registrationData
+      if (!that.validLicense) return
       if (data.license.length >= 7 && data.license.length <= 8) {
         that.setLoading()
         fetch(`https://us-central1-paco-1a08b.cloudfunctions.net/licenseAPI-licenseAPI/${data.license}`, {})
           .then(response => response.json())
           .then(json => {
-            // TODO format UI to proper case
+            that.license = json
+            // TODO format UI to proer case
             that.registrationData.name = json.name
             that.registrationData.lastname1 = json.lastname
             that.registrationData.lastname2 = json.lastname2
@@ -429,7 +438,7 @@ export default {
           user
             .updateProfile({
               displayName: `${data.name} ${data.lastname1} ${data.lastname2}`,
-              photoURL: 'https://example.com/jane-q-user/profile.jpg',
+              phoneNumber: data.cellphone,
             })
             .then(() => {
               // Update successful
@@ -438,7 +447,6 @@ export default {
                 .doc(user.uid)
                 .set({
                   name: data.name,
-                  photoURL: 'https://example.com/jane-q-user/profile.jpg',
                   displayName: `${data.name} ${data.lastname1} ${data.lastname2}`,
                   lastname1: data.lastname1,
                   lastname2: data.lastname2,
@@ -447,6 +455,26 @@ export default {
                   phoneNumber: data.cellphone,
                 })
               // ...
+            })
+            .then(() => {
+              firestore()
+                .collection('users')
+                .doc(user.uid)
+                .collection('profile')
+                .doc('license')
+                .set({ ...this.license })
+            })
+            .then(() => {
+              firestore()
+                .collection('profiles')
+                .doc(user.uid)
+                .set({ ...this.license })
+            })
+            .then(() => {
+              firestore()
+                .collection('profiles')
+                .doc(user.uid)
+                .set(...this.license)
             })
             .then(() => {
               this.$router.push('/checkLogin')
