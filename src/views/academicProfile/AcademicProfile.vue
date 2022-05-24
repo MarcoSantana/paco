@@ -12,6 +12,22 @@
         <li>Create a collection in Firebase</li>
       </ul>
     </v-card>
+    <v-card>
+      <ul>
+        <li>
+          <h3>License</h3>
+          <ul>
+            <li>License full data</li>
+          </ul>
+        </li>
+        <li>
+          <h3>College diploma (degree)</h3>
+          <ul>
+            <li>Get the data from license API</li>
+          </ul>
+        </li>
+      </ul>
+    </v-card>
   </v-container>
 </template>
 <script>
