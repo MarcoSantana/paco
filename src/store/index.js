@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import admin from './admin'
 import app from './app'
+import academicProfile from './academicProfile'
 import authentication from './authentication'
 import colleges from './colleges'
 import documents from './documents'
@@ -20,6 +21,7 @@ export default new Vuex.Store({
   modules: {
     admin,
     app,
+    academicProfile,
     authentication,
     colleges,
     documents,

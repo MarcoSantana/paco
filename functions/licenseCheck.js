@@ -2,14 +2,11 @@ const functions = require('firebase-functions')
 const express = require('express');
 const cors = require('cors');
 const fetch = require('node-fetch')
-// import fetch from 'node-fetch'
 const app = express();
 
 // Automatically allow cross-origin requests
 app.use(cors({ origin: true, credentials: true }));
 
-// Add middleware to authenticate requests
-// app.use(myMiddleware);
 const responseAPI = async (license) => {
   const query = fetch("https://cedulaprofesional.sep.gob.mx/cedula/buscaCedulaJson.action", {
     credentials: "include",
@@ -45,18 +42,18 @@ const license = ({
   paternoM,
   sexo,
   tipo,
-  titulo
+  titulo,
 } = {}) => ({
-  registrationYear: anioreg,
   curp,
-  institution: desins,
-  id: idCedula,
-  lastname2: `${materno}${maternoM ? ' ' + maternoM : ''}`,
-  name: `${nombre}${nombreM ? ' ' + nombreM : ''}`,
-  lastname: `${paterno}${paternoM ? ' ' + paternoM : ''}`,
   gender: sexo,
+  id: idCedula,
+  institution: desins,
+  lastname2: `${materno}${maternoM ? ' ' + maternoM : ''}`,
+  lastname: `${paterno}${paternoM ? ' ' + paternoM : ''}`,
+  name: `${nombre}${nombreM ? ' ' + nombreM : ''}`,
+  registrationYear: anioreg,
+  title: titulo,
   type: tipo,
-  title: titulo
 })
 
 app.get('/:id', async (req, res) => {
@@ -70,16 +67,3 @@ app.get('/:id', async (req, res) => {
 // Expose Express API as a single Cloud Function:
 exports.licenseAPI = functions.https.onRequest(app);
 
-// const functions = require('firebase-functions')
-// const cors = require('cors')({ origin: true })
-
-// exports.licenseAPI = functions.https.onRequest((request, response) => {
-//   if (request.method !== "GET") {
-//     res.status(400).send('Please send a GET request')
-//     return
-//   }
-//   let data = request.body
-//   functions.logger.log('data from http',)
-//     .then(apiResponse => { response.status(200).send(apiResponse) })
-//   // res.status(200).send(data)
-// })

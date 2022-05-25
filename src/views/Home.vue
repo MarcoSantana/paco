@@ -70,7 +70,6 @@
 <script>
 import { mapGetters, mapState } from 'vuex'
 import { callAddAdminRole } from '@/firebase/functions'
-import { isNil } from 'lodash'
 
 export default {
   head() {
@@ -92,21 +91,8 @@ export default {
     ...mapState('authentication', ['user', 'userClaims']),
     ...mapGetters('authentication', ['isUserLoggedIn', 'isUserAdmin', 'isUserIncomplete', 'getUserClaims']),
   },
-  watch: {
-    userClaims: {
-      handler(userClaims) {
-        if (isNil(userClaims)) return
-        if (this.isUserIncomplete) this.$router.push('/userEdit')
-      },
-    },
-  },
-  mounted() {
-    // console.log('this.userClaims.icomplete', this.userClaims.incomplete)
-    if (this.userClaims && this.userClaims.incomplete) {
-      console.log('Router push')
-      this.$router.push('/userEdit')
-    }
-  },
+  watch: {},
+  mounted() {},
   methods: {
     async addRole() {
       const ref = this.$refs.adminEmail

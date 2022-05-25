@@ -15,6 +15,8 @@ export default {
     const user = isNil(userFromFirebase) ? await createNewUserFromFirebaseAuthUser(firebaseAuthUser) : userFromFirebase
 
     commit('setUser', user)
+
+    dispatch('academicProfile/getAcademicProfile', null, { root: true })
     await dispatch('setClaims', firebaseAuthUser)
 
     // Actions should not be async move this to the actual mutation

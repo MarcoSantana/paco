@@ -1,7 +1,5 @@
 <template>
-  <h1 class="loading-title">
-    Cargando...
-  </h1>
+  <h1 class="loading-title">Cargando...</h1>
 </template>
 
 <script>
@@ -13,7 +11,6 @@ export default {
   watch: {
     user: {
       handler(user) {
-        console.log('this.userClaims', this.userClaims)
         if (user === undefined) return
 
         if (isNil(user.emailConfirmed)) {
@@ -23,6 +20,8 @@ export default {
         if (this.$route.query.redirectUrl === this.$route.path) {
           this.$router.push('/')
         }
+
+        if (user.incomplete) this.$router.push('/userEdit')
 
         const redirectUrl = isNil(user)
           ? `/login?redirectUrl=${this.$route.query.redirectUrl}`

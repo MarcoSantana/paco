@@ -140,6 +140,11 @@ const router = new Router({
         authNotRequired: false,
       },
     },
+    {
+      path: '/academicProfile',
+      name: 'academicProfile',
+      component: () => import(/* webpackChunkName: "client-chunk-main-details" */ '@/views/academicProfile/AcademicProfile.vue'),
+    },
     // Default route
     { path: '*', redirect: '/home' },
   ],
@@ -176,7 +181,7 @@ router.beforeEach((to, from, next) => {
   // TODO set some snackbar/toast to inform the incompleteness
   // TODO push the route to the new complete user form
 
-  next()
+  return next()
 })
 
 export default router

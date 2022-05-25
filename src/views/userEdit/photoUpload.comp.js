@@ -6,7 +6,10 @@ import 'vue-advanced-cropper/dist/style.css'
 
 export default {
   name: 'PhotoUpload',
-  components: { Cropper, Preview },
+  components: {
+    Cropper,
+    Preview,
+  },
   data() {
     return {
       imgValue: null,
@@ -64,13 +67,21 @@ export default {
       await firestore()
         .collection('users')
         .doc(this.user.id)
-        .update({ photoURL: `${url}`, incomplete: false })
+        .update({
+          photoURL: `${url}`,
+        })
       const myUser = auth().currentUser
       await myUser
-        .updateProfile({ photoURL: url })
-        .then(() => this.updateUser({ photoURL: url }))
+        .updateProfile({
+          photoURL: url,
+        })
+        .then(() =>
+          this.updateUser({
+            photoURL: url,
+          })
+        )
         .catch(error => {
-          console.log(error)
+          console.error(error)
         })
     },
     // Used by vue-advanced-cropper
