@@ -1,6 +1,6 @@
 import { es } from '../../node_modules/vuetify/es5/locale/es'
 
-export default {
+const translation = {
   ...es,
   // FIXME vuetify translation not working 202112.27-09.25
   $vuetify: { ...es },
@@ -149,4 +149,18 @@ export default {
       placeholder: '##########',
     },
   },
+    academicProfile: {
+        id: 'número de cédula profesional',
+        curp: 'clave única de registro de población',
+        gender: 'género',
+        institution: 'institución formativa',
+        name: () => translation.userEdit.name.label,
+        lastname: () => translation.userEdit.lastname1.label ,
+        lastname2: () => translation.userEdit.lastname2.label,
+        registrationYear: 'año de registro',
+        title: 'título',
+        type: 'tipo',
+    }
 }
+
+export default translation
