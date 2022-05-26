@@ -28,9 +28,10 @@ Stardate: 202005.17 13:56
     </v-overlay>
 
     <!-- Offline instruction -->
-    <div v-show="!networkOnLine" data-test="offline-instruction">
-      Por favor revise su conexión, la característica de ingreso no está disponible fuera de línea.
-    </div>
+    <div
+      v-show="!networkOnLine"
+      data-test="offline-instruction"
+    >Por favor revise su conexión, la característica de ingreso no está disponible fuera de línea.</div>
 
     <p v-if="loginError">{{ loginError }}</p>
     <p v-if="apiError">{{ apiError }}</p>
@@ -48,7 +49,10 @@ Stardate: 202005.17 13:56
             <v-card-text class="pa-3 my-2">
               <validation-provider v-slot="{ errors, valid }" rules="numeric|length:7,10|required">
                 {{ (validLicense = valid) }}
-                <span id="registration-license-span" :class="{ error: errors[0] }">
+                <span
+                  id="registration-license-span"
+                  :class="{ error: errors[0] }"
+                >
                   <v-text-field
                     id="registration-license"
                     v-model="registrationData.license"
@@ -152,7 +156,11 @@ Stardate: 202005.17 13:56
               </span>
             </validation-provider>
             <!--gender-->
-            <validation-provider v-slot="{ errors }" rules="email|required" name="register-email-valitator">
+            <validation-provider
+              v-slot="{ errors }"
+              rules="email|required"
+              name="register-email-valitator"
+            >
               <span name="registration-email-span" :class="{ error: errors[0] }">
                 <v-text-field
                   id="registration-email"
@@ -170,7 +178,10 @@ Stardate: 202005.17 13:56
               </span>
             </validation-provider>
             <!-- email -->
-            <validation-provider v-slot="{ errors }" rules="required|confirmed:register-email-valitator">
+            <validation-provider
+              v-slot="{ errors }"
+              rules="required|confirmed:register-email-valitator"
+            >
               <span name="registration-email-confirmation-span" :class="{ error: errors[0] }">
                 <v-text-field
                   id="registration-email-confirmation"
@@ -189,7 +200,11 @@ Stardate: 202005.17 13:56
             </validation-provider>
             <!-- email-confirmation -->
 
-            <validation-provider v-slot="{ errors }" rules="cellphone|required" name="cellphone-validator">
+            <validation-provider
+              v-slot="{ errors }"
+              rules="cellphone|required"
+              name="cellphone-validator"
+            >
               <span name="registration-cellphone-span" :class="{ error: errors[0] }">
                 <v-text-field
                   id="registration-cellphone"
@@ -259,9 +274,7 @@ Stardate: 202005.17 13:56
               name="signup_submit"
               :disabled="invalid"
               data-test="signup-submit"
-            >
-              Registrarse
-            </v-btn>
+            >Registrarse</v-btn>
           </form>
         </validation-observer>
       </v-card>
@@ -284,11 +297,11 @@ export default {
   name: 'Signup',
   filters: {
     phone,
-    zeroPad: value => {
+    zeroPad: (value) => {
       return value.toString().padStart(8, '0')
     },
     // Returns the string for each gender based on the REST API
-    genderize: value => {
+    genderize: (value) => {
       let gender = null
       if (!isNil(value)) {
         if (value.toString() === '1') {
@@ -365,7 +378,7 @@ export default {
       // if (!this.errors.license) {
       //   this.errors.license = 'El numero de cédula profesional es obligatorio'
       // }
-      const isEmpty = Object.values(this.errors).some(x => x !== null && x !== '')
+      const isEmpty = Object.values(this.errors).some((x) => x !== null && x !== '')
       return isEmpty
     },
   },
@@ -385,17 +398,17 @@ export default {
   methods: {
     ...mapMutations('authentication', ['setUser']),
     ...mapMutations('app', ['setLoading', 'unsetLoading']),
-    debouncedLicenseCheck: _.debounce(function() {
+    debouncedLicenseCheck: _.debounce(function () {
       this.licenseCheck(this)
     }, 1000),
-    licenseCheck: async that => {
+    licenseCheck: async (that) => {
       const data = that.registrationData
       if (!that.validLicense) return
       if (data.license.length >= 7 && data.license.length <= 8) {
         that.setLoading()
         fetch(`https://us-central1-paco-1a08b.cloudfunctions.net/licenseAPI-licenseAPI/${data.license}`, {})
-          .then(response => response.json())
-          .then(json => {
+          .then((response) => response.json())
+          .then((json) => {
             that.license = json
             // TODO format UI to proer case
             that.registrationData.name = json.name
@@ -466,10 +479,7 @@ export default {
                 .set({ ...this.license })
             })
             .then(() => {
-              firestore()
-                .collection('profiles')
-                .doc(user.uid)
-                .set({ ...this.license })
+              firestore().collection('profiles').doc(user.uid).set({ license: this.license })
             })
             .then(() => {
               firestore()
@@ -480,7 +490,7 @@ export default {
             .then(() => {
               this.$router.push('/checkLogin')
             })
-            .catch(error => {
+            .catch((error) => {
               // An error occurred
               console.error('error in example from docs', error)
               // ...
@@ -512,18 +522,18 @@ export default {
             //     .doc(user.uid)
             //     .update({ gender: data.gender, license: data.license })
             // })
-            .catch(error => {
+            .catch((error) => {
               this.errors.push(error)
             })
         })
-        .catch(error => {
+        .catch((error) => {
           // this.errors.push(error)
           this.loginError = error
         })
         .finally(() => {
           this.unsetLoading()
         })
-        .catch(error => {
+        .catch((error) => {
           console.log('Error creating new account', error)
         })
     },
@@ -533,174 +543,3 @@ export default {
   },
 }
 </script>
-
-//
-<style lang="scss" scoped>
-// @import '@/theme/style.scss';
-// @import '@/theme/variables.scss';
-// * {
-//   margin: 0%;
-//   padding: 0%;
-// }
-
-// *:focus {
-//   outline: none;
-// }
-
-// body {
-//   margin: 0;
-//   padding: 0;
-//   background: #ddd;
-//   font-size: 16px;
-//   font-weight: 300;
-// }
-
-// #signup-form-container {
-//   box-sizing: border-box;
-// }
-
-// #login-box {
-//   position: relative;
-//   box-sizing: border-box;
-//   margin: 5% 10% 5% 10%;
-//   width: 100%;
-//   height: 100%;
-//   padding: 1.5rem;
-//   border-radius: 2px;
-//   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-// }
-
-// h1 {
-//   margin: 0 0 20px 0;
-//   font-weight: 300;
-//   font-size: 28px;
-// }
-// /* Style the input container */
-// .input-container {
-//   display: flex;
-//   width: 100%;
-//   margin-bottom: 5px;
-// }
-
-// /* Style the form icons */
-// .icon {
-//   padding: 5px;
-//   color: $main;
-//   min-width: 50px;
-//   text-align: center;
-//   font-size: 1.5rem;
-// }
-// select,
-// input[type='text'],
-// input[type='password'] {
-//   display: block;
-//   box-sizing: border-box;
-//   margin-bottom: 20px;
-//   padding: 4px;
-//   height: 32px;
-//   width: 100%;
-//   border: none;
-//   border-bottom: 1px solid #aaa;
-//   font-family: 'Roboto', sans-serif;
-//   font-weight: 400;
-//   font-size: 15px;
-//   transition: 0.2s ease;
-// }
-
-// input[type='text']:focus,
-// input[type='password']:focus {
-//   border-bottom: 2px solid $secondary; //Cahnge me
-//   background-color: lighten($color: $secondary, $amount: 50%);
-//   color: $main;
-//   transition: 0.8s ease;
-//   box-shadow: 2px 1px rgba(0, 0, 0, 0.4);
-// }
-
-// input[type='text']:hover,
-// input[type='password']:hover {
-//   border-bottom: 2px solid $secondary;
-//   transition: 0.8s ease;
-// }
-
-// button[type='submit'] {
-//   margin-top: 28px;
-//   width: 120px;
-//   height: 32px;
-//   background: $main;
-//   border: none;
-//   border-radius: 8px;
-//   color: $light-accent;
-//   font-family: 'Roboto', sans-serif; // Change me
-//   font-weight: 500;
-//   text-transform: uppercase;
-//   transition: 0.5s ease;
-//   cursor: pointer;
-// }
-
-// button[type='submit']:disabled {
-//   cursor: not-allowed;
-//   color: $main;
-//   background: $light-accent;
-// }
-
-// .button {
-//   border-radius: 20%;
-//   background-color: $main;
-//   color: $light-accent;
-//   padding: 0.5rem;
-//   font-size: 1.5rem;
-//   text-align: center;
-//   display: inline-block;
-//   transition-duration: 0.5s;
-//   transition: 0.2s ease;
-// }
-
-// .button:hover {
-//   background-color: $light-accent;
-//   color: $main;
-//   opacity: 0.8;
-// }
-
-// input[type='submit']:hover,
-// input[type='submit']:focus {
-//   opacity: 0.8;
-//   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-//   transition: 0.2s ease;
-// }
-
-// input[type='submit']:active {
-//   opacity: 1;
-//   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-//   transition: 0.1s ease;
-// }
-
-// .tip {
-//   margin-top: 0;
-//   padding-top: 0.5rem;
-//   margin-top: 0;
-//   margin-bottom: 0.8rem;
-//   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-//   font-size: 0.8rem;
-//   color: $light-accent;
-// }
-
-// // Validation
-
-// // .error {
-// //   .icon {
-// //     color: $danger-color;
-// //   }
-// //   .info {
-// //     color: $danger-color;
-// //     margin-top: 0%;
-// //   }
-// //   input {
-// //     background-color: lighten($color: $danger-color, $amount: 20%);
-// //     opacity: 0.6;
-// //     border-radius: 10px;
-// //   }
-// //   span {
-// //     color: $danger-color;
-// //   }
-// // }
-</style>

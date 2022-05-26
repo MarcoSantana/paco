@@ -149,18 +149,31 @@ const translation = {
       placeholder: '##########',
     },
   },
-    academicProfile: {
-        id: 'número de cédula profesional',
-        curp: 'clave única de registro de población',
-        gender: 'género',
-        institution: 'institución formativa',
-        name: () => translation.userEdit.name.label,
-        lastname: () => translation.userEdit.lastname1.label ,
-        lastname2: () => translation.userEdit.lastname2.label,
-        registrationYear: 'año de registro',
-        title: 'título',
-        type: 'tipo',
-    }
+  academicProfile: {
+    license: {
+      id: 'número de cédula profesional {item}',
+      curp: 'clave única de registro de población {item}',
+      gender: 'Género {item}',
+      institution: 'institución formativa {item}',
+      name: '@:userEdit.name.label {item}',
+      lastname: '@:userEdit.lastname1.label {item}',
+      lastname2: '@:userEdit.lastname2.label {item}',
+      registrationYear: 'año de registro {item}',
+      title: 'título {item}',
+      type: 'tipo {item}',
+    },
+    postDegreeLicense: {
+      id: '@:academicProfile.license.id {item}',
+      curp: '@:academicProfile.license.curp {item}',
+      gender: '@:academicProfile.license.gender {item}',
+      institution: '@:academicProfile.license.institution {item}',
+      name: '@:userEdit.name.label {item}',
+      lastname: '@:userEdit.lastname1.label {item}',
+      lastname2: '@:userEdit.lastname2.label {item}',
+      registrationYear: '@:academicProfile.license.registrationYear {item}',
+      title: '@:academicProfile.license.title {item}',
+      type: '@:academicProfile.license.type {item}',
+    },
+  },
 }
-
 export default translation
