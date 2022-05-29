@@ -25,13 +25,20 @@
                 {{ $t(`academicProfile.${key}`, {}) }}
               </v-list-item-content>
             </v-list-item>
-            <v-divider inset></v-divider>
           </v-list>
           <v-card v-else>
             <v-card-text>
-              Agregar datos de cédula profesional de especialista
-              TODO Agregar un componente para hacer esto más fácil
+              <v-list>
+                <v-list-item v-for="(item, key) in licenseData" :key="key">
+                  <v-list-item-content class="px-5 text-capitalize">
+                    <v-list-item-title class="text-h5">{{ item | genderize | missingData }}</v-list-item-title>
+                    {{ $t(`academicProfile.${key}`, {}) }}
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
+              <specialty-license @license="data => (licenseData = data)"></specialty-license>
             </v-card-text>
+            <div v-if="licenseData">License data {{ licenseData }}</div>
           </v-card>
         </v-card>
       </v-col>
@@ -41,12 +48,13 @@
 <script>
 import { mapState } from 'vuex'
 import { isNil } from 'lodash'
+import SpecialtyLicense from '@/views/academicProfile/SpecialtyLicense'
 
 export default {
   name: 'AcademicProfile',
-
+  components: { SpecialtyLicense },
   filters: {
-    genderize: (val) => {
+    genderize: val => {
       if (isNil(val) || val.isNaN) return val
       switch (val) {
         case '1':
@@ -57,17 +65,21 @@ export default {
           return val
       }
     },
-    missingData: (val) => {
+    missingData: val => {
       if (isNil(val)) return 'Datos faltantes'
       return val
     },
   },
   data() {
-    return {}
+    return {
+      licenseData: null,
+      foo: 0,
+    }
   },
   computed: {
     ...mapState('authentication', ['user']),
     ...mapState('academicProfile', ['academicProfile']),
   },
+  methods: {},
 }
 </script>
