@@ -10,4 +10,8 @@ export default {
   setAcademicProfile: (state, profile) => {
     state.academicProfile = profile
   },
+  updateAcademicProfile: (state, data) => {
+    // TODO update database
+    state.academicProfile = { ...state.academicProfile, ...data }
+  },
 }

@@ -2,7 +2,7 @@
   <v-container>
     <h3 class="text-h3 pb-3">Perfil académico</h3>
     <v-row>
-      <v-col cols="sm">
+      <v-col cols="sm-6">
         <v-card class="pa-3">
           <v-card-title class="text-h4">Licenciatura</v-card-title>
           <v-list>
@@ -15,31 +15,26 @@
           </v-list>
         </v-card>
       </v-col>
-      <v-col cols="sm">
+      <v-col cols="sm-6">
         <v-card class="pa-3">
           <v-card-title>Especialidad</v-card-title>
-          <v-list v-if="academicProfile.posgraduateLicense">
-            <v-list-item v-for="(item, key) in academicProfile.posgraduateLicense" :key="key">
+          <v-list v-if="licenseData">
+            <v-list-item v-for="(item, key) in licenseData" :key="key">
+              <v-list-item-content class="px-5 text-capitalize">
+                <v-list-item-title class="text-h5">{{ item | genderize | missingData }}</v-list-item-title>
+                {{ $t(`academicProfile.postDegreeLicense.${key}`, {}) }}
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+          <v-list v-else>
+            <v-list-item v-for="(item, key) in licenseData" :key="key">
               <v-list-item-content class="px-5 text-capitalize">
                 <v-list-item-title class="text-h5">{{ item | genderize | missingData }}</v-list-item-title>
                 {{ $t(`academicProfile.${key}`, {}) }}
               </v-list-item-content>
             </v-list-item>
           </v-list>
-          <v-card v-else>
-            <v-card-text>
-              <v-list>
-                <v-list-item v-for="(item, key) in licenseData" :key="key">
-                  <v-list-item-content class="px-5 text-capitalize">
-                    <v-list-item-title class="text-h5">{{ item | genderize | missingData }}</v-list-item-title>
-                    {{ $t(`academicProfile.${key}`, {}) }}
-                  </v-list-item-content>
-                </v-list-item>
-              </v-list>
-              <specialty-license @license="data => (licenseData = data)"></specialty-license>
-            </v-card-text>
-            <div v-if="licenseData">License data {{ licenseData }}</div>
-          </v-card>
+          <specialty-license @license="data => (licenseData = data)"></specialty-license>
         </v-card>
       </v-col>
     </v-row>
