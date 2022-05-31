@@ -2,10 +2,10 @@
   <v-container>
     <ul>
       <li><h3>TODO</h3></li>
+      <li>Validate field</li>
       <li>Add update button</li>
       <li>Add "Why I am seeing this?" (put this in parent component)</li>
       <li>Add a tooltip to explain the license search (put this in parent component)</li>
-      <li>Validate field</li>
       <li>Refactor name and reuse it in signup</li>
       <li>As part of the refactor move it to components directory</li>
     </ul>
@@ -17,16 +17,21 @@
         </v-card-text>
       </v-card>
     </v-dialog>
-    <v-text-field v-model="licenseNumber" clearable>
-      <template v-slot:append @click="debouncedLicenseCheck">
-        <v-fade-transition leave-absolute>
-          <v-progress-circular v-if="loading" size="24" color="info" indeterminate></v-progress-circular>
-          <v-icon v-else left>
-            mdi-search-web
-          </v-icon>
-        </v-fade-transition>
-      </template>
-    </v-text-field>
+    <validation-observer v-slot="{ invalid }">
+      <validation-provider v-slot="{ errors, valid }" rules="numeric|length:7,10">
+        <v-text-field v-model="licenseNumber" clearable>
+          <template v-slot:append @click="debouncedLicenseCheck">
+            <v-fade-transition leave-absolute>
+              <v-progress-circular v-if="loading" size="24" color="info" indeterminate></v-progress-circular>
+              <v-icon v-else left>
+                mdi-search-web
+              </v-icon>
+            </v-fade-transition>
+          </template>
+        </v-text-field>
+        <span class="error--text error lighten-4">{{ errors[0] }}</span>
+      </validation-provider>
+    </validation-observer>
   </v-container>
 </template>
 <script>
