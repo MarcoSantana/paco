@@ -1,14 +1,5 @@
 <template>
   <v-container>
-    <ul>
-      <li><h3>TODO</h3></li>
-      <li>Validate field</li>
-      <li>Add update button</li>
-      <li>Add "Why I am seeing this?" (put this in parent component)</li>
-      <li>Add a tooltip to explain the license search (put this in parent component)</li>
-      <li>Refactor name and reuse it in signup</li>
-      <li>As part of the refactor move it to components directory</li>
-    </ul>
     <v-dialog v-model="loading" max-width="290">
       <v-card color="primary" dark>
         <v-card-text>
@@ -17,8 +8,9 @@
         </v-card-text>
       </v-card>
     </v-dialog>
-    <validation-observer v-slot="{ invalid }">
-      <validation-provider v-slot="{ errors, valid }" rules="numeric|length:7,10">
+
+    <validation-observer>
+      <validation-provider v-slot="{ errors }" rules="numeric|length:7,10">
         <v-text-field v-model="licenseNumber" clearable>
           <template v-slot:append @click="debouncedLicenseCheck">
             <v-fade-transition leave-absolute>
@@ -32,6 +24,14 @@
         <span class="error--text error lighten-4">{{ errors[0] }}</span>
       </validation-provider>
     </validation-observer>
+    <ul>
+      <h3>TODO</h3>
+      <li>Add update button (put this in parent component)</li>
+      <li>Add "Why I am seeing this?" (put this in parent component)</li>
+      <li>Add a tooltip to explain the license search (put this in parent component)</li>
+      <li>Refactor name and reuse it in signup</li>
+      <li>As part of the refactor move it to components directory</li>
+    </ul>
   </v-container>
 </template>
 <script>
@@ -44,6 +44,7 @@ export default {
     licenseNumber: '',
     loading: false,
     licenseData: null,
+    invalidField: null,
   }),
   computed: { ...mapState('academicProfile', ['academicProfile']) },
   watch: {
@@ -63,12 +64,12 @@ export default {
   methods: {
     ...mapMutations('academicProfile', ['updateAcademicProfile']),
     debouncedLicenseCheck: debounce(function bar() {
-      this.licenseCheck(this)
-    }, 1000),
+      if (Number.isNaN(+this.licenseNumber)) return null
+      if (isNil(this.licenseNumber)) return null
+      if (this.licenseNumber.length < 7 || this.licenseNumber.length > 10) return null
+      return this.licenseCheck(this)
+    }, 250),
     licenseCheck: async that => {
-      if (isNil(that.licenseNumber)) return null
-      if (Number.isNaN(that.licenseNumber)) return null
-      if (that.licenseNumber.length < 7 || that.licenseNumber.length > 10) return null
       that.loading = true
       const myResponse = await fetch(
         `https://us-central1-paco-1a08b.cloudfunctions.net/licenseAPI-licenseAPI/${that.licenseNumber}`,
