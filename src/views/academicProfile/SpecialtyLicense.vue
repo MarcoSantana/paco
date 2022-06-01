@@ -20,6 +20,16 @@
               </v-icon>
             </v-fade-transition>
           </template>
+          <template v-slot:prepend>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon color="info" v-bind="attrs" v-on="on">
+                  mdi-information
+                </v-icon>
+              </template>
+              <span>Búsqueda de cédula profesional</span>
+            </v-tooltip>
+          </template>
         </v-text-field>
         <span class="error--text error lighten-4">{{ errors[0] }}</span>
       </validation-provider>
