@@ -90,6 +90,11 @@ export default {
       that.licenseData = await myResponse.json()
       return myResponse
     },
+    updateAcademicProfile: () => {
+      // this.updateAcademicProfile(this.)
+      // Here we verify and updatedb when called from button event
+      return
+    },
   },
 }
 </script>
