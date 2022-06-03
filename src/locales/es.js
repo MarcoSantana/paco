@@ -163,6 +163,7 @@ const translation = {
       type: 'tipo {item}',
     },
     postDegreeLicense: {
+      componentName: 'Cedula profesional de especialista en medicina',
       id: '@:academicProfile.license.id {item}',
       curp: '@:academicProfile.license.curp {item}',
       gender: '@:academicProfile.license.gender {item}',

@@ -34,7 +34,11 @@
               </v-list-item-content>
             </v-list-item>
           </v-list>
-          <specialty-license @license="data => (licenseData = data)"></specialty-license>
+          <specialty-license
+            :updateable="true"
+            name="academicProfile.postDegreeLicense.componentName"
+            @license="data => (licenseData = data)"
+          ></specialty-license>
         </v-card>
       </v-col>
     </v-row>

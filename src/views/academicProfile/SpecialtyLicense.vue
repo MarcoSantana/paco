@@ -1,5 +1,6 @@
 <template>
   <v-container>
+    <h3>{{ $t(`${name}`, {}) }}</h3>
     <v-dialog v-model="loading" max-width="290">
       <v-card color="primary" dark>
         <v-card-text>
@@ -41,20 +42,26 @@
         </v-text-field>
         <span class="error--text error lighten-4">{{ errors[0] }}</span>
       </validation-provider>
+      <v-btn v-if="updateable && licenseData" @click="updateLicense">I am updateable</v-btn>
     </validation-observer>
   </v-container>
 </template>
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import { isNil, debounce } from 'lodash'
 
 export default {
   name: 'SpecialtyLicense',
+  props: {
+    name: { type: String, required: true },
+    updateable: { type: Boolean, default: false },
+  },
   data: () => ({
     help: false,
-    licenseNumber: '',
+    // licenseNumber: '',
     loading: false,
     licenseData: null,
+    licenseNumber: 4273560,
     invalidField: null,
   }),
   computed: { ...mapState('academicProfile', ['academicProfile']) },
@@ -73,14 +80,14 @@ export default {
     },
   },
   methods: {
-    ...mapMutations('academicProfile', ['updateAcademicProfile']),
+    ...mapActions('academicProfile', ['triggerUpdateAcademicProfile']),
     debouncedLicenseCheck: debounce(function bar() {
       if (Number.isNaN(+this.licenseNumber)) return null
       if (isNil(this.licenseNumber)) return null
       if (this.licenseNumber.length < 7 || this.licenseNumber.length > 10) return null
       return this.licenseCheck(this)
     }, 250),
-    licenseCheck: async (that) => {
+    licenseCheck: async that => {
       that.loading = true
       const myResponse = await fetch(
         `https://us-central1-paco-1a08b.cloudfunctions.net/licenseAPI-licenseAPI/${that.licenseNumber}`,
@@ -90,10 +97,18 @@ export default {
       that.licenseData = await myResponse.json()
       return myResponse
     },
-    updateAcademicProfile: () => {
-      // this.updateAcademicProfile(this.)
-      // Here we verify and updatedb when called from button event
-      return
+    updateLicense: async function updateLicense() {
+      if (!this.updateable) {
+        return
+      }
+      if (isNil(this.licenseData)) {
+        return
+      }
+      const data = { ...this.licenseData, name: this.name }
+      // console.log('license data', JSON.stringify(this.licenseData))
+      // console.log('data', JSON.stringify(data))
+      // TODO Fix this awful name, iot does not work with the DB 202206.02-19.17
+      this.triggerUpdateAcademicProfile(data).then(() => console.log('done'))
     },
   },
 }
