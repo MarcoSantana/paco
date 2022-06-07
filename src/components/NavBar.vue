@@ -2,8 +2,12 @@
   <v-app-bar :color="networkOnLine ? 'primary' : 'error'" app dark>
     <v-app-bar-nav-icon @click="$emit('toggleDrawer')"></v-app-bar-nav-icon>
     <img alt="logo-cmmu" class="logo" src="@/assets/img/logo_cmmu.png" />
-    <v-toolbar-title class="site-name d-none d-md-flex">{{ appTitle }}</v-toolbar-title>
-    <v-toolbar-title class="site-name d-md-none">{{ appShortTitle }}</v-toolbar-title>
+    <v-toolbar-title class="site-name d-none d-md-flex">
+      {{ appTitle }}
+    </v-toolbar-title>
+    <v-toolbar-title class="site-name d-md-none">
+      {{ appShortTitle }}
+    </v-toolbar-title>
     <v-spacer />
     <v-toolbar-title v-if="!networkOnLine">
       <small>Fuera de línea</small>
@@ -24,7 +28,9 @@
             <a
               href="http://cmmu.org.mx/web/aviso-de-privacidad/"
               target="_blank"
-            >Aviso de privacidad</a>
+            >
+              Aviso de privacidad
+            </a>
           </v-list-item-title>
         </v-list-item>
         <v-list-item @click="logout">

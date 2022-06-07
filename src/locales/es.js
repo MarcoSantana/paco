@@ -59,6 +59,7 @@ const translation = {
     delete: 'borrar',
     forward: 'adelante',
     mark: 'marcar',
+    markUnread: 'marcar como no leído',
     quickView: 'vista rápida',
     reject: 'rechazar',
     reload: 'recargar',
@@ -72,7 +73,12 @@ const translation = {
     longName: 'descripción',
     name: 'nombre',
     status: 'estado',
-    statusKey: { 1: 'por revisar', 2: 'en revisión', 3: 'rechazado', 4: 'aceptado' },
+    statusKey: {
+      1: 'por revisar',
+      2: 'en revisión',
+      3: 'rechazado',
+      4: 'aceptado',
+    },
     types: {
       college: 'universidad',
       degree: 'título',
@@ -97,7 +103,8 @@ const translation = {
     place: 'lugar de la solicitud',
     postDegree: 'estudios de posgrado',
     postDegreeCertificate: 'constancia de residencia progresiva hospitalaria',
-    postDegreeDiploma: 'diploma institucional en medicina de urgencias o en su caso urgencias pediátricas',
+    postDegreeDiploma:
+      'diploma institucional en medicina de urgencias o en su caso urgencias pediátricas',
     postDegreeLicense: 'cédula profesional de especialista',
     postgraduateUniversitaryDiploma: 'diploma universitario de especialidad',
     previous: 'examen previo',

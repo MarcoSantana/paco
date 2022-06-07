@@ -19,13 +19,20 @@
         @close="closeAddToHomeScreenModalForApple(false)"
       ></apple-add-to-home-screen-modal>
     </v-main>
-    <v-navigation-drawer v-if="user" v-model="drawer" app class="indigo lighten-4">
+    <v-navigation-drawer
+      v-if="user"
+      v-model="drawer"
+      app
+      class="indigo lighten-4"
+    >
       <v-sheet :color="isUserAdmin ? 'orange lighten-4' : ''" class="pa-4">
         <v-avatar class="mb-4" color="grey darken-1" size="64">
           <v-img v-if="user.photoURL" :src="user.photoURL"></v-img>
           <v-img
             v-else
-            :src="`https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${user.displayName}`"
+            :src="
+              `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${user.displayName}`
+            "
           ></v-img>
         </v-avatar>
 
@@ -37,7 +44,12 @@
 
       <v-divider></v-divider>
       <v-list v-if="!isUserAdmin" nav dense>
-        <v-list-item v-for="[icon, text, to] in links" :key="icon" link :to="to">
+        <v-list-item
+          v-for="[icon, text, to] in links"
+          :key="icon"
+          link
+          :to="to"
+        >
           <v-list-item-icon>
             <v-icon>{{ icon }}</v-icon>
           </v-list-item-icon>
@@ -47,7 +59,12 @@
         </v-list-item>
       </v-list>
       <v-list v-if="isUserAdmin">
-        <v-list-item v-for="[icon, text, to] in adminLinks" :key="icon" link :to="to">
+        <v-list-item
+          v-for="[icon, text, to] in adminLinks"
+          :key="icon"
+          link
+          :to="to"
+        >
           <v-list-icon>
             <v-icon>{{ icon }}</v-icon>
           </v-list-icon>
@@ -67,17 +84,23 @@ import Loading from '@/views/Loading'
 import { mapState, mapActions, mapGetters } from 'vuex'
 
 export default {
-  components: { Loading, NavBar, NewContentAvailableToastr, AppleAddToHomeScreenModal },
+  components: {
+    Loading,
+    NavBar,
+    NewContentAvailableToastr,
+    AppleAddToHomeScreenModal,
+  },
   data() {
     return {
       drawer: true,
       links: [
-        // ['mdi-inbox-arrow-down', 'Mensajes'],
         // ['mdi-cloud-upload', 'Cargar documentos'],
         ['mdi-home', 'Inicio', 'home'],
+        ['mdi-inbox-arrow-down', 'Mensajes', 'messages'],
+        ['mdi-account-circle', 'Perfil', 'profile'],
+        ['mdi-cog-outline', 'Configuración', 'settings'],
         ['mdi-folder-account', 'Editar perfil académico', 'academicProfile'],
         ['mdi-account-edit', 'Editar datos personales', 'userEdit'],
-        // ['mdi-alert-octagon', 'Spam'],
       ],
       adminLinks: [
         ['mdi-view-dashboard', 'Centro de control', 'admin/dashboard'],
@@ -87,12 +110,23 @@ export default {
   },
   computed: {
     ...mapGetters('app', ['newContentAvailable', 'loading']),
-    ...mapGetters('authentication', ['isUserLoggedIn', 'isUserAdmin', 'isUserIncomplete']),
-    ...mapState('app', ['showAddToHomeScreenModalForApple', 'refreshingApp', 'loading']),
+    ...mapGetters('authentication', [
+      'isUserLoggedIn',
+      'isUserAdmin',
+      'isUserIncomplete',
+    ]),
+    ...mapState('app', [
+      'showAddToHomeScreenModalForApple',
+      'refreshingApp',
+      'loading',
+    ]),
     ...mapState('authentication', ['user']),
   },
   methods: {
-    ...mapActions('app', ['closeAddToHomeScreenModalForApple', 'serviceWorkerSkipWaiting']),
+    ...mapActions('app', [
+      'closeAddToHomeScreenModalForApple',
+      'serviceWorkerSkipWaiting',
+    ]),
     toggleDrawer() {
       this.drawer = !this.drawer
     },
@@ -110,8 +144,8 @@ body {
   }
 
   #app {
-    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans,
-      Helvetica Neue, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+      Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-size: 16px;
