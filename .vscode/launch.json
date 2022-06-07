@@ -5,6 +5,23 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Launch firefox Developer Edition",
+            "type": "firefox",
+            "request": "launch",
+            "reAttach": true,
+            "firefoxExecutable": "/opt/firefox/firefox",
+            "url": "http://localhost:8080/",
+            "skipFiles": [
+                "${workspaceFolder}/app/node_modules/**"
+            ],
+            "pathMappings": [
+                {
+                    "url": "webpack:///",
+                    "path": "${workspaceFolder}/app/src/components/"
+                }
+            ]
+        },
+        {
             "name": "WSL Chrome",
             "type": "chrome",
             "request": "launch",
