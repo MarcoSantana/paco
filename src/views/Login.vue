@@ -5,11 +5,12 @@
 
     <!-- Offline instruction -->
     <div v-show="!networkOnLine" data-test="offline-instruction">
-      Por favor revise su conexión, el servicio de ingreso no está disponible fuera de línea.
+      Por favor revise su conexión, el servicio de ingreso no está disponible
+      fuera de línea.
     </div>
 
     <!-- Auth UI -->
-    <div class="box">
+    <v-card outlined class="pa-3">
       <validation-observer v-slot="{ invalid }">
         <form @submit.prevent="onSubmit">
           <h1>Ingreso al sistema de administración de documentos</h1>
@@ -48,7 +49,6 @@
               </div>
             </span>
           </validation-provider>
-          <div data-test="login-btn">Foo</div>
           <validation-provider v-slot="{ errors }" rules="required">
             <!-- v-if="networkOnLine && isUserLoggedIn" -->
             <v-btn
@@ -61,16 +61,23 @@
             >
               Ingresar
             </v-btn>
+            <span class="error--text error lighten-4">{{ errors[0] }}</span>
           </validation-provider>
         </form>
       </validation-observer>
-      <div :disabled="invalid" data-test="signup-submit" @click.prevent="showResetMessage = true">
+      <div
+        :disabled="invalid"
+        data-test="signup-submit"
+        @click.prevent="showResetMessage = true"
+      >
         <small>Olvidé mi contraseña</small>
       </div>
       <template>
         <v-dialog v-model="showResetMessage" name="reset-password">
           <v-card>
-            <v-card-title><h2 class="text-center">Recuperar contraseña</h2></v-card-title>
+            <v-card-title>
+              <h2 class="text-center">Recuperar contraseña</h2>
+            </v-card-title>
             <v-card-text>
               <validation-observer>
                 <validation-provider v-slot="{ errors }">
@@ -83,19 +90,28 @@
                     placeholder="A este correo enviaremos instrucciones"
                     data-test="reset-password-email"
                   />
-                  <button class="btn" name="reset-password-submit" data-test="signup-submit" @click="resetPassword">
+                  <button
+                    class="btn"
+                    name="reset-password-submit"
+                    data-test="signup-submit"
+                    @click="resetPassword"
+                  >
                     Cambiar contraseña
                   </button>
+                  <span class="error--text error lighten-4">
+                    {{ errors[0] }}
+                  </span>
                 </validation-provider>
               </validation-observer>
             </v-card-text>
           </v-card>
         </v-dialog>
       </template>
-    </div>
+    </v-card>
     <v-snackbar v-model="sentMailSnack">
       <h3>Correo enviado</h3>
-      Por favor revise su correo electrónico y siga instrucciones para cambiar su contraseña.
+      Por favor revise su correo electrónico y siga instrucciones para cambiar
+      su contraseña.
       <template v-slot:action="{ attrs }">
         <v-btn color="pink" text v-bind="attrs" @click="sentMailSnack = false">
           {{ $t('actions.close') }}
@@ -151,7 +167,9 @@ export default {
       handler(user) {
         if (!isNil(user)) {
           const route = this.isUserAdmin ? '/admin/dashboard' : '/home'
-          const redirectUrl = isNil(this.$route.query.redirectUrl) ? route : this.$route.query.redirectUrl
+          const redirectUrl = isNil(this.$route.query.redirectUrl)
+            ? route
+            : this.$route.query.redirectUrl
           this.$router.push(redirectUrl)
         }
       },
@@ -183,7 +201,10 @@ export default {
       this.loginError = null
       firebase
         .auth()
-        .signInWithEmailAndPassword(this.loginData.email, this.loginData.password)
+        .signInWithEmailAndPassword(
+          this.loginData.email,
+          this.loginData.password
+        )
         .then(userCredential => {
           // Signed in
           const { user } = userCredential
@@ -372,7 +393,8 @@ input[type='submit']:active {
   padding-top: 0.5rem;
   margin-top: 0;
   margin-bottom: 0.8rem;
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande',
+    'Lucida Sans', Arial, sans-serif;
   font-size: 0.8rem;
   color: $light-accent;
 }
