@@ -1,7 +1,12 @@
 <template>
   <v-app-bar :color="networkOnLine ? 'primary' : 'error'" app dark>
-    <v-app-bar-nav-icon @click="$emit('toggleDrawer')"></v-app-bar-nav-icon>
-    <img alt="logo-cmmu" class="logo" src="@/assets/img/logo_cmmu.png" />
+    <v-app-bar-nav-icon
+      v-if="isUserLoggedIn"
+      @click="$emit('toggleDrawer')"
+    ></v-app-bar-nav-icon>
+    <router-link to="home">
+      <img alt="logo-cmmu" class="logo" src="@/assets/img/logo_cmmu.png" />
+    </router-link>
     <v-toolbar-title class="site-name d-none d-md-flex">
       {{ appTitle }}
     </v-toolbar-title>
