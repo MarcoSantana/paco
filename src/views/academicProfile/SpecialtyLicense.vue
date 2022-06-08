@@ -5,15 +5,33 @@
       <v-card color="primary" dark>
         <v-card-text>
           Cargando datos
-          <v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear>
+          <v-progress-linear
+            indeterminate
+            color="white"
+            class="mb-0"
+          ></v-progress-linear>
         </v-card-text>
       </v-card>
     </v-dialog>
     <v-dialog v-model="help" max-width="290">
       <v-card>
-        <v-card-title class="text-h5 primary lighten-2 white--text">¿Qué es este campo?</v-card-title>
+        <v-card-title class="text-h5 primary lighten-2 white--text">
+          ¿Qué es este campo?
+        </v-card-title>
         <v-card-text class="pt-2">
           <p>Aquí debe de capturar su cédula profesional</p>
+          <p>
+            Una vez que haya ingresado un número de cédula profesional válido,
+            nuestro sistema lo buscará automáticamente en el Registro Nacional
+            de Profesionistas
+            <a href="https://cedulaprofesional.sep.gob.mx.legal/">Aquí</a>
+            .
+          </p>
+          <p>Esto puede tomar unos segundos</p>
+          <p>
+            Una vez que le presente sus datos, debe hacer click en el botón de
+            'Guardar'
+          </p>
         </v-card-text>
         <v-divider></v-divider>
         <v-card-actions>
@@ -27,14 +45,25 @@
         <v-text-field v-model="licenseNumber" clearable>
           <template v-slot:append @click="debouncedLicenseCheck">
             <v-fade-transition leave-absolute>
-              <v-progress-circular v-if="loading" size="24" color="info" indeterminate></v-progress-circular>
-              <v-icon v-else left>mdi-search-web</v-icon>
+              <v-progress-circular
+                v-if="loading"
+                size="24"
+                color="info"
+                indeterminate
+              ></v-progress-circular>
             </v-fade-transition>
           </template>
           <template v-slot:prepend>
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
-                <v-icon color="info" v-bind="attrs" v-on="on" @click="help = true">mdi-information</v-icon>
+                <v-icon
+                  color="info"
+                  v-bind="attrs"
+                  v-on="on"
+                  @click="help = true"
+                >
+                  mdi-information
+                </v-icon>
               </template>
               <span>Búsqueda de cédula profesional</span>
             </v-tooltip>
@@ -42,13 +71,23 @@
         </v-text-field>
         <span class="error--text error lighten-4">{{ errors[0] }}</span>
       </validation-provider>
-      <v-btn v-if="updateable && licenseData" @click="updateLicense">I am updateable</v-btn>
+      <!-- TODO size break add icon instead of text -->
+      <v-btn
+        v-if="updateable && licenseData"
+        block
+        color="success"
+        outlined
+        @click="updateLicense"
+      >
+        {{ $t('actions.save') }}
+      </v-btn>
     </validation-observer>
   </v-container>
 </template>
 <script>
 import { mapState, mapActions } from 'vuex'
 import { isNil, debounce } from 'lodash'
+// import { firestore } from 'firebase'
 
 export default {
   name: 'SpecialtyLicense',
@@ -58,13 +97,15 @@ export default {
   },
   data: () => ({
     help: false,
-    // licenseNumber: '',
-    loading: false,
-    licenseData: null,
-    licenseNumber: 4273560,
+    licenseNumber: '',
     invalidField: null,
+    licenseData: null,
+    loading: false,
   }),
-  computed: { ...mapState('academicProfile', ['academicProfile']) },
+  computed: {
+    ...mapState('academicProfile', ['academicProfile']),
+    ...mapState('authentication', ['user']),
+  },
   watch: {
     licenseNumber: function licenseNumber() {
       if (isNil(this.licenseNumber)) {
@@ -84,7 +125,8 @@ export default {
     debouncedLicenseCheck: debounce(function bar() {
       if (Number.isNaN(+this.licenseNumber)) return null
       if (isNil(this.licenseNumber)) return null
-      if (this.licenseNumber.length < 7 || this.licenseNumber.length > 10) return null
+      if (this.licenseNumber.length < 7 || this.licenseNumber.length > 10)
+        return null
       return this.licenseCheck(this)
     }, 250),
     licenseCheck: async that => {
@@ -104,11 +146,16 @@ export default {
       if (isNil(this.licenseData)) {
         return
       }
-      const data = { ...this.licenseData, name: this.name }
-      // console.log('license data', JSON.stringify(this.licenseData))
-      // console.log('data', JSON.stringify(data))
-      // TODO Fix this awful name, iot does not work with the DB 202206.02-19.17
-      this.triggerUpdateAcademicProfile(data).then(() => console.log('done'))
+      const data = { ...this.licenseData }
+      try {
+        this.triggerUpdateAcademicProfile({
+          documentName: 'specialty license',
+          ...data,
+        }).then(result => console.log('done', result))
+      } catch (e) {
+        // TODO handle error
+        console.log('Database update error: ', e)
+      }
     },
   },
 }
