@@ -25,7 +25,7 @@
                   id="login-email"
                   v-model="loginData.email"
                   type="text"
-                  placeholder="E-mail"
+                  placeholder="Debe ser un correo electrónico válido"
                   data-test="login-email"
                 />
               </div>
@@ -65,13 +65,20 @@
           </validation-provider>
         </form>
       </validation-observer>
-      <div
-        :disabled="invalid"
-        data-test="signup-submit"
-        @click.prevent="showResetMessage = true"
-      >
-        <small>Olvidé mi contraseña</small>
-      </div>
+      <v-card-actions>
+        <v-btn
+          depressed
+          flat
+          data-test="signup-submit"
+          @click.prevent="showResetMessage = true"
+        >
+          <small>Olvidé mi contraseña</small>
+        </v-btn>
+        <v-spacer></v-spacer>
+        <v-btn depressed data-test="signup-go" flat to="signup">
+          <small>Crear una cuenta</small>
+        </v-btn>
+      </v-card-actions>
       <template>
         <v-dialog v-model="showResetMessage" name="reset-password">
           <v-card>
