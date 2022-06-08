@@ -1,11 +1,13 @@
-const functions = require('firebase-functions')
-const express = require('express');
-const cors = require('cors');
-const fetch = require('node-fetch')
+const functions = require("firebase-functions");
+const express = require("express");
+const cors = require("cors");
+const fetch = require("node-fetch");
 const app = express();
 
 // Automatically allow cross-origin requests
-app.use(cors({ origin: true, credentials: true }));
+// app.use(cors({origin: true, credentials: true}));
+// allow cross-origin requests
+app.use(cors({credentials: true}));
 
 const responseAPI = async (license) => {
   const query = fetch("https://cedulaprofesional.sep.gob.mx/cedula/buscaCedulaJson.action", {
@@ -19,15 +21,15 @@ const responseAPI = async (license) => {
       "Sec-Fetch-Dest": "empty",
       "Sec-Fetch-Mode": "cors",
       "Sec-Fetch-Site": "same-origin",
-      "Sec-GPC": "1"
+      "Sec-GPC": "1",
     },
     referrer: "https://cedulaprofesional.sep.gob.mx/cedula/presidencia/indexAvanzada.action",
     body: `json=%7B%22maxResult%22%3A%221000%22%2C%22nombre%22%3A%22%22%2C%22paterno%22%3A%22%22%2C%22materno%22%3A%22%22%2C%22idCedula%22%3A%22${license}%22%7D`,
     method: "POST",
-    mode: "cors"
-  })
-  return (await query).json()
-}
+    mode: "cors",
+  });
+  return (await query).json();
+};
 
 const license = ({
   anioreg,
@@ -48,22 +50,22 @@ const license = ({
   gender: sexo,
   id: idCedula,
   institution: desins,
-  lastname2: `${materno}${maternoM ? ' ' + maternoM : ''}`,
-  lastname: `${paterno}${paternoM ? ' ' + paternoM : ''}`,
-  name: `${nombre}${nombreM ? ' ' + nombreM : ''}`,
+  lastname2: `${materno}${maternoM ? " " + maternoM : ""}`,
+  lastname: `${paterno}${paternoM ? " " + paternoM : ""}`,
+  name: `${nombre}${nombreM ? " " + nombreM : ""}`,
   registrationYear: anioreg,
   title: titulo,
   type: tipo,
-})
+});
 
-app.get('/:id', async (req, res) => {
-  const { id } = req.params
+app.get("/:id", async (req, res) => {
+  const {id} = req.params;
   if (!id || isNaN(id)) {
-    return res.status(422).json({ errors: 'malformed id' })
+    return res.status(422).json({errors: "malformed id"});
   }
-  const dan = license((await responseAPI(id)).items[0])
-  res.status(200).send(dan)
-})
+  const dan = license((await responseAPI(id)).items[0]);
+  res.status(200).send(dan);
+});
 // Expose Express API as a single Cloud Function:
 exports.licenseAPI = functions.https.onRequest(app);
 
