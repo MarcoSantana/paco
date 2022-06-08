@@ -3,33 +3,48 @@
     <h3 class="text-h3 pb-3">Perfil académico</h3>
     <v-row>
       <v-col cols="sm-6">
-        <v-card class="pa-3">
-          <v-card-title class="text-h4">Licenciatura</v-card-title>
-          <v-list>
-            <v-list-item v-for="(item, key) in academicProfile.license" :key="key">
-              <v-list-item-content class="px-5 text-capitalize">
-                <v-list-item-title class="text-h5">{{ item | genderize | missingData }}</v-list-item-title>
-                {{ $t(`academicProfile.license.${key}`, {}) }}
+        <v-card outlined class="pa-3">
+          <v-card-title>Licenciatura</v-card-title>
+          <v-list dense>
+            <v-list-item
+              v-for="(item, key) in academicProfile.license"
+              :key="key"
+              two-line
+            >
+              <v-list-item-content class="text-capitalize">
+                <v-list-item-title class="font-weight-bold">
+                  {{ item | genderize | missingData }}
+                </v-list-item-title>
+                <v-list-item-subtitle>
+                  {{ $t(`academicProfile.license.${key}`, {}) }}
+                </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </v-list>
         </v-card>
       </v-col>
       <v-col cols="sm-6">
-        <v-card class="pa-3">
+        <v-card outlined class="pa-3">
           <v-card-title>Especialidad</v-card-title>
-          <v-list v-if="licenseData">
+          <!-- TODO stop using this model use the info from the academicProfile -->
+          <v-list v-if="licenseData" dense>
             <v-list-item v-for="(item, key) in licenseData" :key="key">
-              <v-list-item-content class="px-5 text-capitalize">
-                <v-list-item-title class="text-h5">{{ item | genderize | missingData }}</v-list-item-title>
-                {{ $t(`academicProfile.postDegreeLicense.${key}`, {}) }}
+              <v-list-item-content class="text-capitalize">
+                <v-list-item-title class="font-weight-bold">
+                  {{ item | genderize | missingData }}
+                </v-list-item-title>
+                <v-list-item-subtitle>
+                  {{ $t(`academicProfile.postDegreeLicense.${key}`, {}) }}
+                </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </v-list>
           <v-list v-else>
             <v-list-item v-for="(item, key) in licenseData" :key="key">
               <v-list-item-content class="px-5 text-capitalize">
-                <v-list-item-title class="text-h5">{{ item | genderize | missingData }}</v-list-item-title>
+                <v-list-item-title class="text-h5">
+                  {{ item | genderize | missingData }}
+                </v-list-item-title>
                 {{ $t(`academicProfile.${key}`, {}) }}
               </v-list-item-content>
             </v-list-item>

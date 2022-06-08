@@ -465,7 +465,7 @@ export default {
   methods: {
     ...mapMutations('authentication', ['setUser']),
     ...mapMutations('app', ['setLoading', 'unsetLoading']),
-    debouncedLicenseCheck: _.debounce(function() {
+    debouncedLicenseCheck: _.debounce(function debounced() {
       this.licenseCheck(this)
     }, 1000),
     licenseCheck: async that => {
@@ -481,6 +481,7 @@ export default {
           .then(json => {
             that.license = json
             // TODO format UI to proer case
+            // TODO change text encoding
             that.registrationData.name = json.name
             that.registrationData.lastname1 = json.lastname
             that.registrationData.lastname2 = json.lastname2
@@ -553,12 +554,6 @@ export default {
                 .collection('profiles')
                 .doc(user.uid)
                 .set({ license: this.license })
-            })
-            .then(() => {
-              firestore()
-                .collection('profiles')
-                .doc(user.uid)
-                .set(...this.license)
             })
             .then(() => {
               this.$router.push('/checkLogin')
