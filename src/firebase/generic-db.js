@@ -91,7 +91,13 @@ export default class GenericDB {
    */
   // WIP 🌠🚀: 202108.01-08.48
 
-  async readWithPagination(constraints = null, startAt = null, endAt = null, limit = null, orderBy = null) {
+  async readWithPagination(
+    constraints = null,
+    startAt = null,
+    endAt = null,
+    limit = null,
+    orderBy = null
+  ) {
     const collectionRef = (await firestore()).collection(this.collectionPath)
     let query = collectionRef
     if (startAt) {
@@ -166,6 +172,8 @@ export default class GenericDB {
    */
   async update(data) {
     const { id } = data
+    if (isNil(id)) throw new Error('id is required')
+
     const clonedData = cloneDeep(data)
     delete clonedData.id
 
