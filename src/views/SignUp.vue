@@ -18,20 +18,40 @@ Stardate: 202005.17 13:56
       opacity="0.8"
       color="secondary lighten-5"
     >
-      <v-progress-circular color="secondary" rotate="180" indeterminate size="200" width="10">
-        <v-progress-circular size="160" color="editable" width="10" indeterminate rotate="90">
-          <v-progress-circular color="primary" rotate="270" indeterminate size="128" width="10">
-            <div class="text-capitalize font-weight-medium">{{ $t('messages.processing') }}</div>
+      <v-progress-circular
+        color="secondary"
+        rotate="180"
+        indeterminate
+        size="200"
+        width="10"
+      >
+        <v-progress-circular
+          size="160"
+          color="editable"
+          width="10"
+          indeterminate
+          rotate="90"
+        >
+          <v-progress-circular
+            color="primary"
+            rotate="270"
+            indeterminate
+            size="128"
+            width="10"
+          >
+            <div class="text-capitalize font-weight-medium">
+              {{ $t('messages.processing') }}
+            </div>
           </v-progress-circular>
         </v-progress-circular>
       </v-progress-circular>
     </v-overlay>
 
     <!-- Offline instruction -->
-    <div
-      v-show="!networkOnLine"
-      data-test="offline-instruction"
-    >Por favor revise su conexión, la característica de ingreso no está disponible fuera de línea.</div>
+    <div v-show="!networkOnLine" data-test="offline-instruction">
+      Por favor revise su conexión, la característica de ingreso no está
+      disponible fuera de línea.
+    </div>
 
     <p v-if="loginError">{{ loginError }}</p>
     <p v-if="apiError">{{ apiError }}</p>
@@ -47,7 +67,10 @@ Stardate: 202005.17 13:56
           <form @submit.prevent="onSubmit">
             <v-card-title class="text-h4">Registrarse</v-card-title>
             <v-card-text class="pa-3 my-2">
-              <validation-provider v-slot="{ errors, valid }" rules="numeric|length:7,10|required">
+              <validation-provider
+                v-slot="{ errors, valid }"
+                rules="numeric|length:7,10|required"
+              >
                 {{ (validLicense = valid) }}
                 <span
                   id="registration-license-span"
@@ -69,12 +92,17 @@ Stardate: 202005.17 13:56
                     type="text"
                     @keyup="debouncedLicenseCheck(licenseCheck)"
                   />
-                  <span class="error--text error lighten-4">{{ errors[0] }}</span>
+                  <span class="error--text error lighten-4">
+                    {{ errors[0] }}
+                  </span>
                 </span>
               </validation-provider>
             </v-card-text>
             <!-- license -->
-            <validation-provider v-slot="{ errors }" rules="required|length:3,30">
+            <validation-provider
+              v-slot="{ errors }"
+              rules="required|length:3,30"
+            >
               <span name="registration-name-span" :class="{ error: errors[0] }">
                 <v-text-field
                   id="registration-name"
@@ -95,8 +123,14 @@ Stardate: 202005.17 13:56
               </span>
             </validation-provider>
             <!-- name -->
-            <validation-provider v-slot="{ errors }" rules="required|length:3,30">
-              <span name="registration-lastname-1-span" :class="{ error: errors[0] }">
+            <validation-provider
+              v-slot="{ errors }"
+              rules="required|length:3,30"
+            >
+              <span
+                name="registration-lastname-1-span"
+                :class="{ error: errors[0] }"
+              >
                 <v-text-field
                   id="registration-lastname-1"
                   v-model="registrationData.lastname1"
@@ -117,7 +151,10 @@ Stardate: 202005.17 13:56
             </validation-provider>
             <!-- last-name-1 -->
             <validation-provider v-slot="{ errors }" rules="length:2,30">
-              <span name="regsitration-lastname-2-span" :class="{ error: errors[0] }">
+              <span
+                name="regsitration-lastname-2-span"
+                :class="{ error: errors[0] }"
+              >
                 <v-text-field
                   id="registration-lastname-2"
                   v-model="registrationData.lastname2"
@@ -137,7 +174,11 @@ Stardate: 202005.17 13:56
             <!-- lastname-2 -->
 
             <validation-provider v-slot="{ errors }" rules="required">
-              <span v-if="genders" name="registration-gender-span" :class="{ error: errors[0] }">
+              <span
+                v-if="genders"
+                name="registration-gender-span"
+                :class="{ error: errors[0] }"
+              >
                 <v-select
                   v-model="registrationData.gender"
                   autocomplete="off"
@@ -150,7 +191,9 @@ Stardate: 202005.17 13:56
                       : 'mdi-gender-male-female'
                   "
                 >
-                  <template v-slot:selection="{ item }">{{ item.text }}</template>
+                  <template v-slot:selection="{ item }">
+                    {{ item.text }}
+                  </template>
                 </v-select>
                 <span class="error--text error lighten-4">{{ errors[0] }}</span>
               </span>
@@ -161,7 +204,10 @@ Stardate: 202005.17 13:56
               rules="email|required"
               name="register-email-valitator"
             >
-              <span name="registration-email-span" :class="{ error: errors[0] }">
+              <span
+                name="registration-email-span"
+                :class="{ error: errors[0] }"
+              >
                 <v-text-field
                   id="registration-email"
                   v-model="registrationData.email"
@@ -182,7 +228,10 @@ Stardate: 202005.17 13:56
               v-slot="{ errors }"
               rules="required|confirmed:register-email-valitator"
             >
-              <span name="registration-email-confirmation-span" :class="{ error: errors[0] }">
+              <span
+                name="registration-email-confirmation-span"
+                :class="{ error: errors[0] }"
+              >
                 <v-text-field
                   id="registration-email-confirmation"
                   v-model="registrationData.emailConfirmation"
@@ -205,7 +254,10 @@ Stardate: 202005.17 13:56
               rules="cellphone|required"
               name="cellphone-validator"
             >
-              <span name="registration-cellphone-span" :class="{ error: errors[0] }">
+              <span
+                name="registration-cellphone-span"
+                :class="{ error: errors[0] }"
+              >
                 <v-text-field
                   id="registration-cellphone"
                   v-model="registrationData.cellphone"
@@ -226,7 +278,10 @@ Stardate: 202005.17 13:56
               rules="required|length:8,16|strong_password"
               name="password-validator"
             >
-              <span name="registration-password-span" :class="{ error: errors[0] }">
+              <span
+                name="registration-password-span"
+                :class="{ error: errors[0] }"
+              >
                 <v-text-field
                   id="registration-password"
                   v-model="registrationData.password"
@@ -246,8 +301,14 @@ Stardate: 202005.17 13:56
             </validation-provider>
             <!-- password -->
 
-            <validation-provider v-slot="{ errors }" rules="confirmed:password-validator|required">
-              <span name="registration-password-span" :class="{ error: errors[0] }">
+            <validation-provider
+              v-slot="{ errors }"
+              rules="confirmed:password-validator|required"
+            >
+              <span
+                name="registration-password-span"
+                :class="{ error: errors[0] }"
+              >
                 <v-text-field
                   id="registration-password-confirmation"
                   v-model="registrationData.passwordConfirmation"
@@ -274,7 +335,9 @@ Stardate: 202005.17 13:56
               name="signup_submit"
               :disabled="invalid"
               data-test="signup-submit"
-            >Registrarse</v-btn>
+            >
+              Registrarse
+            </v-btn>
           </form>
         </validation-observer>
       </v-card>
@@ -297,11 +360,11 @@ export default {
   name: 'Signup',
   filters: {
     phone,
-    zeroPad: (value) => {
+    zeroPad: value => {
       return value.toString().padStart(8, '0')
     },
     // Returns the string for each gender based on the REST API
-    genderize: (value) => {
+    genderize: value => {
       let gender = null
       if (!isNil(value)) {
         if (value.toString() === '1') {
@@ -378,7 +441,9 @@ export default {
       // if (!this.errors.license) {
       //   this.errors.license = 'El numero de cédula profesional es obligatorio'
       // }
-      const isEmpty = Object.values(this.errors).some((x) => x !== null && x !== '')
+      const isEmpty = Object.values(this.errors).some(
+        x => x !== null && x !== ''
+      )
       return isEmpty
     },
   },
@@ -387,7 +452,9 @@ export default {
       handler(user) {
         console.log('user in watch', user)
         if (!isNil(user) && !isNil(user.id) && !isNil(user.phoneNumber)) {
-          const redirectUrl = isNil(this.$route.query.redirectUrl) ? '/documents' : this.$route.query.redirectUrl
+          const redirectUrl = isNil(this.$route.query.redirectUrl)
+            ? '/documents'
+            : this.$route.query.redirectUrl
           this.$router.push(redirectUrl)
         }
       },
@@ -398,17 +465,20 @@ export default {
   methods: {
     ...mapMutations('authentication', ['setUser']),
     ...mapMutations('app', ['setLoading', 'unsetLoading']),
-    debouncedLicenseCheck: _.debounce(function () {
+    debouncedLicenseCheck: _.debounce(function() {
       this.licenseCheck(this)
     }, 1000),
-    licenseCheck: async (that) => {
+    licenseCheck: async that => {
       const data = that.registrationData
       if (!that.validLicense) return
       if (data.license.length >= 7 && data.license.length <= 8) {
         that.setLoading()
-        fetch(`https://us-central1-paco-1a08b.cloudfunctions.net/licenseAPI-licenseAPI/${data.license}`, {})
-          .then((response) => response.json())
-          .then((json) => {
+        fetch(
+          `https://us-central1-paco-1a08b.cloudfunctions.net/licenseAPI-licenseAPI/${data.license}`,
+          {}
+        )
+          .then(response => response.json())
+          .then(json => {
             that.license = json
             // TODO format UI to proer case
             that.registrationData.name = json.name
@@ -479,7 +549,10 @@ export default {
                 .set({ ...this.license })
             })
             .then(() => {
-              firestore().collection('profiles').doc(user.uid).set({ license: this.license })
+              firestore()
+                .collection('profiles')
+                .doc(user.uid)
+                .set({ license: this.license })
             })
             .then(() => {
               firestore()
@@ -490,7 +563,7 @@ export default {
             .then(() => {
               this.$router.push('/checkLogin')
             })
-            .catch((error) => {
+            .catch(error => {
               // An error occurred
               console.error('error in example from docs', error)
               // ...
@@ -522,18 +595,18 @@ export default {
             //     .doc(user.uid)
             //     .update({ gender: data.gender, license: data.license })
             // })
-            .catch((error) => {
+            .catch(error => {
               this.errors.push(error)
             })
         })
-        .catch((error) => {
+        .catch(error => {
           // this.errors.push(error)
           this.loginError = error
         })
         .finally(() => {
           this.unsetLoading()
         })
-        .catch((error) => {
+        .catch(error => {
           console.log('Error creating new account', error)
         })
     },
