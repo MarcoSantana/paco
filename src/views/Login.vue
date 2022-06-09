@@ -11,6 +11,9 @@
 
     <!-- Auth UI -->
     <v-card outlined class="pa-3">
+      <v-btn fab dark small absolute fixed right color="primary" to="home">
+        <v-icon>mdi-home</v-icon>
+      </v-btn>
       <validation-observer v-slot="{ invalid }">
         <form @submit.prevent="onSubmit">
           <h1>Ingreso al sistema de administración de documentos</h1>
@@ -65,7 +68,7 @@
           </validation-provider>
         </form>
       </validation-observer>
-      <v-card-actions>
+      <v-card-actions class="my-3">
         <v-btn
           depressed
           flat
