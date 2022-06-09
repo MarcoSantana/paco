@@ -62,6 +62,9 @@ Stardate: 202005.17 13:56
       class="signup-form-container"
       data-test="signup-form-container"
     >
+      <v-btn fab dark small absolute fixed right color="primary" to="home">
+        <v-icon>mdi-home</v-icon>
+      </v-btn>
       <v-card class="pa-2 ma-3">
         <validation-observer v-slot="{ invalid }">
           <form @submit.prevent="onSubmit">
@@ -71,7 +74,7 @@ Stardate: 202005.17 13:56
                 v-slot="{ errors, valid }"
                 rules="numeric|length:7,10|required"
               >
-                {{ (validLicense = valid) }}
+                {{ setValidLicense(valid) }}
                 <span
                   id="registration-license-span"
                   :class="{ error: errors[0] }"
@@ -607,6 +610,9 @@ export default {
     },
     onSubmit() {
       this.createAccount()
+    },
+    setValidLicense(valid) {
+      this.validLicense = valid
     },
   },
 }
