@@ -1,6 +1,7 @@
 <template>
   <v-container>
     <h3 class="text-h3 pb-3">Perfil académico</h3>
+    <v-row>AcademicProfile: {{ academicProfile }}</v-row>
     <v-row>
       <v-col cols="sm-6">
         <v-card outlined class="pa-3">
@@ -60,7 +61,7 @@
   </v-container>
 </template>
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import { isNil } from 'lodash'
 import SpecialtyLicense from '@/views/academicProfile/SpecialtyLicense'
 
@@ -94,6 +95,13 @@ export default {
     ...mapState('authentication', ['user']),
     ...mapState('academicProfile', ['academicProfile']),
   },
-  methods: {},
+  mounted() {
+    if (isNil(this.academicProfile)) {
+      this.getAcademicProfile()
+    }
+  },
+  methods: {
+    ...mapActions('academicProfile', ['getAcademicProfile']),
+  },
 }
 </script>

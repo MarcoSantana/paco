@@ -12,14 +12,16 @@ export default {
   login: async ({ commit, dispatch }, firebaseAuthUser) => {
     const userFromFirebase = await new UsersDB().read(firebaseAuthUser.uid)
 
-    const user = isNil(userFromFirebase) ? await createNewUserFromFirebaseAuthUser(firebaseAuthUser) : userFromFirebase
+    const user = isNil(userFromFirebase)
+      ? await createNewUserFromFirebaseAuthUser(firebaseAuthUser)
+      : userFromFirebase
 
     commit('setUser', user)
 
-    dispatch('academicProfile/getAcademicProfile', null, { root: true })
     await dispatch('setClaims', firebaseAuthUser)
 
-    // Actions should not be async move this to the actual mutation
+    // All this actions depend on in the rootState so the must be the last
+    dispatch('academicProfile/getAcademicProfile', null, { root: true })
     dispatch('products/getUserProducts', null, { root: true })
     dispatch('documents/getUserDocuments', null, { root: true })
   },

@@ -149,9 +149,11 @@ export default {
       const data = { ...this.licenseData }
       try {
         this.triggerUpdateAcademicProfile({
-          documentName: 'specialty license',
+          documentName: 'specialtyLicense',
           ...data,
-        }).then(result => console.log('done', result))
+        }).then(() => {
+          this.licenseNumber = ''
+        })
       } catch (e) {
         // TODO handle error
         console.log('Database update error: ', e)
