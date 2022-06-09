@@ -29,7 +29,6 @@ export default {
         .then(() => commit('updateAcademicProfile', data))
         .then(() => {
           // TODO move this to a separated databse class user-profile-db
-          debugger
           firestore()
             .collection('users')
             .doc(rootState.authentication.user.id)
