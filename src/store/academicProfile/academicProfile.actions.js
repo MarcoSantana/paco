@@ -1,39 +1,28 @@
 import AcademicProfileDB from '@/firebase/academicProfile-db'
 // import { firestore } from 'firebase/app'
-import { isNil } from 'lodash'
+import { isNil, unset } from 'lodash'
 
 export default {
   /**
    * Fetch academicProfile of current loggedin user
    */
-  // getAcademicProfile: async ({ rootState, commit }) => {
-  //   console.log('getAcademicProfile')
-  //   console.log('rootState.user.id', rootState.user.id)
-  //   const academicProfileDb = new AcademicProfileDB(
-  //     rootState.authentication.user.id
-  //   )
-  //   console.log('academicProfileDb', academicProfileDb)
-  //   const academicProfile = await academicProfileDb.read(
-  //     null,
-  //     rootState.authentication.user.id
-  //   )
-  //   console.table('academicProfile', academicProfile)
-  //   commit('setAcademicProfile', academicProfile)
-  // },
 
   getAcademicProfile: async ({ rootState, commit }) => {
-    console.log('getAcademicProfile')
-    console.log('rootState', rootState)
-    console.log(
-      'rootState.authentication.user.id',
-      rootState.authentication.user.id
-    )
-
     const academicProfileDb = new AcademicProfileDB(
       rootState.authentication.user.id
     )
-    let academicProfile = await academicProfileDb.readAll()
-    academicProfile = Object.assign({}, ...academicProfile)
+    const academicProfile = await academicProfileDb
+      .readAll()
+      .then(arr =>
+        arr.map(doc => {
+          const temp = {
+            [doc.id]: { ...doc },
+          }
+          unset(temp, `${doc.id}.id`)
+          return temp
+        })
+      )
+      .then(arr => Object.assign({}, ...arr))
 
     commit('setAcademicProfile', academicProfile)
   },
@@ -47,7 +36,7 @@ export default {
         rootState.authentication.user.id
       )
       await academicProfileDb
-        .update(data)
+        .create(data, data.documentName)
         .then(() => commit('updateAcademicProfile', data))
         // .then(() => {
         //   // TODO move this to a separated databse class user-profile-db

@@ -48,7 +48,7 @@ const license = ({
 } = {}) => ({
   curp,
   gender: sexo,
-  id: idCedula,
+  licenseNumber: idCedula,
   institution: desins,
   lastname2: `${materno}${maternoM ? " " + maternoM : ""}`,
   lastname: `${paterno}${paternoM ? " " + paternoM : ""}`,
