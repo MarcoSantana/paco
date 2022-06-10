@@ -64,6 +64,7 @@ const translation = {
     reject: 'rechazar',
     reload: 'recargar',
     save: 'guardar',
+    search: 'buscar',
     send: 'enviar',
   },
   document: {
@@ -170,7 +171,7 @@ const translation = {
       title: 'título {item}',
       type: 'tipo {item}',
     },
-    postDegreeLicense: {
+    specialtyLicense: {
       componentName: 'Cedula profesional de especialista en medicina',
       curp: '@:academicProfile.license.curp {item}',
       gender: '@:academicProfile.license.gender {item}',

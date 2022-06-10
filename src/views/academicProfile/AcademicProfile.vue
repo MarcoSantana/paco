@@ -1,7 +1,6 @@
 <template>
   <v-container>
     <h3 class="text-h3 pb-3">Perfil académico</h3>
-    <v-row>AcademicProfile: {{ academicProfile }}</v-row>
     <v-row>
       <v-col cols="sm-6">
         <v-card outlined class="pa-3">
@@ -28,40 +27,35 @@
         <v-card outlined class="pa-3">
           <v-card-title>Especialidad</v-card-title>
           <!-- TODO stop using this model use the info from the academicProfile -->
-          <v-list v-if="licenseData" dense>
-            <v-list-item v-for="(item, key) in licenseData" :key="key">
+          <v-list v-if="academicProfile.specialtyLicense" dense>
+            <v-list-item
+              v-for="(item, key) in academicProfile.specialtyLicense"
+              :key="key"
+            >
               <v-list-item-content class="text-capitalize">
                 <v-list-item-title class="font-weight-bold">
                   {{ item | genderize | missingData }}
                 </v-list-item-title>
                 <v-list-item-subtitle>
-                  {{ $t(`academicProfile.postDegreeLicense.${key}`, {}) }}
+                  {{ $t(`academicProfile.specialtyLicense.${key}`, {}) }}
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </v-list>
-          <v-list v-else>
-            <v-list-item v-for="(item, key) in licenseData" :key="key">
-              <v-list-item-content class="px-5 text-capitalize">
-                <v-list-item-title class="text-h5">
-                  {{ item | genderize | missingData }}
-                </v-list-item-title>
-                {{ $t(`academicProfile.${key}`, {}) }}
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-          <specialty-license
-            :updateable="true"
-            name="academicProfile.postDegreeLicense.componentName"
-            @license="data => (licenseData = data)"
-          ></specialty-license>
+          <v-card-actions>
+            <specialty-license
+              :updateable="true"
+              name="academicProfile.specialtyLicense.componentName"
+              @license="updateSpecialtyLicense"
+            ></specialty-license>
+          </v-card-actions>
         </v-card>
       </v-col>
     </v-row>
   </v-container>
 </template>
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapMutations } from 'vuex'
 import { isNil } from 'lodash'
 import SpecialtyLicense from '@/views/academicProfile/SpecialtyLicense'
 
@@ -86,15 +80,13 @@ export default {
     },
   },
   data() {
-    return {
-      licenseData: null,
-      foo: 0,
-    }
+    return {}
   },
   computed: {
     ...mapState('authentication', ['user']),
     ...mapState('academicProfile', ['academicProfile']),
   },
+  watch: {},
   mounted() {
     if (isNil(this.academicProfile)) {
       this.getAcademicProfile()
@@ -102,6 +94,10 @@ export default {
   },
   methods: {
     ...mapActions('academicProfile', ['getAcademicProfile']),
+    ...mapMutations('academicProfile', ['updateAcademicProfile']),
+    updateSpecialtyLicense(license) {
+      this.updateAcademicProfile({ specialtyLicense: { ...license } })
+    },
   },
 }
 </script>

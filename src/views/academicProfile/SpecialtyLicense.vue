@@ -1,6 +1,8 @@
 <template>
   <v-container>
-    <h3>{{ $t(`${name}`, {}) }}</h3>
+    <h3 class="text-capitalize">
+      {{ $t('actions.search') }} {{ $t(`${name}`, {}) }}
+    </h3>
     <v-dialog v-model="loading" max-width="290">
       <v-card color="primary" dark>
         <v-card-text>
@@ -42,7 +44,12 @@
     </v-dialog>
     <validation-observer>
       <validation-provider v-slot="{ errors }" rules="numeric|length:7,10">
-        <v-text-field v-model="licenseNumber" clearable>
+        <v-text-field
+          v-model="licenseNumber"
+          placeholder=" Medicina de Urgencias Médico Quirúrgicas"
+          hint="Es un numero de 7 a 10 digitos"
+          clearable
+        >
           <template v-slot:append @click="debouncedLicenseCheck">
             <v-fade-transition leave-absolute>
               <v-progress-circular

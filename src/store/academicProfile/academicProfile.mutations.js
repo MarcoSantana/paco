@@ -15,6 +15,6 @@ export default {
    * Updates the academic profile in the databse and in the local state
    * */
   updateAcademicProfile: async (state, data) => {
-    state = { ...state, ...data }
+    state.academicProfile = { ...state.academicProfile, ...data }
   },
 }

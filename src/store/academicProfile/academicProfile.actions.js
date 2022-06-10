@@ -19,6 +19,10 @@ export default {
             [doc.id]: { ...doc },
           }
           unset(temp, `${doc.id}.id`)
+          unset(temp, `${doc.id}.documentName`)
+          unset(temp, `${doc.id}.createTimestamp`)
+          unset(temp, `${doc.id}.createTimestamp`)
+          unset(temp, `${doc.id}.updateTimestamp`)
           return temp
         })
       )
