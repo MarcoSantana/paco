@@ -106,6 +106,7 @@
           ></upload-document>
           <v-btn
             v-if="n + 1 < steps.length + 1"
+            class="mt-3"
             :disabled="!disableNext"
             color="primary"
             @click="
