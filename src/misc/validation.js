@@ -11,7 +11,13 @@ Every error message must begin with 'Este campo es obligatorio / Este campo debe
 */
 
 import { extend } from 'vee-validate'
-import { required, email, numeric, confirmed } from 'vee-validate/dist/rules'
+import {
+  required,
+  email,
+  numeric,
+  confirmed,
+  size,
+} from 'vee-validate/dist/rules'
 
 extend('email', {
   ...email,
@@ -44,10 +50,19 @@ extend('length', {
   },
 })
 
+extend('size', {
+  params: ['size'],
+  ...size,
+  message:
+    'El archivo no tiene el tamaño dentro del límite permitido ({size} MB)',
+})
+
 extend('strong_password', {
   validate(value) {
     const string = value.toString()
-    const strongRegex = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})')
+    const strongRegex = new RegExp(
+      '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})'
+    )
     if (strongRegex.test(string)) {
       return true
     }

@@ -96,9 +96,10 @@ export default {
       links: [
         // ['mdi-cloud-upload', 'Cargar documentos'],
         ['mdi-home', 'Inicio', 'home'],
-        ['mdi-inbox-arrow-down', 'Mensajes', 'messages'],
-        ['mdi-account-circle', 'Perfil', 'profile'],
-        ['mdi-cog-outline', 'Configuración', 'settings'],
+        // ['mdi-inbox-arrow-down', 'Mensajes', 'messages'],
+        // ['mdi-account-circle', 'Perfil', 'profile'],
+        // ['mdi-cog-outline', 'Configuración', 'settings'],
+        ['mdi-account-question', 'Solicitar examen', 'request'],
         ['mdi-folder-account', 'Editar perfil académico', 'academicProfile'],
         ['mdi-account-edit', 'Editar datos personales', 'userEdit'],
       ],

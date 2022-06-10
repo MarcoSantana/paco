@@ -1,14 +1,21 @@
 <template>
   <v-card class="mx-auto" max-width="500">
-    <v-alert v-if="documentCreationMessage.message" text :type="documentCreationMessage.type">{{
-      documentCreationMessage.message
-    }}</v-alert>
-    <v-card-text> </v-card-text>
+    <v-alert
+      v-if="documentCreationMessage.message"
+      text
+      :type="documentCreationMessage.type"
+    >
+      {{ documentCreationMessage.message }}
+    </v-alert>
     <validation-observer v-slot="{ invalid }">
       <v-card-text class="ma-5">
         <div v-for="field in document.fields" :key="field.name" class="pr-5">
           <keep-alive>
-            <validation-provider v-slot="{ errors }" :name="field.name" :rules="field.rules">
+            <validation-provider
+              v-slot="{ errors }"
+              :name="field.name"
+              :rules="field.rules"
+            >
               <span :class="{ error: errors[0] }">
                 <component
                   :is="field.type"
@@ -37,6 +44,7 @@
         <keep-alive v-for="item in filesCounter" :key="`input-${item - 1}`">
           <validation-provider
             v-slot="{ errors }"
+            inmediate
             :name="`file-${document.name}-${item - 1}`"
             rules="required|size:2000"
           >
@@ -65,12 +73,15 @@
                 slot="append"
                 color="red"
                 @click="
-                  docURLs.splice(item - 1, 1)((inputsArray[item - 1] = false))(
-                    filesCounter - 1 < 1 ? (filesCounter = 1) : (filesCounter -= 1)
+                  delete docURLs[item - 1]((inputsArray[item - 1] = false))(
+                    filesCounter - 1 < 1
+                      ? (filesCounter = 1)
+                      : (filesCounter -= 1)
                   )
                 "
-                >mdi-minus</v-icon
               >
+                mdi-minus
+              </v-icon>
             </v-file-input>
           </validation-provider>
         </keep-alive>
@@ -127,29 +138,32 @@ export default {
     scope: { type: String, required: false },
   },
   data: () => ({
+    docURLs: [],
     email: null,
-    lastName: null,
-    firstName: null,
     error: {},
     fieldModel: [],
     files: [],
-    docURLs: [],
     filesCounter: 1,
+    firstName: null,
+    foo: null,
     inputsArray: [true],
+    lastName: null,
   }),
 
   asyncComputed: {
-    files() {
-      return !isNil(this.showFiles)
-        ? Object.values(this.showFiles).forEach(async url => {
-            await fetch(url)
-            // const res = await fetch(url)
-            // if (res.status === 403) return null
-            // return res
-          })
-        : null
-      // TODO: manage 403 error in fetch
-    },
+    // TODO I commented this out because it was causing a bug
+    // this methiod is called to load preexisting files
+    // files() {
+    //   return !isNil(this.showFiles)
+    //     ? Object.values(this.showFiles).forEach(async url => {
+    //         await fetch(url)
+    //         // const res = await fetch(url)
+    //         // if (res.status === 403) return null
+    //         // return res
+    //       })
+    //     : null
+    //   // TODO: manage 403 error in fetch
+    // },
   },
   computed: {
     ...mapState('documents', [
@@ -166,10 +180,14 @@ export default {
   methods: {
     // TODO useme
     ...mapActions('documents', ['triggerAddDocumentAction']),
-    ...mapMutations('documents', ['setDocumentNameToCreate', 'setDocumentCreationMessage']),
+    ...mapMutations('documents', [
+      'setDocumentNameToCreate',
+      'setDocumentCreationMessage',
+    ]),
     ...mapActions('documents', ['createUserDocument']),
     ...mapActions('events', ['updateUserEvent']),
     getURL(file) {
+      console.log('getURL', file)
       if (isNil(file) || typeof file !== 'object') return null
       return URL.createObjectURL(file)
     },
@@ -183,8 +201,14 @@ export default {
     },
     async validate() {
       if (!this.valid && this.invalid) return null
-      this.setDocumentCreationMessage({ type: 'info', message: 'Validando documento' })
-      this.setDocumentCreationMessage({ type: 'warning', message: 'Creando documento' })
+      this.setDocumentCreationMessage({
+        type: 'info',
+        message: 'Validando documento',
+      })
+      this.setDocumentCreationMessage({
+        type: 'warning',
+        message: 'Creando documento',
+      })
       const createdDocument = await this.createLocalDocument({
         name: this.document.name,
         ...this.fieldModel,

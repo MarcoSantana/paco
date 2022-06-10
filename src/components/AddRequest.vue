@@ -7,9 +7,12 @@
     </h2>
     <h2>
       <div v-if="currentRequest" class="error">
-        Usted ya ha realizado esta solicitud. <br />
-        Si desea ver los archivos de este documento, <br />
-        por favor diríjase a la sección de <router-link to="documents">"Mis Documentos"</router-link>
+        Usted ya ha realizado esta solicitud.
+        <br />
+        Si desea ver los archivos de este documento,
+        <br />
+        por favor diríjase a la sección de
+        <router-link to="documents">"Mis Documentos"</router-link>
       </div>
     </h2>
     <v-expansion-panels>
@@ -22,33 +25,54 @@
         </v-expansion-panel-header>
         <v-expansion-panel-content>
           <ol>
-            <li>Ser médico cirujano debidamente autorizado para ejercer la medicina en México.</li>
+            <li>
+              Ser médico cirujano debidamente autorizado para ejercer la
+              medicina en México.
+            </li>
 
-            <li>Copia del título y cédula profesional de la licenciatura en medicina.</li>
             <li>
-              Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional
-              para la Formación de Recursos Humanos para la Salud (CIFRHS); Copia de la constancia de haber efectuado y
-              aprobado el Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión
-              Interinstitucional para la Formación de Recursos Humanos para la Salud (CIFRHS);
+              Copia del título y cédula profesional de la licenciatura en
+              medicina.
             </li>
             <li>
-              En el caso de Urgencias Pediátricas deberá entregar además el diploma institucional y diploma de la
-              institución educativa (universitaria) que lo avala en Pediatría.
+              Examen Nacional de Aspirantes a Residencias Médicas (ENARM),
+              realizado por la Comisión Interinstitucional para la Formación de
+              Recursos Humanos para la Salud (CIFRHS); Copia de la constancia de
+              haber efectuado y aprobado el Examen Nacional de Aspirantes a
+              Residencias Médicas (ENARM), realizado por la Comisión
+              Interinstitucional para la Formación de Recursos Humanos para la
+              Salud (CIFRHS);
             </li>
             <li>
-              En el caso de Urgencias Pediátricas, constancia de haber terminado satisfactoriamente una residencia
-              progresiva hospitalaria de por lo menos 2 años.
+              En el caso de Urgencias Pediátricas deberá entregar además el
+              diploma institucional y diploma de la institución educativa
+              (universitaria) que lo avala en Pediatría.
             </li>
-            <li>Copia del diploma institucional en Medicina de Urgencias o en su caso Urgencias Pediatricas.</li>
-            <li>Copia del diploma de la institución educativa (Universitaria) que lo avala.</li>
             <li>
-              Tres fotografías oval tamaño diploma (5x7cm) blanco y negro, con fondo blanco, vestimenta formal. Con
-              nombre completo al reverso (con tinta).
+              En el caso de Urgencias Pediátricas, constancia de haber terminado
+              satisfactoriamente una residencia progresiva hospitalaria de por
+              lo menos 2 años.
             </li>
-            <li>Imprimir, llenar completamente y anexar la solicitud de Certificación</li>
             <li>
-              Vigente en Medicina de Urgencias o Urgencias Pediátricas según sea el caso. (Descargar de la página web
-              del Consejo).
+              Copia del diploma institucional en Medicina de Urgencias o en su
+              caso Urgencias Pediatricas.
+            </li>
+            <li>
+              Copia del diploma de la institución educativa (Universitaria) que
+              lo avala.
+            </li>
+            <li>
+              Tres fotografías oval tamaño diploma (5x7cm) blanco y negro, con
+              fondo blanco, vestimenta formal. Con nombre completo al reverso
+              (con tinta).
+            </li>
+            <li>
+              Imprimir, llenar completamente y anexar la solicitud de
+              Certificación
+            </li>
+            <li>
+              Vigente en Medicina de Urgencias o Urgencias Pediátricas según sea
+              el caso. (Descargar de la página web del Consejo).
             </li>
             <li>Curriculum vitae</li>
             <li>Donativo no reembolsable de $ 5,700. 00/100 m.n.</li>
@@ -64,14 +88,16 @@
             :step="n + 1"
             :rules="[value => !invalid]"
             :color="stepStatus(n + 1)"
-            >{{ step.longName }}</v-stepper-step
           >
+            {{ step.longName }}
+          </v-stepper-step>
           <upload-document
             v-show="step.upload"
             :document="step"
             :show-files="
               getEventFiles(
-                currentUserEvent.documents && currentUserEvent.documents[step.name]
+                currentUserEvent.documents &&
+                  currentUserEvent.documents[step.name]
                   ? currentUserEvent.documents[step.name]
                   : null
               )
@@ -86,8 +112,9 @@
               nextStep(n)
               disableNext = false
             "
-            >{{ $t('actions.continue') }}</v-btn
           >
+            {{ $t('actions.continue') }}
+          </v-btn>
           <v-btn v-else color="success" @click="done()">Terminar</v-btn>
           <v-btn
             v-if="n > 0"
@@ -96,8 +123,9 @@
               curr = n
               disableNext = true
             "
-            >Atrás</v-btn
           >
+            Atrás
+          </v-btn>
         </validation-observer>
       </v-stepper-content>
     </v-stepper>
@@ -177,7 +205,8 @@ export default {
         ],
       },
       {
-        longName: 'Copia del diploma institucional en Medicina de Urgencias o en su caso Urgencias Pediatricas.',
+        longName:
+          'Copia del diploma institucional en Medicina de Urgencias o en su caso Urgencias Pediatricas.',
         name: 'specialtyDiploma',
         upload: true,
         required: true,
@@ -193,7 +222,8 @@ export default {
         ],
       },
       {
-        longName: 'Copia del diploma de la institución educativa (Universitaria) que lo avala.',
+        longName:
+          'Copia del diploma de la institución educativa (Universitaria) que lo avala.',
         name: 'degreeDiploma',
         upload: true,
         required: true,
@@ -209,7 +239,8 @@ export default {
         ],
       },
       {
-        longName: 'Fotografía oval tamaño diploma (5x7cm) blanco y negro, con fondo blanco, vestimenta formal.',
+        longName:
+          'Fotografía oval tamaño diploma (5x7cm) blanco y negro, con fondo blanco, vestimenta formal.',
         name: 'mugshot',
         upload: true,
         required: true,
@@ -248,8 +279,16 @@ export default {
     isFinished: false,
   }),
   computed: {
-    ...mapState('events', ['currentEvent', 'eventCreationPending', 'eventCreationMessage']),
-    ...mapState('documents', ['documentNameToCreate', 'documentCreationPending', 'documentCreationMessage']),
+    ...mapState('events', [
+      'currentEvent',
+      'eventCreationPending',
+      'eventCreationMessage',
+    ]),
+    ...mapState('documents', [
+      'documentNameToCreate',
+      'documentCreationPending',
+      'documentCreationMessage',
+    ]),
     ...mapGetters('events', ['getUserEvent']),
     currentUserEvent() {
       return this.getUserEvent(this.id)
@@ -262,7 +301,10 @@ export default {
   },
   methods: {
     ...mapActions('documents', ['triggerAddDocumentAction']),
-    ...mapMutations('documents', ['setDocumentNameToCreate', 'setDocumentCreationMessage']),
+    ...mapMutations('documents', [
+      'setDocumentNameToCreate',
+      'setDocumentCreationMessage',
+    ]),
     ...mapMutations('events', ['setCurrentEvent']),
     ...mapActions('events', ['setUserEvent', 'updateUserEvent']),
     ...mapActions('documents', ['createUserDocument']),
@@ -274,7 +316,9 @@ export default {
       return result
     },
     getEventFiles(value) {
-      return !isNil(value) && !isNil(value.files) ? Object.values(value.files) : null
+      return !isNil(value) && !isNil(value.files)
+        ? Object.values(value.files)
+        : null
     },
     saveDocument(n) {
       this.setDocumentNameToCreate(this.step[n].name)
@@ -317,7 +361,13 @@ export default {
       if (v) {
         console.clear()
         this.steps[n].valid = true
-        this.createLocalDocument({ name: 'Documento de prueba, por favor ignore', upload: { name: 'foo' } }, n)
+        this.createLocalDocument(
+          {
+            name: 'Documento de prueba, por favor ignore',
+            upload: { name: 'foo' },
+          },
+          n
+        )
         // TODO do some timeout and a loader to give better feedback
         // continue to next
         // this.curr = n + 2
