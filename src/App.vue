@@ -95,13 +95,17 @@ export default {
       drawer: true,
       links: [
         // ['mdi-cloud-upload', 'Cargar documentos'],
-        ['mdi-home', 'Inicio', 'home'],
+        ['mdi-home', 'Inicio', { name: 'home' }],
         // ['mdi-inbox-arrow-down', 'Mensajes', 'messages'],
         // ['mdi-account-circle', 'Perfil', 'profile'],
         // ['mdi-cog-outline', 'Configuración', 'settings'],
-        ['mdi-account-question', 'Solicitar examen', 'request'],
-        ['mdi-folder-account', 'Editar perfil académico', 'academicProfile'],
-        ['mdi-account-edit', 'Editar datos personales', 'userEdit'],
+        ['mdi-account-question', 'Solicitar examen', { name: 'request' }],
+        [
+          'mdi-folder-account',
+          'Editar perfil académico',
+          { name: 'academicProfile' },
+        ],
+        ['mdi-account-edit', 'Editar datos personales', { name: 'userEdit' }],
       ],
       adminLinks: [
         ['mdi-view-dashboard', 'Centro de control', 'admin/dashboard'],
