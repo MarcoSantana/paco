@@ -1,7 +1,7 @@
 <template>
   <div class="document-item">
     <router-link class="" :to="{ name: 'document', params: { id: data.id } }">
-      <div class="">{{ data.name }}</div>
+      <div class="text-capitalize">{{ $t(`document.types.${data.name}`) }}</div>
       <div>
         {{ data.createTimestamp | intlDate }}
         <small>hace {{ data.createTimestamp | ago }} días</small>
