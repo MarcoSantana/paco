@@ -165,16 +165,16 @@ export default {
         name: 'enarm',
         upload: true,
         required: true,
-        fields: [
-          {
-            label: `comment`,
-            name: 'comment',
-            placeholder: 'Comentario sobre el documento',
-            type: 'v-text-field',
-            rules: { required: false, length: { max: 160, min: 0 } },
-            counter: true,
-          },
-        ],
+        // fields: [
+        //   {
+        //     label: `comment`,
+        //     name: 'comment',
+        //     placeholder: 'Comentario sobre el documento',
+        //     type: 'v-text-field',
+        //     rules: { required: false, length: { max: 160, min: 0 } },
+        //     counter: true,
+        //   },
+        // ],
       },
       {
         longName:
@@ -182,16 +182,16 @@ export default {
         name: 'diplomas',
         upload: true,
         required: false,
-        fields: [
-          {
-            label: 'comment',
-            name: 'comment',
-            placeholder: 'Comentario sobre el documento',
-            type: 'v-text-field',
-            rules: { required: false, length: { max: 160, min: 0 } },
-            counter: true,
-          },
-        ],
+        // fields: [
+        //   {
+        //     label: 'comment',
+        //     name: 'comment',
+        //     placeholder: 'Comentario sobre el documento',
+        //     type: 'v-text-field',
+        //     rules: { required: false, length: { max: 160, min: 0 } },
+        //     counter: true,
+        //   },
+        // ],
       },
       {
         longName:
@@ -199,16 +199,16 @@ export default {
         name: 'pediatricVoucher',
         upload: true,
         required: false,
-        fields: [
-          {
-            label: 'comment',
-            name: 'comment',
-            placeholder: 'Comentario sobre el documento',
-            type: 'v-text-field',
-            rules: { required: false, length: { max: 160, min: 0 } },
-            counter: true,
-          },
-        ],
+        // fields: [
+        //   {
+        //     label: 'comment',
+        //     name: 'comment',
+        //     placeholder: 'Comentario sobre el documento',
+        //     type: 'v-text-field',
+        //     rules: { required: false, length: { max: 160, min: 0 } },
+        //     counter: true,
+        //   },
+        // ],
       },
       {
         longName:
@@ -216,16 +216,16 @@ export default {
         name: 'specialtyDiploma',
         upload: true,
         required: true,
-        fields: [
-          {
-            label: 'comment',
-            name: 'comment',
-            placeholder: 'Comentario sobre el documento',
-            type: 'v-text-field',
-            rules: { required: false, length: { max: 160, min: 0 } },
-            counter: true,
-          },
-        ],
+        // fields: [
+        //   {
+        //     label: 'comment',
+        //     name: 'comment',
+        //     placeholder: 'Comentario sobre el documento',
+        //     type: 'v-text-field',
+        //     rules: { required: false, length: { max: 160, min: 0 } },
+        //     counter: true,
+        //   },
+        // ],
       },
       {
         longName:
@@ -233,16 +233,16 @@ export default {
         name: 'degreeDiploma',
         upload: true,
         required: true,
-        fields: [
-          {
-            label: 'comment',
-            name: 'comment',
-            placeholder: 'Comentario sobre el documento',
-            type: 'v-text-field',
-            rules: { required: false, length: { max: 160, min: 0 } },
-            counter: true,
-          },
-        ],
+        // fields: [
+        //   {
+        //     label: 'comment',
+        //     name: 'comment',
+        //     placeholder: 'Comentario sobre el documento',
+        //     type: 'v-text-field',
+        //     rules: { required: false, length: { max: 160, min: 0 } },
+        //     counter: true,
+        //   },
+        // ],
       },
       {
         longName:
@@ -250,32 +250,32 @@ export default {
         name: 'mugshot',
         upload: true,
         required: true,
-        fields: [
-          {
-            label: 'comment',
-            name: 'comment',
-            placeholder: 'Comentario sobre el documento',
-            type: 'v-text-field',
-            rules: { required: false, length: { max: 160, min: 0 } },
-            counter: true,
-          },
-        ],
+        // fields: [
+        //   {
+        //     label: 'comment',
+        //     name: 'comment',
+        //     placeholder: 'Comentario sobre el documento',
+        //     type: 'v-text-field',
+        //     rules: { required: false, length: { max: 160, min: 0 } },
+        //     counter: true,
+        //   },
+        // ],
       },
       {
         longName: 'Donativo no reembolsable de $ 5,700. 00/100 m.n.',
         name: 'voucher',
         upload: true,
         required: true,
-        fields: [
-          {
-            label: 'comment',
-            name: 'comment',
-            placeholder: 'Comentario sobre el documento',
-            type: 'v-text-field',
-            rules: { required: false, length: { max: 160, min: 0 } },
-            counter: true,
-          },
-        ],
+        // fields: [
+        //   {
+        //     label: 'comment',
+        //     name: 'comment',
+        //     placeholder: 'Comentario sobre el documento',
+        //     type: 'v-text-field',
+        //     rules: { required: false, length: { max: 160, min: 0 } },
+        //     counter: true,
+        //   },
+        // ],
       },
     ],
     model: {},
@@ -312,7 +312,11 @@ export default {
       'setDocumentCreationMessage',
     ]),
     ...mapMutations('events', ['setCurrentEvent']),
-    ...mapActions('events', ['setUserEvent', 'updateUserEvent']),
+    ...mapActions('events', [
+      'setUserEvent',
+      'updateUserEvent',
+      'setCurrentEventComplete',
+    ]),
     ...mapActions('documents', ['createUserDocument']),
 
     async validateForm() {
@@ -340,8 +344,7 @@ export default {
     updateEvent(val) {
       const data = {}
       data.documents = val
-      data.currentUserEvent = this.currentUserEvent
-      this.updateUserEvent(data)
+      this.updateUserEvent({ id: this.id, ...data })
       this.disableNext = true
     },
     createLocalDocument(document, n) {
@@ -380,6 +383,10 @@ export default {
       }
     },
     done() {
+      this.setCurrentEventComplete({
+        id: this.id,
+        completed: true,
+      })
       this.curr = this.steps.length + 1
       // TODO update in db userEvent to mark it as complete
       // TODO show some loader
