@@ -95,7 +95,7 @@
             {{ step.longName }}
           </v-stepper-step>
           <upload-document
-            v-show="step.upload"
+            v-if="step.upload"
             :document="step"
             :show-files="
               getEventFiles(
@@ -108,8 +108,8 @@
             @document-created="updateEvent"
           ></upload-document>
           <v-btn
-            v-if="n + 1 < steps.length + 1"
-            class="mt-3"
+            v-if="n < steps.length - 1"
+            class="ma-3"
             :disabled="!disableNext"
             color="primary"
             @click="
@@ -117,10 +117,17 @@
               disableNext = false
             "
           >
-            <!-- TODO update the event marking each step as complete -->
             {{ $t('actions.continue') }}
           </v-btn>
-          <v-btn v-else color="success" @click="done()">Terminar</v-btn>
+          <v-btn
+            v-if="n + 1 === steps.length"
+            class="ma-3"
+            :disabled="invalid"
+            color="success"
+            @click="done()"
+          >
+            Terminar
+          </v-btn>
           <v-btn
             v-if="n > 0"
             text
@@ -176,106 +183,110 @@ export default {
         //   },
         // ],
       },
+      // {
+      //         longName:
+      //           ' En el caso de Urgencias Pediátricas deberá entregar además el diploma institucional y diploma de la institución educativa (universitaria) que lo avala en Pediatría. ',
+      //         name: 'diplomas',
+      //         upload: true,
+      //         required: false,
+      //         // fields: [
+      //         //   {
+      //         //     label: 'comment',
+      //         //     name: 'comment',
+      //         //     placeholder: 'Comentario sobre el documento',
+      //         //     type: 'v-text-field',
+      //         //     rules: { required: false, length: { max: 160, min: 0 } },
+      //         //     counter: true,
+      //         //   },
+      //         // ],
+      //       },
+      //       {
+      //         longName:
+      //           ' En el caso de Urgencias Pediátricas, constancia de haber terminado satisfactoriamente una residencia progresiva hospitalaria de por lo menos 2 años. ',
+      //         name: 'pediatricVoucher',
+      //         upload: true,
+      //         required: false,
+      //         // fields: [
+      //         //   {
+      //         //     label: 'comment',
+      //         //     name: 'comment',
+      //         //     placeholder: 'Comentario sobre el documento',
+      //         //     type: 'v-text-field',
+      //         //     rules: { required: false, length: { max: 160, min: 0 } },
+      //         //     counter: true,
+      //         //   },
+      //         // ],
+      //       },
+      //       {
+      //         longName:
+      //           'Copia del diploma institucional en Medicina de Urgencias o en su caso Urgencias Pediatricas.',
+      //         name: 'specialtyDiploma',
+      //         upload: true,
+      //         required: true,
+      //         // fields: [
+      //         //   {
+      //         //     label: 'comment',
+      //         //     name: 'comment',
+      //         //     placeholder: 'Comentario sobre el documento',
+      //         //     type: 'v-text-field',
+      //         //     rules: { required: false, length: { max: 160, min: 0 } },
+      //         //     counter: true,
+      //         //   },
+      //         // ],
+      //       },
+      //       {
+      //         longName:
+      //           'Copia del diploma de la institución educativa (Universitaria) que lo avala.',
+      //         name: 'degreeDiploma',
+      //         upload: true,
+      //         required: true,
+      //         // fields: [
+      //         //   {
+      //         //     label: 'comment',
+      //         //     name: 'comment',
+      //         //     placeholder: 'Comentario sobre el documento',
+      //         //     type: 'v-text-field',
+      //         //     rules: { required: false, length: { max: 160, min: 0 } },
+      //         //     counter: true,
+      //         //   },
+      //         // ],
+      //       },
+      //       {
+      //         longName:
+      //           'Fotografía tamaño diploma (5x7cm) blanco y negro, con fondo blanco, vestimenta formal.',
+      //         name: 'mugshot',
+      //         upload: true,
+      //         required: true,
+      //         // fields: [
+      //         //   {
+      //         //     label: 'comment',
+      //         //     name: 'comment',
+      //         //     placeholder: 'Comentario sobre el documento',
+      //         //     type: 'v-text-field',
+      //         //     rules: { required: false, length: { max: 160, min: 0 } },
+      //         //     counter: true,
+      //         //   },
+      //         // ],
+      //       },
+      //       {
+      //         longName: 'Donativo no reembolsable de $ 5,700. 00/100 m.n.',
+      //         name: 'voucher',
+      //         upload: true,
+      //         required: true,
+      //         // fields: [
+      //         //   {
+      //         //     label: 'comment',
+      //         //     name: 'comment',
+      //         //     placeholder: 'Comentario sobre el documento',
+      //         //     type: 'v-text-field',
+      //         //     rules: { required: false, length: { max: 160, min: 0 } },
+      //         //     counter: true,
+      //         //   },
+      //         // ],
+      //       },
       {
-        longName:
-          ' En el caso de Urgencias Pediátricas deberá entregar además el diploma institucional y diploma de la institución educativa (universitaria) que lo avala en Pediatría. ',
-        name: 'diplomas',
-        upload: true,
+        longName: 'Último paso',
         required: false,
-        // fields: [
-        //   {
-        //     label: 'comment',
-        //     name: 'comment',
-        //     placeholder: 'Comentario sobre el documento',
-        //     type: 'v-text-field',
-        //     rules: { required: false, length: { max: 160, min: 0 } },
-        //     counter: true,
-        //   },
-        // ],
-      },
-      {
-        longName:
-          ' En el caso de Urgencias Pediátricas, constancia de haber terminado satisfactoriamente una residencia progresiva hospitalaria de por lo menos 2 años. ',
-        name: 'pediatricVoucher',
-        upload: true,
-        required: false,
-        // fields: [
-        //   {
-        //     label: 'comment',
-        //     name: 'comment',
-        //     placeholder: 'Comentario sobre el documento',
-        //     type: 'v-text-field',
-        //     rules: { required: false, length: { max: 160, min: 0 } },
-        //     counter: true,
-        //   },
-        // ],
-      },
-      {
-        longName:
-          'Copia del diploma institucional en Medicina de Urgencias o en su caso Urgencias Pediatricas.',
-        name: 'specialtyDiploma',
-        upload: true,
-        required: true,
-        // fields: [
-        //   {
-        //     label: 'comment',
-        //     name: 'comment',
-        //     placeholder: 'Comentario sobre el documento',
-        //     type: 'v-text-field',
-        //     rules: { required: false, length: { max: 160, min: 0 } },
-        //     counter: true,
-        //   },
-        // ],
-      },
-      {
-        longName:
-          'Copia del diploma de la institución educativa (Universitaria) que lo avala.',
-        name: 'degreeDiploma',
-        upload: true,
-        required: true,
-        // fields: [
-        //   {
-        //     label: 'comment',
-        //     name: 'comment',
-        //     placeholder: 'Comentario sobre el documento',
-        //     type: 'v-text-field',
-        //     rules: { required: false, length: { max: 160, min: 0 } },
-        //     counter: true,
-        //   },
-        // ],
-      },
-      {
-        longName:
-          'Fotografía tamaño diploma (5x7cm) blanco y negro, con fondo blanco, vestimenta formal.',
-        name: 'mugshot',
-        upload: true,
-        required: true,
-        // fields: [
-        //   {
-        //     label: 'comment',
-        //     name: 'comment',
-        //     placeholder: 'Comentario sobre el documento',
-        //     type: 'v-text-field',
-        //     rules: { required: false, length: { max: 160, min: 0 } },
-        //     counter: true,
-        //   },
-        // ],
-      },
-      {
-        longName: 'Donativo no reembolsable de $ 5,700. 00/100 m.n.',
-        name: 'voucher',
-        upload: true,
-        required: true,
-        // fields: [
-        //   {
-        //     label: 'comment',
-        //     name: 'comment',
-        //     placeholder: 'Comentario sobre el documento',
-        //     type: 'v-text-field',
-        //     rules: { required: false, length: { max: 160, min: 0 } },
-        //     counter: true,
-        //   },
-        // ],
       },
     ],
     model: {},
@@ -383,11 +394,13 @@ export default {
       }
     },
     done() {
+      debugger
       this.setCurrentEventComplete({
         id: this.id,
         completed: true,
       })
       this.curr = this.steps.length + 1
+      this.$router.push('home')
       // TODO update in db userEvent to mark it as complete
       // TODO show some loader
       // TODO feedback and query to link to home
@@ -401,7 +414,7 @@ export default {
     // form wizard
     onComplete() {
       // TODO feedback and query to link to home
-      this.$router.push('/home')
+      this.$router.push({ name: 'home' })
     },
     setLoading(value) {
       console.log(value)

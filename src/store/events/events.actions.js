@@ -92,7 +92,7 @@ export default {
   setCurrentEventComplete: async ({ commit, rootState }, data) => {
     if (isNil(data.id)) return null
     const userEventsDb = new UserEventsDB(rootState.authentication.user.id)
-    const res = await userEventsDb.update({ complete: true })
+    const res = await userEventsDb.update(data)
     commit('setCurrentEvent', res)
     return res
   },
