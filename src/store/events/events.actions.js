@@ -61,10 +61,14 @@ export default {
    * Gets the event details for the given user if not exists create
    */
   setUserEvent: async ({ rootState, commit }, id) => {
+    console.log('setUserEvent', id)
     const userEventsDb = new UserEventsDB(rootState.authentication.user.id)
     const eventsDB = new EventsDB(rootState)
     console.log(eventsDB)
     const userEvent = await userEventsDb.read(id)
+
+    commit('setCurrentEvent', userEvent)
+    console.log('currentEvent', rootState.events.currentEvent)
 
     console.log('userEvent: ', userEvent)
     // TODO must create the userEvent using the data from the existing event
@@ -76,7 +80,10 @@ export default {
         console.log('createdEvent: ', createdEvent)
         commit('addUserEvent', createdEvent)
         commit('setEventCreationPending', false)
-        commit('setEventCreationMessage', { type: 'info', message: 'Evento creado' })
+        commit('setEventCreationMessage', {
+          type: 'info',
+          message: 'Evento creado',
+        })
       } catch (error) {
         throw new Error('Error al crear el evento', error)
       }

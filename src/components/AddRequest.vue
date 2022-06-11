@@ -6,14 +6,16 @@
       </ul>
     </h2>
     <h2>
-      <div v-if="currentRequest" class="error">
-        Usted ya ha realizado esta solicitud.
-        <br />
-        Si desea ver los archivos de este documento,
-        <br />
-        por favor diríjase a la sección de
-        <router-link to="documents">"Mis Documentos"</router-link>
-      </div>
+      <v-card v-if="currentEvent" class="error">
+        <v-card-text>
+          Usted ya ha realizado esta solicitud.
+          <br />
+          Si desea ver los archivos de este documento,
+          <br />
+          por favor diríjase a la sección de
+          <router-link to="documents">"Mis Documentos"</router-link>
+        </v-card-text>
+      </v-card>
     </h2>
     <v-expansion-panels>
       <v-expansion-panel>
@@ -241,7 +243,7 @@ export default {
       },
       {
         longName:
-          'Fotografía oval tamaño diploma (5x7cm) blanco y negro, con fondo blanco, vestimenta formal.',
+          'Fotografía tamaño diploma (5x7cm) blanco y negro, con fondo blanco, vestimenta formal.',
         name: 'mugshot',
         upload: true,
         required: true,
@@ -272,7 +274,6 @@ export default {
           },
         ],
       },
-      { name: 'Solicitud completa' },
     ],
     model: {},
     // wizard
@@ -282,6 +283,7 @@ export default {
   computed: {
     ...mapState('events', [
       'currentEvent',
+      'userEvents',
       'eventCreationPending',
       'eventCreationMessage',
     ]),
@@ -298,7 +300,7 @@ export default {
   },
   watch: {},
   mounted() {
-    this.setEvent()
+    if (isNil(this.currentEvent)) this.setEvent()
   },
   methods: {
     ...mapActions('documents', ['triggerAddDocumentAction']),
@@ -328,7 +330,7 @@ export default {
     },
     setEvent() {
       console.log('running setEvent: ', this.id)
-      if (isNil(this.currentUserEvent)) {
+      if (isNil(this.currentEvent)) {
         this.setUserEvent(this.id)
       }
     },
