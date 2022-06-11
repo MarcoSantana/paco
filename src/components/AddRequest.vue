@@ -6,7 +6,8 @@
       </ul>
     </h2>
     <h2>
-      <v-card v-if="currentEvent" class="error">
+      <v-card v-if="currentEvent && currentEvent.complete" class="error">
+        currentEvent {{ currentEvent }}
         <v-card-text>
           Usted ya ha realizado esta solicitud.
           <br />
@@ -116,6 +117,7 @@
               disableNext = false
             "
           >
+            <!-- TODO update the event marking each step as complete -->
             {{ $t('actions.continue') }}
           </v-btn>
           <v-btn v-else color="success" @click="done()">Terminar</v-btn>
@@ -156,6 +158,7 @@ export default {
     files: [],
     // <!--TODO: Move this elsewhere-->
     steps: [
+      // add the missing fields such as work address and specialtyDiploma authority
       {
         longName:
           'Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional para la Formación de Recursos Humanos para la Salud (CIFRHS); Copia de la constancia de haber efectuado y aprobado el ENARM, CIFRHS',
@@ -378,6 +381,7 @@ export default {
     },
     done() {
       this.curr = this.steps.length + 1
+      // TODO update in db userEvent to mark it as complete
       // TODO show some loader
       // TODO feedback and query to link to home
     },
