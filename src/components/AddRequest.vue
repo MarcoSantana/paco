@@ -6,15 +6,19 @@
       </ul>
     </h2>
     <h2>
-      <v-card v-if="currentEvent && currentEvent.complete" class="error">
-        currentEvent {{ currentEvent }}
-        <v-card-text>
+      <v-card
+        v-if="currentUserEvent && currentUserEvent.completed"
+        class="error"
+      >
+        <v-card-text class="white--text text-h5">
           Usted ya ha realizado esta solicitud.
           <br />
           Si desea ver los archivos de este documento,
           <br />
           por favor diríjase a la sección de
-          <router-link to="documents">"Mis Documentos"</router-link>
+          <router-link :to="{ name: 'documents' }">
+            "Mis Documentos"
+          </router-link>
         </v-card-text>
       </v-card>
     </h2>
@@ -83,7 +87,11 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
-    <v-stepper v-model="curr" color="primary">
+    <v-stepper
+      v-if="!currentUserEvent.completed"
+      v-model="curr"
+      color="primary"
+    >
       <v-stepper-content v-for="(step, n) in steps" :key="n" :step="n + 1">
         <validation-observer v-slot="{ invalid }">
           <v-stepper-step
