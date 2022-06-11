@@ -1,7 +1,12 @@
 <template>
   <v-container>
-    <h1 class="text-capitalize">{{ $t('document.name') }}: {{ document.name }}</h1>
-    <h2 class="text-capitalize">{{ $t('document.status') }}: {{ $t(`document.statusKey[${document.status}]`) }}</h2>
+    <h1 class="text-capitalize">
+      {{ $t('document.name') }}: {{ $t(`document.types.${document.name}`) }}
+    </h1>
+    <h2 class="text-capitalize">
+      {{ $t('document.status') }}:
+      {{ $t(`document.statusKey[${document.status}]`) }}
+    </h2>
     <h3 v-show="editable">
       <small>Mensaje del administrador:</small>
       {{ document.message }}
@@ -227,7 +232,9 @@ export default {
           console.log('res :>> ', res)
           this.document.status = 1
           // eslint-disable-next-line no-alert
-          alert('Documento marcado para ser revisado, este proceso puede tardar algunos días.')
+          alert(
+            'Documento marcado para ser revisado, este proceso puede tardar algunos días.'
+          )
         })
       // TODO change the local state to reflect the new status of this document 202108.08-12.09
     },
