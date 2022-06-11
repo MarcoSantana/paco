@@ -94,6 +94,9 @@
           >
             {{ step.longName }}
           </v-stepper-step>
+          <v-sheet v-if="step.description">
+            <p>{{ step.description }}</p>
+          </v-sheet>
           <upload-document
             v-if="step.upload"
             :document="step"
@@ -286,6 +289,8 @@ export default {
       //       },
       {
         longName: 'Último paso',
+        description:
+          'Ha almacenado exitosamente los documentos una vez que sea aprobada su solicitud recibirá un correo electrónico informándole',
         required: false,
       },
     ],
@@ -394,16 +399,12 @@ export default {
       }
     },
     done() {
-      debugger
       this.setCurrentEventComplete({
         id: this.id,
         completed: true,
       })
       this.curr = this.steps.length + 1
-      this.$router.push('home')
-      // TODO update in db userEvent to mark it as complete
-      // TODO show some loader
-      // TODO feedback and query to link to home
+      this.$router.push({ name: 'home' })
     },
     getURL(file) {
       if (!isNil(file)) {
