@@ -99,7 +99,7 @@ export default {
         // ['mdi-inbox-arrow-down', 'Mensajes', 'messages'],
         // ['mdi-account-circle', 'Perfil', 'profile'],
         // ['mdi-cog-outline', 'Configuración', 'settings'],
-        ['mdi-folder-account', 'Mis Documentos', { name: 'documents' }],
+        ['mdi-folder', 'Mis Documentos', { name: 'documents' }],
         ['mdi-account-question', 'Solicitar examen', { name: 'request' }],
         ['mdi-folder-account', 'Perfil académico', { name: 'academicProfile' }],
         ['mdi-account-edit', 'Datos personales', { name: 'userEdit' }],
