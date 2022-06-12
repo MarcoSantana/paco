@@ -16,7 +16,7 @@
                   :ref="field.name"
                   v-model="fieldModel[field.name]"
                   :name="field.name"
-                  :schema="{...field, required: true}"
+                  :schema="{...field}"
                   :data-vv-name="scope"
                   :label="$t('document.' + field.label)"
                   :placeholder="field.placeholder"
@@ -59,7 +59,7 @@
               chips
               show-size
               truncate-length="15"
-              required
+              :required="document.required"
               small-chips
               clearable
               @click="setDocumentCreationMessage({})"

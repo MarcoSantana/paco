@@ -108,7 +108,7 @@
           <v-btn
             v-if="n < steps.length - 1"
             class="ma-3"
-            :disabled="!disableNext"
+            :disabled="(step.required && !disableNext)"
             color="primary"
             @click="
               nextStep(n)
@@ -157,58 +157,57 @@ export default {
     files: [],
     // <!--TODO: Move this elsewhere-->
     steps: [
-      // add the missing fields such as work address and specialtyDiploma authority
-      // {
-      //   longName:
-      //     'Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional para la Formación de Recursos Humanos para la Salud (CIFRHS); Copia de la constancia de haber efectuado y aprobado el ENARM, CIFRHS',
-      //   name: 'enarm',
-      //   upload: true,
-      //   required: true,
-      //   // fields: [
-      //   //   {
-      //   //     label: `comment`,
-      //   //     name: 'comment',
-      //   //     placeholder: 'Comentario sobre el documento',
-      //   //     type: 'v-text-field',
-      //   //     rules: { required: false, length: { max: 160, min: 0 } },
-      //   //     counter: true,
-      //   //   },
-      //   // ],
-      // },
-      // {
-      //   longName:
-      //     ' En el caso de Urgencias Pediátricas, constancia de haber terminado satisfactoriamente una residencia progresiva hospitalaria de por lo menos 2 años. ',
-      //   name: 'pediatricVoucher',
-      //   upload: true,
-      //   required: false,
-      //   // fields: [
-      //   //   {
-      //   //     label: 'comment',
-      //   //     name: 'comment',
-      //   //     placeholder: 'Comentario sobre el documento',
-      //   //     type: 'v-text-field',
-      //   //     rules: { required: false, length: { max: 160, min: 0 } },
-      //   //     counter: true,
-      //   //   },
-      //   // ],
-      // },
-      // {
-      //   longName:
-      //     'Copia del diploma institucional en Medicina de Urgencias o en su caso Urgencias Pediatricas.',
-      //   name: 'specialtyDiploma',
-      //   upload: true,
-      //   required: true,
-      //   // fields: [
-      //   //   {
-      //   //     label: 'comment',
-      //   //     name: 'comment',
-      //   //     placeholder: 'Comentario sobre el documento',
-      //   //     type: 'v-text-field',
-      //   //     rules: { required: false, length: { max: 160, min: 0 } },
-      //   //     counter: true,
-      //   //   },
-      //   // ],
-      // } ,
+      {
+        longName:
+          'Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional para la Formación de Recursos Humanos para la Salud (CIFRHS); Copia de la constancia de haber efectuado y aprobado el ENARM, CIFRHS',
+        name: 'enarm',
+        upload: true,
+        required: true,
+        // fields: [
+        //   {
+        //     label: `comment`,
+        //     name: 'comment',
+        //     placeholder: 'Comentario sobre el documento',
+        //     type: 'v-text-field',
+        //     rules: { required: false, length: { max: 160, min: 0 } },
+        //     counter: true,
+        //   },
+        // ],
+      },
+      {
+        longName:
+          ' En el caso de Urgencias Pediátricas, constancia de haber terminado satisfactoriamente una residencia progresiva hospitalaria de por lo menos 2 años. ',
+        name: 'pediatricVoucher',
+        upload: true,
+        required: false,
+        // fields: [
+        //   {
+        //     label: 'comment',
+        //     name: 'comment',
+        //     placeholder: 'Comentario sobre el documento',
+        //     type: 'v-text-field',
+        //     rules: { required: false, length: { max: 160, min: 0 } },
+        //     counter: true,
+        //   },
+        // ],
+      },
+      {
+        longName:
+          'Copia del diploma institucional en Medicina de Urgencias o en su caso Urgencias Pediatricas.',
+        name: 'specialtyDiploma',
+        upload: true,
+        required: true,
+        fields: [
+          {
+            label: 'comment',
+            name: 'comment',
+            placeholder: 'Comentario sobre el documento',
+            type: 'v-text-field',
+            rules: { required: false, length: { max: 160, min: 0 } },
+            counter: true,
+          },
+        ],
+      },
       {
         longName:
           'Copia del diploma de la institución educativa (Universitaria) que lo avala.',
