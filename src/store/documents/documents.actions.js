@@ -52,37 +52,52 @@ export default {
     const userDocumentDB = new UserDocumentsDB(rootState.authentication.user.id)
     // const documentsDB = new DocumentsDB(rootState.authentication.user.id)
     commit('setDocumentCreationPending', true)
-    commit('setDocumentCreationMessage', { type: 'info', message: 'Creando documento' })
-    // const docUnique = await userDocumentDB.isUniqueUserDocument(document.name, rootState.authentication.user.id)
+    commit('setDocumentCreationMessage', {
+      type: 'info',
+      message: 'Creando documento',
+    })
+    const docUnique = await userDocumentDB.isUniqueUserDocument(
+      document.name,
+      rootState.authentication.user.id
+    )
     const { upload } = document
     delete document.upload
     try {
       // console.log('docUnique', docUnique)
-      // if (docUnique) {
-      document.status = 1
-      try {
-        createdDocument = await userDocumentDB.create(document)
-        commit('addDocument', createdDocument)
-        commit('setDocumentCreationPending', false)
-        commit('setDocumentCreationMessage', { type: 'info', message: 'Documento creado' })
-      } catch (error) {
-        commit('setDocumentCreationMessage', { type: 'error', message: 'Error al crear el documento' })
-        throw new Error('Error al crear el documento', error)
-      }
-      // } else {
-      //   try {
-      //     // if (isNil(document.id)) throw new Error('Documento no encontrado')
-      //     const result = await userDocumentDB.getDocumentByName(document.name)
+      if (docUnique) {
+        document.status = 1
+        try {
+          createdDocument = await userDocumentDB.create(document)
+          commit('addDocument', createdDocument)
+          commit('setDocumentCreationPending', false)
+          commit('setDocumentCreationMessage', {
+            type: 'info',
+            message: 'Documento creado',
+          })
+        } catch (error) {
+          commit('setDocumentCreationMessage', {
+            type: 'error',
+            message: 'Error al crear el documento',
+          })
+          throw new Error('Error al crear el documento', error)
+        }
+      } else {
+        try {
+          // if (isNil(document.id)) throw new Error('Documento no encontrado')
+          const result = await userDocumentDB.getDocumentByName(document.name)
 
-      //     createdDocument = result.shift()
-      //   } catch (error) {
-      //     throw new Error('Error al obtener el documento', error)
-      //   }
-      // }
+          createdDocument = result.shift()
+        } catch (error) {
+          throw new Error('Error al obtener el documento', error)
+        }
+      }
       if (upload) {
         try {
           commit('setDocumentCreationPending', true)
-          commit('setDocumentCreationMessage', { type: 'warning', message: 'Guardando documento' })
+          commit('setDocumentCreationMessage', {
+            type: 'warning',
+            message: 'Guardando documento',
+          })
           const documentsRef = []
           try {
             upload.forEach((element, index) => {
@@ -98,7 +113,8 @@ export default {
                   } catch (error) {
                     commit('setDocumentCreationMessage', {
                       type: 'danger',
-                      message: 'Error al actualizar el documento vuelva a intentar de nuevo más tarde',
+                      message:
+                        'Error al actualizar el documento vuelva a intentar de nuevo más tarde',
                     })
                     commit('setDocumentCreationPending', false)
                   }
@@ -118,25 +134,33 @@ export default {
                   } catch (error) {
                     commit('setDocumentCreationMessage', {
                       type: 'danger',
-                      message: 'Error al actualizar la referencia del documento vuelva a intentar de nuevo más tarde',
+                      message:
+                        'Error al actualizar la referencia del documento vuelva a intentar de nuevo más tarde',
                     })
                     commit('setDocumentCreationPending', false)
                   }
                 })
                 .finally(() => {
-                  commit('setDocumentCreationMessage', { type: 'success', message: 'Éxito' })
+                  commit('setDocumentCreationMessage', {
+                    type: 'success',
+                    message: 'Éxito',
+                  })
                   commit('setDocumentCreationPending', false)
                 })
             })
           } catch (error) {
             commit('setDocumentCreationMessage', {
               type: 'danger',
-              message: 'Error al crear el documento vuelva a intentar de nuevo más tarde',
+              message:
+                'Error al crear el documento vuelva a intentar de nuevo más tarde',
             })
             commit('setDocumentCreationPending', false)
           }
         } catch (error) {
-          commit('setDocumentCreationMessage', { type: 'error', message: error })
+          commit('setDocumentCreationMessage', {
+            type: 'error',
+            message: error,
+          })
           commit('setDocumentCreationPending', false)
           throw new Error('Error al subir el documento', error)
         }
@@ -203,7 +227,9 @@ this is fixed so de user can not accept her own documents
   deleteUserDocument: async ({ rootState, commit, getters }, documentId) => {
     if (getters.isDocumentDeletionPending(documentId)) return
 
-    const userDocumentsDb = new UserDocumentsDB(rootState.authentication.user.id)
+    const userDocumentsDb = new UserDocumentsDB(
+      rootState.authentication.user.id
+    )
 
     commit('addDocumentDeletionPending', documentId)
     await userDocumentsDb.delete(documentId)

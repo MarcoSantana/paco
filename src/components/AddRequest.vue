@@ -6,12 +6,19 @@
       </ul>
     </h2>
     <h2>
-      <v-card v-if="currentUserEvent && currentUserEvent.completed" class="error">
+      <v-card
+        v-if="currentUserEvent && currentUserEvent.completed"
+        class="error"
+      >
         <v-card-text class="white--text text-h5">
           Usted ya ha realizado esta solicitud.
-          <br />Si desea ver los archivos de este documento,
-          <br />por favor diríjase a la sección de
-          <router-link :to="{ name: 'documents' }">"Mis Documentos"</router-link>
+          <br />
+          Si desea ver los archivos de este documento,
+          <br />
+          por favor diríjase a la sección de
+          <router-link :to="{ name: 'documents' }">
+            "Mis Documentos"
+          </router-link>
         </v-card-text>
       </v-card>
     </h2>
@@ -80,7 +87,11 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
-    <v-stepper v-if="!currentUserEvent.completed" v-model="curr" color="primary">
+    <v-stepper
+      v-if="currentUserEvent && !currentUserEvent.completed"
+      v-model="curr"
+      color="primary"
+    >
       <v-stepper-content v-for="(step, n) in steps" :key="n" :step="n + 1">
         <validation-observer v-slot="{ invalid }">
           <v-stepper-step
@@ -88,7 +99,9 @@
             :step="n + 1"
             :rules="[value => !invalid]"
             :color="stepStatus(n + 1)"
-          >{{ step.longName }}</v-stepper-step>
+          >
+            {{ step.longName }}
+          </v-stepper-step>
           <v-sheet v-if="step.description">
             <p>{{ step.description }}</p>
           </v-sheet>
@@ -108,20 +121,24 @@
           <v-btn
             v-if="n < steps.length - 1"
             class="ma-3"
-            :disabled="(step.required && !disableNext)"
+            :disabled="step.required && !disableNext"
             color="primary"
             @click="
               nextStep(n)
               disableNext = false
             "
-          >{{ $t('actions.continue') }}</v-btn>
+          >
+            {{ $t('actions.continue') }}
+          </v-btn>
           <v-btn
             v-if="n + 1 === steps.length"
             class="ma-3"
             :disabled="invalid"
             color="success"
             @click="done()"
-          >Terminar</v-btn>
+          >
+            Terminar
+          </v-btn>
           <v-btn
             v-if="n > 0"
             text
@@ -129,7 +146,9 @@
               curr = n
               disableNext = true
             "
-          >Atrás</v-btn>
+          >
+            Atrás
+          </v-btn>
         </validation-observer>
       </v-stepper-content>
     </v-stepper>
@@ -296,7 +315,7 @@ export default {
   },
   watch: {},
   mounted() {
-    if (isNil(this.currentEvent)) this.setEvent()
+    if (isNil(this.currentUserEvent)) this.setEvent()
   },
   methods: {
     ...mapActions('documents', ['triggerAddDocumentAction']),
@@ -319,6 +338,7 @@ export default {
       return result
     },
     getEventFiles(value) {
+      console.log('getEventFiles', value)
       return !isNil(value) && !isNil(value.files)
         ? Object.values(value.files)
         : null
@@ -330,7 +350,7 @@ export default {
     },
     setEvent() {
       console.log('running setEvent: ', this.id)
-      if (isNil(this.currentEvent)) {
+      if (isNil(this.currentUserEvent)) {
         this.setUserEvent(this.id)
       }
     },

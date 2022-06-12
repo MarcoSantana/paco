@@ -191,7 +191,6 @@ export default {
         this.valid = false
         return {}
       }
-      debugger
       console.log('createLocalDocument', document)
       const createdDocument = await this.createUserDocument(document)
       return createdDocument
