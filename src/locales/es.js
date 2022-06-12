@@ -58,6 +58,7 @@ const translation = {
     continue: 'continuar',
     delete: 'borrar',
     forward: 'adelante',
+    load: 'cargar',
     mark: 'marcar',
     markUnread: 'marcar como no leído',
     quickView: 'vista rápida',

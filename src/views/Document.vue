@@ -6,7 +6,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import DocumentDetail from '@/components/DocumentDetail'
+import DocumentDetail from '@/components/DocumentDetails'
 
 export default {
   components: { DocumentDetail },
