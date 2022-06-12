@@ -26,6 +26,7 @@
                   @input="input($event, field)"
                 ></component>
               </span>
+              fieldModel>> {{ fieldModel }}
             </validation-provider>
           </keep-alive>
         </div>
