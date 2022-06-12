@@ -8,19 +8,28 @@
         :disabled="disabled"
         :name="schema.inputName"
         :class="schema.fieldClasses"
+        @change="onChange"
       >
-        <option v-if="selectOptions && !selectOptions.hideNoneSelectedText" :disabled="schema.required" :value="null">
-          {{ selectOptions.noneSelectedText || '&lt;Seleccione una universidad&gt;' }}
-        </option>
+        <option
+          v-if="selectOptions && !selectOptions.hideNoneSelectedText"
+          :disabled="schema.required"
+          :value="null"
+        >{{ selectOptions.noneSelectedText || '&lt;Seleccione una universidad&gt;' }}</option>
         <template v-for="item in selectOptions">
           <optgroup v-if="item.group" :key="item" :label="getGroupName(item)">
             <span v-if="item.ops">
-              <option v-for="i in item.ops" :key="getItemName(i)" :value="getItemValue(i)">{{ getItemName(i) }}</option>
+              <option
+                v-for="i in item.ops"
+                :key="getItemName(i)"
+                :value="`getItemName(i)`"
+              >{{ getItemName(i) }}</option>
             </span>
           </optgroup>
-          <option v-if="!item.group" :key="getItemValue(item)" :value="getItemValue(item)">
-            {{ getItemName(item) }}
-          </option>
+          <option
+            v-if="!item.group"
+            :key="getItemValue(item)"
+            :value="getItemValue(item)"
+          >{{ getItemName(item) }}</option>
         </template>
       </select>
       <!-- Campus select -->
@@ -32,18 +41,26 @@
         class="form-control"
         name="campi"
       >
-        <option v-if="selectOptions && !selectOptions.hideNoneSelectedText" :disabled="schema.required" :value="null">
-          {{ selectOptions.noneSelectedText || '&lt;Seleccione un campus&gt;' }}
-        </option>
+        <option
+          v-if="selectOptions && !selectOptions.hideNoneSelectedText"
+          :disabled="schema.required"
+          :value="null"
+        >{{ selectOptions.noneSelectedText || '&lt;Seleccione un campus&gt;' }}</option>
         <template v-for="item in campi">
           <optgroup v-if="item.group" :key="item" :label="getGroupName(item)">
             <span v-if="item.ops">
-              <option v-for="i in item.ops" :key="getItemName(i)" :value="getItemValue(i)">{{ getItemName(i) }}</option>
+              <option
+                v-for="i in item.ops"
+                :key="getItemName(i)"
+                :value="getItemValue(i)"
+              >{{ getItemName(i) }}</option>
             </span>
           </optgroup>
-          <option v-if="!item.group" :key="getItemValue(item)" :value="getItemValue(item)">
-            {{ getItemName(item) }}
-          </option>
+          <option
+            v-if="!item.group"
+            :key="getItemValue(item)"
+            :value="getItemName(item)"
+          >{{ getItemName(item) }}</option>
         </template>
       </select>
       <!-- / Campus select -->
@@ -93,12 +110,12 @@ export default {
     groupValues(values) {
       const array = []
       let arrayElement = {}
-      values.forEach(item => {
+      values.forEach((item) => {
         arrayElement = null
         if (item.group && isObject(item)) {
           // There is in a group.
           // Find element with this group.
-          arrayElement = find(array, i => i.group === item.group)
+          arrayElement = find(array, (i) => i.group === item.group)
           if (arrayElement) {
             // There is such a group.
             arrayElement.ops.push({
@@ -160,7 +177,10 @@ export default {
     },
     getItemName(item) {
       if (isObject(item)) {
-        if (typeof this.schema.selectOptions !== 'undefined' && typeof this.schema.selectOptions.name !== 'undefined') {
+        if (
+          typeof this.schema.selectOptions !== 'undefined' &&
+          typeof this.schema.selectOptions.name !== 'undefined'
+        ) {
           return item[this.schema.selectOptions.name]
         }
         if (typeof item.name !== 'undefined') {
@@ -172,6 +192,10 @@ export default {
       } else {
         return item
       }
+    },
+    onChange(e) {
+      console.log('onChange', e.target.value)
+      this.$emit('input', e.target.value)
     },
   },
 }
