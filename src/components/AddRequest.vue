@@ -6,19 +6,12 @@
       </ul>
     </h2>
     <h2>
-      <v-card
-        v-if="currentUserEvent && currentUserEvent.completed"
-        class="error"
-      >
+      <v-card v-if="currentUserEvent && currentUserEvent.completed" class="error">
         <v-card-text class="white--text text-h5">
           Usted ya ha realizado esta solicitud.
-          <br />
-          Si desea ver los archivos de este documento,
-          <br />
-          por favor diríjase a la sección de
-          <router-link :to="{ name: 'documents' }">
-            "Mis Documentos"
-          </router-link>
+          <br />Si desea ver los archivos de este documento,
+          <br />por favor diríjase a la sección de
+          <router-link :to="{ name: 'documents' }">"Mis Documentos"</router-link>
         </v-card-text>
       </v-card>
     </h2>
@@ -87,11 +80,7 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
-    <v-stepper
-      v-if="!currentUserEvent.completed"
-      v-model="curr"
-      color="primary"
-    >
+    <v-stepper v-if="!currentUserEvent.completed" v-model="curr" color="primary">
       <v-stepper-content v-for="(step, n) in steps" :key="n" :step="n + 1">
         <validation-observer v-slot="{ invalid }">
           <v-stepper-step
@@ -99,9 +88,7 @@
             :step="n + 1"
             :rules="[value => !invalid]"
             :color="stepStatus(n + 1)"
-          >
-            {{ step.longName }}
-          </v-stepper-step>
+          >{{ step.longName }}</v-stepper-step>
           <v-sheet v-if="step.description">
             <p>{{ step.description }}</p>
           </v-sheet>
@@ -127,18 +114,14 @@
               nextStep(n)
               disableNext = false
             "
-          >
-            {{ $t('actions.continue') }}
-          </v-btn>
+          >{{ $t('actions.continue') }}</v-btn>
           <v-btn
             v-if="n + 1 === steps.length"
             class="ma-3"
             :disabled="invalid"
             color="success"
             @click="done()"
-          >
-            Terminar
-          </v-btn>
+          >Terminar</v-btn>
           <v-btn
             v-if="n > 0"
             text
@@ -146,9 +129,7 @@
               curr = n
               disableNext = true
             "
-          >
-            Atrás
-          </v-btn>
+          >Atrás</v-btn>
         </validation-observer>
       </v-stepper-content>
     </v-stepper>
@@ -177,15 +158,89 @@ export default {
     // <!--TODO: Move this elsewhere-->
     steps: [
       // add the missing fields such as work address and specialtyDiploma authority
+      // {
+      //   longName:
+      //     'Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional para la Formación de Recursos Humanos para la Salud (CIFRHS); Copia de la constancia de haber efectuado y aprobado el ENARM, CIFRHS',
+      //   name: 'enarm',
+      //   upload: true,
+      //   required: true,
+      //   // fields: [
+      //   //   {
+      //   //     label: `comment`,
+      //   //     name: 'comment',
+      //   //     placeholder: 'Comentario sobre el documento',
+      //   //     type: 'v-text-field',
+      //   //     rules: { required: false, length: { max: 160, min: 0 } },
+      //   //     counter: true,
+      //   //   },
+      //   // ],
+      // },
+      // {
+      //   longName:
+      //     ' En el caso de Urgencias Pediátricas, constancia de haber terminado satisfactoriamente una residencia progresiva hospitalaria de por lo menos 2 años. ',
+      //   name: 'pediatricVoucher',
+      //   upload: true,
+      //   required: false,
+      //   // fields: [
+      //   //   {
+      //   //     label: 'comment',
+      //   //     name: 'comment',
+      //   //     placeholder: 'Comentario sobre el documento',
+      //   //     type: 'v-text-field',
+      //   //     rules: { required: false, length: { max: 160, min: 0 } },
+      //   //     counter: true,
+      //   //   },
+      //   // ],
+      // },
+      // {
+      //   longName:
+      //     'Copia del diploma institucional en Medicina de Urgencias o en su caso Urgencias Pediatricas.',
+      //   name: 'specialtyDiploma',
+      //   upload: true,
+      //   required: true,
+      //   // fields: [
+      //   //   {
+      //   //     label: 'comment',
+      //   //     name: 'comment',
+      //   //     placeholder: 'Comentario sobre el documento',
+      //   //     type: 'v-text-field',
+      //   //     rules: { required: false, length: { max: 160, min: 0 } },
+      //   //     counter: true,
+      //   //   },
+      //   // ],
+      // } ,
       {
         longName:
-          'Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional para la Formación de Recursos Humanos para la Salud (CIFRHS); Copia de la constancia de haber efectuado y aprobado el ENARM, CIFRHS',
-        name: 'enarm',
+          'Copia del diploma de la institución educativa (Universitaria) que lo avala.',
+        name: 'degreeDiploma',
+        upload: true,
+        required: true,
+        fields: [
+          {
+            label: 'comment',
+            name: 'comment',
+            placeholder: 'Comentario sobre el documento',
+            type: 'v-text-field',
+            rules: { required: false, length: { max: 160, min: 0 } },
+            counter: true,
+          },
+          {
+            label: 'university',
+            name: 'university',
+            placeholder: 'Universidad',
+            type: 'fieldUniversity',
+          },
+        ],
+      },
+      {
+        longName:
+          'Fotografía tamaño diploma (5x7cm) blanco y negro, con fondo blanco, vestimenta formal.',
+        name: 'mugshot',
         upload: true,
         required: true,
         // fields: [
         //   {
-        //     label: `comment`,
+        //     label: 'comment',
         //     name: 'comment',
         //     placeholder: 'Comentario sobre el documento',
         //     type: 'v-text-field',
@@ -194,107 +249,22 @@ export default {
         //   },
         // ],
       },
-      // {
-      //         longName:
-      //           ' En el caso de Urgencias Pediátricas deberá entregar además el diploma institucional y diploma de la institución educativa (universitaria) que lo avala en Pediatría. ',
-      //         name: 'diplomas',
-      //         upload: true,
-      //         required: false,
-      //         // fields: [
-      //         //   {
-      //         //     label: 'comment',
-      //         //     name: 'comment',
-      //         //     placeholder: 'Comentario sobre el documento',
-      //         //     type: 'v-text-field',
-      //         //     rules: { required: false, length: { max: 160, min: 0 } },
-      //         //     counter: true,
-      //         //   },
-      //         // ],
-      //       },
-      //       {
-      //         longName:
-      //           ' En el caso de Urgencias Pediátricas, constancia de haber terminado satisfactoriamente una residencia progresiva hospitalaria de por lo menos 2 años. ',
-      //         name: 'pediatricVoucher',
-      //         upload: true,
-      //         required: false,
-      //         // fields: [
-      //         //   {
-      //         //     label: 'comment',
-      //         //     name: 'comment',
-      //         //     placeholder: 'Comentario sobre el documento',
-      //         //     type: 'v-text-field',
-      //         //     rules: { required: false, length: { max: 160, min: 0 } },
-      //         //     counter: true,
-      //         //   },
-      //         // ],
-      //       },
-      //       {
-      //         longName:
-      //           'Copia del diploma institucional en Medicina de Urgencias o en su caso Urgencias Pediatricas.',
-      //         name: 'specialtyDiploma',
-      //         upload: true,
-      //         required: true,
-      //         // fields: [
-      //         //   {
-      //         //     label: 'comment',
-      //         //     name: 'comment',
-      //         //     placeholder: 'Comentario sobre el documento',
-      //         //     type: 'v-text-field',
-      //         //     rules: { required: false, length: { max: 160, min: 0 } },
-      //         //     counter: true,
-      //         //   },
-      //         // ],
-      //       },
-      //       {
-      //         longName:
-      //           'Copia del diploma de la institución educativa (Universitaria) que lo avala.',
-      //         name: 'degreeDiploma',
-      //         upload: true,
-      //         required: true,
-      //         // fields: [
-      //         //   {
-      //         //     label: 'comment',
-      //         //     name: 'comment',
-      //         //     placeholder: 'Comentario sobre el documento',
-      //         //     type: 'v-text-field',
-      //         //     rules: { required: false, length: { max: 160, min: 0 } },
-      //         //     counter: true,
-      //         //   },
-      //         // ],
-      //       },
-      //       {
-      //         longName:
-      //           'Fotografía tamaño diploma (5x7cm) blanco y negro, con fondo blanco, vestimenta formal.',
-      //         name: 'mugshot',
-      //         upload: true,
-      //         required: true,
-      //         // fields: [
-      //         //   {
-      //         //     label: 'comment',
-      //         //     name: 'comment',
-      //         //     placeholder: 'Comentario sobre el documento',
-      //         //     type: 'v-text-field',
-      //         //     rules: { required: false, length: { max: 160, min: 0 } },
-      //         //     counter: true,
-      //         //   },
-      //         // ],
-      //       },
-      //       {
-      //         longName: 'Donativo no reembolsable de $ 5,700. 00/100 m.n.',
-      //         name: 'voucher',
-      //         upload: true,
-      //         required: true,
-      //         // fields: [
-      //         //   {
-      //         //     label: 'comment',
-      //         //     name: 'comment',
-      //         //     placeholder: 'Comentario sobre el documento',
-      //         //     type: 'v-text-field',
-      //         //     rules: { required: false, length: { max: 160, min: 0 } },
-      //         //     counter: true,
-      //         //   },
-      //         // ],
-      //       },
+      {
+        longName: 'Donativo no reembolsable de $ 5,700. 00/100 m.n.',
+        name: 'voucher',
+        upload: true,
+        required: true,
+        // fields: [
+        //   {
+        //     label: 'comment',
+        //     name: 'comment',
+        //     placeholder: 'Comentario sobre el documento',
+        //     type: 'v-text-field',
+        //     rules: { required: false, length: { max: 160, min: 0 } },
+        //     counter: true,
+        //   },
+        // ],
+      },
       {
         longName: 'Último paso',
         description:

@@ -53,30 +53,32 @@ export default {
     // const documentsDB = new DocumentsDB(rootState.authentication.user.id)
     commit('setDocumentCreationPending', true)
     commit('setDocumentCreationMessage', { type: 'info', message: 'Creando documento' })
-    const docUnique = await userDocumentDB.isUniqueUserDocument(document.name, rootState.authentication.user.id)
+    // const docUnique = await userDocumentDB.isUniqueUserDocument(document.name, rootState.authentication.user.id)
     const { upload } = document
     delete document.upload
     try {
-      console.log('docUnique', docUnique)
-      if (docUnique) {
-        document.status = 1
-        try {
-          createdDocument = await userDocumentDB.create(document)
-          commit('addDocument', createdDocument)
-          commit('setDocumentCreationPending', false)
-          commit('setDocumentCreationMessage', { type: 'info', message: 'Documento creado' })
-        } catch (error) {
-          commit('setDocumentCreationMessage', { type: 'error', message: 'Error al crear el documento' })
-          throw new Error('Error al crear el documento', error)
-        }
-      } else {
-        try {
-          const result = await userDocumentDB.getDocumentByName(document.name)
-          createdDocument = result.shift()
-        } catch (error) {
-          throw new Error('Error al obtener el documento', error)
-        }
+      // console.log('docUnique', docUnique)
+      // if (docUnique) {
+      document.status = 1
+      try {
+        createdDocument = await userDocumentDB.create(document)
+        commit('addDocument', createdDocument)
+        commit('setDocumentCreationPending', false)
+        commit('setDocumentCreationMessage', { type: 'info', message: 'Documento creado' })
+      } catch (error) {
+        commit('setDocumentCreationMessage', { type: 'error', message: 'Error al crear el documento' })
+        throw new Error('Error al crear el documento', error)
       }
+      // } else {
+      //   try {
+      //     // if (isNil(document.id)) throw new Error('Documento no encontrado')
+      //     const result = await userDocumentDB.getDocumentByName(document.name)
+
+      //     createdDocument = result.shift()
+      //   } catch (error) {
+      //     throw new Error('Error al obtener el documento', error)
+      //   }
+      // }
       if (upload) {
         try {
           commit('setDocumentCreationPending', true)

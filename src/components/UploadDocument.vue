@@ -4,30 +4,26 @@
       v-if="documentCreationMessage.message"
       text
       :type="documentCreationMessage.type"
-    >
-      {{ documentCreationMessage.message }}
-    </v-alert>
+    >{{ documentCreationMessage.message }}</v-alert>
     <validation-observer v-slot="{ invalid }">
       <v-card-text class="ma-5">
         <div v-for="field in document.fields" :key="field.name" class="pr-5">
           <keep-alive>
-            <validation-provider
-              v-slot="{ errors }"
-              :name="field.name"
-              :rules="field.rules"
-            >
+            <validation-provider v-slot="{ errors }" :name="field.name" :rules="field.rules">
               <span :class="{ error: errors[0] }">
                 <component
                   :is="field.type"
                   :ref="field.name"
                   v-model="fieldModel[field.name]"
                   :name="field.name"
+                  :schema="{...field, required: true}"
                   :data-vv-name="scope"
                   :label="$t('document.' + field.label)"
                   :placeholder="field.placeholder"
                   :error="errors.length > 0"
                   :error-messages="errors"
                   :counter="field.counter"
+                  @input="input($event, field)"
                 ></component>
               </span>
             </validation-provider>
@@ -79,9 +75,7 @@
                       : (filesCounter -= 1)
                   )
                 "
-              >
-                mdi-minus
-              </v-icon>
+              >mdi-minus</v-icon>
             </v-file-input>
           </validation-provider>
         </keep-alive>
@@ -123,9 +117,10 @@ import { VTextField } from 'vuetify/lib'
 import { storage } from 'firebase'
 import { isNil } from 'lodash'
 import ShowFile from '@/components/ShowFile'
+import FieldUniversity from '@/components/forms/fieldUniversity'
 
 export default {
-  components: { VTextField, ShowFile },
+  components: { VTextField, ShowFile, FieldUniversity },
   props: {
     document: {
       type: Object,
@@ -141,7 +136,7 @@ export default {
     docURLs: [],
     email: null,
     error: {},
-    fieldModel: [],
+    fieldModel: {},
     files: [],
     filesCounter: 1,
     firstName: null,
@@ -196,6 +191,8 @@ export default {
         this.valid = false
         return {}
       }
+      debugger
+      console.log('createLocalDocument', document)
       const createdDocument = await this.createUserDocument(document)
       return createdDocument
     },
@@ -209,9 +206,10 @@ export default {
         type: 'warning',
         message: 'Creando documento',
       })
+      console.log('validate', this.fieldModel)
       const createdDocument = await this.createLocalDocument({
         name: this.document.name,
-        ...this.fieldModel,
+        info: this.fieldModel,
         upload: this.files,
       })
       console.log('createdDocument', createdDocument)
@@ -227,7 +225,7 @@ export default {
     populateLocalFiles(files) {
       if (isNil(files)) return null
       console.log('files: ', files)
-      return files.map(file => this.getURL(file))
+      return files.map((file) => this.getURL(file))
       // return files.map(file => {
       //   return URL.createObjectURL(file)
       // })
@@ -235,7 +233,7 @@ export default {
     populateRemoteFiles(files) {
       if (isNil(files)) return null
       console.log('populateRemoteFiles', files)
-      return files.map(async file => {
+      return files.map(async (file) => {
         this.docURLs.push(await this.getDownloadURL(file))
       })
     },
@@ -245,6 +243,12 @@ export default {
       console.log('element: ', element)
       this.$delete(element)
       this.$destroy(element)
+    },
+    input(e, field) {
+      console.log('input', field)
+      console.log('event', e)
+      this.fieldModel[field.name] = e
+      console.log('fieldModel', this.fieldModel)
     },
   },
 }
