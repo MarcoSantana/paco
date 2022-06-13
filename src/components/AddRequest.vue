@@ -182,16 +182,16 @@ export default {
         name: 'enarm',
         upload: true,
         required: true,
-        // fields: [
-        //   {
-        //     label: `comment`,
-        //     name: 'comment',
-        //     placeholder: 'Comentario sobre el documento',
-        //     type: 'v-text-field',
-        //     rules: { required: false, length: { max: 160, min: 0 } },
-        //     counter: true,
-        //   },
-        // ],
+        fields: [
+          {
+            label: `comment`,
+            name: 'comment',
+            placeholder: 'Comentario sobre el documento',
+            type: 'CommentField',
+            rules: { required: false, length: { max: 160, min: 0 } },
+            counter: true,
+          },
+        ],
       },
       {
         longName:
@@ -221,7 +221,7 @@ export default {
             label: 'comment',
             name: 'comment',
             placeholder: 'Comentario sobre el documento',
-            type: 'v-text-field',
+            type: 'CommentField',
             rules: { required: false, length: { max: 160, min: 0 } },
             counter: true,
           },

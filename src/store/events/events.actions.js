@@ -44,16 +44,14 @@ export default {
     const currentUserEvent = { ...rootState.events.currentUserEvent, data }
     const { documents } = data
     delete data.documents
-    console.log('documents', documents)
-    // Must keep the files reference as a subcollection
     const refName = `documents.${documents.name}`
     const createdEvent = await userEventsDb.update({
       id: data.id,
       ...currentUserEvent,
       [refName]: documents,
     })
-    console.log('createdEvent', createdEvent)
     commit('addUserEvent', data)
+    return createdEvent
   },
 
   /*

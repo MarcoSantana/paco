@@ -64,6 +64,7 @@ export default {
     delete document.upload
     try {
       // console.log('docUnique', docUnique)
+      userDocumentDB.upsert(document)
       if (docUnique) {
         document.status = 1
         try {
@@ -171,6 +172,38 @@ export default {
       console.log('Error', error)
     }
     return createdDocument
+  },
+
+  /** Updates or insert document based on the presence of id */
+  upsertUserDocument: async ({ commit, rootState }, document) => {
+    const userDocumentDB = new UserDocumentsDB(rootState.authentication.user.id)
+    commit('setDocumentCreationPending', true)
+    commit('setDocumentCreationMessage', {
+      type: 'info',
+      message: 'Actualizando documento',
+    })
+    try {
+      const { upload, ...restDocument } = document
+      const createdDocument = await userDocumentDB
+        .upsert(restDocument)
+        .then(doc => userDocumentDB.upload(doc, upload))
+      commit('setDocumentCreationPending', false)
+      commit('setDocumentCreationMessage', {
+        type: 'success',
+        message: 'Éxito',
+      })
+      return createdDocument
+    } catch (error) {
+      commit('setDocumentCreationMessage', {
+        type: 'error',
+        message: `Error al procesar el documento ${error}`,
+      })
+    }
+    commit('setDocumentCreationMessage', {
+      type: 'error',
+      message: `Error al procesar el documento`,
+    })
+    return null
   },
 
   /** Update document status to "for revision"
