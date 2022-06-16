@@ -145,6 +145,7 @@ const router = new Router({
           /* webpackChunkName: "client-chunk-main-details" */ '@/views/admin/Main.vue'
         ),
     },
+
     // Admin dashboard
     {
       path: '/admin/dashboard',
@@ -152,6 +153,16 @@ const router = new Router({
       component: () =>
         import(
           /* webpackChunkName: "client-chunk-main-details" */ '@/views/admin/dashboard/Dashboard.vue'
+        ),
+    },
+
+    // Admin requests
+    {
+      path: '/admin/requests',
+      name: 'adminRequests',
+      component: () =>
+        import(
+          /* webpackChunkName: "client-chunk-main-details" */ '@/views/admin/requests/Requests.vue'
         ),
     },
 

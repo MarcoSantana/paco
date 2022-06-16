@@ -105,8 +105,9 @@ export default {
         ['mdi-account-edit', 'Datos personales', { name: 'userEdit' }],
       ],
       adminLinks: [
-        ['mdi-view-dashboard', 'Centro de control', 'admin/dashboard'],
-        ['mdi-text-box-search-outline', 'Ver solicitudes', 'admin/home'],
+        ['mdi-text-box-search-outline', 'Inicio', { name: 'adminHome' }],
+        ['mdi-view-dashboard', 'Centro de control', { name: 'adminDashboard' }],
+        ['mdi-frequently-asked-questions', 'Solicitudes', { name: 'adminRequests' }],
       ],
     }
   },
