@@ -9,7 +9,7 @@
             "type": "firefox",
             "request": "launch",
             "reAttach": true,
-            "firefoxExecutable": "/opt/firefox/firefox",
+            "firefoxExecutable": "/usr/bin/firefox",
             "url": "http://localhost:8080/",
             "skipFiles": [
                 "${workspaceFolder}/app/node_modules/**"

@@ -20,15 +20,15 @@ export default {
   //   commit('setDocuments', documents)
   // },
 
-  /*
-   * Fetch all documents if logged user is admin
-   */
   getAllEvents: async ({ rootState, commit }) => {
     const eventsDb = new EventsDB(`${rootState.authentication.user.id}/**`)
     const events = await eventsDb.readAll()
     commit('setEvents', events)
   },
 
+  /*
+   * Fetch all documents if logged user is admin
+   */
   getUserEvents: async ({ rootState, commit }) => {
     const userEventsDb = new UserEventsDB(rootState.authentication.user.id)
     const userEvents = await userEventsDb.readAll()

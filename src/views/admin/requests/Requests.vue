@@ -14,18 +14,15 @@
       <li>Create an admin state</li>
     </ul>
     <v-row>
-      <v-col cols="4">
-        <info-card color="info" :editable="true" info="">
-          <template #title>
-            {{ body }}
+      <v-col v-for="event in events" :key="event.id" cols="4">
+        <event-card icon="mdi-information-outline" :event="event">
+          <template #header>
+            <span>
+              <v-icon>mdi-information-outline</v-icon>
+              <span>{{ event.name }}</span>
+            </span>
           </template>
-          <template #description></template>
-        </info-card>
-      </v-col>
-      <v-col cols="4">
-        <info-card title="Foo" color="warning" icon="home">
-          <template slot="title"></template>
-        </info-card>
+        </event-card>
       </v-col>
     </v-row>
   </v-sheet>
@@ -34,37 +31,39 @@
 <script>
 // Language: javascript
 // Path: src/views/admin/requests/Requests.vue
-import { mapActions, mapGetters, mapState } from 'vuex'
-import InfoCard from '@/components/admin/requests/InfoCard'
+import { isNil } from 'lodash'
+import { mapActions, mapState } from 'vuex'
+import EventCard from '@/components/admin/requests/EventCard'
 
 export default {
   name: 'Requests',
   components: {
-    InfoCard,
+    EventCard,
   },
   data() {
     return {
       //
+      myHeader: 'My header',
       body: 'Some text',
       username: 'John Doe',
       likes: 0,
     }
   },
   computed: {
-    ...mapState({
-      //
-    }),
-    ...mapGetters({
-      //
-    }),
+    ...mapState('events', ['events']),
+
+    /* ...mapGetters('events', ['getAllEvents']), */
+  },
+  mounted() {
+    //
+    console.log('Requests mounted')
+    console.log(this.events)
+    if (isNil(this.events)) {
+      this.getAllEvents()
+    }
   },
   methods: {
-    ...mapActions({
-      //
-    }),
-    ...mapGetters({
-      //
-    }),
+    ...mapActions('events', ['getAllEvents']),
   },
 }
 </script>
