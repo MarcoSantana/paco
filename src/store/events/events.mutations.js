@@ -38,4 +38,9 @@ export default {
   /* Event creation messages */
   setEventCreationMessage: (state, payload) =>
     (state.eventCreationMessage = payload),
+
+  /* Event update */
+  setEventUpdatePending: (state, value) => (state.eventUpdatePending = value),
+  setEventUpdateMessage: (state, payload) =>
+    (state.eventUpdateMessage = payload),
 }

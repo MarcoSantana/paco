@@ -94,4 +94,31 @@ export default {
     commit('setCurrentEvent', res)
     return res
   },
+
+  /*
+   * Update event as admin
+   */
+  updateEvent: async ({ commit }, data) => {
+    const eventsDb = new EventsDB()
+    commit('setEventUpdatePending', true)
+    commit('setEventUpdateMessage', {
+      type: 'info',
+      message: 'Actualizando evento...',
+    })
+    try {
+      const updatedEvent = await eventsDb.update(data)
+      commit('setEventUpdatePending', false)
+      commit('setEventUpdateMessage', {
+        type: 'success',
+        message: 'Evento actualizado',
+      })
+      commit('setCurrentEvent', updatedEvent)
+    } catch (e) {
+      commit('setEventUpdatePending', false)
+      commit('setEventUpdateMessage', {
+        type: 'error',
+        message: 'Error al actualizar evento intente más tarde',
+      })
+    }
+  },
 }

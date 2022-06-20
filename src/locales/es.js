@@ -34,8 +34,8 @@ const translation = {
   event: {
     event: 'evento',
     events: 'eventos',
+    name: 'nombre del evento',
     userLimit: 'límite de usuarios',
-
   },
   userData: {
     contactData: 'datos de contacto',
