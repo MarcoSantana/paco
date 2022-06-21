@@ -4,7 +4,7 @@
     :color="`${color} lighten-3`"
     max-width="400"
   >
-    <v-snackbar v-model="saveMessage" centered :color="eventUpdateMessage.type">
+    <v-snackbar v-model="snackbar" centered :color="eventUpdateMessage.type">
       {{ eventUpdateMessage.message }}
       <template v-slot:action="{ attrs }">
         <v-btn color="yellow" text v-bind="attrs" @click="snackbar = false">
@@ -27,7 +27,11 @@
     <v-list class="px-3" :color="`${color} lighten-4`" dense>
       <v-list-item>
         <!-- TODO Link to see all related requests 202206.20-16.45 -->
-        <v-btn x-small plain>
+        <v-btn
+          x-small
+          plain
+          :to="{ name: 'adminRequest', params: { id: localEvent.id } }"
+        >
           <v-icon left>mdi-eye</v-icon>
           Ver solicitudes
         </v-btn>
