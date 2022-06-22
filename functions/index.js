@@ -9,6 +9,7 @@ admin.initializeApp()
 exports.licenseAPI = require('./licenseCheck');
 exports.logging = require('./logging');
 exports.deleteUsers = require('./deleteUsers')
+exports.syncEvents = require('./syncEvents')
 
 // Gives admin privileges to give user by email
 exports.addAdminRole = functions.https.onCall((data, context) => {
