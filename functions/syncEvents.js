@@ -10,34 +10,41 @@ const userEventTrigger = functions.firestore.document(
 const serverTimestamp = firestore.FieldValue.serverTimestamp()
 
 exports.syncEvents = userEventTrigger.onCreate(async (_, context) => {
-  const userId = context.params.userId
-  const eventId = context.params.eventId
-  functions.logger.log(`Syncing event ${eventId} to user ${userId}`)
-  // const userEvent = change.data()
+  const {eventId, userId} = context.params
 
-  await firestore().collection('logs').doc('users').collection('requests').add({
+  await firestore()
+    .collection('logs').doc('users').collection('requests').add({
     [userId]: 'Requested to join event',
     createTimestamp: serverTimestamp,
   })
-    const event = await firestore()
-      .collection('events')
-      .doc(eventId)
-      .collection('users')
-      .get()
-    const eventData = event.data()
-    const eventUsers = eventData.users
 
-  functions.logger.log('eventData', eventData)
-    const userIndex = eventUsers.findIndex(user => user.id === userId)
-    if (userIndex === -1) {
-      eventUsers.push(userEvent)
-    } else {
-      eventUsers[userIndex] = userEvent
-    }
-    await firestore()
-      .collection('events')
-      .doc(eventId)
-      .collection('users')
-      .add({userId})
-      // .update({ users: eventUsers })
+  await firestore()
+    .collection('events')
+    .doc(eventId)
+    .collection('users')
+    .doc(userId).set({
+      createTimestamp: serverTimestamp,
+      description: 'Requested to join event',
+      userId,
+      status: 'pending',
+    })
+
+  // update the user's event status to pending
+  await firestore()
+    .collection('users')
+    .doc(userId)
+    .collection('events')
+    .doc(eventId)
+    .set({
+      createTimestamp: serverTimestamp,
+      status: 'pending',
+    })
+
+  // await firestore()
+  //   .collection('users')
+  //   .doc(userId)
+  //   .collection('events')
+  //   .doc(eventId)
+  //   .update({status: 'pending'})
+
 })
