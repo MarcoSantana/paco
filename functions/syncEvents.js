@@ -9,6 +9,8 @@ const userEventTrigger = functions.firestore.document(
 
 
 const serverTimestamp = firestore.FieldValue.serverTimestamp();
+const updateTimestamp = serverTimestamp;
+const createTimestamp = serverTimestamp;
 
 const increment = firestore.FieldValue.increment(1);
 const decrement = firestore.FieldValue.increment(-1);
@@ -90,27 +92,15 @@ exports.updateEventStatus = eventTrigger
             .collection("requests")
             .doc();
 
-
-        const pendingRequestsRef = firestore()
-            .collection("counters")
-            .doc("pendingRequests");
-        const acceptedRequestsRef = firestore()
-            .collection("counters")
-            .doc("acceptedRequests");
-        const rejectedRequestsRef = firestore()
-            .collection("counters")
-            .doc("rejectedRequests");
-
-
         const batch = firestore().batch();
 
         batch.update(singleEventsUserRef, {
-          updateTimestamp: serverTimestamp,
+          updateTimestamp,
           status: afterStatus,
         });
 
         batch.update(userEventRef, {
-          updateTimestamp: serverTimestamp,
+          updateTimestamp,
           status: afterStatus,
         });
 
@@ -118,67 +108,27 @@ exports.updateEventStatus = eventTrigger
           userId,
           eventId,
           description: "Admin set event status to " + afterStatus,
-          createTimestamp: serverTimestamp,
+          createTimestamp,
         });
 
-        // TODO refactor to be cleaner and dryer
-        //
-        if (beforeStatus === "pending") {
-          batch.update(pendingRequestsRef, {
-            count: decrement,
-            updateTimestamp: serverTimestamp,
-          });
-          if (afterStatus === "accepted") {
-            batch.update(acceptedRequestsRef, {
-              count: increment,
-              updateTimestamp: serverTimestamp,
-            });
-          }
-          if (afterStatus === "rejected") {
-            batch.update(rejectedRequestsRef, {
-              count: increment,
-              updateTimestamp: serverTimestamp,
-            });
-          }
-        }
+        const counterRef = (doc) => firestore()
+            .collection("counters")
+            .doc(`${doc}Requests`);
 
-        if (beforeStatus === "accepted") {
-          batch.update(acceptedRequestsRef, {
-            count: decrement,
-            updateTimestamp: serverTimestamp,
-          });
-          if (afterStatus === "pending") {
-            batch.update(pendingRequestsRef, {
-              count: increment,
-              updateTimestamp: serverTimestamp,
-            });
-          }
-          if (afterStatus === "rejected") {
-            batch.update(rejectedRequestsRef, {
-              count: increment,
-              updateTimestamp: serverTimestamp,
-            });
-          }
-        }
+        const setCounter = (delta) => firestore.FieldValue.increment(delta);
 
-        if (beforeStatus === "rejected") {
-          batch.update(rejectedRequestsRef, {
-            count: decrement,
-            updateTimestamp: serverTimestamp,
+        const updateCounters = (beforeStatus, afterStatus) => {
+          batch.update(counterRef(beforeStatus), {
+            count: setCounter(-1),
+            updateTimestamp,
           });
-          if (afterStatus === "pending") {
-            batch.update(pendingRequestsRef, {
-              count: increment,
-              updateTimestamp: serverTimestamp,
-            });
-          }
-          if (afterStatus === "accepted") {
-            batch.update(acceptedRequestsRef, {
-              count: increment,
-              updateTimestamp: serverTimestamp,
-            });
-          }
-        }
+          batch.update(counterRef(afterStatus), {
+            count: setCounter(1),
+            updateTimestamp,
+          });
+        };
+        updateCounters(beforeStatus, afterStatus);
+
 
         try {
           await batch.commit();
