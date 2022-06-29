@@ -1,6 +1,7 @@
 import UserDocumentsDB from '@/firebase/user-documents-db'
 // import UsersDB from '@/firebase/users-db'
 import DocumentsDB from '@/firebase/documents-db'
+import CountersDB from '@/firebase/counters-db'
 import { storage } from 'firebase'
 
 export default {
@@ -23,7 +24,13 @@ export default {
     console.log('Get all documents(admin)')
     console.log('payload :>> ', payload)
     const { startAt, endAt, constraints, limit, orderBy } = payload
-    const documents = await documentsDb.readWithPagination(constraints, startAt, endAt, limit, orderBy)
+    const documents = await documentsDb.readWithPagination(
+      constraints,
+      startAt,
+      endAt,
+      limit,
+      orderBy
+    )
     console.log('documents', documents)
     // const documents = await documentsDb.readAllAsAdmin()
     // console.log('documents: ', documents)
@@ -39,7 +46,9 @@ export default {
     commit('setDocumentCreationPending', true)
     // const addUniqueUserDocument = await userDocumentDb.addUniqueUserDocument(document.name)
     // console.log('addUniqueUserDocument :>> ', addUniqueUserDocument)
-    const docExists = await userDocumentDb.checkUniqueUserDocument(document.name)
+    const docExists = await userDocumentDb.checkUniqueUserDocument(
+      document.name
+    )
     try {
       if (!docExists) {
         const { upload } = document
@@ -48,10 +57,15 @@ export default {
         console.log('document.files :>> ', document.files)
         console.log('upload :>> ', upload)
         // TODO here we mmust traverse the new uploads object to extract only the keys and create the route and those values must be inserted into a new object node maybe called again uploads or maybe files 202106.27-18.51
-        const createdDocument = await userDocumentDb.create(document, document.name)
+        const createdDocument = await userDocumentDb.create(
+          document,
+          document.name
+        )
 
         // Create a root reference
-        const storageRef = storage().ref(`documents/${rootState.authentication.user.id}`)
+        const storageRef = storage().ref(
+          `documents/${rootState.authentication.user.id}`
+        )
         document.files.forEach(element => {
           console.log('element :>> ', element)
           const documentRef = storageRef
@@ -100,7 +114,10 @@ export default {
   /**
    * Soft Delete (as admin) a document from its id
    */
-  triggerSoftDeleteUserDocument: async ({ rootState, commit, getters }, documentId) => {
+  triggerSoftDeleteUserDocument: async (
+    { rootState, commit, getters },
+    documentId
+  ) => {
     if (getters.isDocumentDeletionPending(documentId)) return
 
     const documentsDb = new DocumentsDB(rootState.authentication.user.id)
@@ -108,5 +125,23 @@ export default {
     await documentsDb.softDelete(documentId)
     commit('removeDocumentById', documentId)
     commit('removeDocumentDeletionPending', documentId)
+  },
+
+  /**
+   * Fetch from database a counter document ans commit to storage
+   */
+  getRequestsCounter: async ({ commit }, type) => {
+    console.log('admin.actions getRequestsCounter')
+    console.log(`Fetching ${type}`)
+    const requestsCounter = new CountersDB()
+    await requestsCounter
+      .fetchRequestsByType(type)
+      .then(data =>
+        commit(
+          `set${type[0].toUpperCase()}${type.slice(1)}RequestsCounter`,
+          data
+        )
+      )
+      .catch(err => console.error(err))
   },
 }

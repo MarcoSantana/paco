@@ -1,17 +1,19 @@
 <template>
   <v-container id="dashboard" fluid tag="section">
     <v-row>
-      <v-col cols="4">
-        <v-card class="d-flex flex-column" color="green lighten-4" max-width="400" height="400">
+      <v-col cols="6">
+        <v-card class="d-flex flex-column" max-width="100%" height="400">
           <v-card-title>
             <v-icon large left>
               mdi-account-group
             </v-icon>
             <span class="text-h6 font-weight-light">Usuarios registrados</span>
           </v-card-title>
-
           <v-card-text class="text-h5 font-weight-bold">
-            <BarChart />
+            <RequestsPeriodChart
+              :start-date="`2020-01-01`"
+              :end-date="`2020-01-31`"
+            ></RequestsPeriodChart>
           </v-card-text>
           <v-spacer></v-spacer>
           <v-card-actions>
@@ -24,6 +26,7 @@
         </v-card>
       </v-col>
 
+      <v-col cols="6"><requests /></v-col>
       <v-col cols="4">
         <v-card class="d-flex flex-column" max-width="400" height="400">
           <v-card-title>
@@ -51,11 +54,13 @@
   </v-container>
 </template>
 <script>
-import BarChart from './BarChart.vue'
+// import BarChart from './BarChart.vue'
+import RequestsPeriodChart from './RequestsPeriodChart.vue'
 import RegisteredUsers from './RegisteredUsers.vue'
+import Requests from './Requests.vue'
 
 export default {
-  components: { BarChart, RegisteredUsers },
+  components: { RequestsPeriodChart, RegisteredUsers, Requests },
   data() {
     return {}
   },

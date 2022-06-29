@@ -4,10 +4,20 @@ export default {
   /**
    * Check if a document has deletion pending
    */
-  isDocumentDeletionPending: state => documentId => state.documentDeletionPending.includes(documentId),
+  isDocumentDeletionPending: state => documentId =>
+    state.documentDeletionPending.includes(documentId),
 
   /**
    * Get document by id
    */
-  getDocumentById: state => documentId => find(state.documents, document => document.id === documentId),
+  getDocumentById: state => documentId =>
+    find(state.documents, document => document.id === documentId),
+
+  getPendingRequests: state => {
+    const pendingRequest = find(
+      state.pendingRequests,
+      request => request.id === 'pendingRequests'
+    )
+    return pendingRequest
+  },
 }
