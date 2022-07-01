@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="event">
     <apexchart
       type="line"
       height="250"
@@ -9,12 +9,13 @@
   </div>
 </template>
 <script>
+import { isNil } from 'lodash'
 import VueApexCharts from 'vue-apexcharts'
 import { DateTime, Interval } from 'luxon'
 
 export default {
   name: 'RequestPeriodChart',
-  // TODO convert this into a subcomponent
+  // DONE convert this into a subcomponent
   // TODO prop for the events to be displayed
   // TODO the event data will be obtained from db and NOT stored in vuex
   // TODO get event data
@@ -24,13 +25,9 @@ export default {
     apexchart: VueApexCharts,
   },
   props: {
-    startDate: {
-      type: String,
-      default: '',
-    },
-    endDate: {
-      type: String,
-      default: '',
+    event: {
+      type: Object,
+      required: false,
     },
   },
   data() {
@@ -79,9 +76,7 @@ export default {
           align: 'left',
         },
         subtitle: {
-          text: `${this.$t('charts.period')} ${this.startDate} - ${
-            this.endDate
-          }`,
+          text: '',
           align: 'left',
         },
         grid: {
@@ -95,7 +90,7 @@ export default {
           size: 1,
         },
         xaxis: {
-          categories: this.computeCategories(),
+          categories: [],
           title: {
             text: `${this.$t('charts.date')}`,
           },
@@ -124,11 +119,51 @@ export default {
       )
       return Math.max(...result)
     },
+    myStartDate() {
+      if (isNil(this.event)) return null
+      return this.formatDate(this.event.activateOn)
+    },
+    myEndDate() {
+      if (isNil(this.event)) return null
+      return this.formatDate(this.event.deactivateOn)
+    },
+    myCategories() {
+      if (isNil(this.event)) return null
+      const start = DateTime.fromFormat(this.myStartDate, 'yyyy-MM-dd')
+      const end = DateTime.fromFormat(this.myEndDate, 'yyyy-MM-dd')
+      const duration = Interval.fromDateTimes(start, end).count('days')
+      const categories = []
+
+      for (let i = 0; i < duration; i += 1) {
+        const day = start.plus({ days: i })
+        categories.push(day.toFormat('yyyy-MM-dd'))
+      }
+      return categories
+    },
   },
 
-  watch: {},
+  watch: {
+    myStartDate() {
+      this.chartOptions.subtitle.text = `${this.$t('period')} ${
+        this.myStartDate
+      } - ${this.myEndDate}`
+    },
+    myEndDate() {
+      this.chartOptions.subtitle.text = `${this.$t('period')} ${
+        this.myStartDate
+      } - ${this.myEndDate}`
+    },
+    event() {
+      this.chartOptions.xaxis.categories = this.myCategories
+    },
+  },
   mounted() {},
   methods: {
+    formatDate(date) {
+      if (isNil(date)) return null
+      return DateTime.fromFormat(date, 'yyyy-MM-dd').toFormat('yyyy-MM-dd')
+    },
+
     start() {
       return DateTime.fromFormat(this.startDate, 'yyyy-MM-dd')
     },
@@ -139,8 +174,8 @@ export default {
       return Interval.fromDateTimes(this.startDate, this.endDate).count('days')
     },
     computeCategories() {
-      const start = this.start()
-      const end = this.end()
+      const start = this.myStartDate
+      const end = this.myEndDate
       console.log('start', start)
       console.log('end', end)
       const duration = Interval.fromDateTimes(start, end).count('days')
