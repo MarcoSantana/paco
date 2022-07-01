@@ -4,7 +4,7 @@
       type="line"
       height="250"
       :options="chartOptions"
-      :series="series"
+      :series="mySeries"
     ></apexchart>
   </div>
 </template>
@@ -16,11 +16,12 @@ import { DateTime, Interval } from 'luxon'
 export default {
   name: 'RequestPeriodChart',
   // DONE convert this into a subcomponent
-  // TODO prop for the events to be displayed
-  // TODO the event data will be obtained from db and NOT stored in vuex
-  // TODO get event data
+  // DONE prop for the events to be displayed
+  // DONE the event data will be obtained from db and NOT stored in vuex
+  // DONE get event data
   // TODO get event logs
-  // TODO get event/users collection
+  // DONE get event/users collection
+  // TODO compute the series from the even.users data
   components: {
     apexchart: VueApexCharts,
   },
@@ -32,22 +33,18 @@ export default {
   },
   data() {
     return {
-      series: [
-        {
-          name: `${this.$t('charts.certifications')}`,
-          data: Array.from(
-            { length: 30 },
-            () => Math.floor(Math.random() * 50) + 1
-          ),
-        },
-        {
-          name: `${this.$t('charts.revalidations')}`,
-          data: Array.from(
-            { length: 30 },
-            () => Math.floor(Math.random() * 30) + 1
-          ),
-        },
-      ], // series
+      // series: [
+      //   {
+      //     name: `${this.$t('charts.certifications')}`,
+      //   },
+      //   /* {
+      //    *   name: `${this.$t('charts.revalidations')}`,
+      //    *   data: Array.from(
+      //    *     { length: 30 },
+      //    *     () => Math.floor(Math.random() * 30) + 1
+      //    *   ),
+      //    * }, */
+      // ], // series
       chartOptions: {
         chart: {
           height: 350,
@@ -90,7 +87,7 @@ export default {
           size: 1,
         },
         xaxis: {
-          categories: [],
+          categories: this.myCategories,
           title: {
             text: `${this.$t('charts.date')}`,
           },
@@ -138,8 +135,27 @@ export default {
         const day = start.plus({ days: i })
         categories.push(day.toFormat('yyyy-MM-dd'))
       }
+      console.log('categories', categories)
       return categories
-    },
+    }, // end of myCategories
+    mySeries() {
+      console.log('mySeries')
+      if (isNil(this.event)) return null
+      const registrationDates = this.event.users.map(item =>
+        DateTime.fromJSDate(item.createTimestamp).toFormat('yyyy-MM-dd')
+      )
+      const data = this.myCategories.map(cat => {
+        return registrationDates.filter(date => date === cat).length
+      })
+      return [
+        {
+          name: `${this.$t('charts.inscriptions')}`,
+          data,
+        },
+      ]
+      /* console.table('registrationDates', registrationDates)
+       * return this.event.users.length */
+    }, // end of mySeries
   },
 
   watch: {
