@@ -1,5 +1,5 @@
 <template>
-  <v-sheet class="container">
+  <v-sheet class="container" v-if="event">
     <div class="row">
       <div class="text-h5 text-center col-md-12 mb-3">
         Solicitudes para {{ event.name }}
@@ -22,12 +22,14 @@
           </v-btn>
           -->
       </v-toolbar>
+
       <v-list v-if="event">
-        <user-details
+        <user-event-details
           v-for="user in event.users"
-          :key="user.id"
-          :template-user="user"
-        ></user-details>
+          :key="user.userId"
+          :user-id="user.userId"
+          :event-id="event.id"
+        ></user-event-details>
       </v-list>
     </v-card>
   </v-sheet>
@@ -36,12 +38,12 @@
 import { isNil } from 'lodash'
 import EventsDB from '@/firebase/events-db'
 import { mapState, mapGetters } from 'vuex'
-import UserDetails from '@/components/admin/UserDetails'
+import UserEventDetails from '@/views/admin/requests/UserEventDetails'
 
 export default {
   name: 'UserRequestView',
   components: {
-    UserDetails,
+    UserEventDetails,
   },
   data() {
     return {

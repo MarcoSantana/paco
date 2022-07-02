@@ -177,6 +177,27 @@ const router = new Router({
         ),
     },
 
+    // Shows details for a single user-event
+
+    {
+      path: '/admin/request/user/:user',
+      name: 'adminUserEventDetails',
+      props: true,
+      component: () =>
+        import(
+          /* webpackChunkName: "client-chunk-main-details" */ '@/views/admin/requests/UserEventDetails.vue'
+        ),
+    },
+    // {
+    //   path: '/admin/events/:eventId/:userId',
+    //   name: 'foo',
+    //   props: true,
+    //   component: () =>
+    //     import(
+    //       /* webpackChunkName: "client-chunk-main-details" */ '@/views/admin/requests/UserEventDetails.vue'
+    //     ),
+    // },
+
     {
       // https://paco-1a08b.firebaseapp.com/home?mode=resetPassword&oobCode=tRiYs5S8Ry5pwQrd7SH5-qQr9Zlv7Hkg2yzX9HyQyhIAAAF6-Fh59g&apiKey=AIzaSyAge4gR03bNsbvhOtyRSuw4qtGBgE4pX_U&lang=es-419
       path: '/resetPassword',
