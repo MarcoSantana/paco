@@ -1,7 +1,15 @@
 <template>
-  <v-list-item>
+  <v-list-item
+    v-if="user"
+    :to="{
+      name: 'adminUserEventDetails',
+      params: {
+        user: user,
+        eventId: eventId,
+      },
+    }"
+  >
     <v-list-item-icon class="mx-0 pa-0">
-      <!-- TODO add tooltip 202207.01-04.31 -->
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-icon v-if="user.incomplete" color="pink" v-bind="attrs" v-on="on">
@@ -12,9 +20,14 @@
       </v-tooltip>
     </v-list-item-icon>
     <v-list-item-icon class="mx-0 pa-0">
-      <v-icon v-if="templateUser.status == 'pending'" color="red">
-        mdi-email
-      </v-icon>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-icon color="error" v-bind="attrs" v-on="on">
+            mdi-email
+          </v-icon>
+        </template>
+        <span>{{ $t('messages.pending') | capitalize }}</span>
+      </v-tooltip>
     </v-list-item-icon>
     <v-list-item-content class="ml-2">
       <v-list-item-title>
@@ -37,7 +50,7 @@ export default {
   name: 'UserDetails',
   filters: { capitalize },
   props: {
-    text: String,
+    eventId: String,
     templateUser: Object,
   },
   data() {

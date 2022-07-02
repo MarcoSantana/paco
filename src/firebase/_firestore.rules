@@ -1,0 +1,59 @@
+service cloud.firestore {
+match /databases/{database}/documents {
+  function authenticated() { return request.auth.uid != null }
+  function isAdmin() { return request.auth.token.admin == true }
+    match /documents/{documentId} {
+      allow get: if (authenticated() && isAdmin());
+      allow list: if (authenticated() && request.auth.uid == userId || isAdmin());
+      allow write: if (isAdmin());
+    }
+
+    match /users/{userId} {
+      allow get: if (authenticated() && request.auth.uid == userId || isAdmin());
+      allow list: if (authenticated() && request.auth.uid == userId || isAdmin());
+      allow create: if authenticated() && request.auth.uid == userId;
+      allow update, delete: if authenticated() && request.auth.uid == userId;
+    }
+
+    match /users/{userId}/products/{productId} {
+       allow get: if (authenticated() && request.auth.uid == userId) || request.auth.token.admin == true;
+		   allow list: if (authenticated() && request.auth.uid == userId) || request.auth.token.admin == true;
+       allow create: if (authenticated() && request.auth.uid == userId) || request.auth.token.admin == true;
+       allow update, delete: if authenticated() && request.auth.uid == userId;
+     }
+
+    match /users/{userId}/documents/{documentId} {
+      allow get: if authenticated() && request.auth.uid == userId;
+      allow list: if authenticated() && request.auth.uid == userId;
+      allow create: if authenticated() && request.auth.uid == userId;
+      allow update: if authenticated() && request.auth.uid == userId;
+      allow update, delete: if authenticated() && request.auth.uid == userId;
+    }
+		
+    match /users/{userId}/forms/{formId} {
+      allow get: if authenticated() && request.auth.uid == userId;
+      allow list: if authenticated() && request.auth.uid == userId;
+      allow create: if authenticated() && request.auth.uid == userId;
+      allow update: if authenticated() && request.auth.uid == userId;
+      allow update, delete: if authenticated() && request.auth.uid == userId;
+    }
+		
+    
+    match /colleges/{collegeId} {
+      allow list: if authenticated();
+      allow get: if authenticated();
+    }
+
+		match /colleges/{collegeId}/campi/{campusId} {
+			allow list: if authenticated();
+      allow get: if authenticated();
+    }
+    
+    match /hospitals/{hospitalId} {
+    	allow list: if authenticated();
+      allow get: if authenticated();
+    }
+    
+  }
+  
+}
