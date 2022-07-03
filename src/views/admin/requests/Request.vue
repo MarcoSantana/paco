@@ -1,5 +1,5 @@
 <template>
-  <v-sheet class="container" v-if="event">
+  <v-sheet v-if="event" class="container">
     <div class="row">
       <div class="text-h5 text-center col-md-12 mb-3">
         Solicitudes para {{ event.name }}
@@ -22,7 +22,6 @@
           </v-btn>
           -->
       </v-toolbar>
-
       <v-list v-if="event">
         <user-event-details
           v-for="user in event.users"

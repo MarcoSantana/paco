@@ -7,10 +7,10 @@
             <v-icon
               v-if="user.incomplete"
               v-bind="attrs"
-              v-on="on"
               class="pt-1 pl-1"
               color="pink"
               small
+              v-on="on"
             >
               mdi-heart-broken
             </v-icon>
@@ -35,7 +35,7 @@
 
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <v-icon v-if="!user.photoURL" v-bind="attrs" v-on="on" color="grey">
+            <v-icon v-if="!user.photoURL" v-bind="attrs" color="grey" v-on="on">
               mdi-image-off
             </v-icon>
           </template>
