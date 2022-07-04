@@ -1,6 +1,9 @@
 <template>
   <v-sheet>
-    <v-list-item v-if="user">
+    <v-list-item
+      v-if="user"
+      :to="{ name: 'requestAssess', params: { userData: user } }"
+    >
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-list-item-icon>
