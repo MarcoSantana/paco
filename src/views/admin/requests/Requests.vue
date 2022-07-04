@@ -3,11 +3,11 @@
     <div class="text-h3">Listado de solicitudes</div>
     <ul>
       <h3>TODO</h3>
-      <li>Sort this elements by active and creation date</li>
+      <li><strike>Sort this elements by active and creation date</strike></li>
       <li>Add info button</li>
     </ul>
     <v-row>
-      <v-col v-for="event in events" :key="event.id" cols="sm">
+      <v-col v-for="event in localEvents" :key="event.id" cols="sm">
         <event-card icon="mdi-information-outline" :event="event">
           <template #header></template>
         </event-card>
@@ -20,9 +20,7 @@
 // Language: javascript
 // Path: src/views/admin/requests/Requests.vue
 
-// TODO Sort by status and date each event 202206.20-16.48
-
-import { isNil } from 'lodash'
+import { isNil, cloneDeep } from 'lodash'
 import { mapActions, mapState } from 'vuex'
 import EventCard from '@/components/admin/requests/EventCard'
 
@@ -36,6 +34,17 @@ export default {
   },
   computed: {
     ...mapState('events', ['events']),
+    localEvents() {
+      const events = cloneDeep(this.events)
+      return events.sort((a, b) => {
+        if (a.active && !b.active) {
+          return -1
+        }
+        if (!a.active && b.active) return 1
+
+        return a.created_at > b.created_at ? -1 : 1
+      })
+    },
   },
   mounted() {
     //

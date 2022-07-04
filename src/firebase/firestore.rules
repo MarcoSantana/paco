@@ -1,59 +1,129 @@
+/* 
+ author 🥋: mSantana 
+ directory 📁: /paco/src/firebase 
+ filename 📄: firestore.rules 
+ stardate 🚀: 202207.02-13.25 
+ */
 service cloud.firestore {
-match /databases/{database}/documents {
-  function authenticated() { return request.auth.uid != null }
-  function isAdmin() { return request.auth.token.admin == true }
-    match /documents/{documentId} {
-      allow get: if (authenticated() && isAdmin());
-      allow list: if (authenticated() && request.auth.uid == userId || isAdmin());
-      allow write: if (isAdmin());
-    }
+    match /databases/{database}/documents {
+        function authenticated() { return request.auth.uid != null }
+        function isOwner(id) { return request.auth.uid == id}
+        function isAdmin() { return request.auth.token.admin == true }
+        function canUpdateStatus() {
+            return (request.resource.data.keys().hasAll(["status"]));
+        }
 
-    match /users/{userId} {
-      allow get: if (authenticated() && request.auth.uid == userId || isAdmin());
-      allow list: if (authenticated() && request.auth.uid == userId || isAdmin());
-      allow create: if authenticated() && request.auth.uid == userId;
-      allow update, delete: if authenticated() && request.auth.uid == userId;
-    }
+        match /counters/{id} {
+            allow read: if isAdmin();
+            allow read: if isAdmin(); 
+        }
 
-    match /users/{userId}/products/{productId} {
-       allow get: if (authenticated() && request.auth.uid == userId) || request.auth.token.admin == true;
-		   allow list: if (authenticated() && request.auth.uid == userId) || request.auth.token.admin == true;
-       allow create: if (authenticated() && request.auth.uid == userId) || request.auth.token.admin == true;
-       allow update, delete: if authenticated() && request.auth.uid == userId;
-     }
+        match /logs {
+            allow read: if isAdmin();
+            allow read: if isAdmin(); 
+        }
 
-    match /users/{userId}/documents/{documentId} {
-      allow get: if authenticated() && request.auth.uid == userId;
-      allow list: if authenticated() && request.auth.uid == userId;
-      allow create: if authenticated() && request.auth.uid == userId;
-      allow update: if authenticated() && request.auth.uid == userId;
-      allow update, delete: if authenticated() && request.auth.uid == userId;
-    }
-		
-    match /users/{userId}/forms/{formId} {
-      allow get: if authenticated() && request.auth.uid == userId;
-      allow list: if authenticated() && request.auth.uid == userId;
-      allow create: if authenticated() && request.auth.uid == userId;
-      allow update: if authenticated() && request.auth.uid == userId;
-      allow update, delete: if authenticated() && request.auth.uid == userId;
-    }
-		
-    
-    match /colleges/{collegeId} {
-      allow list: if authenticated();
-      allow get: if authenticated();
-    }
+        match /events/{id} {
+            allow read: if authenticated() || isAdmin();
+            allow write: if authenticated() || isAdmin();
+        }
+        
+        match /events/{id}/users {
+            allow read: if authenticated() || isAdmin();
+            allow write: if authenticated() || isAdmin();
+        }
 
-		match /colleges/{collegeId}/campi/{campusId} {
-			allow list: if authenticated();
-      allow get: if authenticated();
-    }
-    
-    match /hospitals/{hospitalId} {
-    	allow list: if authenticated();
-      allow get: if authenticated();
-    }
-    
+				match /events/{id}/users/{userId} {
+            allow read: if authenticated() || isAdmin();
+            allow write: if authenticated() || isAdmin();
+        }
+
+        match /requests {
+            allow read: if authenticated();
+            allow write: if authenticated();
+        }
+
+        match /requests/{id} {
+            allow read: if authenticated();
+            allow write: if authenticated();
+        }
+
+        match /documents/{documentId} {
+            allow read: if authenticated() || isAdmin();
+            allow write: if isAdmin() || authenticated();
+        }
+
+        match /users/{userId} {
+            allow read: if authenticated();
+            allow write: if authenticated();
+        }
+        match /users/{userId}/profile/{documentName=**} {
+            allow read: if request.auth.uid == userId;
+            allow write: if request.auth.uid == userId;
+        }
+
+
+        match /users/{userId}/profile/license {
+            allow read: if request.auth.uid == userId;
+            allow write: if request.auth.uid == userId;
+        }
+
+        match /profiles {
+            allow get: if authenticated() && request.auth.uid == userId;
+            allow list: if authenticated() && request.auth.uid == userId;
+            allow create: if authenticated() && request.auth.uid == userId;
+            allow update, delete: if authenticated() && request.auth.uid == userId;
+        }
+
+        match /profiles/{userId} {
+            allow get: if authenticated() && request.auth.uid == userId;
+            allow list: if authenticated() && request.auth.uid == userId;
+            allow create: if authenticated() && request.auth.uid == userId;
+            allow update, delete: if authenticated() && request.auth.uid == userId;
+        }
+
+        match /profiles/{userId}/{documentName=**} {
+            allow get: if authenticated() && request.auth.uid == userId;
+            allow list: if authenticated() && request.auth.uid == userId;
+            allow create: if authenticated() && request.auth.uid == userId;
+            allow update, delete: if authenticated() && request.auth.uid == userId;
+        }
+
+        match /users/{userId}/products/{productId} {
+            allow get: if authenticated() && request.auth.uid == userId;
+            allow list: if authenticated() && request.auth.uid == userId;
+            allow create: if authenticated() && request.auth.uid == userId;
+            allow update, delete: if authenticated() && request.auth.uid == userId;
+        }
+
+        match /users/{userId}/documents/{documentId} {
+            allow get: if authenticated() && request.auth.uid == userId;
+            allow list: if authenticated() && request.auth.uid == userId;
+            allow create: if authenticated() && request.auth.uid == userId;
+            allow update, delete: if authenticated() && request.auth.uid == userId;
+        }
+
+        match /users/{userId}/events/{eventId} {
+            allow get: if isAdmin() || request.auth.uid == userId;
+            allow list: if authenticated() && request.auth.uid == userId;
+            allow create: if authenticated() && request.auth.uid == userId;
+            allow update, delete: if authenticated() && request.auth.uid == userId;
+        }
+                
+        match /colleges/{collegeId} {
+            allow list: if authenticated();
+            allow get: if authenticated();
+        }
+
+        match /colleges/{collegeId}/campi/{campusId} {
+            allow list: if authenticated();
+            allow get: if authenticated();
+        }
+
+        match /hospitals/{hospitalId} {
+            allow list: if authenticated();
+            allow get: if authenticated();
+        }
+
   }
-  
 }

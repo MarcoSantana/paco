@@ -10,10 +10,10 @@
             <span class="text-h6 font-weight-light">Usuarios registrados</span>
           </v-card-title>
           <v-card-text class="text-h5 font-weight-bold">
-            <RequestsPeriodChart
-              :start-date="`2020-01-01`"
-              :end-date="`2020-01-31`"
-            ></RequestsPeriodChart>
+            <RequestsPeriod
+              :requests="requests"
+              :period="period"
+            ></RequestsPeriod>
           </v-card-text>
           <v-spacer></v-spacer>
           <v-card-actions>
@@ -55,12 +55,16 @@
 </template>
 <script>
 // import BarChart from './BarChart.vue'
-import RequestsPeriodChart from './RequestsPeriodChart.vue'
+import RequestsPeriod from './RequestsPeriod.vue'
 import RegisteredUsers from './RegisteredUsers.vue'
 import Requests from './Requests.vue'
 
 export default {
-  components: { RequestsPeriodChart, RegisteredUsers, Requests },
+  components: {
+    RequestsPeriod,
+    RegisteredUsers,
+    Requests,
+  },
   data() {
     return {}
   },
