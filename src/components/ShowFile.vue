@@ -2,14 +2,74 @@
   <v-container>
     <v-card v-if="file && file.type" class="mx-auto mt-5" max-width="80%">
       <v-card-text>
-        <v-img v-if="file.type === 'image/jpeg' || file.type === 'image/png'" :src="url"></v-img>
+        <v-img
+          v-if="file.type === 'image/jpeg' || file.type === 'image/png'"
+          :src="url"
+        ></v-img>
       </v-card-text>
       <div v-if="file.type === 'application/pdf'" class="justify-center mb-6">
         <v-card-text>
+          <v-card-actions>
+            <v-progress-linear
+              v-if="loadedRatio < 1"
+              color="accent"
+              height="10"
+              :value="loadedRatio * 100"
+              striped
+            />
+            <v-slider
+              v-if="numPages > 1"
+              v-model="page"
+              label="Página"
+              step="1"
+              min="1"
+              :max="numPages"
+              thumb-label="always"
+              :thumb-size="20"
+              ticks="always"
+              tick-size="4"
+            >
+              <template v-slot:append>
+                <v-icon
+                  class="mt-1"
+                  small
+                  color="accent"
+                  @click="page + 1 > numPages ? (page = numPages) : (page += 1)"
+                >
+                  mdi-chevron-right
+                </v-icon>
+              </template>
+
+              <template v-slot:prepend>
+                <v-icon
+                  class="mt-1"
+                  small
+                  color="accent"
+                  @click="page - 1 < 1 ? (page = 1) : (page -= 1)"
+                >
+                  mdi-chevron-left
+                </v-icon>
+              </template>
+            </v-slider>
+            <v-spacer v-if="numPages > 1" />
+            <v-slider
+              v-model="rotate"
+              step="90"
+              min="0"
+              :max="270"
+              thumb-label="always"
+              :thumb-size="20"
+              ticks="always"
+              tick-size="4"
+              color="orange"
+              label="Rotación"
+            ></v-slider>
+          </v-card-actions>
           <pdf
             ref="myPdf"
             :src="url"
             :page="page"
+            :rotate="rotate"
             @progress="loadedRatio = $event"
             @error="error"
             @num-pages="numPages = $event"
@@ -17,31 +77,10 @@
           />
         </v-card-text>
         <hr />
-        <v-card-actions>
-          <v-progress-linear v-if="loadedRatio < 1" color="accent" height="10" :value="loadedRatio * 100" striped />
-          <v-slider
-            v-model="page"
-            step="1"
-            min="1"
-            :max="numPages"
-            thumb-label="always"
-            :thumb-size="20"
-            ticks="always"
-            tick-size="4"
-          >
-            <template v-slot:append>
-              <v-icon large color="accent" @click="page + 1 > numPages ? (page = numPages) : (page += 1)"
-                >mdi-plus</v-icon
-              >
-            </template>
-
-            <template v-slot:prepend>
-              <v-icon large color="accent" @click="page - 1 < 1 ? (page = 1) : (page -= 1)">mdi-minus</v-icon>
-            </template>
-          </v-slider>
-        </v-card-actions>
       </div>
-      <v-snackbar v-model="snackbar" timeout="2000">{{ snackbarMessage }}</v-snackbar>
+      <v-snackbar v-model="snackbar" timeout="2000">
+        {{ snackbarMessage }}
+      </v-snackbar>
     </v-card>
     <v-skeleton-loader v-if="loading" type="card"></v-skeleton-loader>
   </v-container>
