@@ -237,7 +237,6 @@ export default {
 
     populateRemoteFiles(files) {
       if (isNil(files)) return null
-      console.log('populateRemoteFiles', files)
       return files.map(async file => {
         this.docURLs.push(await this.getDownloadURL(file))
       })
