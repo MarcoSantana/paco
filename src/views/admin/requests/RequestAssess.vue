@@ -4,6 +4,7 @@
       <v-row>
         <v-col cols="2">
           <v-img v-if="user.photoURL" :src="user.photoURL" />
+          <!-- todo add random generated bg color to avatar -->
           <v-img
             v-else
             :src="
@@ -17,11 +18,14 @@
     <v-card-text>
       <v-list v-if="documents" dense>
         <v-list-item v-for="document in documents" :key="document.id">
-          <show-document
-            v-if="document && document.files && document.files.length"
-            :id="document.id"
-            :document="document"
-          />
+          <v-list-item-content>
+            <show-document
+              v-if="document && document.files && document.files.length"
+              :id="document.id"
+              :document="document"
+              :title="true"
+            />
+          </v-list-item-content>
         </v-list-item>
       </v-list>
     </v-card-text>
