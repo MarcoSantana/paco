@@ -2,38 +2,98 @@
   <v-card v-if="user">
     <v-card-actions class="pa-3">
       <v-spacer />
-      <v-menu v-model="menu" ...>
-        <template v-slot:activator="{ on }">
-          <v-btn icon v-on="on">
-            <v-icon>mdi-plus</v-icon>
-            <v-icon v-if="menu">mdi-menu-up</v-icon>
-            <v-icon v-else>mdi-menu-up</v-icon>
-          </v-btn>
-        </template>
-      </v-menu>
-      <v-spacer />
       <template>
-        <v-speed-dial v-model="fab" direction="left" transition="slide-x-reverse-transition">
-          <template v-slot:activator>
-            <v-hover v-slot="{ hover }">
-              <v-btn v-model="fab" color="blue darken-2" dark :fab="!hover" :x-large="hover">
-                <span v-if="hover && !fab">Acciones de la solicitud</span>
-                <v-icon v-if="fab">mdi-close</v-icon>
-                <v-icon v-else>mdi-hammer-wrench</v-icon>
-              </v-btn>
-            </v-hover>
-          </template>
+        <div class="text-center">
+          <v-menu offset-y>
+            <template v-slot:activator="{ on: onMenu, attrs: attrsMenu }">
+              <v-tooltip top color="primary">
+                <template v-slot:activator="{ on: onTooltip }">
+                  <v-btn text icon v-bind="attrsMenu" v-on="{ ...onMenu, ...onTooltip }">
+                    <v-icon x-large>mdi-dots-vertical</v-icon>
+                  </v-btn>
+                </template>
+                <span>Acciones de la solicitud</span>
+              </v-tooltip>
+            </template>
+            <v-list>
+              <v-list-item>
+                <v-list-item-icon>
+                  <v-icon>mdi-check</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title>Aprobar</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>
+                    <v-dialog v-model="documentRejectReasonDialog" width="500">
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                          block
+                          class="pa-0 text--secondary text-capitalize"
+                          text
+                          v-bind="attrs"
+                          v-on="on"
+                        >
+                          <v-icon class="mr-3">mdi-cancel</v-icon>
+                          <v-spacer />Rechazar
+                        </v-btn>
+                      </template>
 
-          <v-btn fab dark small color="green">
-            <v-icon>mdi-pencil</v-icon>
-          </v-btn>
-          <v-btn fab dark small color="indigo">
-            <v-icon>mdi-plus</v-icon>
-          </v-btn>
-          <v-btn fab dark small color="red">
-            <v-icon>mdi-delete</v-icon>
-          </v-btn>
-        </v-speed-dial>
+                      <v-card>
+                        <v-card-title
+                          class="text-h5 text--secondary white-text justify-center mb-2 warning"
+                        >Razón de rechazo</v-card-title>
+                        <v-card-text>
+                          <v-textarea
+                            v-model="documentRejectReason"
+                            counter="320"
+                            outlined
+                            background-color="amber lighten-4"
+                            color="orange orange-darken-4"
+                            label="Describa la razón del rechazo"
+                            hint="Describa en 320 caracteres ó menos la razón de rechazo"
+                            required
+                            hide-details="auto"
+                          ></v-textarea>
+                        </v-card-text>
+                        <v-divider></v-divider>
+                        <v-card-actions>
+                          <v-btn
+                            outlined
+                            color="error"
+                            text
+                            @click="
+                              documentRejectReasonDialog = false
+                              documentRejectReason = ''
+                            "
+                          >
+                            <i class="mdi mdi-cancel"></i>
+                            {{ $t('actions.cancel') }}
+                          </v-btn>
+                          <v-spacer />
+                          <v-btn :disabled="documentRejectReason" outlined color="primary" text>
+                            <i class="mdi mdi-send"></i>
+                            {{ $t('actions.send') }}
+                          </v-btn>
+                        </v-card-actions>
+                      </v-card>
+                    </v-dialog>
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-icon>
+                  <v-icon>mdi-delete</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title>Borrar</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </div>
       </template>
     </v-card-actions>
     <v-card-title>
@@ -53,8 +113,8 @@
       </v-row>
       <span class="text-h3">{{ user.displayName | capitalize }}</span>
       <v-spacer />
-      <!--  -->
     </v-card-title>
+    <v-divider />
     <v-card-text>
       <v-list v-if="documents" dense>
         <v-list-item v-for="document in documents" :key="document.id">
@@ -80,7 +140,6 @@
           <v-btn text icon v-bind="attrs" v-on="on">
             <v-icon>mdi-dots-vertical</v-icon>
           </v-btn>
-          <v-spacer />
         </template>
         <span>Acciones de documento</span>
       </v-tooltip>
@@ -90,6 +149,7 @@
 
 <script lang="js">
 import { cloneDeep } from 'lodash'
+import { callUpdateDocumentStatus } from '@/firebase/functions'
 import capitalize from '@/filters/capitalize'
 import ShowDocument from '@/components/admin/ShowDocument.vue'
 
@@ -102,7 +162,7 @@ export default {
   props: {
     userData: { type: Object, required: true },
   },
-  data: () => ({ fab: false }),
+  data: () => ({ fab: false, documentRejectReasonDialog: false, documentRejectReason: '' }),
   asyncComputed: {
     documents() {
       const files = Object.keys(this.userData.documents).map(key => {
@@ -117,7 +177,24 @@ export default {
     },
   },
   mounted() {}, // end of computed
-  methods: {}, // end of methods
+  methods: {
+    clicked(e) {
+      console.log('Click', e.target)
+      this.documentRejectReasonDialog = true
+      console.log(this.documentRejectReasonDialog)
+    },
+
+    async changeDocumentStatus(document, status, messages) {
+      if (Object.values(document).length === 0 || !status) return
+      this.documentUpdateMessage = {}
+      this.documentUpdateMessage = { type: 'warning', messages: 'Cambiando el estado del documento' }
+      // TODO: Update the state specifically for this document on successful transaction
+      // TODO: Trigger the actions and mutations related with document update
+      await callUpdateDocumentStatus(document, status, messages).then(result => {
+        this.documentUpdateMessage = result.data
+      })
+    }, // changeDocumentStatus
+  }, // end of methods
 }
 </script>
 
