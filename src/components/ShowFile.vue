@@ -1,6 +1,17 @@
 <template>
   <v-container>
     <v-card v-if="file && file.type" class="mx-auto mt-5" max-width="80%">
+      <v-card-actions>
+        <v-tooltip top color="primary">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn text icon v-on="on" v-bind="attrs">
+              <v-icon x-large>mdi-fullscreen</v-icon>
+            </v-btn>
+            <v-spacer />
+          </template>
+          <span>Pantalla completa</span>
+        </v-tooltip>
+      </v-card-actions>
       <v-card-text>
         <v-img
           v-if="file.type === 'image/jpeg' || file.type === 'image/png'"
