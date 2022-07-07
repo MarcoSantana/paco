@@ -8,7 +8,12 @@
             <template v-slot:activator="{ on: onMenu, attrs: attrsMenu }">
               <v-tooltip top color="primary">
                 <template v-slot:activator="{ on: onTooltip }">
-                  <v-btn text icon v-bind="attrsMenu" v-on="{ ...onMenu, ...onTooltip }">
+                  <v-btn
+                    text
+                    icon
+                    v-bind="attrsMenu"
+                    v-on="{ ...onMenu, ...onTooltip }"
+                  >
                     <v-icon x-large>mdi-dots-vertical</v-icon>
                   </v-btn>
                 </template>
@@ -27,59 +32,7 @@
               <v-list-item>
                 <v-list-item-content>
                   <v-list-item-title>
-                    <v-dialog v-model="documentRejectReasonDialog" width="500">
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-btn
-                          block
-                          class="pa-0 text--secondary text-capitalize"
-                          text
-                          v-bind="attrs"
-                          v-on="on"
-                        >
-                          <v-icon class="mr-3">mdi-cancel</v-icon>
-                          <v-spacer />Rechazar
-                        </v-btn>
-                      </template>
-
-                      <v-card>
-                        <v-card-title
-                          class="text-h5 text--secondary white-text justify-center mb-2 warning"
-                        >Razón de rechazo</v-card-title>
-                        <v-card-text>
-                          <v-textarea
-                            v-model="documentRejectReason"
-                            counter="320"
-                            outlined
-                            background-color="amber lighten-4"
-                            color="orange orange-darken-4"
-                            label="Describa la razón del rechazo"
-                            hint="Describa en 320 caracteres ó menos la razón de rechazo"
-                            required
-                            hide-details="auto"
-                          ></v-textarea>
-                        </v-card-text>
-                        <v-divider></v-divider>
-                        <v-card-actions>
-                          <v-btn
-                            outlined
-                            color="error"
-                            text
-                            @click="
-                              documentRejectReasonDialog = false
-                              documentRejectReason = ''
-                            "
-                          >
-                            <i class="mdi mdi-cancel"></i>
-                            {{ $t('actions.cancel') }}
-                          </v-btn>
-                          <v-spacer />
-                          <v-btn :disabled="documentRejectReason" outlined color="primary" text>
-                            <i class="mdi mdi-send"></i>
-                            {{ $t('actions.send') }}
-                          </v-btn>
-                        </v-card-actions>
-                      </v-card>
-                    </v-dialog>
+                    <reject-dialog :request="user.status.id" />
                   </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
@@ -152,12 +105,14 @@ import { cloneDeep } from 'lodash'
 import { callUpdateDocumentStatus } from '@/firebase/functions'
 import capitalize from '@/filters/capitalize'
 import ShowDocument from '@/components/admin/ShowDocument.vue'
+import RejectDialog from '@/components/admin/requests/RejectDialog.vue'
 
 export default {
   name: 'RequestAssess',
   filters: { capitalize },
   components: {
     ShowDocument,
+    RejectDialog,
   },
   props: {
     userData: { type: Object, required: true },
