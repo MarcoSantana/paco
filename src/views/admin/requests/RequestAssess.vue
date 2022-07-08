@@ -35,13 +35,20 @@
                   <v-icon>mdi-check</v-icon>
                 </v-list-item-icon>
                 <v-list-item-content>
-                  <v-list-item-title>Aprobar</v-list-item-title>
+                  <v-list-item-title>
+                    Aprobar
+                    <accept-dialog
+                      :request="{ requestId: user.status.id, userId: user.id }"
+                    />
+                  </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
               <v-list-item>
                 <v-list-item-content>
                   <v-list-item-title>
-                    <reject-dialog :request="user.status.id" />
+                    <reject-dialog
+                      :request="{ requestId: user.status.id, userId: user.id }"
+                    />
                   </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
@@ -107,13 +114,15 @@ import { callUpdateDocumentStatus } from '@/firebase/functions'
 import capitalize from '@/filters/capitalize'
 import ShowDocument from '@/components/admin/ShowDocument.vue'
 import RejectDialog from '@/components/admin/requests/RejectDialog.vue'
+import AcceptDialog from '@/components/admin/requests/AcceptDialog.vue'
 
 export default {
   name: 'RequestAssess',
   filters: { capitalize },
   components: {
-    ShowDocument,
+    AcceptDialog,
     RejectDialog,
+    ShowDocument,
   },
   props: {
     userData: { type: Object, required: true },
