@@ -89,7 +89,7 @@ exports.updateRequestStatus = functions.https.onCall((data, context) => {
         })
         .then(() => {
           return {
-            type: "info",
+            type: "success",
             message: "Estado actualizado",
           };
         });
