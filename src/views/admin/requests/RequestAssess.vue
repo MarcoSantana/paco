@@ -1,6 +1,15 @@
 <template>
   <v-card v-if="user">
     <v-card-actions class="pa-3">
+      <v-btn
+        class="mt-1"
+        color="primary"
+        text
+        :to="`/admin/requests/${userData.status.id}`"
+      >
+        <v-icon>mdi-arrow-left</v-icon>
+        {{ $t('actions.back') }}
+      </v-btn>
       <v-spacer />
       <template>
         <div class="text-center">
