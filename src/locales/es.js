@@ -115,12 +115,12 @@ const translation = {
       deleted: 'solicitud borrada',
       prompt: 'actualice su solicitud',
       changing: 'cambiando estado de la solicitud',
-      describeReject: 'describa la razón del rechazo'
-    }
+      describeReject: 'describa la razón del rechazo',
+    },
   },
   actions: {
     accept: 'aceptar',
-    back: 'atras',
+    back: 'atrás',
     cancel: 'cancelar',
     changeStatus: 'cambiar estado',
     clear: 'limpiar',
