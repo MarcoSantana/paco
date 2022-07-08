@@ -92,19 +92,11 @@
       </v-list>
     </v-card-text>
     <v-card-actions>
-      <v-spacer />
-      <v-btn color="primary" text>
+      <v-btn color="primary" text :to="`/admin/requests/${userData.status.id}`">
         <v-icon>mdi-arrow-left</v-icon>
         {{ $t('actions.back') }}
       </v-btn>
-      <v-tooltip top color="primary">
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn text icon v-bind="attrs" v-on="on">
-            <v-icon>mdi-dots-vertical</v-icon>
-          </v-btn>
-        </template>
-        <span>Acciones de documento</span>
-      </v-tooltip>
+      <v-spacer />
     </v-card-actions>
   </v-card>
 </template>
