@@ -89,7 +89,6 @@ const translation = {
     pob: 'lugar de nacimiento (nacionalidad)',
     rfc: 'RFC',
   },
-
   messages: {
     bye: 'sales bye',
     cannotUndo: 'esta acción no puede deshacerse',
@@ -110,6 +109,14 @@ const translation = {
     },
     processing: 'procesando',
     pending: 'pendiente',
+    request: {
+      rejected: 'solicitud rechazada',
+      accepted: 'solicitud aceptada',
+      deleted: 'solicitud borrada',
+      prompt: 'actualice su solicitud',
+      changing: 'cambiando estado de la solicitud',
+      describeReject: 'describa la razón del rechazo'
+    }
   },
   actions: {
     accept: 'aceptar',
