@@ -31,12 +31,8 @@
             </template>
             <v-list>
               <v-list-item>
-                <v-list-item-icon>
-                  <v-icon>mdi-check</v-icon>
-                </v-list-item-icon>
                 <v-list-item-content>
                   <v-list-item-title>
-                    Aprobar
                     <accept-dialog
                       :request="{ requestId: user.status.id, userId: user.id }"
                     />
