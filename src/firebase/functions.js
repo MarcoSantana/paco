@@ -23,7 +23,9 @@ export function callAddAdminRole(email) {
 }
 
 export async function callUpdateDocumentStatus(documentId, status, message) {
-  const documentStatus = firebase.functions().httpsCallable('updateDocumentStatus')
+  const documentStatus = firebase
+    .functions()
+    .httpsCallable('updateDocumentStatus')
   return documentStatus({ documentId, status, message })
     .then(result => {
       return result
@@ -32,6 +34,17 @@ export async function callUpdateDocumentStatus(documentId, status, message) {
       console.error(err)
     })
 }
+
+export async function callUpdateRequestStatus(payload) {
+  const requestStatus = firebase
+    .functions()
+    .httpsCallable('updateRequestStatus')
+  return requestStatus(payload)
+    .then(result => {
+      return result
+    })
+    .catch(e => console.error(e))
+} // callUpdateRequestStatus
 
 export async function callCreateUserListSheet() {
   const userList = firebase.functions().httpsCallable('createUserListSheet')
@@ -46,7 +59,9 @@ export async function callCreateUserListSheet() {
 
 export function callChangeDocumentsName() {
   console.log('changing Documents name')
-  const changeDocumentsName = firebase.functions().httpsCallable('changeDocumentsName')
+  const changeDocumentsName = firebase
+    .functions()
+    .httpsCallable('changeDocumentsName')
   return changeDocumentsName()
     .then(result => {
       console.log('result', result)
