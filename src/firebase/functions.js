@@ -37,8 +37,6 @@ export async function callUpdateDocumentStatus(documentId, status, message) {
 }
 
 export async function callUpdateRequestStatus(payload) {
-  debugger
-  console.log('callUpdateRequestStatus', payload)
   if (isNil(payload)) return { error: 'Error', type: 'error' }
   const requestStatus = firebase
     .functions()
