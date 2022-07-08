@@ -1,4 +1,5 @@
 import firebase from 'firebase/app'
+import { isNil } from 'lodash'
 // import { isNil } from 'lodash'
 
 // import store from '@/store'
@@ -36,6 +37,9 @@ export async function callUpdateDocumentStatus(documentId, status, message) {
 }
 
 export async function callUpdateRequestStatus(payload) {
+  debugger
+  console.log('callUpdateRequestStatus', payload)
+  if (isNil(payload)) return { error: 'Error', type: 'error' }
   const requestStatus = firebase
     .functions()
     .httpsCallable('updateRequestStatus')
@@ -43,7 +47,14 @@ export async function callUpdateRequestStatus(payload) {
     .then(result => {
       return result
     })
-    .catch(e => console.error(e))
+    .catch(e => {
+      console.error(e)
+      return {
+        error: e,
+        type: 'error',
+        message: 'error al cambiar el estado de la solicitud',
+      }
+    })
 } // callUpdateRequestStatus
 
 export async function callCreateUserListSheet() {
