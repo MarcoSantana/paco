@@ -66,9 +66,9 @@
               color="error"
               text
               :disabled="!confirm"
-              @click="changeStatus"
+              @click="deleteUserRequest"
             >
-              <i class="mdi mdi-delete"></i>
+              <i class="mdi mdi-delete" />
               {{ $t('actions.delete') }}
             </v-btn>
           </v-card-actions>
@@ -86,7 +86,7 @@
 </template>
 
 <script>
-import { callUpdateRequestStatus } from '@/firebase/functions'
+import { callDeleteUserRequest } from '@/firebase/functions'
 import { isNil } from 'lodash'
 import capitalize from '@/filters/capitalize'
 
@@ -110,7 +110,7 @@ export default {
       this.toast.show = false
       this.toast.type = 'info'
     },
-    async changeStatus() {
+    async deleteUserRequest() {
       const { request } = this
       if (isNil(request) || isNil(request.requestId) || isNil(request.userId)) {
         this.toast.type = 'error'
@@ -130,12 +130,12 @@ export default {
         userId: request.userId,
         status: 'accepted',
       } // payload
-      await callUpdateRequestStatus(payload).then(result => {
+      await callDeleteUserRequest(payload).then(result => {
         this.toast = result.data
         return result.data
       })
     },
-    // TODO emmit changeStatus
+    // TODO emmit delete
   }, // end methods
 }
 </script>

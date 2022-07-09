@@ -55,6 +55,20 @@ export async function callUpdateRequestStatus(payload) {
     })
 } // callUpdateRequestStatus
 
+export async function callDeleteUserRequest(payload) {
+  if (isNil(payload)) return { error: 'Error', type: 'error' }
+  const deletedRequest = firebase.functions().httpsCallable('deleteUserRequest')
+  return deletedRequest(payload)
+    .then(result => result)
+    .catch(e => {
+      return {
+        error: e,
+        type: 'error',
+        message: 'error al borrar la solicitud',
+      }
+    })
+} // callUpdateRequestStatus
+
 export async function callCreateUserListSheet() {
   const userList = firebase.functions().httpsCallable('createUserListSheet')
   return userList()
