@@ -71,38 +71,18 @@
         </div>
       </template>
     </v-card-actions>
-    <v-card-title>
-      <v-row>
-        <v-col cols="2">
-          <v-img v-if="user.photoURL" :src="user.photoURL" />
-          <!-- todo add random generated bg color to avatar  -->
-          <v-img
-            v-else
-            max-width="100px"
-            width="100px"
-            :src="
-              `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${user.displayName}`
-            "
-          ></v-img>
-        </v-col>
-      </v-row>
-      <span class="text-h3">{{ user.displayName | capitalize }}</span>
-      <v-spacer />
-    </v-card-title>
     <v-divider />
     <v-card-text>
-      <v-list v-if="documents" dense>
-        <v-list-item v-for="document in documents" :key="document.id">
-          <v-list-item-content>
-            <show-document
-              v-if="document && document.files && document.files.length"
-              :id="document.id"
-              :document="document"
-              :title="true"
-            />
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
+      <v-row v-if="documents" dense>
+        <v-col v-for="document in documents" :key="document.id" :md="3" :lg="4">
+          <show-document
+            v-if="document && document.files && document.files.length"
+            :id="document.id"
+            :document="document"
+            :title="true"
+          />
+        </v-col>
+      </v-row>
     </v-card-text>
     <v-card-actions>
       <v-btn color="primary" text :to="`/admin/requests/${userData.status.id}`">
