@@ -27,9 +27,12 @@ const translation = {
   preview: 'vista previa',
   registeredUsers: 'usuarios registrados',
   requests: {
+    accept: 'aceptar solicitud',
     acceptedRequests: 'solicitudes aceptadas',
+    delete: 'borrar solicitud',
     pendingRequests: 'solicitudes pendientes',
     plural: 'solicitudes',
+    reject: 'rechazadar solicitud',
     rejectedRequests: 'solicitudes rechazadas',
     singular: 'solicitud',
   },

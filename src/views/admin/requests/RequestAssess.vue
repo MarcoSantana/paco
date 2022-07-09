@@ -49,11 +49,12 @@
                 </v-list-item-content>
               </v-list-item>
               <v-list-item>
-                <v-list-item-icon>
-                  <v-icon>mdi-delete</v-icon>
-                </v-list-item-icon>
                 <v-list-item-content>
-                  <v-list-item-title>Borrar</v-list-item-title>
+                  <v-list-item-title>
+                    <delete-dialog
+                      :request="{ requestId: user.status.id, userId: user.id }"
+                    />
+                  </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </v-list>
@@ -108,15 +109,17 @@
 import { cloneDeep } from 'lodash'
 import { callUpdateDocumentStatus } from '@/firebase/functions'
 import capitalize from '@/filters/capitalize'
-import ShowDocument from '@/components/admin/ShowDocument.vue'
-import RejectDialog from '@/components/admin/requests/RejectDialog.vue'
 import AcceptDialog from '@/components/admin/requests/AcceptDialog.vue'
+import DeleteDialog from '@/components/admin/requests/DeleteDialog.vue'
+import RejectDialog from '@/components/admin/requests/RejectDialog.vue'
+import ShowDocument from '@/components/admin/ShowDocument.vue'
 
 export default {
   name: 'RequestAssess',
   filters: { capitalize },
   components: {
     AcceptDialog,
+    DeleteDialog,
     RejectDialog,
     ShowDocument,
   },
