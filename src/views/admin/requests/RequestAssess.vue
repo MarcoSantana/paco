@@ -11,6 +11,15 @@
         {{ $t('actions.back') }}
       </v-btn>
       <v-spacer />
+      <v-row>
+        <v-col cols="2">
+          <avatar :username="user.displayName" :src="user.photoURL" />
+        </v-col>
+        <v-col cols="10" class="text-h5 pt-5">
+          {{ user.displayName | capitalize }}
+        </v-col>
+      </v-row>
+      <v-spacer />
       <template>
         <div class="text-center">
           <v-menu offset-y>
@@ -109,6 +118,7 @@
 import { cloneDeep } from 'lodash'
 import { callUpdateDocumentStatus } from '@/firebase/functions'
 import capitalize from '@/filters/capitalize'
+import Avatar from 'vue-avatar'
 import AcceptDialog from '@/components/admin/requests/AcceptDialog.vue'
 import DeleteDialog from '@/components/admin/requests/DeleteDialog.vue'
 import RejectDialog from '@/components/admin/requests/RejectDialog.vue'
@@ -119,6 +129,7 @@ export default {
   filters: { capitalize },
   components: {
     AcceptDialog,
+    Avatar,
     DeleteDialog,
     RejectDialog,
     ShowDocument,
