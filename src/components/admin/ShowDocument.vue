@@ -2,18 +2,57 @@
   <v-sheet v-if="!loading && urls && urls.length > 0" class="container">
     <v-card v-for="url in urls" :key="url" min-width="500px" max-width="90%">
       <v-card-title v-if="title">
-        <span class="headline">{{ capitalize($t(`document.types.${document.name}`)) }}</span>
+        <span class="headline">
+          {{ capitalize($t(`document.types.${document.name}`)) }}
+        </span>
         <v-spacer />
         <v-card-actions>
-          <v-tooltip top color="primary">
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn text icon v-bind="attrs" v-on="on">
-                <v-icon x-large>mdi-dots-horizontal</v-icon>
-              </v-btn>
-              <v-spacer />
+          <v-menu offset-y>
+            <template v-slot:activator="{ on: onMenu }">
+              <v-tooltip top color="primary">
+                <template
+                  v-slot:activator="{ on: onTooltip, attrs: attrsTooltip }"
+                >
+                  <v-btn
+                    text
+                    icon
+                    v-bind="attrsTooltip"
+                    v-on="{ ...onMenu, ...onTooltip }"
+                  >
+                    <v-icon x-large>mdi-dots-horizontal</v-icon>
+                  </v-btn>
+                  <v-spacer />
+                </template>
+                <span>{{ $t('document.actions.of') | capitalize }}</span>
+              </v-tooltip>
             </template>
-            <span>Acciones del documento</span>
-          </v-tooltip>
+            <v-list>
+              <v-list-item link>
+                <v-list-item-icon>
+                  <v-icon>mdi-cloud-download</v-icon>
+                </v-list-item-icon>
+                {{ $t('document.actions.download') | capitalize }}
+              </v-list-item>
+              <v-list-item link>
+                <v-list-item-icon>
+                  <v-icon>mdi-check</v-icon>
+                </v-list-item-icon>
+                {{ $t('document.actions.accept') | capitalize }}
+              </v-list-item>
+              <v-list-item link>
+                <v-list-item-icon>
+                  <v-icon>mdi-cancel</v-icon>
+                </v-list-item-icon>
+                {{ $t('document.actions.reject') | capitalize }}
+              </v-list-item>
+              <v-list-item link>
+                <v-list-item-icon>
+                  <v-icon>mdi-delete</v-icon>
+                </v-list-item-icon>
+                {{ $t('document.actions.delete') | capitalize }}
+              </v-list-item>
+            </v-list>
+          </v-menu>
         </v-card-actions>
       </v-card-title>
       <show-file class="container" :url="url" />
@@ -27,7 +66,11 @@ import { storage } from 'firebase'
 import ShowFile from '@/components/ShowFile'
 
 export default {
+  name: 'ShowDocument',
   components: { ShowFile },
+  filters: {
+    capitalize: (value) => capitalize(value),
+  },
   props: {
     document: { type: Object, required: true },
     title: { type: Boolean, default: false },
