@@ -2,60 +2,111 @@
   <v-sheet v-if="!loading && urls && urls.length > 0" class="container">
     <v-card v-for="url in urls" :key="url" min-width="500px" max-width="90%">
       <v-card-title v-if="title">
-        <span class="headline">
+        <v-tooltip top color="primary">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn text icon v-bind="attrs" v-on="on" @click="toggleFullscreen">
+              <v-icon v-if="!fullscreen">mdi-fullscreen</v-icon>
+              <v-icon v-else>mdi-fullscreen-exit</v-icon>
+            </v-btn>
+            <v-spacer />
+          </template>
+          <span>Pantalla completa</span>
+        </v-tooltip>
+        <v-spacer />
+        <span class="headline text-center">
           {{ capitalize($t(`document.types.${document.name}`)) }}
         </span>
         <v-spacer />
-        <v-card-actions>
-          <v-menu offset-y>
-            <template v-slot:activator="{ on: onMenu }">
-              <v-tooltip top color="primary">
-                <template
-                  v-slot:activator="{ on: onTooltip, attrs: attrsTooltip }"
+        <v-menu offset-y>
+          <template v-slot:activator="{ on: onMenu }">
+            <v-tooltip top color="primary">
+              <template
+                v-slot:activator="{ on: onTooltip, attrs: attrsTooltip }"
+              >
+                <v-btn
+                  text
+                  icon
+                  v-bind="attrsTooltip"
+                  v-on="{ ...onMenu, ...onTooltip }"
                 >
-                  <v-btn
-                    text
-                    icon
-                    v-bind="attrsTooltip"
-                    v-on="{ ...onMenu, ...onTooltip }"
-                  >
-                    <v-icon x-large>mdi-dots-horizontal</v-icon>
-                  </v-btn>
-                  <v-spacer />
-                </template>
-                <span>{{ $t('document.actions.of') | capitalize }}</span>
-              </v-tooltip>
-            </template>
-            <v-list>
-              <v-list-item link>
-                <v-list-item-icon>
-                  <v-icon>mdi-cloud-download</v-icon>
-                </v-list-item-icon>
-                {{ $t('document.actions.download') | capitalize }}
-              </v-list-item>
-              <v-list-item link>
-                <v-list-item-icon>
-                  <v-icon>mdi-check</v-icon>
-                </v-list-item-icon>
-                {{ $t('document.actions.accept') | capitalize }}
-              </v-list-item>
-              <v-list-item link>
-                <v-list-item-icon>
-                  <v-icon>mdi-cancel</v-icon>
-                </v-list-item-icon>
-                {{ $t('document.actions.reject') | capitalize }}
-              </v-list-item>
-              <v-list-item link>
-                <v-list-item-icon>
-                  <v-icon>mdi-delete</v-icon>
-                </v-list-item-icon>
-                {{ $t('document.actions.delete') | capitalize }}
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </v-card-actions>
+                  <v-icon x-large>mdi-dots-horizontal</v-icon>
+                </v-btn>
+                <v-spacer />
+              </template>
+              <span>{{ $t('document.actions.of') | capitalize }}</span>
+            </v-tooltip>
+          </template>
+          <v-list>
+            <v-list-item link>
+              <v-list-item-icon>
+                <v-icon>mdi-cloud-download</v-icon>
+              </v-list-item-icon>
+              {{ $t('document.actions.download') | capitalize }}
+            </v-list-item>
+            <v-list-item link>
+              <v-list-item-icon>
+                <v-icon>mdi-check</v-icon>
+              </v-list-item-icon>
+              {{ $t('document.actions.accept') | capitalize }}
+            </v-list-item>
+            <v-list-item link>
+              <v-list-item-icon>
+                <v-icon>mdi-cancel</v-icon>
+              </v-list-item-icon>
+              {{ $t('document.actions.reject') | capitalize }}
+            </v-list-item>
+            <v-list-item link>
+              <v-list-item-icon>
+                <v-icon>mdi-delete</v-icon>
+              </v-list-item-icon>
+              {{ $t('document.actions.delete') | capitalize }}
+            </v-list-item>
+          </v-list>
+        </v-menu>
       </v-card-title>
       <show-file class="container" :url="url" />
+      <v-divider />
+      <v-dialog
+        v-model="fullscreen"
+        fullscreen
+        hide-overlay
+        transition="dialog-bottom-transition"
+        @keydown.esc="fullscreen = false"
+      >
+        <v-lazy
+          v-model="fullscreen"
+          :options="{
+            threshold: 0.5,
+          }"
+          min-height="100%"
+          transition="fade-transition"
+        >
+          <v-sheet>
+            <v-tooltip top color="primary">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  text
+                  icon
+                  v-bind="attrs"
+                  v-on="on"
+                  @click="toggleFullscreen"
+                >
+                  <v-icon v-if="!fullscreen" x-large>mdi-fullscreen</v-icon>
+                  <v-icon v-else class="ma-3" x-large>mdi-close</v-icon>
+                </v-btn>
+                <v-spacer />
+              </template>
+              <span v-if="!fullscreen">Pantalla completa</span>
+              <span v-else>Salir de pantalla completa</span>
+            </v-tooltip>
+            <show-file
+              class="container"
+              :url="url"
+              @toggleFullscreen="toggleFullscreen"
+            />
+          </v-sheet>
+        </v-lazy>
+      </v-dialog>
     </v-card>
   </v-sheet>
 </template>
@@ -67,7 +118,7 @@ import ShowFile from '@/components/ShowFile'
 
 export default {
   name: 'ShowDocument',
-  components: { ShowFile },
+  components: { ShowFile, },
   filters: {
     capitalize: (value) => capitalize(value),
   },
@@ -76,9 +127,7 @@ export default {
     title: { type: Boolean, default: false },
   },
   data() {
-    return {
-      loading: false,
-    }
+    return {fullscreen: false, loading: false,}
   },
   mounted() {
     this.$nextTick(() => {
@@ -102,6 +151,9 @@ export default {
     },
     capitalize(str) {
       return capitalize(str)
+    },
+    toggleFullscreen() {
+      this.fullscreen = !this.fullscreen
     },
   },
   asyncComputed: {

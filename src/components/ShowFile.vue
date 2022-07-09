@@ -1,23 +1,10 @@
 <template>
   <v-container>
     <v-card v-if="file && file.type" class="mx-auto mt-5" max-width="80%">
-      <v-card-actions>
-        <v-tooltip top color="primary">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn text icon v-on="on" v-bind="attrs">
-              <v-icon x-large>mdi-fullscreen</v-icon>
-            </v-btn>
-            <v-spacer />
-          </template>
-          <span>Pantalla completa</span>
-        </v-tooltip>
-      </v-card-actions>
-      <v-card-text>
-        <v-img
-          v-if="file.type === 'image/jpeg' || file.type === 'image/png'"
-          :src="url"
-        ></v-img>
-      </v-card-text>
+      <v-card-actions></v-card-actions>
+      <div v-if="file.type === 'image/jpeg' || file.type === 'image/png'">
+        <v-img :src="url" />
+      </div>
       <div v-if="file.type === 'application/pdf'" class="justify-center mb-6">
         <v-card-text>
           <v-card-actions>
@@ -104,19 +91,20 @@ export default {
   filters: {},
   props: { url: { type: String, required: true } },
   data: () => ({
-    file: null,
-    loading: true,
-    err: null,
-    show: true,
-    dialog: false,
-    snackbarMessage: null,
-    snackbar: false,
     currentPage: 0,
+    dialog: false,
+    err: null,
+    file: null,
+    fullscreen: false,
+    loadedRatio: 0,
+    loading: true,
+    numPages: 0,
+    page: 1,
     pageCount: 0,
     rotate: 0,
-    page: 1,
-    numPages: 0,
-    loadedRatio: 0,
+    show: true,
+    snackbar: false,
+    snackbarMessage: null,
   }),
   created() {
     this.getFile(this.url)
@@ -141,7 +129,7 @@ export default {
         // <!--TODO: add snakbar-->
         this.error(err)
       }
-    },
+    }, // getFile
   },
 }
 </script>
