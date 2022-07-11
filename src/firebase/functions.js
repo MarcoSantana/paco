@@ -11,16 +11,15 @@ import { isNil } from 'lodash'
 // import { functions } from 'firebase'
 // const functions = require('firebase/functions')
 
-export function callAddAdminRole(email) {
+export async function callAddAdminRole(email) {
   console.log('adminRole called')
   const adminRole = firebase.functions().httpsCallable('addAdminRole')
-  return adminRole({ email })
-    .then(result => {
-      console.log('result', result)
-    })
-    .catch(err => {
-      console.error(err)
-    })
+  try {
+    const result = await adminRole({ email })
+    console.log('result', result)
+  } catch (err) {
+    console.error(err)
+  }
 }
 
 export async function callUpdateDocumentStatus(documentId, status, message) {

@@ -1,11 +1,11 @@
-import GenericDB from './generic-db'
+import GenericDB from './generic-db';
 
 // Documents
 export default class DocumentsDB extends GenericDB {
   // constructor(userId) {
   constructor() {
     // super(`users/${userId}/documents`)
-    super('documents')
+    super('documents');
   }
 
   /**
@@ -19,10 +19,10 @@ export default class DocumentsDB extends GenericDB {
     const constraints = [
       ['userId', '==', userId],
       ['name', '==', documentName],
-    ]
-    const result = await this.readAll(constraints)
-    console.log('result :>> ', result)
-    console.log('result.length :>> ', result.length)
-    return result.length === 0
+    ];
+    const result = await this.readAll(constraints);
+    console.log('result :>> ', result);
+    console.log('result.length :>> ', result.length);
+    return result.length === 0;
   }
 }

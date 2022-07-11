@@ -88,6 +88,8 @@ export default {
       try {
         const userEvent = await userEventsDB.userEvent(this.localEventId)
         const user = await usersDB.read(this.userId)
+        debugger
+        console.log('userEvent: ', userEvent)
         return {
           ...user,
           documents: { ...userEvent.documents },

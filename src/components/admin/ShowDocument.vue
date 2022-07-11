@@ -37,7 +37,12 @@
             </v-tooltip>
           </template>
           <v-list>
-            <v-list-item link>
+            <v-list-item
+              ref="actionDownload"
+              name="actionDownload"
+              link
+              @click="documentActionsDialog"
+            >
               <v-list-item-icon>
                 <v-icon>mdi-cloud-download</v-icon>
               </v-list-item-icon>
@@ -108,6 +113,10 @@
         </v-lazy>
       </v-dialog>
     </v-card>
+    <document-actions-dialog
+      :document="document"
+      :show="showDocumentActionsDialog"
+    />
   </v-sheet>
 </template>
 
@@ -115,10 +124,11 @@
 import { cloneDeep, capitalize } from 'lodash'
 import { storage } from 'firebase'
 import ShowFile from '@/components/ShowFile'
+import DocumentActionsDialog from '@/components/admin/DocumentActionsDialog'
 
 export default {
   name: 'ShowDocument',
-  components: { ShowFile, },
+  components: { ShowFile, DocumentActionsDialog },
   filters: {
     capitalize: (value) => capitalize(value),
   },
@@ -127,7 +137,11 @@ export default {
     title: { type: Boolean, default: false },
   },
   data() {
-    return {fullscreen: false, loading: false,}
+    return {
+      fullscreen: false,
+      loading: false,
+      showDocumentActionsDialog: false
+    }
   },
   mounted() {
     this.$nextTick(() => {
@@ -151,6 +165,11 @@ export default {
     },
     capitalize(str) {
       return capitalize(str)
+    },
+    documentActionsDialog() {
+      console.clear()
+      console.log('DocumentActionsDialog')
+      this.showDocumentActionsDialog = true
     },
     toggleFullscreen() {
       this.fullscreen = !this.fullscreen

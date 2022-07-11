@@ -1,6 +1,9 @@
 <script>
 import { mapState, mapActions } from 'vuex'
-import { callUpdateDocumentStatus, callCreateUserListSheet } from '@/firebase/functions'
+import {
+  callUpdateDocumentStatus,
+  callCreateUserListSheet,
+} from '@/firebase/functions'
 import DocumentPreview from './DocumentPreview.vue'
 
 export default {
@@ -39,10 +42,30 @@ export default {
       currentSortDirection: 'asc',
       documentsSearch: null,
       documentHeaders: [
-        { text: this.$t('name'), value: 'userName', sortable: true, class: 'text-capitalize' },
-        { text: this.$t('documentType'), value: 'name', sortable: true, class: 'text-capitalize' },
-        { text: this.$t('status'), value: 'status', sortable: true, class: 'text-capitalize' },
-        { text: this.$t('created'), value: 'data.updateTimestamp', sortable: true, class: 'text-capitalize' },
+        {
+          text: this.$t('name'),
+          value: 'userName',
+          sortable: true,
+          class: 'text-capitalize',
+        },
+        {
+          text: this.$t('documentType'),
+          value: 'name',
+          sortable: true,
+          class: 'text-capitalize',
+        },
+        {
+          text: this.$t('status'),
+          value: 'status',
+          sortable: true,
+          class: 'text-capitalize',
+        },
+        {
+          text: this.$t('created'),
+          value: 'data.updateTimestamp',
+          sortable: true,
+          class: 'text-capitalize',
+        },
         {
           text: this.$t('lastModified'),
           value: 'data.createTimestamp',
@@ -50,7 +73,12 @@ export default {
           filterable: true,
           class: 'text-capitalize',
         },
-        { text: this.$t('functions'), value: 'actions', sortable: false, class: 'text-capitalize' },
+        {
+          text: this.$t('functions'),
+          value: 'actions',
+          sortable: false,
+          class: 'text-capitalize',
+        },
       ],
       documentDeleteDialog: false,
       documentStatusDialog: false,
@@ -76,7 +104,11 @@ export default {
     this.paginateDocumentsForward()
   },
   methods: {
-    ...mapActions('admin', ['getAllDocuments', 'deleteUserDocument', 'triggerSoftDeleteUserDocument']),
+    ...mapActions('admin', [
+      'getAllDocuments',
+      'deleteUserDocument',
+      'triggerSoftDeleteUserDocument',
+    ]),
     dispatchAllDocuments() {
       this.$store.dispatch('admin/getAllDocuments', null, { root: true })
     },
@@ -92,12 +124,17 @@ export default {
     async changeDocumentStatus(document, status, messages) {
       if (Object.values(document).length === 0 || !status) return
       this.documentUpdateMessage = {}
-      this.documentUpdateMessage = { type: 'warning', messages: 'Cambiando el estado del documento' }
+      this.documentUpdateMessage = {
+        type: 'warning',
+        messages: 'Cambiando el estado del documento',
+      }
       // TODO: Update the state specifically for this document on successful transaction
       // TODO: Trigger the actions and mutations related with document update
-      await callUpdateDocumentStatus(document, status, messages).then(result => {
-        this.documentUpdateMessage = result.data
-      })
+      await callUpdateDocumentStatus(document, status, messages).then(
+        result => {
+          this.documentUpdateMessage = result.data
+        }
+      )
     },
     async createUsersList() {
       await callCreateUserListSheet()
@@ -127,7 +164,8 @@ export default {
       // WIP
       // TODO: Remove as it is unused thanks to vuetify datatable
       if (s === this.currentSort) {
-        this.currentSortDirection = this.currentSortDirection === 'asc' ? 'desc' : 'asc'
+        this.currentSortDirection =
+          this.currentSortDirection === 'asc' ? 'desc' : 'asc'
       } else {
         this.$refs[this.currentSort].classList.remove('selected')
       }
@@ -154,28 +192,52 @@ Crear lista de usuarios para emma
       </v-card-text>
     </v-card>
     <v-card v-if="documents">
-      <v-data-table :headers="documentHeaders" :items="documents" :search="documentsSearch" :items-per-page="50" dense>
+      <v-data-table
+        :headers="documentHeaders"
+        :items="documents"
+        :search="documentsSearch"
+        :items-per-page="50"
+        dense
+      >
         <template v-slot:top>
           <v-toolbar flat>
             <v-card-title>
               Buscar en documentos
               <v-spacer></v-spacer>
               <v-spacer></v-spacer>
-              <v-text-field v-model="documentsSearch" class="mx-2" append-icon="mdi-magnify"></v-text-field>
+              <v-text-field
+                v-model="documentsSearch"
+                class="mx-2"
+                append-icon="mdi-magnify"
+              ></v-text-field>
             </v-card-title>
             <v-divider class="mx-4" inset vertical></v-divider>
           </v-toolbar>
           <v-dialog v-model="documentStatusDialog" max-width="500px">
             <v-card>
-              <v-card-title class="text-h5 justify-center mb-2 primary lighten-2">
-                <span class="white--text">{{ $t('actions.changeStatus') | capitalize }}</span>
+              <v-card-title
+                class="text-h5 justify-center mb-2 primary lighten-2"
+              >
+                <span class="white--text">
+                  {{ $t('actions.changeStatus') | capitalize }}
+                </span>
               </v-card-title>
-              <v-alert v-if="documentUpdateMessage !== ''" class="ma-5" outlined :type="documentUpdateMessage.type">
+              <v-alert
+                v-if="documentUpdateMessage !== ''"
+                class="ma-5"
+                outlined
+                :type="documentUpdateMessage.type"
+              >
                 {{ documentUpdateMessage.message }}
               </v-alert>
               <v-card-text>
                 <div>Documento: {{ currentDocument.name }}</div>
-                <div>Creado: {{ currentDocument.createTimestamp | removeTime | zeroPadDate }}</div>
+                <div>
+                  Creado:
+                  {{
+                    currentDocument.createTimestamp | removeTime | zeroPadDate
+                  }}
+                </div>
               </v-card-text>
               <v-card-text class="text-center">
                 <v-btn
@@ -196,7 +258,13 @@ Crear lista de usuarios para emma
                   ripple
                   color="primary"
                   :disabled="currentDocument.status == 4"
-                  @click="changeDocumentStatus(currentDocument.id, 4, 'Documento aprobado')"
+                  @click="
+                    changeDocumentStatus(
+                      currentDocument.id,
+                      4,
+                      'Documento aprobado'
+                    )
+                  "
                 >
                   <i class="mdi mdi-check"></i>
                   {{ $t('actions.accept') | capitalize }}
@@ -215,7 +283,11 @@ Crear lista de usuarios para emma
             </v-card>
             <v-dialog v-model="documentRejectReasonDialog" max-width="400px">
               <v-card>
-                <v-card-title class="text-h5 white--text justify-center mb-2 warning">Razón de rechazo</v-card-title>
+                <v-card-title
+                  class="text-h5 white--text justify-center mb-2 warning"
+                >
+                  Razón de rechazo
+                </v-card-title>
                 <v-card-text>
                   <v-textarea
                     v-model="documentRejectReason"
@@ -247,7 +319,13 @@ Crear lista de usuarios para emma
                     outlined
                     color="primary"
                     text
-                    @click="changeDocumentStatus(currentDocument.id, 3, documentRejectReason)"
+                    @click="
+                      changeDocumentStatus(
+                        currentDocument.id,
+                        3,
+                        documentRejectReason
+                      )
+                    "
                   >
                     <i class="mdi mdi-send"></i>
                     {{ $t('actions.send') }}
@@ -258,7 +336,9 @@ Crear lista de usuarios para emma
           </v-dialog>
           <v-dialog v-model="documentDeleteDialog" max-width="500px">
             <v-card>
-              <v-card-title class="text-h5 justify-center mb-2 warning lighten-2">
+              <v-card-title
+                class="text-h5 justify-center mb-2 warning lighten-2"
+              >
                 {{ $t('messages.confirm') | capitalize }}
               </v-card-title>
               <v-card-text>
@@ -267,21 +347,34 @@ Crear lista de usuarios para emma
                 </v-alert>
                 <v-list-item two-line>
                   <v-list-item-content>
-                    <v-list-item-title>{{ $t('file') | capitalize }}</v-list-item-title>
-                    <v-list-item-subtitle>{{ currentDocument.name }}</v-list-item-subtitle>
-                  </v-list-item-content>
-                </v-list-item>
-                <v-list-item two-line>
-                  <v-list-item-content>
-                    <v-list-item-title>{{ $t('user') | capitalize }}</v-list-item-title>
-                    <v-list-item-subtitle>{{ currentDocument.userName }}</v-list-item-subtitle>
-                  </v-list-item-content>
-                </v-list-item>
-                <v-list-item two-line>
-                  <v-list-item-content>
-                    <v-list-item-title>{{ $t('document.status') | capitalize }}</v-list-item-title>
+                    <v-list-item-title>
+                      {{ $t('file') | capitalize }}
+                    </v-list-item-title>
                     <v-list-item-subtitle>
-                      {{ $t('document.statusKey')[currentDocument.status] | capitalize }}
+                      {{ currentDocument.name }}
+                    </v-list-item-subtitle>
+                  </v-list-item-content>
+                </v-list-item>
+                <v-list-item two-line>
+                  <v-list-item-content>
+                    <v-list-item-title>
+                      {{ $t('user') | capitalize }}
+                    </v-list-item-title>
+                    <v-list-item-subtitle>
+                      {{ currentDocument.userName }}
+                    </v-list-item-subtitle>
+                  </v-list-item-content>
+                </v-list-item>
+                <v-list-item two-line>
+                  <v-list-item-content>
+                    <v-list-item-title>
+                      {{ $t('document.status') | capitalize }}
+                    </v-list-item-title>
+                    <v-list-item-subtitle>
+                      {{
+                        $t('document.statusKey')[currentDocument.status]
+                          | capitalize
+                      }}
                     </v-list-item-subtitle>
                   </v-list-item-content>
                 </v-list-item>
@@ -296,7 +389,12 @@ Crear lista de usuarios para emma
                   hide-details
                 ></v-switch>
                 <v-spacer></v-spacer>
-                <v-btn outlined color="primary darken-1" text @click="documentDeleteDialog = false">
+                <v-btn
+                  outlined
+                  color="primary darken-1"
+                  text
+                  @click="documentDeleteDialog = false"
+                >
                   {{ $t('actions.cancel') }}
                 </v-btn>
                 <v-btn
@@ -320,13 +418,19 @@ Crear lista de usuarios para emma
           <span>{{ item.userName | capitalize }}</span>
         </template>
         <template v-slot:item.data.createTimestamp="{ item }">
-          <span>{{ item.data.createTimestamp.toDate() | removeTime | zeroPadDate }}</span>
+          <span>
+            {{ item.data.createTimestamp.toDate() | removeTime | zeroPadDate }}
+          </span>
         </template>
         <template v-slot:item.data.updateTimestamp="{ item }">
-          <span>{{ item.data.updateTimestamp.toDate() | removeTime | zeroPadDate }}</span>
+          <span>
+            {{ item.data.updateTimestamp.toDate() | removeTime | zeroPadDate }}
+          </span>
         </template>
         <template v-slot:no-data>
-          <v-btn outlined color="primary" @click="reloadAllDocuments">{{ $t('actions.reload') }}</v-btn>
+          <v-btn outlined color="primary" @click="reloadAllDocuments">
+            {{ $t('actions.reload') }}
+          </v-btn>
         </template>
         <template v-slot:item.actions="{ item }">
           <v-btn-toggle dense tile group>
@@ -372,7 +476,11 @@ Crear lista de usuarios para emma
           </v-btn-toggle>
         </template>
       </v-data-table>
-      <document-preview :document="currentDocument" :show-dialog="documentPreviewDialog" @close="closePreviewDialog" />
+      <document-preview
+        :document="currentDocument"
+        :show-dialog="documentPreviewDialog"
+        @close="closePreviewDialog"
+      />
     </v-card>
   </div>
 </template>
