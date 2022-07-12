@@ -1,8 +1,8 @@
 <template>
-  <v-dialog v-model="show" max-width="400px">
+  <v-dialog v-model="documentRejectReasonDialog" max-width="400px">
     <v-card>
       <v-card-title class="text-h5 white--text justify-center mb-2 warning">
-        Razón de rechazo Document {{ document }}
+        Razón de rechazo
       </v-card-title>
       <v-card-text>
         <v-textarea
@@ -23,8 +23,8 @@
           color="error"
           text
           @click="
-            documentRejectReasonDialog = false
             documentRejectReason = ''
+            $emit('close')
           "
         >
           <i class="mdi mdi-cancel"></i>
@@ -49,9 +49,10 @@
 
 <script>
 import { cloneDeep } from 'lodash'
+import DocumentsDB from '@/firebase/documents-db'
 
 export default {
-  name: 'DocumentActionsDialog',
+  name: 'DocumentRejectDialog',
   props: {
     document: { type: Object, required: true },
     show: { type: Boolean, default: false },
@@ -59,19 +60,32 @@ export default {
   data() {
     return {
       documentRejectReason: '',
-      documentRejectReasonDialog: false,
     }
   }, // end of data
+  asyncComputed: {
+    currentDocument() {
+      const documentsDB = new DocumentsDB()
+      return documentsDB
+        .getByUserDocumentId(this.document.id)
+        .then(response => response)
+    }, // end of currentDocument
+  }, // end of asyncComputed
   computed: {
     localDocument() {
       return cloneDeep(this.document)
     },
+    documentRejectReasonDialog() {
+      return this.show
+    }, // end of documentRejectReasonDialog
   }, // end of computed
   methods: {
     changeDocumentStatus(id, status, reason) {
+      debugger
+      console.log('changeDocumentStatus')
       console.log('id, status, reason: ', id, status, reason)
       this.documentRejectReasonDialog = false
       this.documentRejectReason = ''
+      // TODO pass this data to the database method
     },
   }, // end of methods
 }
