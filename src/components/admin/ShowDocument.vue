@@ -41,7 +41,7 @@
               ref="actionDownload"
               name="actionDownload"
               link
-              @click="documentActionsDialog"
+              @click="documentRejectDialog"
             >
               <v-list-item-icon>
                 <v-icon>mdi-cloud-download</v-icon>
@@ -113,9 +113,10 @@
         </v-lazy>
       </v-dialog>
     </v-card>
-    <document-actions-dialog
+    <document-reject-dialog
       :document="document"
-      :show="showDocumentActionsDialog"
+      :show="showDocumentRejectDialog"
+      @close="toggleDocumentRejectDialog"
     />
   </v-sheet>
 </template>
@@ -124,11 +125,11 @@
 import { cloneDeep, capitalize } from 'lodash'
 import { storage } from 'firebase'
 import ShowFile from '@/components/ShowFile'
-import DocumentActionsDialog from '@/components/admin/DocumentActionsDialog'
+import DocumentRejectDialog from '@/components/admin/DocumentRejectDialog'
 
 export default {
   name: 'ShowDocument',
-  components: { ShowFile, DocumentActionsDialog },
+  components: { ShowFile, DocumentRejectDialog },
   filters: {
     capitalize: (value) => capitalize(value),
   },
@@ -140,7 +141,7 @@ export default {
     return {
       fullscreen: false,
       loading: false,
-      showDocumentActionsDialog: false
+      showDocumentRejectDialog: false
     }
   },
   mounted() {
@@ -166,14 +167,15 @@ export default {
     capitalize(str) {
       return capitalize(str)
     },
-    documentActionsDialog() {
-      console.clear()
-      console.log('DocumentActionsDialog')
-      this.showDocumentActionsDialog = true
+    documentRejectDialog() {
+      this.showDocumentRejectDialog = true
     },
     toggleFullscreen() {
       this.fullscreen = !this.fullscreen
     },
+    toggleDocumentRejectDialog() {
+    this.showDocumentRejectDialog = !this.showDocumentRejectDialog
+    }, // end toggleDocumentRejectDialog
   },
   asyncComputed: {
     urls() {

@@ -6,6 +6,7 @@ import firestore from './async-firestore'
 export default class GenericDB {
   constructor(collectionPath) {
     this.collectionPath = collectionPath
+    this.isNil = isNil
   }
 
   /**
