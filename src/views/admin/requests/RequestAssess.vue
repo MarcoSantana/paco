@@ -18,7 +18,6 @@
         <v-col cols="10" class="text-h5 pt-5">
           {{ user.displayName | capitalize }}
         </v-col>
-        <v-col>UserDatta: {{ userData }}</v-col>
       </v-row>
       <v-spacer />
       <template>

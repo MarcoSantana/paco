@@ -189,7 +189,7 @@ const router = new Router({
         ),
     },
     {
-      path: 'admin/request/assess',
+      path: '/admin/request/assess',
       name: 'requestAssess',
       props: true,
       component: () =>
