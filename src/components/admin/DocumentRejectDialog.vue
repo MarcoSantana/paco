@@ -4,6 +4,20 @@
       <v-card-title class="text-h5 white--text justify-center mb-2 warning">
         Razón de rechazo
       </v-card-title>
+      <v-dialog
+        v-if="documentRejectionMessage"
+        :type="documentRejectionMessage.type"
+        max-width="400px"
+      >
+        <v-card>
+          <v-card-title
+            class="text-h5 white--text justify-center mb-2"
+            :class="documentRejectionMessage.type"
+          >
+            {{ documentRejectionMessage }}
+          </v-card-title>
+        </v-card>
+      </v-dialog>
       <v-card-text>
         <v-textarea
           v-model="documentRejectReason"
@@ -35,9 +49,7 @@
           outlined
           color="primary"
           text
-          @click="
-            changeDocumentStatus(currentDocument.id, 3, documentRejectReason)
-          "
+          @click="reject"
         >
           <i class="mdi mdi-send"></i>
           {{ $t('actions.send') }}
@@ -48,7 +60,7 @@
 </template>
 
 <script>
-import { cloneDeep } from 'lodash'
+import { mapState, mapActions } from 'vuex'
 import DocumentsDB from '@/firebase/documents-db'
 
 export default {
@@ -63,29 +75,34 @@ export default {
     }
   }, // end of data
   asyncComputed: {
-    currentDocument() {
+    localDocument() {
       const documentsDB = new DocumentsDB()
       return documentsDB
         .getByUserDocumentId(this.document.id)
-        .then(response => response)
+        .then(response => response[0])
     }, // end of currentDocument
   }, // end of asyncComputed
   computed: {
-    localDocument() {
-      return cloneDeep(this.document)
-    },
+    ...mapState('documents', ['currentDocument', 'documentRejectionMessage']),
     documentRejectReasonDialog() {
       return this.show
     }, // end of documentRejectReasonDialog
   }, // end of computed
   methods: {
-    changeDocumentStatus(id, status, reason) {
-      debugger
+    ...mapActions('documents', ['rejectDocument']),
+    async reject() {
+      console.clear()
       console.log('changeDocumentStatus')
-      console.log('id, status, reason: ', id, status, reason)
-      this.documentRejectReasonDialog = false
-      this.documentRejectReason = ''
-      // TODO pass this data to the database method
+      console.log('localDocument.id', this.localDocument.id)
+      console.log('documentRejectReason', this.documentRejectReason)
+      const reponse = await this.rejectDocument({
+        documentId: this.localDocument.id,
+        message: this.documentRejectReason,
+      })
+      console.log('response', reponse)
+      console.log('this.currentDocument', this.currentDocument)
+      /* this.$emit('close') */
+      // in the parent compoment show a toast message
     },
   }, // end of methods
 }

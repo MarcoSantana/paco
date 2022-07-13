@@ -31,4 +31,25 @@ export default class DocumentsDB extends GenericDB {
     const constraints = [['documentId', '==', documentId]]
     return this.readAll(constraints)
   }
+
+  async reject(id, message) {
+    // const errorMessage = {
+    //   type: 'error',
+    //   message: 'Error al rechazar el documento',
+    // }
+    debugger
+    console.log('reject in documents-db.js')
+    console.log('id :>> ', id)
+    console.log('message :>> ', message)
+    // if (this.isNil(documentId)) return errorMessage
+    const data = {
+      id,
+      status: 4,
+      message,
+    }
+    const result = await this.update(data)
+    console.log('result :>> ', result)
+    debugger
+    return result
+  }
 }

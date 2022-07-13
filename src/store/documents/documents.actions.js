@@ -1,5 +1,5 @@
-import DocumentsDB from '@/firebase/documents-db'
 import { callUpdateDocumentStatus } from '@/firebase/functions'
+import DocumentsDB from '@/firebase/documents-db'
 import UserDocumentsDB from '@/firebase/user-documents-db'
 import UsersDB from '@/firebase/users-db'
 import { storage } from 'firebase'
@@ -263,10 +263,38 @@ this is fixed so de user can not accept her own documents
     const userDocumentsDb = new UserDocumentsDB(
       rootState.authentication.user.id
     )
-
     commit('addDocumentDeletionPending', documentId)
     await userDocumentsDb.delete(documentId)
     commit('removeDocumentById', documentId)
     commit('removeDocumentDeletionPending', documentId)
+  },
+
+  rejectDocument: async ({ commit }, { documentId, message }) => {
+    console.log('rejectDocument action')
+    console.log('documentId', documentId)
+    console.log('message', message)
+    debugger
+    commit('addDocumentRejectionPending', documentId)
+    commit('setDocumentRejectionMessage', {
+      type: 'info',
+      message: 'Rechazando documento',
+    })
+    const documentsDB = new DocumentsDB()
+    documentsDB
+      .reject(documentId, message)
+      .then(document => {
+        // commit('removeDocumentRejectionPending', documentId)
+        commit('setCurrentDocument', document)
+      })
+      .catch(error => {
+        commit('setDocumentRejectionMessage', { type: 'error', message: error })
+        // commit('removeDocumentRejectionPending', documentId)
+      })
+      .finally(() => {
+        commit('setDocumentRejectionMessage', {
+          type: 'info',
+          message: 'Documento rechazado exitosamente',
+        })
+      }) // end finally
   },
 }

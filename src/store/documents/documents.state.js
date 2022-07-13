@@ -4,4 +4,8 @@ export default {
   documentDeletionPending: [],
   documentCreationPending: false,
   documentCreationMessage: {},
+  currentDocument: null,
+  documentStatusChangePending: false,
+  documentStatusChangeMessage: {},
+  documentRejectionPending: [],
 }
