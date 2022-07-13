@@ -55,7 +55,7 @@
               </v-list-item-icon>
               {{ $t('document.actions.reject') | capitalize }}
             </v-list-item>
-            <v-list-item link>
+            <v-list-item link @click="documentDeleteDialog">
               <v-list-item-icon>
                 <v-icon>mdi-delete</v-icon>
               </v-list-item-icon>
@@ -118,6 +118,11 @@
       :show="showDocumentAcceptDialog"
       @close="toggleDocumentAcceptDialog"
     />
+    <document-delete-dialog
+      :document="document"
+      :show="showDocumentDeleteDialog"
+      @close="toggleDocumentDeleteDialog"
+    />
   </v-sheet>
 </template>
 
@@ -127,10 +132,12 @@ import { storage } from 'firebase'
 import ShowFile from '@/components/ShowFile'
 import DocumentRejectDialog from '@/components/admin/DocumentRejectDialog'
 import DocumentAcceptDialog from '@/components/admin/DocumentAcceptDialog'
+import DocumentDeleteDialog from '@/components/admin/DocumentDeleteDialog'
 
 export default {
   name: 'ShowDocument',
-  components: { ShowFile, DocumentRejectDialog, DocumentAcceptDialog },
+  components: { ShowFile, DocumentRejectDialog, DocumentAcceptDialog,
+    DocumentDeleteDialog },
   filters: {
     capitalize: (value) => capitalize(value),
   },
@@ -144,6 +151,7 @@ export default {
       loading: false,
       showDocumentRejectDialog: false,
       showDocumentAcceptDialog: false,
+      showDocumentDeleteDialog: false,
     }
   },
   mounted() {
@@ -175,6 +183,9 @@ export default {
     documentAcceptDialog() {
       this.showDocumentAcceptDialog = true
     },
+    documentDeleteDialog() {
+      this.showDocumentDeleteDialog = true
+    },
     toggleFullscreen() {
       this.fullscreen = !this.fullscreen
     },
@@ -185,6 +196,10 @@ export default {
     toggleDocumentAcceptDialog() {
     this.showDocumentAcceptDialog = !this.showDocumentAcceptDialog
     }, // end toggleDocumentRejectDialog
+
+    toggleDocumentDeleteDialog() {
+    this.showDocumentDeleteDialog = !this.showDocumentDeleteDialog
+    }, // end toggleDocumentDeleteDialog
   },
   asyncComputed: {
     urls() {

@@ -58,4 +58,7 @@ export default {
 
   setDocumentAcceptMessage: (state, payload) =>
     (state.documentAcceptMessage = payload),
+
+  setDocumentDeleteMessage: (state, payload) =>
+    (state.documentDeleteMessage = payload),
 }

@@ -11,4 +11,6 @@ export default {
   documentRejectionPending: [],
   documentAcceptMessage: {},
   documentAcceptPending: [],
+  documentDeleteMessage: {},
+  documentDeletePending: [],
 }

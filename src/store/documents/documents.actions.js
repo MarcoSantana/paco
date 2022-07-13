@@ -322,4 +322,31 @@ this is fixed so de user can not accept her own documents
         })
       }) // end finally
   }, // end acceptDocument
+  deleteDocument: async ({ commit }, { documentId }) => {
+    commit('setDocumentDeleteMessage', {
+      type: 'info',
+      message: 'Borrando el documento',
+    })
+    const documentsDB = new DocumentsDB()
+    return documentsDB
+      .delete(documentId)
+      .then(() => {
+        // commit('removeDocumentById', documentId)
+        commit('setCurrentDocument', null)
+      })
+      .catch(error => {
+        commit('setDocumentDeleteMessage', {
+          type: 'error',
+          message: error,
+        })
+        // commit('removeDocumentAcceptationPending', documentId)
+        return { type: 'error', message: error }
+      })
+      .finally(() => {
+        commit('setDocumentDeleteMessage', {
+          type: 'success',
+          message: 'Documento borrado',
+        })
+      }) // end finally
+  }, // end deleteDocument
 }
