@@ -33,23 +33,18 @@ export default class DocumentsDB extends GenericDB {
   }
 
   async reject(id, message) {
-    // const errorMessage = {
-    //   type: 'error',
-    //   message: 'Error al rechazar el documento',
-    // }
-    debugger
-    console.log('reject in documents-db.js')
-    console.log('id :>> ', id)
-    console.log('message :>> ', message)
-    // if (this.isNil(documentId)) return errorMessage
+    const errorMessage = {
+      type: 'error',
+      message: 'Error al rechazar el documento',
+    }
+    if (this.isNil(id)) return errorMessage
     const data = {
       id,
       status: 4,
       message,
     }
-    const result = await this.update(data)
-    console.log('result :>> ', result)
-    debugger
-    return result
+    return this.update(data)
+      .then(documentId => this.read(documentId))
+      .then(result => result)
   }
 }

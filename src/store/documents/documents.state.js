@@ -7,5 +7,6 @@ export default {
   currentDocument: null,
   documentStatusChangePending: false,
   documentStatusChangeMessage: {},
+  documentRejectionMessage: {},
   documentRejectionPending: [],
 }

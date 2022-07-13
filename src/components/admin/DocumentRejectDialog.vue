@@ -2,24 +2,26 @@
   <v-dialog v-model="documentRejectReasonDialog" max-width="400px">
     <v-card>
       <v-card-title class="text-h5 white--text justify-center mb-2 warning">
-        Razón de rechazo
+        Rechazar documento
       </v-card-title>
-      <v-dialog
-        v-if="documentRejectionMessage"
+      <v-alert
+        v-if="documentRejectionMessage && documentRejectionMessage.type"
         :type="documentRejectionMessage.type"
         max-width="400px"
       >
         <v-card>
           <v-card-title
-            class="text-h5 white--text justify-center mb-2"
+            class="text-h5 white--text justify-center mb-2 document-reject-dialog"
+            style="white-space: pre-wrap; word-break: keep-all;"
             :class="documentRejectionMessage.type"
           >
-            {{ documentRejectionMessage }}
+            {{ documentRejectionMessage.message }}
           </v-card-title>
         </v-card>
-      </v-dialog>
+      </v-alert>
       <v-card-text>
         <v-textarea
+          v-if="!documentRejectionMessage || !documentRejectionMessage.type"
           v-model="documentRejectReason"
           counter="320"
           outlined
@@ -38,17 +40,19 @@
           text
           @click="
             documentRejectReason = ''
+            setDocumentRejectionMessage(null)
             $emit('close')
           "
         >
-          <i class="mdi mdi-cancel"></i>
-          {{ $t('actions.cancel') }}
+          <i class="mdi mdi-close"></i>
+          {{ $t('actions.close') }}
         </v-btn>
         <v-btn
           v-show="documentRejectReason"
           outlined
           color="primary"
           text
+          :loading="localLoading"
           @click="reject"
         >
           <i class="mdi mdi-send"></i>
@@ -60,7 +64,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapMutations } from 'vuex'
 import DocumentsDB from '@/firebase/documents-db'
 
 export default {
@@ -72,6 +76,7 @@ export default {
   data() {
     return {
       documentRejectReason: '',
+      localLoading: false,
     }
   }, // end of data
   asyncComputed: {
@@ -90,22 +95,28 @@ export default {
   }, // end of computed
   methods: {
     ...mapActions('documents', ['rejectDocument']),
+    ...mapMutations('documents', ['setDocumentRejectionMessage']),
     async reject() {
-      console.clear()
-      console.log('changeDocumentStatus')
-      console.log('localDocument.id', this.localDocument.id)
-      console.log('documentRejectReason', this.documentRejectReason)
-      const reponse = await this.rejectDocument({
+      this.localLoading = true
+      await this.rejectDocument({
         documentId: this.localDocument.id,
         message: this.documentRejectReason,
       })
-      console.log('response', reponse)
-      console.log('this.currentDocument', this.currentDocument)
-      /* this.$emit('close') */
-      // in the parent compoment show a toast message
+        .then(res => res)
+        .finally(() => {
+          this.localLoading = false
+          this.documentRejectReason = ''
+          /* this.setDocumentRejectionMessage(null) */
+          /* this.$emit('close') */
+        })
     },
   }, // end of methods
 }
 </script>
 
-<style></style>
+<style>
+document-reject-dialog {
+  white-space: pre-wrap;
+  word-break: keep-all; /*this stops the word breaking*/
+}
+</style>

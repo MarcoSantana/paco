@@ -54,5 +54,5 @@ export default {
   },
 
   setDocumentRejectionMessage: (state, payload) =>
-    (state.setDocumentRejectionMessage = payload),
+    (state.documentRejectionMessage = payload),
 }

@@ -270,31 +270,28 @@ this is fixed so de user can not accept her own documents
   },
 
   rejectDocument: async ({ commit }, { documentId, message }) => {
-    console.log('rejectDocument action')
-    console.log('documentId', documentId)
-    console.log('message', message)
-    debugger
     commit('addDocumentRejectionPending', documentId)
     commit('setDocumentRejectionMessage', {
       type: 'info',
       message: 'Rechazando documento',
     })
     const documentsDB = new DocumentsDB()
-    documentsDB
+    return documentsDB
       .reject(documentId, message)
       .then(document => {
-        // commit('removeDocumentRejectionPending', documentId)
+        commit('removeDocumentRejectionPending', documentId)
         commit('setCurrentDocument', document)
       })
       .catch(error => {
         commit('setDocumentRejectionMessage', { type: 'error', message: error })
-        // commit('removeDocumentRejectionPending', documentId)
+        commit('removeDocumentRejectionPending', documentId)
+        return { type: 'error', message: error }
       })
       .finally(() => {
         commit('setDocumentRejectionMessage', {
-          type: 'info',
+          type: 'success',
           message: 'Documento rechazado exitosamente',
         })
       }) // end finally
-  },
+  }, // end rejectDocument
 }

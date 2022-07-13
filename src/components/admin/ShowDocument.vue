@@ -37,12 +37,7 @@
             </v-tooltip>
           </template>
           <v-list>
-            <v-list-item
-              ref="actionDownload"
-              name="actionDownload"
-              link
-              @click="documentRejectDialog"
-            >
+            <v-list-item ref="actionDownload" name="actionDownload" link>
               <v-list-item-icon>
                 <v-icon>mdi-cloud-download</v-icon>
               </v-list-item-icon>
@@ -54,7 +49,7 @@
               </v-list-item-icon>
               {{ $t('document.actions.accept') | capitalize }}
             </v-list-item>
-            <v-list-item link>
+            <v-list-item ref="actionReject" link @click="documentRejectDialog">
               <v-list-item-icon>
                 <v-icon>mdi-cancel</v-icon>
               </v-list-item-icon>
