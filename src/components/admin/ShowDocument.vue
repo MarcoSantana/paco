@@ -43,7 +43,7 @@
               </v-list-item-icon>
               {{ $t('document.actions.download') | capitalize }}
             </v-list-item>
-            <v-list-item link>
+            <v-list-item link @click="documentAcceptDialog">
               <v-list-item-icon>
                 <v-icon>mdi-check</v-icon>
               </v-list-item-icon>
@@ -113,6 +113,11 @@
       :show="showDocumentRejectDialog"
       @close="toggleDocumentRejectDialog"
     />
+    <document-accept-dialog
+      :document="document"
+      :show="showDocumentAcceptDialog"
+      @close="toggleDocumentAcceptDialog"
+    />
   </v-sheet>
 </template>
 
@@ -121,10 +126,11 @@ import { cloneDeep, capitalize } from 'lodash'
 import { storage } from 'firebase'
 import ShowFile from '@/components/ShowFile'
 import DocumentRejectDialog from '@/components/admin/DocumentRejectDialog'
+import DocumentAcceptDialog from '@/components/admin/DocumentAcceptDialog'
 
 export default {
   name: 'ShowDocument',
-  components: { ShowFile, DocumentRejectDialog },
+  components: { ShowFile, DocumentRejectDialog, DocumentAcceptDialog },
   filters: {
     capitalize: (value) => capitalize(value),
   },
@@ -136,7 +142,8 @@ export default {
     return {
       fullscreen: false,
       loading: false,
-      showDocumentRejectDialog: false
+      showDocumentRejectDialog: false,
+      showDocumentAcceptDialog: false,
     }
   },
   mounted() {
@@ -165,11 +172,18 @@ export default {
     documentRejectDialog() {
       this.showDocumentRejectDialog = true
     },
+    documentAcceptDialog() {
+      this.showDocumentAcceptDialog = true
+    },
     toggleFullscreen() {
       this.fullscreen = !this.fullscreen
     },
     toggleDocumentRejectDialog() {
     this.showDocumentRejectDialog = !this.showDocumentRejectDialog
+    }, // end toggleDocumentRejectDialog
+
+    toggleDocumentAcceptDialog() {
+    this.showDocumentAcceptDialog = !this.showDocumentAcceptDialog
     }, // end toggleDocumentRejectDialog
   },
   asyncComputed: {

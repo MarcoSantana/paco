@@ -9,4 +9,6 @@ export default {
   documentStatusChangeMessage: {},
   documentRejectionMessage: {},
   documentRejectionPending: [],
+  documentAcceptMessage: {},
+  documentAcceptPending: [],
 }

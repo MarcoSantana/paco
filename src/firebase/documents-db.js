@@ -40,11 +40,27 @@ export default class DocumentsDB extends GenericDB {
     if (this.isNil(id)) return errorMessage
     const data = {
       id,
-      status: 4,
+      status: 3,
       message,
     }
     return this.update(data)
       .then(documentId => this.read(documentId))
       .then(result => result)
-  }
+  } // end reject
+
+  async accept(id) {
+    const errorMessage = {
+      type: 'error',
+      message: 'Error al acpetar el documento',
+    }
+    if (this.isNil(id)) return errorMessage
+    const data = {
+      id,
+      status: 4,
+      message: 'Documento aceptado',
+    }
+    return this.update(data)
+      .then(documentId => this.read(documentId))
+      .then(result => result)
+  } // end accept
 }

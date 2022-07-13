@@ -55,4 +55,7 @@ export default {
 
   setDocumentRejectionMessage: (state, payload) =>
     (state.documentRejectionMessage = payload),
+
+  setDocumentAcceptMessage: (state, payload) =>
+    (state.documentAcceptMessage = payload),
 }

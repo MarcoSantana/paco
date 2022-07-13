@@ -294,4 +294,32 @@ this is fixed so de user can not accept her own documents
         })
       }) // end finally
   }, // end rejectDocument
+  acceptDocument: async ({ commit }, { documentId }) => {
+    // commit('addDocumentAcceptationPending', documentId)
+    commit('setDocumentAcceptMessage', {
+      type: 'info',
+      message: 'Aceptando documento',
+    })
+    const documentsDB = new DocumentsDB()
+    return documentsDB
+      .accept(documentId)
+      .then(document => {
+        // commit('removeDocumentAcceptationPending', documentId)
+        commit('setCurrentDocument', document)
+      })
+      .catch(error => {
+        commit('setDocumentAcceptMessage', {
+          type: 'error',
+          message: error,
+        })
+        // commit('removeDocumentAcceptationPending', documentId)
+        return { type: 'error', message: error }
+      })
+      .finally(() => {
+        commit('setDocumentAcceptMessage', {
+          type: 'success',
+          message: 'Documento aceptado',
+        })
+      }) // end finally
+  }, // end acceptDocument
 }
