@@ -22,7 +22,7 @@
         </v-card>
       </v-alert>
       <v-card-text class="text-center">
-        {{ startCase($t(`document.types.${document.name}`)) }}
+        {{ startCase($t('document.types')[document.name]) }}
       </v-card-text>
       <v-card-actions class="text-center">
         <v-btn
