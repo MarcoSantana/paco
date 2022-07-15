@@ -2,7 +2,10 @@
   <v-sheet>
     <v-list-item
       v-if="user"
-      :to="{ name: 'requestAssess', params: { userData: user } }"
+      @click="
+        triggerSetCurrentUser(user)
+        $router.push({ name: 'requestAssess', params: { userData: user } })
+      "
     >
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
@@ -52,6 +55,7 @@
 <script>
 import { isNil } from 'lodash'
 import UserEventsDB from '@/firebase/user-events-db'
+import { mapState, mapActions } from 'vuex'
 import UsersDB from '@/firebase/users-db'
 import capitalize from '@/filters/capitalize'
 import intlDate from '@/filters/intlDate'
@@ -74,12 +78,16 @@ export default {
   }, // end of props
 
   computed: {
+    ...mapState('admin', ['currentUser']),
     localEventId() {
       if (isNil(this.eventId)) return null
       return this.eventId
     },
   },
   mounted() {}, // end of mounted
+  methods: {
+    ...mapActions('admin', ['triggerSetCurrentUser']),
+  },
   asyncComputed: {
     async user() {
       if (isNil(this.userId)) return null

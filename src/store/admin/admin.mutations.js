@@ -43,4 +43,7 @@ export default {
     (state.dashboardCounters.pendingRequests = value),
   setTotalRequestsCounter: (state, value) =>
     (state.dashboardCounters.totalRequests = value),
+  setCurrentDocument: (state, value) => (state.currentDocument = value),
+  setCurrentEvent: (state, value) => (state.currentEvent = value),
+  setCurrentUser: (state, value) => (state.currentUser = value),
 }

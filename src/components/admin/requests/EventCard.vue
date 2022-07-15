@@ -30,7 +30,13 @@
         <v-btn
           x-small
           plain
-          :to="{ name: 'adminRequest', params: { id: localEvent.id } }"
+          @click="
+            triggerSetCurrentEvent(localEvent)
+            $router.push({
+              name: 'adminRequest',
+              params: { id: localEvent.id },
+            })
+          "
         >
           <v-icon left>mdi-eye</v-icon>
           Ver solicitudes
@@ -265,16 +271,14 @@ export default {
       }
     },
   },
-  mounted() {
-    console.log('EventCard mounted')
-    console.log('localEvent', this.localEvent)
-  },
+  mounted() {},
   methods: {
+    ...mapActions('admin', ['triggerSetCurrentEvent']),
+    ...mapActions('events', ['updateEvent']),
+    ...mapMutations('events', ['setCurrentEvent']),
     input(event) {
       console.log(event)
     },
-    ...mapActions('events', ['updateEvent']),
-    ...mapMutations('events', ['setCurrentEvent']),
     save() {
       console.log('save', this.localEvent)
       this.snackbar = true

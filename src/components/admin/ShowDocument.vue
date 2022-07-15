@@ -129,6 +129,7 @@
 <script lang="js">
 import { cloneDeep, capitalize } from 'lodash'
 import { storage } from 'firebase'
+import { mapState} from 'vuex'
 import ShowFile from '@/components/ShowFile'
 import DocumentRejectDialog from '@/components/admin/DocumentRejectDialog'
 import DocumentAcceptDialog from '@/components/admin/DocumentAcceptDialog'
@@ -153,6 +154,9 @@ export default {
       showDocumentAcceptDialog: false,
       showDocumentDeleteDialog: false,
     }
+  },
+  computed: {
+    ...mapState('admin', ['currentUser'])
   },
   mounted() {
     this.$nextTick(() => {
@@ -200,7 +204,7 @@ export default {
     toggleDocumentDeleteDialog() {
     this.showDocumentDeleteDialog = !this.showDocumentDeleteDialog
     }, // end toggleDocumentDeleteDialog
-  },
+  }, // methods
   asyncComputed: {
     urls() {
       return this.getUrls().then(urls => {

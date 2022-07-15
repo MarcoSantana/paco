@@ -4,4 +4,7 @@ export default {
   documentDeletionPending: [],
   documentCreationPending: false,
   dashboardCounters: {},
+  currentUser: {},
+  currentEvent: {},
+  currentDocument: {},
 }

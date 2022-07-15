@@ -11,7 +11,6 @@ export default {
   getUserDocuments: async ({ rootState, commit }) => {
     console.log('Get User Documents')
     const userDocumentDb = new UserDocumentsDB(rootState.authentication.user.id)
-
     const documents = await userDocumentDb.readAll()
     commit('setDocuments', documents)
   },
@@ -144,4 +143,30 @@ export default {
       )
       .catch(err => console.error(err))
   },
+
+  /**
+   * Set the current user
+   * @param {*} user
+   * @param {*} commit
+   * @param {*} state
+   */
+  triggerSetCurrentUser: ({ commit }, user) => commit('setCurrentUser', user), // triggerSetCurrentUser
+
+  /**
+   * Set the current document
+   * @param {*} document
+   * @param {*} commit
+   * @param {*} state
+   */
+  triggerSetCurrentDocument: ({ commit }, document) =>
+    commit('setCurrentDocument', document), // triggerSetCurrentDocument
+
+  /**
+   * Set the current event
+   * @param Object event
+   * @param {*} commit
+   * @param {*} state
+   */
+  triggerSetCurrentEvent: ({ commit }, event) =>
+    commit('setCurrentEvent', event), // triggerSetCurrentDocument
 }
