@@ -4,7 +4,8 @@
  filename 📄: firestore.rules 
  stardate 🚀: 202207.02-13.25 
  */
-service cloud.firestore {
+
+ service cloud.firestore {
     match /databases/{database}/documents {
         function authenticated() { return request.auth.uid != null }
         function isOwner(id) { return request.auth.uid == id}
@@ -54,16 +55,35 @@ service cloud.firestore {
         }
 
         match /users/{userId} {
+            //allow get: if authenticated() && request.auth.uid == userId;
+            //allow create: if authenticated() && request.auth.uid == userId;
+            // allow create, read, update, delete: if isOwner(userId);
+            //allow read, update, delete: if request.auth != null && request.auth.uid == userId;
             allow read: if authenticated();
             allow write: if authenticated();
+            //allow update, delete: if authenticated() && request.auth.uid == userId;
         }
         match /users/{userId}/profile/{documentName=**} {
+            // allow read: if true;
+            // allow write: if true;
+            //allow get: if authenticated() && request.auth.uid == userId;
+                    //allow list: if authenticated() && request.auth.uid == userId;
+            //allow create: if authenticated() && request.auth.uid == userId;
+            //allow update, delete: if authenticated() && request.auth.uid == userId;
+            //allow create, read, update, delete: if authenticated() && isOwner(userId);
             allow read: if request.auth.uid == userId;
             allow write: if request.auth.uid == userId;
         }
 
 
         match /users/{userId}/profile/license {
+            // allow read: if true;
+            // allow write: if true;
+            //allow get: if authenticated() && request.auth.uid == userId;
+                    //allow list: if authenticated() && request.auth.uid == userId;
+            //allow create: if authenticated() && request.auth.uid == userId;
+            //allow update, delete: if authenticated() && request.auth.uid == userId;
+            //allow create, read, update, delete: if authenticated() && isOwner(userId);
             allow read: if request.auth.uid == userId;
             allow write: if request.auth.uid == userId;
         }
@@ -107,7 +127,7 @@ service cloud.firestore {
             allow get: if isAdmin() || request.auth.uid == userId;
             allow list: if authenticated() && request.auth.uid == userId;
             allow create: if authenticated() && request.auth.uid == userId;
-            allow update, delete: if authenticated() && request.auth.uid == userId;
+            allow update, delete: if (authenticated() && request.auth.uid == userId) || isAdmin();
         }
                 
         match /colleges/{collegeId} {
