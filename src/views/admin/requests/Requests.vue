@@ -1,12 +1,7 @@
 <template>
   <v-sheet class="ma-3">
     <div class="text-h3">Listado de solicitudes</div>
-    <ul>
-      <h3>TODO</h3>
-      <li><strike>Sort this elements by active and creation date</strike></li>
-      <li>Add info button</li>
-    </ul>
-    <v-row>
+    <v-row v-if="events">
       <v-col v-for="event in localEvents" :key="event.id" cols="sm">
         <event-card icon="mdi-information-outline" :event="event">
           <template #header></template>
@@ -46,12 +41,12 @@ export default {
       })
     },
   },
-  mounted() {
+  async mounted() {
     //
     console.log('Requests mounted')
     console.log(this.events)
     if (isNil(this.events)) {
-      this.getAllEvents()
+      await this.getAllEvents()
     }
   },
   methods: {
