@@ -1,5 +1,8 @@
 <template>
-  <v-sheet v-if="!loading && urls && urls.length > 0" class="container">
+  <v-sheet
+    v-if="!loading && urls && urls.length > 0 && !hide"
+    class="container"
+  >
     <v-card v-for="url in urls" :key="url" min-width="500px" max-width="90%">
       <v-card-title v-if="title">
         <v-tooltip top color="primary">
@@ -122,6 +125,7 @@
       :document="document"
       :show="showDocumentDeleteDialog"
       @close="toggleDocumentDeleteDialog"
+      @deleted="deleted"
     />
   </v-sheet>
 </template>
@@ -129,7 +133,7 @@
 <script lang="js">
 import { cloneDeep, capitalize } from 'lodash'
 import { storage } from 'firebase'
-import { mapState} from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 import ShowFile from '@/components/ShowFile'
 import DocumentRejectDialog from '@/components/admin/DocumentRejectDialog'
 import DocumentAcceptDialog from '@/components/admin/DocumentAcceptDialog'
@@ -149,6 +153,7 @@ export default {
   data() {
     return {
       fullscreen: false,
+      hide: false,
       loading: false,
       showDocumentRejectDialog: false,
       showDocumentAcceptDialog: false,
@@ -164,6 +169,11 @@ export default {
     })
   },
   methods: {
+    ...mapMutations('documents', ['setDocumentDeleteMessage']),
+    deleted() {
+      this.setDocumentDeleteMessage(null)
+        setTimeout(() => this.hide = true, 2000);
+    }, // end deleted
     async getUrls() {
       this.loading = true
       const urls = []

@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="documentDeleteDialog" max-width="400px">
+  <v-dialog v-model="documentDeleteDialog" persistent max-width="400px">
     <v-card>
       <v-card-title
         class="text-h5 white--text justify-center mb-2 text-center error"
@@ -25,15 +25,7 @@
         {{ startCase($t('document.types')[document.name]) }}
       </v-card-text>
       <v-card-actions class="text-center">
-        <v-btn
-          outlined
-          color="error"
-          text
-          @click="
-            setDocumentDeleteMessage(null)
-            $emit('close')
-          "
-        >
+        <v-btn outlined color="error" text @click="reset">
           <i class="mdi mdi-close"></i>
           {{ $t('actions.close') }}
         </v-btn>
@@ -62,9 +54,10 @@
 </template>
 
 <script>
-import { startCase, camelCase } from 'lodash'
+import { startCase, camelCase, reduce } from 'lodash'
 import { mapState, mapActions, mapMutations } from 'vuex'
 import DocumentsDB from '@/firebase/documents-db'
+import UserEventsDB from '@/firebase/user-events-db'
 
 export default {
   name: 'DocumentDeleteDialog',
@@ -89,23 +82,80 @@ export default {
   }, // end of asyncComputed
   computed: {
     ...mapState('documents', ['currentDocument', 'documentDeleteMessage']),
+    ...mapState('admin', ['currentEvent', 'currentUser']),
     documentDeleteDialog() {
       return this.show
     }, // end of documentDeleteDialog
   }, // end of computed
+  mounted() {
+    this.documentDeleteMessage = null
+  },
   methods: {
     ...mapActions('documents', ['deleteDocument']),
     ...mapMutations('documents', ['setDocumentDeleteMessage']),
+    reset() {
+      this.allow = false
+      this.setDocumentDeleteMessage({})
+      this.documentDeleteMessage = {}
+      this.$emit('close')
+    }, // end of reset
     async triggerDelete() {
       this.localLoading = true
-      await this.deleteDocument({
-        documentId: this.localDocument.id,
+      this.setDocumentDeleteMessage({
+        type: 'info',
+        message: 'Borrando documento...',
       })
+      const userEventsDB = new UserEventsDB(this.currentUser.id)
+      const documents = await userEventsDB
+        .documents(this.currentEvent.id)
         .then(res => res)
+      const reducedDocuments = reduce(
+        documents,
+        (acc, document) => {
+          this.setDocumentDeleteMessage({
+            type: 'warning',
+            message: `Filtrando documento ${startCase(document.name)}...`,
+          })
+          if (document.name !== this.document.name) {
+            return { ...acc, [document.name]: document }
+          }
+          return acc
+        },
+        {}
+      )
+      const final = { ...this.currentEvent, documents: reducedDocuments }
+
+      setTimeout(
+        () =>
+          (this.documentDeleteMessage = {
+            type: 'warning',
+            message: `Guardando cambios... \n Esta acción no puede deshacerse.`,
+          }),
+        500
+      )
+      userEventsDB
+        .update(final)
+        .then(
+          async () =>
+            this.deleteDocument({
+              documentId: this.localDocument.id,
+            }).then(res => res)
+          // here put some extra cool message
+        )
         .finally(() => {
+          setTimeout(
+            () =>
+              (this.documentDeleteMessage = {
+                type: 'success',
+                message: `Documento borrado con éxito.`,
+              }),
+            500
+          )
           this.localLoading = false
+          this.documentDeleteMessage = {}
+          this.$emit('deleted')
         })
-    },
+    }, // end of triggerDelete
     camelCase(str) {
       return camelCase(str)
     }, // end of camelCase
