@@ -9,5 +9,13 @@ export default class UserEventsDB extends GenericDB {
     const result = await this.read(eventId)
     return result
   }
-  // Here you can extend UserEventsDB with custom methods
+
+  /**
+   * @param {String} eventId
+   * @returns {Object}
+   */
+  async documents(eventId) {
+    const result = await this.read(eventId)
+    return result.documents
+  }
 }
