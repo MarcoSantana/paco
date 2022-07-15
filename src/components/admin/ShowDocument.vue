@@ -40,7 +40,12 @@
             </v-tooltip>
           </template>
           <v-list>
-            <v-list-item ref="actionDownload" name="actionDownload" link>
+            <v-list-item
+              v-if="downloadable"
+              ref="actionDownload"
+              name="actionDownload"
+              link
+            >
               <v-list-item-icon>
                 <v-icon>mdi-cloud-download</v-icon>
               </v-list-item-icon>
@@ -152,6 +157,7 @@ export default {
   },
   data() {
     return {
+      downloadable: false,
       fullscreen: false,
       hide: false,
       loading: false,
