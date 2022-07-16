@@ -1,5 +1,5 @@
 <template>
-  <div class="box">
+  <v-sheet>
     <h2 v-if="model && model.errors" class="error">
       <ul v-for="error in model.errors" :key="error.field.label">
         <li>{{ error.field.label }} >> {{ error.error }}</li>
@@ -91,73 +91,84 @@
       v-if="currentUserEvent && !currentUserEvent.completed"
       v-model="curr"
       color="primary"
+      vertical
+      outlined
+      non-linear
+      elevation="0"
     >
-      <v-stepper-content v-for="(step, n) in steps" :key="n" :step="n + 1">
-        <validation-observer v-slot="{ invalid }">
+      <span v-for="(step, n) in steps" :key="n">
+        <v-stepper-header>
           <v-stepper-step
             :complete="stepComplete(n + 1)"
             :step="n + 1"
             :rules="[value => !invalid]"
             :color="stepStatus(n + 1)"
           >
-            {{ step.longName }}
+            {{ startCase($t('document.types')[step.name]) }}
           </v-stepper-step>
-          <v-sheet v-if="step.description">
-            <p>{{ step.description }}</p>
-          </v-sheet>
-          <upload-document
-            v-if="step.upload"
-            :document="step"
-            :show-files="
-              getEventFiles(
-                currentUserEvent.documents &&
-                  currentUserEvent.documents[step.name]
-                  ? currentUserEvent.documents[step.name]
-                  : null
-              )
-            "
-            @document-created="updateEvent"
-          ></upload-document>
-          <v-btn
-            v-if="n < steps.length - 1"
-            class="ma-3"
-            :disabled="step.required && !disableNext"
-            color="primary"
-            @click="
-              nextStep(n)
-              disableNext = false
-            "
-          >
-            {{ $t('actions.continue') }}
-          </v-btn>
-          <v-btn
-            v-if="n + 1 === steps.length"
-            class="ma-3"
-            :disabled="invalid"
-            color="success"
-            @click="done()"
-          >
-            Terminar
-          </v-btn>
-          <v-btn
-            v-if="n > 0"
-            text
-            @click="
-              curr = n
-              disableNext = true
-            "
-          >
-            Atrás
-          </v-btn>
-        </validation-observer>
-      </v-stepper-content>
+        </v-stepper-header>
+        <v-stepper-items>
+          <v-stepper-content :step="n + 1">
+            <validation-observer v-slot="{ invalid }">
+              <v-sheet v-if="step.description" hidden class="flat">
+                <p>{{ step.description }}</p>
+              </v-sheet>
+              <upload-document
+                v-if="step.upload"
+                :document="step"
+                :show-files="
+                  getEventFiles(
+                    currentUserEvent.documents &&
+                      currentUserEvent.documents[step.name]
+                      ? currentUserEvent.documents[step.name]
+                      : null
+                  )
+                "
+                @document-created="updateEvent"
+              ></upload-document>
+              <v-btn
+                v-if="n < steps.length - 1"
+                class="ma-3"
+                :disabled="step.required && !disableNext"
+                color="primary"
+                @click="
+                  nextStep(n)
+                  disableNext = false
+                "
+              >
+                {{ $t('actions.continue') }}
+              </v-btn>
+              <v-btn
+                v-if="n + 1 === steps.length"
+                class="ma-3"
+                :disabled="invalid"
+                color="success"
+                @click="done()"
+              >
+                Terminar
+              </v-btn>
+              <v-btn
+                v-if="n > 0"
+                text
+                @click="
+                  curr = n
+                  disableNext = true
+                "
+              >
+                Atrás
+              </v-btn>
+            </validation-observer>
+          </v-stepper-content>
+        </v-stepper-items>
+      </span>
     </v-stepper>
     <!-- steps -->
-  </div>
+  </v-sheet>
 </template>
 <script>
+import { startCase, isNil } from 'lodash'
 import { mapState, mapActions, mapGetters, mapMutations } from 'vuex'
-import { isNil } from 'lodash'
+
 import UploadDocument from '@/components/UploadDocument.vue'
 
 export default {
@@ -330,7 +341,9 @@ export default {
       'setCurrentEventComplete',
     ]),
     ...mapActions('documents', ['createUserDocument']),
-
+    startCase(string) {
+      return startCase(string)
+    },
     async validateForm() {
       console.log('validating form from refs')
       const result = await this.$refs.stepForm.validate()

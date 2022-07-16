@@ -3,9 +3,7 @@
     <v-main>
       <loading v-if="loading"></loading>
       <nav-bar @toggleDrawer="toggleDrawer"></nav-bar>
-      <div class="main-wrapper">
-        <router-view />
-      </div>
+      <router-view />
       <!-- Change me to vuetify toaster -->
       <new-content-available-toastr
         v-if="newContentAvailable"
@@ -107,7 +105,11 @@ export default {
       adminLinks: [
         ['mdi-text-box-search-outline', 'Inicio', { name: 'adminHome' }],
         ['mdi-view-dashboard', 'Centro de control', { name: 'adminDashboard' }],
-        ['mdi-frequently-asked-questions', 'Solicitudes', { name: 'adminRequests' }],
+        [
+          'mdi-frequently-asked-questions',
+          'Solicitudes',
+          { name: 'adminRequests' },
+        ],
       ],
     }
   },

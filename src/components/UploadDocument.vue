@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mx-auto" max-width="500">
+  <v-sheet max-width="500">
     <v-alert
       v-if="documentCreationMessage.message"
       text
@@ -116,13 +116,13 @@
         </v-card-actions>
       </v-card-text>
     </validation-observer>
-  </v-card>
+  </v-sheet>
 </template>
 
 <script>
+import { startCase, isNil } from 'lodash'
 import { mapState, mapActions, mapMutations } from 'vuex'
 import { storage } from 'firebase'
-import { isNil } from 'lodash'
 import ShowFile from '@/components/ShowFile'
 import FieldUniversity from '@/components/forms/fieldUniversity'
 import CommentField from '@/components/forms/CommentField'
@@ -195,7 +195,8 @@ export default {
       console.log('getURL', file)
       if (isNil(file) || typeof file !== 'object') return null
       return URL.createObjectURL(file)
-    },
+    }, // getURL
+
     async createLocalDocument(document) {
       if (isNil(document) || isNil(this.files)) {
         this.valid = false
@@ -204,7 +205,8 @@ export default {
       const createdDocument = await this.upsertUserDocument(document)
       console.trace('createdDocument', createdDocument)
       return createdDocument
-    },
+    }, // createLocalDocument
+
     async validate() {
       if (!this.valid && this.invalid) return null
       this.setDocumentCreationMessage({
@@ -222,38 +224,51 @@ export default {
       })
       this.$emit('document-created', createdDocument)
       return true
-    },
+    }, // validate
+
     async getDownloadURL(docRef) {
       const storageRef = storage().ref(docRef)
       const url = await storageRef.getDownloadURL()
       return url
-    },
+    }, // getDownloadURL
 
     populateLocalFiles(files) {
       if (isNil(files)) return null
       console.log('files: ', files)
       return files.map(file => this.getURL(file))
-    },
+    }, // populateLocalFiles
 
     populateRemoteFiles(files) {
       if (isNil(files)) return null
       return files.map(async file => {
         this.docURLs.push(await this.getDownloadURL(file))
       })
-    },
+    }, // populateRemoteFiles
+
     clearFileInput(index) {
       // console.log('refs', this.$refs[`fileInput-${index}`][0].$el)
       const element = this.$refs[`fileInput-${index}`][0]
       console.log('element: ', element)
       this.$delete(element)
       this.$destroy(element)
-    },
+    }, // clearFileInput
+
     input(e, field) {
       console.log('input', field)
       console.log('event', e)
       this.fieldModel[field.name] = e
       console.log('fieldModel', this.fieldModel)
-    },
+    }, // input
+
+    startCase(str) {
+      return startCase(str)
+    }, // startCase
   },
 }
 </script>
+<style scoped>
+.title {
+  white-space: pre-wrap;
+  word-break: keep-all; /*this stops the word breaking*/
+}
+</style>
