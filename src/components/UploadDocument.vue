@@ -220,6 +220,7 @@ export default {
       const createdDocument = await this.createLocalDocument({
         name: this.document.name,
         info: this.fieldModel,
+        status: 1,
         upload: this.files,
       })
       this.$emit('document-created', createdDocument)
