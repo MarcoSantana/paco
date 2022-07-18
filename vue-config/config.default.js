@@ -11,4 +11,7 @@ module.exports = {
       swSrc: path.join('public', 'service-worker.js'),
     },
   },
+  configureWebpack: {
+    devtool: 'source-map',
+  },
 }
