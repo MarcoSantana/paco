@@ -16,7 +16,7 @@
     <v-card-title>
       <span
         class="font-weight-light info-card-title"
-        style="white-space:pre-wrap; word-break:keep-all;"
+        style="white-space: pre-wrap; word-break: keep-all"
       >
         <slot name="header">
           <v-icon v-show="icon" left>mdi-information</v-icon>
@@ -26,21 +26,40 @@
     </v-card-title>
     <v-list class="px-3" :color="`${color} lighten-4`" dense>
       <v-list-item>
-        <!-- TODO Link to see all related requests 202206.20-16.45 -->
-        <v-btn
-          x-small
-          plain
-          @click="
-            triggerSetCurrentEvent(localEvent)
-            $router.push({
-              name: 'adminRequest',
-              params: { id: localEvent.id },
-            })
-          "
-        >
-          <v-icon left>mdi-eye</v-icon>
-          Ver solicitudes
-        </v-btn>
+        <v-col cols="6">
+          <!-- TODO Link to see all related requests 202206.20-16.45 -->
+          <v-btn
+            x-small
+            plain
+            @click="
+              triggerSetCurrentEvent(localEvent)
+              $router.push({
+                name: 'adminRequest',
+                params: { id: localEvent.id, pending: true },
+              })
+            "
+          >
+            <v-icon left>mdi-eye</v-icon>
+            pendientes
+          </v-btn>
+        </v-col>
+        <v-col cols="6">
+          <!-- TODO Link to see all related requests 202206.20-16.45 -->
+          <v-btn
+            x-small
+            plain
+            @click="
+              triggerSetCurrentEvent(localEvent)
+              $router.push({
+                name: 'adminRequest',
+                params: { id: localEvent.id, pending: false },
+              })
+            "
+          >
+            <v-icon left>mdi-eye</v-icon>
+            todas
+          </v-btn>
+        </v-col>
       </v-list-item>
       <slot name="description">
         <span>
@@ -91,7 +110,7 @@
                   <v-card>
                     <v-card-title
                       color="primary lighten-2"
-                      style="white-space:pre-wrap; word-break:keep-all;"
+                      style="white-space: pre-wrap; word-break: keep-all"
                       class="font-weight-light info-card-title text-center"
                     >
                       <v-icon left>mdi-calendar</v-icon>
@@ -143,7 +162,7 @@
                   <v-card>
                     <v-card-title
                       color="primary lighten-2"
-                      style="white-space:pre-wrap; word-break:keep-all;"
+                      style="white-space: pre-wrap; word-break: keep-all"
                       class="font-weight-light info-card-title text-center"
                     >
                       <v-icon left>mdi-calendar</v-icon>

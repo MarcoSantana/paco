@@ -2,7 +2,7 @@
   <v-sheet v-if="event" class="container">
     <div class="row">
       <div class="text-h5 text-center col-md-12 mb-3">
-        Solicitudes para {{ event.name }}
+        Solicitudes {{ pending ? 'pendientes' : '' }} para {{ event.name }}
       </div>
     </div>
     <v-card max-width="500" class="mx-auto">
@@ -10,7 +10,7 @@
         <v-app-bar-nav-icon></v-app-bar-nav-icon>
         <v-toolbar-title v-if="users">
           Inbox
-          {{ pendingUsers.length }}
+          <span v-if="pending">{{ pendingUsers.length }}</span>
         </v-toolbar-title>
         <v-spacer></v-spacer>
         <!--
@@ -34,7 +34,7 @@
   </v-sheet>
 </template>
 <script>
-import { isNil } from 'lodash'
+import { isNil, orderBy } from 'lodash'
 import EventsDB from '@/firebase/events-db'
 import { mapState, mapGetters } from 'vuex'
 import UserEventDetails from '@/views/admin/requests/UserEventDetails'
@@ -49,14 +49,20 @@ export default {
       request: {},
       loading: true,
       id: this.$route.params.id,
+      pending: this.$route.params.pending,
     }
   }, // end of data
   asyncComputed: {
     async event() {
       const localEvent = this.events.find(event => event.id === this.id)
-      const users = await this.getEventUsers(this.id).then(arr =>
-        arr.filter(user => user.status === 'pending')
-      )
+      const users = await this.getEventUsers(this.id).then(arr => {
+        arr = orderBy(arr, ['createTimestamp'])
+        return this.pending
+          ? arr.filter(user => user.status === 'pending')
+          : arr
+      })
+      debugger
+      console.log('users', users)
       if (!isNil(localEvent)) {
         return {
           ...localEvent,
