@@ -1,3 +1,4 @@
+import { orderBy } from 'lodash'
 import CollegesDB from '@/firebase/colleges-db'
 import CollegeCampiDB from '@/firebase/college-campi-db'
 
@@ -10,7 +11,8 @@ export default {
   getColleges: async ({ rootState, commit }) => {
     const collegesDb = new CollegesDB(rootState.authentication.user.id)
     const colleges = await collegesDb.readAll()
-    commit('setColleges', colleges)
+    const sortedColleges = orderBy(colleges, ['name'], ['asc'])
+    commit('setColleges', sortedColleges)
   },
   /**
         |--------------------------------------------------
@@ -22,8 +24,7 @@ export default {
   getCollegeCampi: async ({ commit }, collegeId) => {
     const collegeCampiDB = new CollegeCampiDB(collegeId)
     const campi = await collegeCampiDB.readAll()
-    // TODO create the campi state
-    commit('setCampi', campi)
+    commit('setCampi', campi.sort())
   },
   // /**
   //  * Fetch products of current logged-in user

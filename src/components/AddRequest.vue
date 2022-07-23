@@ -99,10 +99,10 @@
       <span v-for="(step, n) in steps" :key="n">
         <v-stepper-header>
           <v-stepper-step
-            :complete="stepComplete(n + 1)"
-            :step="n + 1"
-            :rules="[value => !invalid]"
             :color="stepStatus(n + 1)"
+            :complete="stepComplete(n + 1)"
+            :rules="[value => !invalid]"
+            :step="n + 1"
           >
             {{ startCase($t('document.types')[step.name]) }}
           </v-stepper-step>
@@ -188,8 +188,39 @@ export default {
     // <!--TODO: Move this elsewhere-->
     steps: [
       {
+        longName: 'Fotografía del sustentante',
+        name: 'mugshot',
+        placeholder: 'Fotografía',
+        required: true,
+        upload: true,
+      },
+      {
+        longName: 'Comprobante de donativo',
+        placeholder: 'Donativo',
+        name: 'voucher',
+        upload: true,
+        required: true,
+      },
+      {
+        longName: 'Título de Licenciatura en Medicina',
+        name: 'degreeDiploma',
+        placeholder: 'Título',
+        required: 'true',
+        upload: true,
+        fields: [
+          {
+            label: 'university',
+            name: 'university',
+            placeholder: 'Título',
+            type: 'fieldUniversity',
+            rules: { required: true },
+          },
+        ],
+      },
+      {
         longName:
-          'Examen Nacional de Aspirantes a Residencias Médicas (ENARM), realizado por la Comisión Interinstitucional para la Formación de Recursos Humanos para la Salud (CIFRHS); Copia de la constancia de haber efectuado y aprobado el ENARM, CIFRHS',
+          'Constancia de ENARM o Equivalente (Carta de aceptación a la especialidad de urgencias)',
+        placeholder: 'ENARM',
         name: 'enarm',
         upload: true,
         required: true,
@@ -205,94 +236,44 @@ export default {
         ],
       },
       {
-        longName:
-          ' En el caso de Urgencias Pediátricas, constancia de haber terminado satisfactoriamente una residencia progresiva hospitalaria de por lo menos 2 años. ',
-        name: 'pediatricVoucher',
+        longName: 'Cédula de licenciatura',
+        name: 'license',
         upload: true,
-        required: false,
-        // fields: [
-        //   {
-        //     label: 'comment',
-        //     name: 'comment',
-        //     placeholder: 'Comentario sobre el documento',
-        //     type: 'v-text-field',
-        //     rules: { required: false, length: { max: 160, min: 0 } },
-        //     counter: true,
-        //   },
-        // ],
+        required: true,
+        placeholder: 'Cédula profesional',
       },
       {
         longName:
-          'Copia del diploma institucional en Medicina de Urgencias o en su caso Urgencias Pediatricas.',
-        name: 'specialtyDiploma',
+          'Constancia de haber terminado satisfactoriamente una residencia progresiva  hospitalaria en medicina de urgencias, de por lo menos 3 años',
+        name: 'postDegreeCertificate',
         upload: true,
         required: true,
-        fields: [
-          {
-            label: 'comment',
-            name: 'comment',
-            placeholder: 'Comentario sobre el documento',
-            type: 'CommentField',
-            rules: { required: false, length: { max: 160, min: 0 } },
-            counter: true,
-          },
-        ],
+        placeholder: 'Constancia de residencia',
       },
       {
         longName:
-          'Copia del diploma de la institución educativa (Universitaria) que lo avala.',
-        name: 'degreeDiploma',
+          'Diploma Institucional (IMSS, ISSSTE o Secretaría de Salud de Urgencias)',
+        name: 'postDegreeDiploma',
+        upload: true,
+        required: true,
+        placeholder: 'Diploma instituional',
+      },
+      {
+        longName:
+          'Diploma de especialidad Universitario o Carta compromiso por dicho diploma',
+        name: 'postgraduateUniversitaryDiploma',
+        placeholder: 'Diploma de especialidad/Carta compromiso',
         upload: true,
         required: true,
         fields: [
-          {
-            label: 'comment',
-            name: 'comment',
-            placeholder: 'Comentario sobre el documento',
-            type: 'v-text-field',
-            rules: { required: false, length: { max: 160, min: 0 } },
-            counter: true,
-          },
           {
             label: 'university',
             name: 'university',
             placeholder: 'Universidad',
             type: 'fieldUniversity',
+            rules: { required: true },
           },
         ],
-      },
-      {
-        longName:
-          'Fotografía tamaño diploma (5x7cm) blanco y negro, con fondo blanco, vestimenta formal.',
-        name: 'mugshot',
-        upload: true,
-        required: true,
-        // fields: [
-        //   {
-        //     label: 'comment',
-        //     name: 'comment',
-        //     placeholder: 'Comentario sobre el documento',
-        //     type: 'v-text-field',
-        //     rules: { required: false, length: { max: 160, min: 0 } },
-        //     counter: true,
-        //   },
-        // ],
-      },
-      {
-        longName: 'Donativo no reembolsable de $ 5,700. 00/100 m.n.',
-        name: 'voucher',
-        upload: true,
-        required: true,
-        // fields: [
-        //   {
-        //     label: 'comment',
-        //     name: 'comment',
-        //     placeholder: 'Comentario sobre el documento',
-        //     type: 'v-text-field',
-        //     rules: { required: false, length: { max: 160, min: 0 } },
-        //     counter: true,
-        //   },
-        // ],
       },
       {
         longName: 'Último paso',
@@ -388,7 +369,7 @@ export default {
       return this.curr > step
     },
     stepStatus(step) {
-      return this.curr > step ? 'green' : 'blue'
+      return this.curr > step ? `success` : `info`
     },
     validate(n) {
       this.steps[n].valid = false

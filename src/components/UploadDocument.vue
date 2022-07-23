@@ -1,13 +1,9 @@
 <template>
-  <v-sheet max-width="500">
-    <v-alert
-      v-if="documentCreationMessage.message"
-      text
-      :type="documentCreationMessage.type"
-    >
-      {{ documentCreationMessage.message }}
-    </v-alert>
+  <v-card max-width="500">
     <validation-observer v-slot="{ invalid }">
+      <v-card-title class="text-h5 text-justify title">
+        {{ document.longName }}
+      </v-card-title>
       <v-card-text class="ma-5">
         <div v-for="field in document.fields" :key="field.name" class="pr-5">
           <keep-alive>
@@ -29,6 +25,7 @@
                   :error="errors.length > 0"
                   :error-messages="errors"
                   :counter="field.counter"
+                  :rules="field.rules"
                   @input="input($event, field)"
                 ></component>
               </span>
@@ -102,6 +99,13 @@
             <v-icon dark>mdi-plus</v-icon>
           </v-btn>
         </v-card-text>
+        <v-alert
+          v-if="documentCreationMessage.message"
+          text
+          :type="documentCreationMessage.type"
+        >
+          {{ documentCreationMessage.message }}
+        </v-alert>
         <v-card-actions>
           <v-btn
             v-if="documentCreationMessage.type !== 'success'"
@@ -116,7 +120,7 @@
         </v-card-actions>
       </v-card-text>
     </validation-observer>
-  </v-sheet>
+  </v-card>
 </template>
 
 <script>

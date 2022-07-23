@@ -1,6 +1,10 @@
 <template>
   <div class="wrapper">
-    <div :id="getFieldID(schema)" :name="schema.inputName" :class="schema.fieldClasses">
+    <div
+      :id="getFieldID(schema)"
+      :name="schema.inputName"
+      :class="schema.fieldClasses"
+    >
       <select
         v-model="college.collegeId"
         v-attributes="'input'"
@@ -14,7 +18,12 @@
           v-if="selectOptions && !selectOptions.hideNoneSelectedText"
           :disabled="schema.required"
           :value="null"
-        >{{ selectOptions.noneSelectedText || '&lt;Seleccione una universidad&gt;' }}</option>
+        >
+          {{
+            selectOptions.noneSelectedText ||
+              '&lt;Seleccione una universidad&gt;'
+          }}
+        </option>
         <template v-for="item in selectOptions">
           <optgroup v-if="item.group" :key="item" :label="getGroupName(item)">
             <span v-if="item.ops">
@@ -22,14 +31,18 @@
                 v-for="i in item.ops"
                 :key="getItemName(i)"
                 :value="`getItemName(i)`"
-              >{{ getItemName(i) }}</option>
+              >
+                {{ getItemName(i) }}
+              </option>
             </span>
           </optgroup>
           <option
             v-if="!item.group"
             :key="getItemValue(item)"
             :value="getItemValue(item)"
-          >{{ getItemName(item) }}</option>
+          >
+            {{ getItemName(item) }}
+          </option>
         </template>
       </select>
       <!-- Campus select -->
@@ -45,7 +58,9 @@
           v-if="selectOptions && !selectOptions.hideNoneSelectedText"
           :disabled="schema.required"
           :value="null"
-        >{{ selectOptions.noneSelectedText || '&lt;Seleccione un campus&gt;' }}</option>
+        >
+          {{ selectOptions.noneSelectedText || '&lt;Seleccione un campus&gt;' }}
+        </option>
         <template v-for="item in campi">
           <optgroup v-if="item.group" :key="item" :label="getGroupName(item)">
             <span v-if="item.ops">
@@ -53,14 +68,18 @@
                 v-for="i in item.ops"
                 :key="getItemName(i)"
                 :value="getItemValue(i)"
-              >{{ getItemName(i) }}</option>
+              >
+                {{ getItemName(i) }}
+              </option>
             </span>
           </optgroup>
           <option
             v-if="!item.group"
             :key="getItemValue(item)"
             :value="getItemName(item)"
-          >{{ getItemName(item) }}</option>
+          >
+            {{ getItemName(item) }}
+          </option>
         </template>
       </select>
       <!-- / Campus select -->
@@ -110,12 +129,12 @@ export default {
     groupValues(values) {
       const array = []
       let arrayElement = {}
-      values.forEach((item) => {
+      values.forEach(item => {
         arrayElement = null
         if (item.group && isObject(item)) {
           // There is in a group.
           // Find element with this group.
-          arrayElement = find(array, (i) => i.group === item.group)
+          arrayElement = find(array, i => i.group === item.group)
           if (arrayElement) {
             // There is such a group.
             arrayElement.ops.push({
