@@ -7,6 +7,7 @@
         $router.push({ name: 'requestAssess', params: { userData: user } })
       "
     >
+      <!--
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-list-item-icon>
@@ -24,10 +25,12 @@
         </template>
         <span>{{ $t('messages.missing.datas') }}</span>
       </v-tooltip>
-
+-->
       <v-list-item-content>
         <v-list-item-title>
-          {{ user.displayName | capitalize }}
+          <v-badge dot :color="statusColor(requestStatus)">
+            {{ user.displayName | capitalize }}
+          </v-badge>
         </v-list-item-title>
         <v-list-item-subtitle>
           {{ user.email }}
@@ -36,18 +39,37 @@
         </v-list-item-subtitle>
       </v-list-item-content>
 
-      <v-list-item-avatar>
-        <v-img v-if="user.photoURL" :src="user.photoURL"></v-img>
-
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on, attrs }">
-            <v-icon v-if="!user.photoURL" v-bind="attrs" color="grey" v-on="on">
-              mdi-image-off
-            </v-icon>
-          </template>
-          <span>{{ $t('messages.missing.photo') }}</span>
-        </v-tooltip>
-      </v-list-item-avatar>
+      <v-badge avatar bordered overlap color="white">
+        <template v-if="user.incomplete" v-slot:badge>
+          <v-avatar>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon v-bind="attrs" color="pink" small v-on="on">
+                  mdi-heart-broken
+                </v-icon>
+              </template>
+            </v-tooltip>
+          </v-avatar>
+        </template>
+        <v-list-item-avatar>
+          <v-avatar size="40">
+            <v-img v-if="user.photoURL" :src="user.photoURL"></v-img>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon
+                  v-if="!user.photoURL"
+                  v-bind="attrs"
+                  color="grey"
+                  v-on="on"
+                >
+                  mdi-image-off
+                </v-icon>
+              </template>
+              <span>{{ $t('messages.missing.photo') }}</span>
+            </v-tooltip>
+          </v-avatar>
+        </v-list-item-avatar>
+      </v-badge>
     </v-list-item>
   </v-sheet>
 </template>
@@ -83,10 +105,23 @@ export default {
       if (isNil(this.eventId)) return null
       return this.eventId
     },
+    requestStatus() {
+      return this.user.status.status ? this.user.status.status : 'incomplete'
+    },
   },
   mounted() {}, // end of mounted
   methods: {
     ...mapActions('admin', ['triggerSetCurrentUser']),
+
+    statusColor(status) {
+      const colors = {
+        pending: 'warning',
+        rejected: 'error',
+        accepted: 'success',
+        incomplete: 'info',
+      }
+      return colors[status]
+    }, // statusColor
   },
   asyncComputed: {
     async user() {

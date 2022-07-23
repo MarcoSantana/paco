@@ -15,8 +15,12 @@
         <v-col cols="2">
           <avatar :username="user.displayName" :src="user.photoURL" />
         </v-col>
-        <v-col cols="10" class="text-h5 pt-5">
+        <v-col cols="10" class="text-h5  text-center pt-5">
           {{ user.displayName | capitalize }}
+          <hr />
+          <v-alert dense outlined text :type="statusColor(requestStatus)">
+            {{ $t(`requests.${requestStatus}`) | capitalize }}
+          </v-alert>
         </v-col>
       </v-row>
       <v-spacer />
@@ -130,6 +134,9 @@ export default {
     user() {
       return cloneDeep(this.userData)
     },
+    requestStatus() {
+      return this.user.status.status ? this.user.status.status : 'incomplete'
+    },
   },
   mounted() {}, // end of computed
   methods: {
@@ -149,6 +156,10 @@ export default {
         this.documentUpdateMessage = result.data
       })
     }, // changeDocumentStatus
+    statusColor(status) {
+      const colors = { pending: 'warning', rejected: 'error', accepted: 'success', incomplete: 'info'}
+      return colors[status]
+    }, // statusColor
   }, // end of methods
 }
 </script>

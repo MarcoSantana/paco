@@ -6,13 +6,17 @@
       </div>
     </div>
     <v-card max-width="500" class="mx-auto">
-      <v-toolbar color="primary lighten-2" dark>
-        <v-app-bar-nav-icon></v-app-bar-nav-icon>
+      <v-toolbar
+        :color="`primary  ${pending ? 'warning' : ''} lighten-2`"
+        :dark="!pending"
+      >
+        <!-- <v-app-bar-nav-icon></v-app-bar-nav-icon> -->
         <v-toolbar-title v-if="users">
           Inbox
-          <span v-if="pending">{{ pendingUsers.length }}</span>
+          <span v-if="pending" color="warning">
+            {{ pendingUsers.length }}
+          </span>
         </v-toolbar-title>
-        <v-spacer></v-spacer>
         <!--
           <v-btn icon>
             <v-icon>mdi-magnify</v-icon>
@@ -61,8 +65,6 @@ export default {
           ? arr.filter(user => user.status === 'pending')
           : arr
       })
-      debugger
-      console.log('users', users)
       if (!isNil(localEvent)) {
         return {
           ...localEvent,
