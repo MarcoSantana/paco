@@ -110,6 +110,11 @@ export default {
           'Solicitudes',
           { name: 'adminRequests' },
         ],
+        [
+          'mdi-email-search-outline',
+          'Registros de email',
+          { name: 'mailLogs' },
+        ],
       ],
     }
   },

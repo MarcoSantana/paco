@@ -197,6 +197,21 @@ const router = new Router({
           /* webpackChunkName: "client-chunk-main-details" */ '@/views/admin/requests/RequestAssess.vue'
         ),
     },
+    /**
+      |--------------------------------------------------
+      | Logs (admin)
+      |--------------------------------------------------
+   */
+    // Mail logs
+    {
+      path: '/admin/logs/mail',
+      name: 'mailLogs',
+      props: true,
+      component: () =>
+        import(
+          /* webpackChunkName: "client-chunk-main-details" */ '@/views/admin/logs/mail/Main.vue'
+        ),
+    },
 
     // Login, logout
     {
