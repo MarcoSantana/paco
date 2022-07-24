@@ -23,6 +23,18 @@
       </v-alert>
       <v-card-text class="text-center">
         {{ startCase($t('document.types')[document.name]) }}
+        <v-textarea
+          v-if="!documentRejectionMessage || !documentRejectionMessage.type"
+          v-model="documentDeleteReason"
+          counter="320"
+          outlined
+          background-color="error lighten-4"
+          color="red red-darken-4"
+          label="Describa la razón de la eliminación"
+          hint="Describa en 320 caracteres o menos la razón de la eliminación"
+          required
+          hide-details="auto"
+        ></v-textarea>
       </v-card-text>
       <v-card-actions class="text-center">
         <v-btn outlined color="error" text @click="reset">
@@ -45,7 +57,7 @@
           :loading="localLoading"
           @click="triggerDelete"
         >
-          <i class="mdi mdi-check"></i>
+          <i class="mdi mdi-delete"></i>
           {{ $t('actions.delete') }}
         </v-btn>
       </v-card-actions>
@@ -68,8 +80,9 @@ export default {
   },
   data() {
     return {
-      localLoading: false,
       allow: false,
+      documentDeleteReason: '',
+      localLoading: false,
     }
   }, // end of data
   asyncComputed: {
@@ -96,6 +109,7 @@ export default {
     reset() {
       this.allow = false
       this.setDocumentDeleteMessage({})
+      this.documentDeleteReason = null
       this.documentDeleteMessage = {}
       this.$emit('close')
     }, // end of reset
