@@ -26,12 +26,12 @@ export default class GenericDB {
 
     const createPromise = isNil(id)
       ? // Create doc with generated id
-      collectionRef.add(dataToCreate).then(doc => doc.id)
+        collectionRef.add(dataToCreate).then(doc => doc.id)
       : // Create doc with custom id
-      collectionRef
-        .doc(id)
-        .set(dataToCreate)
-        .then(() => id)
+        collectionRef
+          .doc(id)
+          .set(dataToCreate)
+          .then(() => id)
 
     const docId = await createPromise
 
@@ -76,12 +76,12 @@ export default class GenericDB {
     }
 
     const formatResult = result =>
-      result.docs.map(ref =>
-        this.convertObjectTimestampPropertiesToDate({
+      result.docs.map(ref => {
+        return this.convertObjectTimestampPropertiesToDate({
           id: ref.id,
           ...ref.data(),
         })
-      )
+      })
 
     return query.get().then(formatResult)
   }

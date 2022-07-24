@@ -2,6 +2,7 @@ import UserDocumentsDB from '@/firebase/user-documents-db'
 // import UsersDB from '@/firebase/users-db'
 import DocumentsDB from '@/firebase/documents-db'
 import CountersDB from '@/firebase/counters-db'
+import MailsDB from '@/firebase/mails-db'
 import { storage } from 'firebase'
 
 export default {
@@ -169,4 +170,14 @@ export default {
    */
   triggerSetCurrentEvent: ({ commit }, event) =>
     commit('setCurrentEvent', event), // triggerSetCurrentDocument
+
+  /**
+   * Fetch all mails if logged user is admin
+   */
+  getAllMails: async ({ commit }) => {
+    const mailsDb = new MailsDB()
+    const mails = await mailsDb.readAll()
+    console.log('mails', mails)
+    commit('setMails', mails)
+  }, // getAllMails
 }

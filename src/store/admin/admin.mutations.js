@@ -46,4 +46,5 @@ export default {
   setCurrentDocument: (state, value) => (state.currentDocument = value),
   setCurrentEvent: (state, value) => (state.currentEvent = value),
   setCurrentUser: (state, value) => (state.currentUser = value),
+  setMails: (state, value) => (state.mails = value),
 }

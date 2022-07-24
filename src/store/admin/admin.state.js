@@ -7,4 +7,5 @@ export default {
   currentUser: {},
   currentEvent: {},
   currentDocument: {},
+  mail: [],
 }
