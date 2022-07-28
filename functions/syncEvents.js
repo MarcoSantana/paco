@@ -7,9 +7,10 @@ const userEventTrigger = functions.firestore.document(
   "users/{userId}/events/{eventId}",
 ); // userEventTrigger
 
-const eventTrigger = functions
-  .firestore
-  .document("events/{eventId}/users/{userId}"); // event
+
+const eventTrigger = functions.firestore.document(
+  "events/{eventId}/users/{userId}",
+); // event
 
 const serverTimestamp = firestore.FieldValue.serverTimestamp();
 const updateTimestamp = serverTimestamp;
@@ -17,6 +18,16 @@ const createTimestamp = serverTimestamp;
 
 const increment = firestore.FieldValue.increment(1);
 const decrement = firestore.FieldValue.increment(-1);
+
+const getStatus = (statusKey) => {
+  const status = {
+    accepted: { color: "#4CAF50", text: "'aceptada'" },
+    pending: { color: "#CDDC39", text: "'pendiente'" },
+    rejected: { color: "#FF5722", text: "'rechazada'" },
+  };
+  return status[statusKey];
+};
+
 
 exports.createEvent = userEventTrigger.onCreate(async (change, context) => {
   const { eventId, userId } = context.params;
@@ -27,8 +38,7 @@ exports.createEvent = userEventTrigger.onCreate(async (change, context) => {
     .doc("pendingRequests")
     .update({ count: increment });
 
-  await firestore()
-    .collection("logs").doc("users").collection("requests")
+  await firestore().collection("logs").doc("users").collection("requests")
     .add({
       userId,
       eventId,
@@ -47,12 +57,9 @@ exports.createEvent = userEventTrigger.onCreate(async (change, context) => {
       status: "pending",
     });
 
-  await firestore()
-    .collection("counters")
-    .doc("pendingRequests")
-    .update({
-      count: increment,
-    });
+  await firestore().collection("counters").doc("pendingRequests").update({
+    count: increment,
+  });
 
   await firestore()
     .collection("users")
@@ -69,10 +76,9 @@ exports.createEvent = userEventTrigger.onCreate(async (change, context) => {
 // triggered to delete the user-event document
 exports.deleteRequest = eventTrigger.onDelete(async (change, context) => {
   const { eventId, userId } = context.params;
-  await firestore()
-    .collection(`users/${userId}/events`)
-    .doc(eventId)
-    .delete();
+  const after = change.after.data();
+  const { message, status } = after.message;
+  await firestore().collection(`users/${userId}/events`).doc(eventId).delete();
   const user = await firestore()
     .collection("users")
     .doc(userId)
@@ -82,101 +88,109 @@ exports.deleteRequest = eventTrigger.onDelete(async (change, context) => {
     .collection("mail")
     .add({
       to: user.email,
-      message: {
-        subject: "La solicitud de tu evento ha sido cancelada",
-        html:
-          `<div>
-            <h1>La solicitud de tu evento ha sido cancelada</h1>
-            <p>
-            Si crees que es un error, puedes volver a realizarla mediante PAD.
-            </p>
-            <p>
-            <small>Este es un correo automático generado por PAD.</small>
-          </div>`,
+      cc: "cmmu2009@yahoo.com.mx",
+      bcc: "marco.santana@gmail.com",
+      template: {
+        name: "eventDelete",
+        data: {
+          message,
+          status: getStatus(status).text,
+          color: getStatus(status).color,
+        },
       },
     })
     .then(() => {
-      firestore()
-        .collection("logs/users/requests")
-        .add({
-          createTimestamp: serverTimestamp,
-          userId,
-          eventId,
-          description:
-            "delete request",
-        });
+      firestore().collection("logs/users/requests").add({
+        createTimestamp: serverTimestamp,
+        userId,
+        eventId,
+        description: "delete request",
+      });
     });
 }); // deleteEvent
 
-exports.updateEventStatus = eventTrigger
-  .onUpdate(async (change, context) => {
-    const { eventId, userId } = context.params;
-    const { before, after } = change;
-    const beforeStatus = before.data().status;
-    const afterStatus = after.data().status;
+exports.updateEventStatus = eventTrigger.onUpdate(async (change, context) => {
+  const { eventId, userId } = context.params;
+  const { before, after } = change;
+  const beforeStatus = before.data().status;
+  const afterStatus = after.data().status;
+  const { message, status } = after.data();
 
+  if (afterStatus !== beforeStatus) {
+    const singleEventsUserRef = firestore()
+      .collection("events")
+      .doc(eventId)
+      .collection("users")
+      .doc(userId);
 
-    if (afterStatus !== beforeStatus) {
-      const singleEventsUserRef = firestore()
-        .collection("events")
-        .doc(eventId)
-        .collection("users")
-        .doc(userId);
+    const userEventRef = firestore()
+      .collection("users")
+      .doc(userId)
+      .collection("events")
+      .doc(eventId);
 
-      const userEventRef = firestore()
-        .collection("users")
-        .doc(userId)
-        .collection("events")
-        .doc(eventId);
+    const logsRef = firestore()
+      .collection("logs")
+      .doc("users")
+      .collection("requests")
+      .doc();
 
-      const logsRef = firestore()
-        .collection("logs")
-        .doc("users")
-        .collection("requests")
-        .doc();
+    const batch = firestore().batch();
 
-      const batch = firestore().batch();
+    batch.update(singleEventsUserRef, {
+      updateTimestamp,
+      status: afterStatus,
+    });
 
-      batch.update(singleEventsUserRef, {
+    batch.update(userEventRef, {
+      updateTimestamp,
+      status: afterStatus,
+    });
+
+    batch.set(logsRef, {
+      userId,
+      eventId,
+      description: `Admin set event status to ${afterStatus}`,
+      createTimestamp,
+    });
+
+    const counterRef = (doc) => firestore().collection("counters").doc(`${doc}Requests`);
+
+    const setCounter = (delta) => firestore.FieldValue.increment(delta);
+
+    const updateCounters = (bStatus, aStatus) => {
+      batch.update(counterRef(bStatus), {
+        count: setCounter(-1),
         updateTimestamp,
-        status: afterStatus,
       });
-
-      batch.update(userEventRef, {
+      batch.update(counterRef(aStatus), {
+        count: setCounter(1),
         updateTimestamp,
-        status: afterStatus,
       });
+    };
+    updateCounters(beforeStatus, afterStatus);
 
-      batch.set(logsRef, {
-        userId,
-        eventId,
-        description: `Admin set event status to ${afterStatus}`,
-        createTimestamp,
-      });
-
-      const counterRef = (doc) => firestore()
-        .collection("counters")
-        .doc(`${doc}Requests`);
-
-      const setCounter = (delta) => firestore.FieldValue.increment(delta);
-
-      const updateCounters = (beforeStatus, afterStatus) => {
-        batch.update(counterRef(beforeStatus), {
-          count: setCounter(-1),
-          updateTimestamp,
+    try {
+      await batch.commit()
+        .then(() => {
+          firestore()
+            .collection("mail")
+            .add({
+              toUids: [userId],
+              cc: "cmmu2009@yahoo.com.mx",
+              bcc: "marco.santana@gmail.com",
+              template: {
+                name: "eventStatusChange",
+                data: {
+                  message,
+                  status: getStatus(status).text,
+                  color: getStatus(status).color,
+                },
+              },
+            });
         });
-        batch.update(counterRef(afterStatus), {
-          count: setCounter(1),
-          updateTimestamp,
-        });
-      };
-      updateCounters(beforeStatus, afterStatus);
-
-
-      try {
-        await batch.commit();
-      } catch (error) {
-        functions.logger.error("Unable to update", error);
-      }
-    } // end if
-  }); // updateEventStatus
+    } catch (error) {
+      functions.logger.error("Unable to update", error);
+    }
+  } // end if
+}); // updateEventStatus
