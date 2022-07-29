@@ -16,7 +16,16 @@
           <avatar :username="user.displayName" :src="user.photoURL" />
         </v-col>
         <v-col cols="10" class="text-h5  text-center pt-5">
-          {{ user.displayName | capitalize }}
+          <v-expansion-panels inset>
+            <v-expansion-panel>
+              <v-expansion-panel-header class="text-h5 text-jsutify">
+                <p>{{ user.displayName | capitalize }}</p>
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <p class="text-muted">{{ user.email }}</p>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
           <hr />
           <v-alert dense outlined text :type="statusColor(requestStatus)">
             {{ $t(`requests.${requestStatus}`) | capitalize }}
@@ -100,6 +109,7 @@
 
 <script lang="js">
 import { cloneDeep } from 'lodash'
+import { mapState } from 'vuex'
 import { callUpdateDocumentStatus } from '@/firebase/functions'
 import capitalize from '@/filters/capitalize'
 import Avatar from 'vue-avatar'
@@ -120,6 +130,7 @@ export default {
   },
   props: {
     userData: { type: Object, required: true },
+    requestId: { type: String, required: true },
   },
   data: () => ({ fab: false, documentRejectReasonDialog: false, documentRejectReason: '' }),
   asyncComputed: {
@@ -131,9 +142,13 @@ export default {
     }, // end documents
   },
   computed: {
+    ...mapState('admin', ['currentEvent', 'currentUser']),
     user() {
       return cloneDeep(this.userData)
     },
+    request() {
+      return this.user.satus
+    }, // request
     requestStatus() {
       return this.user.status.status ? this.user.status.status : 'incomplete'
     },

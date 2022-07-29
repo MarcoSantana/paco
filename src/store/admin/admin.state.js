@@ -6,6 +6,8 @@ export default {
   dashboardCounters: {},
   currentUser: {},
   currentEvent: {},
+  currentEventMessage: {},
   currentDocument: {},
   mail: [],
+  globalMessage: {},
 }

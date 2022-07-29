@@ -3,6 +3,7 @@ import UserDocumentsDB from '@/firebase/user-documents-db'
 import DocumentsDB from '@/firebase/documents-db'
 import CountersDB from '@/firebase/counters-db'
 import MailsDB from '@/firebase/mails-db'
+import EventsDB from '@/firebase/events-db'
 import { storage } from 'firebase'
 
 export default {
@@ -172,7 +173,8 @@ export default {
     commit('setCurrentEvent', event), // triggerSetCurrentDocument
 
   /**
-   * Fetch all mails if logged user is admin
+   * Fetches all mails if logged user is admin
+   * @param Object this.commit
    */
   getAllMails: async ({ commit }) => {
     const mailsDb = new MailsDB()
@@ -180,4 +182,37 @@ export default {
     console.log('mails', mails)
     commit('setMails', mails)
   }, // getAllMails
+
+  /**
+   * Fetches from eventsDb user event message
+   * @param {Object} payload - The constraints needed
+   * @param {string} payload.userId
+   * @param {string} payload.eventId
+   * @return {Object} message
+   */
+  getUserEventMessage: async ({ commit }, payload) => {
+    const { eventId, userId } = payload
+    const eventsDb = new EventsDB()
+    const message = await eventsDb.getUserMessage({ userId, eventId })
+    commit('setCurrentEventMessage', message)
+    return message
+  }, // getUserEventMessage
+
+  /**
+   * Triggers the userRequest message (triggers auto email)
+   */
+  // triggerUpdateRequestMessage: async ({ commit }, payload) => {
+  //   const { eventId, userId, message } = payload
+  //   switch (payload) {
+  //     case !payload.eventId:
+  //       return null
+  //     case !payload.userId:
+  //       return null
+  //     case !payload.message:
+  //       return null
+  //     default:
+  //       break
+  //   } // switch
+  //   const mailsDb = new MailsDB()
+  // }, // triggerUpdateRequestMessage
 }
