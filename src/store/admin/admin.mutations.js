@@ -45,6 +45,7 @@ export default {
     (state.dashboardCounters.totalRequests = value),
   setCurrentDocument: (state, value) => (state.currentDocument = value),
   setCurrentEvent: (state, value) => (state.currentEvent = value),
+  setCurrentEventMessage: (state, value) => (state.currentEventMessage = value),
   setCurrentUser: (state, value) => (state.currentUser = value),
   setMails: (state, value) => (state.mails = value),
 }

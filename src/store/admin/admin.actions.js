@@ -188,7 +188,9 @@ export default {
    * @param {Object} payload - The constraints needed
    * @param {string} payload.userId
    * @param {string} payload.eventId
-   * @return {Object} message
+   * @returns {{type: string, message: string}}
+   * @TODO Destructure object for default values
+   * @TODO Add failsafe for params
    */
   getUserEventMessage: async ({ commit }, payload) => {
     const { eventId, userId } = payload

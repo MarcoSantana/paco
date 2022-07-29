@@ -23,6 +23,50 @@
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <p class="text-muted">{{ user.email }}</p>
+                <v-card>
+                  <v-card-title>
+                    Último mensaje
+                  </v-card-title>
+                  <v-card-text>
+                    <v-list>
+                      <v-list-item>
+                        Mensaje: {{ currentEventMessage.message }}
+                      </v-list-item>
+
+                      <v-list-item>
+                        Fecha de envío:
+                        {{
+                          new Date(
+                            currentEventMessage.updateTimestamp
+                          ).toLocaleDateString('es-MX', {
+                            weekday: 'long',
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                          })
+                        }}
+                      </v-list-item>
+
+                      <v-list-item
+                        :color="statusColor(currentEventMessage.status)"
+                      >
+                        Estado de la solicitud:
+                        {{
+                          $t(`requests.${currentEventMessage.status}`)
+                            | capitalize
+                        }}
+                      </v-list-item>
+                    </v-list>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-btn outlined block color="success">
+                      <v-icon small class="pa-1">
+                        mdi-send
+                      </v-icon>
+                      Reenviar
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>
@@ -109,9 +153,10 @@
 
 <script lang="js">
 import { cloneDeep } from 'lodash'
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import { callUpdateDocumentStatus } from '@/firebase/functions'
 import capitalize from '@/filters/capitalize'
+import intlDate from '@/filters/intlDate'
 import Avatar from 'vue-avatar'
 import AcceptDialog from '@/components/admin/requests/AcceptDialog.vue'
 import DeleteDialog from '@/components/admin/requests/DeleteDialog.vue'
@@ -120,7 +165,7 @@ import ShowDocument from '@/components/admin/ShowDocument.vue'
 
 export default {
   name: 'RequestAssess',
-  filters: { capitalize },
+  filters: { capitalize, intlDate },
   components: {
     AcceptDialog,
     Avatar,
@@ -132,7 +177,12 @@ export default {
     userData: { type: Object, required: true },
     requestId: { type: String, required: true },
   },
-  data: () => ({ fab: false, documentRejectReasonDialog: false, documentRejectReason: '' }),
+   data: () => ({
+     fab: false,
+     documentRejectReasonDialog: false,
+     documentRejectReason: '',
+     loading: null,
+   }), // data
   asyncComputed: {
     documents() {
       const files = Object.keys(this.userData.documents).map(key => {
@@ -142,7 +192,7 @@ export default {
     }, // end documents
   },
   computed: {
-    ...mapState('admin', ['currentEvent', 'currentUser']),
+    ...mapState('admin', ['currentEvent', 'currentUser', 'currentEventMessage']),
     user() {
       return cloneDeep(this.userData)
     },
@@ -153,8 +203,16 @@ export default {
       return this.user.status.status ? this.user.status.status : 'incomplete'
     },
   },
-  mounted() {}, // end of computed
+  async mounted() {
+    this.loading = true
+    await this.getUserEventMessage({
+      userId: this.currentUser.id,
+      eventId: this.currentEvent.id
+    })
+    .then(() => this.loading = false)
+  }, // end of computed
   methods: {
+    ...mapActions('admin', ['getUserEventMessage']),
     clicked(e) {
       console.log('Click', e.target)
       this.documentRejectReasonDialog = true

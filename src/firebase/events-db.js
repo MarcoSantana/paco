@@ -31,18 +31,23 @@ export default class EventsDB extends GenericDB {
    * @param {Object} payload - The constraints needed
    * @param {string} payload.userId
    * @param {string} payload.eventId
-   * @returns {Object <Message>} Returns the message
+   * @returns {{type: string, message: string}} Returns the message
    */
   async getUserMessage({ userId = null, eventId = null } = {}) {
     try {
-      return this.doc(eventId)
+      const eventUserRef = (await firestore()).collection(this.collectionPath)
+      return eventUserRef
+        .doc(eventId)
         .collection('users')
         .doc(userId)
         .get()
-        .then(res => res.data())
+        .then(res => {
+          const { message, status } = res.data()
+          const updateTimestamp = res.data().updateTimestamp.toDate()
+          return { message, updateTimestamp, status }
+        })
     } catch (error) {
-      console.log(`Error getting users for event ${eventId}`, error)
-      console.error(error)
+      console.error(`Error getting users for event ${eventId}`, error)
       const result = {
         type: 'error',
         message: `Error al obtener el mensaje ${error}`,
