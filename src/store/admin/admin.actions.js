@@ -1,3 +1,5 @@
+// <reference path='src/typedefs.js' />
+
 import UserDocumentsDB from '@/firebase/user-documents-db'
 // import UsersDB from '@/firebase/users-db'
 import DocumentsDB from '@/firebase/documents-db'
@@ -188,7 +190,7 @@ export default {
    * @param {Object} payload - The constraints needed
    * @param {string} payload.userId
    * @param {string} payload.eventId
-   * @returns {{type: string, message: string}}
+   * @returns {import('@/typedefs').Message}
    * @TODO Destructure object for default values
    * @TODO Add failsafe for params
    */
@@ -201,20 +203,17 @@ export default {
   }, // getUserEventMessage
 
   /**
-   * Triggers the userRequest message (triggers auto email)
+   * Sends a mail through firebase plugin
+   * @param {import('@/typedefs').Mail} payload - A mail
+   * @returns {import('@/typedefs').Message}
    */
-  // triggerUpdateRequestMessage: async ({ commit }, payload) => {
-  //   const { eventId, userId, message } = payload
-  //   switch (payload) {
-  //     case !payload.eventId:
-  //       return null
-  //     case !payload.userId:
-  //       return null
-  //     case !payload.message:
-  //       return null
-  //     default:
-  //       break
-  //   } // switch
-  //   const mailsDb = new MailsDB()
-  // }, // triggerUpdateRequestMessage
+  sendMail: async (_, { to, cc, template }) => {
+    const mailDB = new MailsDB()
+    /** @type {import('@/typedefs').Message} */
+    const result = await mailDB
+      .send({ to, cc, template })
+      .then(mailMessage => mailMessage)
+    console.log('result', result)
+    return result
+  }, // sendMail
 }

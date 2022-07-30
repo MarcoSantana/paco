@@ -140,11 +140,13 @@ exports.updateEventStatus = eventTrigger.onUpdate(async (change, context) => {
     batch.update(singleEventsUserRef, {
       updateTimestamp,
       status: afterStatus,
+      message,
     });
 
     batch.update(userEventRef, {
       updateTimestamp,
       status: afterStatus,
+      message,
     });
 
     batch.set(logsRef, {

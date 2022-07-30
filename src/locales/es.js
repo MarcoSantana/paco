@@ -102,6 +102,9 @@ const translation = {
     confirm: 'confirmar acción',
     hello: 'holas',
     incompleteData: 'datos incompletos',
+    mail: {
+      sent: 'correo enviado',
+    },
     missing: {
       data: 'datos faltantes',
       datas: 'datos faltantes',
@@ -123,6 +126,12 @@ const translation = {
       describeReject: 'describa la razón del rechazo',
       prompt: 'actualice su solicitud',
       rejected: 'solicitud rechazada',
+    },
+    types: {
+      error: 'error',
+      info: 'información',
+      success: 'éxito',
+      warning: 'advertencia',
     },
   },
   actions: {

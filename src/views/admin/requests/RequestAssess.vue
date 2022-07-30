@@ -22,44 +22,79 @@
                 <p>{{ user.displayName | capitalize }}</p>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <p class="text-muted">{{ user.email }}</p>
-                <v-card>
+                <p class="text--muted">{{ user.email }}</p>
+                <v-card class="pa-0 ma-0">
                   <v-card-title>
                     Último mensaje
                   </v-card-title>
-                  <v-card-text>
-                    <v-list>
+                  <v-card-text class="text-justify">
+                    <v-list class="ma-0 pa-0">
                       <v-list-item>
-                        Mensaje: {{ currentEventMessage.message }}
+                        <v-list-item-content>
+                          <v-list-item-title>Mensaje:</v-list-item-title>
+                          <v-list-item-subtitle>
+                            {{ currentEventMessage.message }}
+                          </v-list-item-subtitle>
+                        </v-list-item-content>
+                      </v-list-item>
+                      <v-list-item>
+                        <v-list-item-content>
+                          <v-list-item-title>Fecha de envío:</v-list-item-title>
+                          <v-list-item-subtitle>
+                            {{
+                              new Date(
+                                currentEventMessage.updateTimestamp
+                              ).toLocaleDateString('es-MX', {
+                                weekday: 'long',
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                              })
+                            }}
+                          </v-list-item-subtitle>
+                        </v-list-item-content>
                       </v-list-item>
 
                       <v-list-item>
-                        Fecha de envío:
-                        {{
-                          new Date(
-                            currentEventMessage.updateTimestamp
-                          ).toLocaleDateString('es-MX', {
-                            weekday: 'long',
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                          })
-                        }}
-                      </v-list-item>
-
-                      <v-list-item
-                        :color="statusColor(currentEventMessage.status)"
-                      >
-                        Estado de la solicitud:
-                        {{
-                          $t(`requests.${currentEventMessage.status}`)
-                            | capitalize
-                        }}
+                        <v-list-item-content>
+                          <p>
+                            <v-list-item-title>
+                              Estado de la solicitud:
+                            </v-list-item-title>
+                            <v-list-item-subtitle>
+                              <p
+                                :class="statusColor(currentEventMessage.status)"
+                              >
+                                {{
+                                  $t(`requests.${currentEventMessage.status}`)
+                                    | capitalize
+                                }}
+                              </p>
+                            </v-list-item-subtitle>
+                          </p>
+                        </v-list-item-content>
                       </v-list-item>
                     </v-list>
+                    <v-alert
+                      v-if="localMessage"
+                      v-model="localMessageShow"
+                      dense
+                      dismissible
+                      outlined
+                      text
+                      :type="localMessage.color"
+                      :color="localMessage.color"
+                    >
+                      {{ $t(`messages.${localMessage.text}`) }}
+                    </v-alert>
                   </v-card-text>
                   <v-card-actions>
-                    <v-btn outlined block color="success">
+                    <v-btn
+                      outlined
+                      block
+                      color="info"
+                      @click="resendLastMessage"
+                    >
                       <v-icon small class="pa-1">
                         mdi-send
                       </v-icon>
@@ -177,12 +212,14 @@ export default {
     userData: { type: Object, required: true },
     requestId: { type: String, required: true },
   },
-   data: () => ({
-     fab: false,
-     documentRejectReasonDialog: false,
-     documentRejectReason: '',
-     loading: null,
-   }), // data
+  data: () => ({
+    fab: false,
+    documentRejectReasonDialog: false,
+    documentRejectReason: '',
+    loading: null,
+    localMessage: null,
+    localMessageShow: false,
+  }), // data
   asyncComputed: {
     documents() {
       const files = Object.keys(this.userData.documents).map(key => {
@@ -209,10 +246,10 @@ export default {
       userId: this.currentUser.id,
       eventId: this.currentEvent.id
     })
-    .then(() => this.loading = false)
+      .then(() => this.loading = false)
   }, // end of computed
   methods: {
-    ...mapActions('admin', ['getUserEventMessage']),
+    ...mapActions('admin', ['getUserEventMessage', 'sendMail']),
     clicked(e) {
       console.log('Click', e.target)
       this.documentRejectReasonDialog = true
@@ -229,18 +266,59 @@ export default {
         this.documentUpdateMessage = result.data
       })
     }, // changeDocumentStatus
+
+    getStatus(statusKey) {
+      const status = {
+        accepted: { color: "#4CAF50", text: "'aceptada'" },
+        pending: { color: "#CDDC39", text: "'pendiente'" },
+        rejected: { color: "#FF5722", text: "'rechazada'" },
+      };
+      return status[statusKey];
+    }, // getStatus
+    async resendLastMessage() {
+      const { currentEventMessage, currentUser } = this
+      this.localMessageShow = false
+      /** @type {import('@/typedefs').MailTemplate} */
+      const template = {
+        name: 'eventStatusChange',
+        data: {
+          message: currentEventMessage.message,
+          status: this.getStatus(currentEventMessage.status).text,
+          color: this.getStatus(currentEventMessage.status).color,
+        }
+      } // template
+
+      /** @type {import('@/typedefs').Mail} */
+      const mail = {
+        to: currentUser.email,
+        cc: 'marco.santana@gmail.com',
+        template
+      }
+
+      /** @type {import('@/typedefs').Message} */
+      this.localMessage = await this.sendMail({ ...mail })
+      this.localMessageShow = true
+      return this.localMessage
+    }, // resendLastMessage
+
     statusColor(status) {
-      const colors = { pending: 'warning', rejected: 'error', accepted: 'success', incomplete: 'info'}
+      const colors = {
+        pending: 'warning',
+        rejected: 'error',
+        accepted: 'success',
+        incomplete: 'info'
+      }
       return colors[status]
     }, // statusColor
   }, // end of methods
 }
 </script>
 
-<style>
+<style scoped>
 .v-speed-dial {
   position: absolute;
 }
+
 .v-btn--floating {
   position: relative;
 }
