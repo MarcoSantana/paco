@@ -45,6 +45,7 @@
               ref="actionDownload"
               name="actionDownload"
               link
+              @click="documentDownloadDialog"
             >
               <v-list-item-icon>
                 <v-icon>mdi-cloud-download</v-icon>
@@ -108,8 +109,8 @@
               <span v-else>Salir de pantalla completa</span>
             </v-tooltip>
             <show-file
+              :urls="urls"
               class="container"
-              :url="url"
               @toggleFullscreen="toggleFullscreen"
             />
           </v-sheet>
@@ -132,6 +133,13 @@
       @close="toggleDocumentDeleteDialog"
       @deleted="deleted"
     />
+    <document-download-dialog
+      :document="document"
+      :show="showDocumentDownloadDialog"
+      :urls="urls"
+      @close="toggleDocumentDownloadDialog"
+      @download="downloaded"
+    ></document-download-dialog>
   </v-sheet>
 </template>
 
@@ -143,11 +151,17 @@ import ShowFile from '@/components/ShowFile'
 import DocumentRejectDialog from '@/components/admin/DocumentRejectDialog'
 import DocumentAcceptDialog from '@/components/admin/DocumentAcceptDialog'
 import DocumentDeleteDialog from '@/components/admin/DocumentDeleteDialog'
+import DocumentDownloadDialog from '@/components/admin/DocumentDownloadDialog'
 
 export default {
   name: 'ShowDocument',
-  components: { ShowFile, DocumentRejectDialog, DocumentAcceptDialog,
-    DocumentDeleteDialog },
+  components: {
+    DocumentAcceptDialog,
+    DocumentDeleteDialog,
+    DocumentDownloadDialog,
+    DocumentRejectDialog,
+    ShowFile,
+  },
   filters: {
     capitalize: (value) => capitalize(value),
   },
@@ -157,13 +171,14 @@ export default {
   },
   data() {
     return {
-      downloadable: false,
+      downloadable: true,
       fullscreen: false,
       hide: false,
       loading: false,
       showDocumentRejectDialog: false,
       showDocumentAcceptDialog: false,
       showDocumentDeleteDialog: false,
+      showDocumentDownloadDialog: false,
     }
   },
   computed: {
@@ -178,8 +193,11 @@ export default {
     ...mapMutations('documents', ['setDocumentDeleteMessage']),
     deleted() {
       this.setDocumentDeleteMessage(null)
-        setTimeout(() => this.hide = true, 2000);
+      setTimeout(() => this.hide = true, 2000);
     }, // end deleted
+    downloaded() {
+      this.setDocumentDownloadMessage(null)
+    }, // downloaded
     async getUrls() {
       this.loading = true
       const urls = []
@@ -206,19 +224,26 @@ export default {
     documentDeleteDialog() {
       this.showDocumentDeleteDialog = true
     },
+    documentDownloadDialog() {
+      this.showDocumentDownloadDialog = true
+    },
     toggleFullscreen() {
       this.fullscreen = !this.fullscreen
     },
     toggleDocumentRejectDialog() {
-    this.showDocumentRejectDialog = !this.showDocumentRejectDialog
+      this.showDocumentRejectDialog = !this.showDocumentRejectDialog
     }, // end toggleDocumentRejectDialog
 
     toggleDocumentAcceptDialog() {
-    this.showDocumentAcceptDialog = !this.showDocumentAcceptDialog
+      this.showDocumentAcceptDialog = !this.showDocumentAcceptDialog
     }, // end toggleDocumentRejectDialog
 
     toggleDocumentDeleteDialog() {
-    this.showDocumentDeleteDialog = !this.showDocumentDeleteDialog
+      this.showDocumentDeleteDialog = !this.showDocumentDeleteDialog
+    }, // end toggleDocumentDeleteDialog
+
+    toggleDocumentDownloadDialog() {
+      this.showDocumentDownloadDialog = !this.showDocumentDownloadDialog
     }, // end toggleDocumentDeleteDialog
   }, // methods
   asyncComputed: {
