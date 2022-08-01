@@ -3,8 +3,6 @@ import myEs from '@/locales/es'
 
 /** Message to be delivered tto user in UI */
 export default class Message {
-  'use strict'
-
   /**
    * Create a message
    * @param {Object} params

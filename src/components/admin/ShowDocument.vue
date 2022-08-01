@@ -40,6 +40,13 @@
             </v-tooltip>
           </template>
           <v-list>
+            <v-list-item>
+              <document-download
+                :document="document"
+                :user="currentUser"
+                :urls="urls"
+              ></document-download>
+            </v-list-item>
             <v-list-item
               v-if="downloadable"
               ref="actionDownload"
@@ -137,6 +144,7 @@
       :document="document"
       :show="showDocumentDownloadDialog"
       :urls="urls"
+      :user="currentUser"
       @close="toggleDocumentDownloadDialog"
       @download="downloaded"
     ></document-download-dialog>
@@ -151,14 +159,14 @@ import ShowFile from '@/components/ShowFile'
 import DocumentRejectDialog from '@/components/admin/DocumentRejectDialog'
 import DocumentAcceptDialog from '@/components/admin/DocumentAcceptDialog'
 import DocumentDeleteDialog from '@/components/admin/DocumentDeleteDialog'
-import DocumentDownloadDialog from '@/components/admin/DocumentDownloadDialog'
+import DocumentDownload from '@/components/admin/DocumentDownload'
 
 export default {
   name: 'ShowDocument',
   components: {
     DocumentAcceptDialog,
     DocumentDeleteDialog,
-    DocumentDownloadDialog,
+    DocumentDownload,
     DocumentRejectDialog,
     ShowFile,
   },
