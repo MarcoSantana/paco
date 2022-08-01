@@ -45,20 +45,16 @@
                 :document="document"
                 :user="currentUser"
                 :urls="urls"
-              ></document-download>
+              >
+                <template slot="activator">
+                  <v-icon class="mr-2">mdi-cloud-download</v-icon>
+                  <span class="ml-3 text-capitalize">
+                    {{ $t('actions.download') }}
+                  </span>
+                </template>
+              </document-download>
             </v-list-item>
-            <v-list-item
-              v-if="downloadable"
-              ref="actionDownload"
-              name="actionDownload"
-              link
-              @click="documentDownloadDialog"
-            >
-              <v-list-item-icon>
-                <v-icon>mdi-cloud-download</v-icon>
-              </v-list-item-icon>
-              {{ $t('document.actions.download') | capitalize }}
-            </v-list-item>
+
             <v-list-item link @click="documentAcceptDialog">
               <v-list-item-icon>
                 <v-icon>mdi-check</v-icon>
@@ -206,6 +202,9 @@ export default {
     downloaded() {
       this.setDocumentDownloadMessage(null)
     }, // downloaded
+    showMessage(message) {
+      console.log('showMessage', message);
+    }, // showMessage
     async getUrls() {
       this.loading = true
       const urls = []

@@ -1,18 +1,9 @@
 <template>
-  <v-sheet>
-    <v-btn text @click="downloadDocument">
-      <v-icon class="mr-2">mdi-cloud-download</v-icon>
-      {{ $t('actions.download') }}
-    </v-btn>
-    <v-snackbar v-if="message" v-model="snackbar">
-      {{ message.message }}
-      <template v-slot:action="{ attrs }">
-        <v-btn color="error" text v-bind="attrs" @click="snackbar = false">
-          {{ $('actions.close') }}
-        </v-btn>
-      </template>
-    </v-snackbar>
-  </v-sheet>
+  <span>
+    <span @click="downloadDocument">
+      <slot name="activator"></slot>
+    </span>
+  </span>
 </template>
 
 <script>
@@ -35,6 +26,7 @@ export default {
   components: {}, // components
   props: {
     document: { type: Object, required: true },
+    tag: { type: String, default: 'v-sheet' },
     urls: { type: Array, required: true },
     user: { type: Object, required: true },
   }, // props
@@ -43,12 +35,14 @@ export default {
     message: null,
     /** @type boolean */
     snackbar: false,
-    /** @type any */
-    temp: null, // temporal use
   }),
   computed: {}, // computed
   asyncComputed: {}, // asyncComputed
   methods: {
+    onClick() {
+      console.log('click')
+      this.downloadDocument()
+    },
     /**
      * Compresses the zipFiles
      * @param {Blob[]} files
@@ -58,9 +52,9 @@ export default {
       const zip = new JSZip()
       const zipFiles = zip.folder('archivos')
       zip.file(
-        `${this.user.license ? this.user.license : this.user.displayName}-${
-          this.document.name
-        }.txt`,
+        `${
+          this.user.license ? this.user.license : this.user.displayName
+        }-${this.$t(`document.types.${this.document.name}`)}.txt`,
         `Nombre del documento: ${this.$t(
           `document.types.${this.document.name}`
         )},\nUsuario: ${
@@ -71,9 +65,10 @@ export default {
       )
       files.forEach(item => {
         zipFiles.file(
-          `${this.user.license ? this.user.license : this.user.displayName}-${
-            this.document.name
-          }`,
+          `${
+            this.user.license ? this.user.license : this.user.displayName
+          }-${this.$t(`document.types.${this.document.name}`)}
+          `,
           item,
           {
             base64: true,
@@ -99,6 +94,9 @@ export default {
      */
     async downloadDocument() {
       this.$emit('start')
+      this.showMessage(
+        new Message({ type: 'info', message: 'Inicia la descarga' })
+      )
       const files = await Promise.all(
         this.urls.map(async (/** @type {string} */ url) => {
           const res = this.getFile(url)
@@ -107,8 +105,12 @@ export default {
       )
       const compressedFile = await this.compressFile(files)
       const res = this.save(compressedFile)
+      console.log('res', res)
       this.showMessage(new Message(res))
 
+      this.showMessage(
+        new Message({ type: 'success', message: 'Fin de la descarga' })
+      )
       this.$emit('end')
     }, // downloadDocument
 
@@ -142,26 +144,12 @@ export default {
      * @param {*} compressedFile
      */
     save(compressedFile) {
-      saveAs(
+      return saveAs(
         compressedFile,
-        `${this.user.license ? this.user.license : this.user.displayName}-${
-          this.document.name
-        }.zip`
+        `${
+          this.user.license ? this.user.license : this.user.displayName
+        }-${this.$t(`document.types.${this.document.name}`)}.zip`
       )
-        // @ts-ignore
-        .then(() => {
-          return new Message({
-            message: 'Éxito al descargar archivo',
-            type: 'success',
-          })
-        })
-        .catch(err => {
-          console.error(err)
-          return new Message({
-            type: 'sccess',
-            message: 'Error al descargar archivo',
-          })
-        })
     }, // save
 
     /**
@@ -170,7 +158,7 @@ export default {
      */
     showMessage(message) {
       this.message = message
-      this.snackbar = true
+      this.$emit('message', message)
       // TODO set a timeout to auto dismiss
     },
   }, // methods
