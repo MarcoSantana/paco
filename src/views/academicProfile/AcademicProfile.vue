@@ -44,6 +44,9 @@
       <v-col cols="12">
         <university :user="user" :academicProfile="academicProfile" />
       </v-col>
+      <v-col cols="12">
+        <post-degree :user="user" :academicProfile="academicProfile" />
+      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -52,11 +55,11 @@ import { mapState, mapActions, mapMutations } from 'vuex'
 import { isNil } from 'lodash'
 import SpecialtyLicense from '@/views/academicProfile/SpecialtyLicense'
 import University from '@/views/academicProfile/University'
-// import University from '@/views/'
+import PostDegree from '@/views/academicProfile/PostDegree'
 
 export default {
   name: 'AcademicProfile',
-  components: { SpecialtyLicense, University },
+  components: { PostDegree, SpecialtyLicense, University },
   filters: {
     genderize: val => {
       if (isNil(val) || val.isNaN) return val
@@ -101,3 +104,5 @@ export default {
   white-space: pre-warp;
   word-break: keep-all;
 }
+</style>
+

@@ -1,4 +1,35 @@
 /**
+ * College
+ * @typedef {Object} College
+ * @property {string} name
+ * @property {string} id
+ */
+
+/**
+ * Campus
+ * @typedef {Object} Campus
+ * @property {string} name
+ * @property {string} id
+ */
+
+/**
+ * Hospital
+ * @typedef {Object} Hospital
+ * @property {string} id
+ * @property {Object<College> | null} parent
+ * @property {string} name
+ */
+
+/**
+ * Post degree studies
+ * @typedef {Object} Specialty
+ * @property {Object<College>} university - The endorser University
+ * @property {Object<Hospital>} hospital
+ * @property {Date} startDate - Started specialty studies
+ * @property {Date} endDate - Ended specialty studies
+ */
+
+/**
  * Firebase mail record
  * @typedef {Object} MailRecord
  * @property {string} [cc] - Copy email address

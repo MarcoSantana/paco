@@ -39,12 +39,11 @@ export default {
       const academicProfileDb = new AcademicProfileDB(
         rootState.authentication.user.id
       )
-      console.clear()
-      debugger
-      console.log('data', data)
       await academicProfileDb
         .update({ ...data })
-        .then(() => commit('updateAcademicProfile', { [data.documentName]: { ...data } }))
+        .then(() =>
+          commit('updateAcademicProfile', { [data.documentName]: { ...data } })
+        )
         .catch(error => console.error('Error updating the profile', error))
     } catch (error) {
       console.error('triggerUpdateAcademicProfile', error)
