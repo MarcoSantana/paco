@@ -25,6 +25,7 @@ export default {
     const collegeCampiDB = new CollegeCampiDB(collegeId)
     const campi = await collegeCampiDB.readAll()
     commit('setCampi', campi.sort())
+    // return campi.sort()
   },
   // /**
   //  * Fetch products of current logged-in user

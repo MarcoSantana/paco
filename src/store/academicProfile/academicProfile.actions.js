@@ -39,23 +39,12 @@ export default {
       const academicProfileDb = new AcademicProfileDB(
         rootState.authentication.user.id
       )
+      console.clear()
+      debugger
+      console.log('data', data)
       await academicProfileDb
-        .create(data, data.documentName)
-        .then(() => commit('updateAcademicProfile', data))
-        // .then(() => {
-        //   // TODO move this to a separated databse class user-profile-db
-        //   firestore()
-        //     .collection('users')
-        //     .doc(rootState.authentication.user.id)
-        //     .collection('profile')
-        //     .doc(data.documentName)
-        //     .set({
-        //       ...data,
-        //       updateTimestamp: firestore.FieldValue.serverTimestamp(),
-        //     })
-        //     .then(res => console.log('user-profile-db', res))
-        //     .catch(err => console.error('Error in user-profile update', err))
-        // })
+        .update({ ...data })
+        .then(() => commit('updateAcademicProfile', { [data.documentName]: { ...data } }))
         .catch(error => console.error('Error updating the profile', error))
     } catch (error) {
       console.error('triggerUpdateAcademicProfile', error)

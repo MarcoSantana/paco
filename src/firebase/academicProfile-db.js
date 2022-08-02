@@ -20,7 +20,10 @@ export default class AcademicProfileDB extends GenericDB {
         .doc(this.userId)
         .collection('profile')
         .doc(data.documentName)
-        .update({ ...data })
+        .set({
+          ...data,
+          updateTimestamp: firestore.FieldValue.serverTimestamp()
+        })
     } catch (error) {
       console.error('Error updating the profile', error)
     }
