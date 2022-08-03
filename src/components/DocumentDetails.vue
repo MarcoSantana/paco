@@ -1,73 +1,41 @@
 <template>
   <v-container>
-    <v-card class="pa-3">
+    <v-card class="pa-3" :color="(document.status === 3 ? 'error lighten-3' : '')">
       <v-card-title>
-        <span class="text-capitalize text-h4">{{ $t(`document.types.${document.name}`) }}</span>
-        <span
-          :class="(document.status ===3 ? 'error' : '')"
-          class="text-capitalize"
-        >{{ $t(`document.statusKey.${document.status}`) }}</span>
+        <div class="text-capitalize text-h4">{{ $t(`document.types.${document.name}`) }}</div>
+        <br />
+        <div class="text-capitalize">{{
+            $t(`document.statusKey.${document.status}`)
+        }}</div>
       </v-card-title>
-      <v-alert
-        v-if="documentCreationMessage.message"
-        text
-        :type="documentCreationMessage.type"
-      >{{ documentCreationMessage.message }}</v-alert>
+      <v-alert v-if="documentCreationMessage.message" text :type="documentCreationMessage.type">{{
+          documentCreationMessage.message
+      }}</v-alert>
       <validation-observer v-slot="{ invalid }">
-        <validation-provider
-          v-slot="{ errors }"
-          inmediate
-          :name="document.name"
-          rules="required|size:2000"
-        >
+        <validation-provider v-slot="{ errors }" inmediate :name="document.name" rules="required|size:2000">
           <v-card-text v-for="(file, i) in docURLs" :key="file">
             <show-file :url="file" @removeFile="file = null" />
-            <v-file-input
-              v-if="document.status === 3"
-              :key="`${document.name}-file-input`"
-              :ref="`fileInput-${i}`"
-              v-model="files[i]"
-              :name="`fileInput-${document.name}-${i}`"
-              :data-vv-as="`file-${i - 1}`"
-              accept="image/png, image/jpeg, application/pdf"
-              :placeholder="
+            <v-file-input v-if="document.status === 3" :key="`${document.name}-file-input`" :ref="`fileInput-${i}`"
+              v-model="files[i]" :name="`fileInput-${document.name}-${i}`" :data-vv-as="`file-${i - 1}`"
+              accept="image/png, image/jpeg, application/pdf" :placeholder="
                 `${$t('actions.load')} ${$t(
                   'document.types.' + document.name
                 )} ${i + 1}`
-              "
-              :error="errors.length > 0"
-              :error-messages="errors[0]"
-              counter
-              chips
-              show-size
-              truncate-length="15"
-              required
-              small-chips
-              clearable
-              @click="setDocumentCreationMessage({})"
-              @change="docURLs[i] = getURL(files[i])"
-            >
-              <v-icon
-                slot="append"
-                color="red"
-                @click="
-                  delete docURLs[i - 1]((inputsArray[i - 1] = false))(
-                    filesCounter - 1 < 1
-                      ? (filesCounter = 1)
-                      : (filesCounter -= 1)
-                  )
-                "
-              >mdi-minus</v-icon>
+              " :error="errors.length > 0" :error-messages="errors[0]" counter chips show-size truncate-length="15"
+              required small-chips clearable @click="setDocumentCreationMessage({})"
+              @change="docURLs[i] = getURL(files[i])">
+              <v-icon slot="append" color="red" @click="
+                delete docURLs[i - 1]((inputsArray[i - 1] = false))(
+                  filesCounter - 1 < 1
+                    ? (filesCounter = 1)
+                    : (filesCounter -= 1)
+                )
+              ">mdi-minus</v-icon>
             </v-file-input>
           </v-card-text>
           <v-card-actions v-if="document.status === 3">
-            <v-btn
-              v-if="documentCreationMessage.type !== 'success'"
-              class="my-2"
-              color="success"
-              :disabled="invalid"
-              @click="validate()"
-            >
+            <v-btn v-if="documentCreationMessage.type !== 'success'" class="my-2" color="success" :disabled="invalid"
+              @click="validate()">
               {{ $t('actions.save') }}
               <v-icon right dark>mdi-cloud-upload</v-icon>
             </v-btn>

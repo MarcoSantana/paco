@@ -1,3 +1,4 @@
+const { find } = require("lodash");
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const { google } = require("googleapis");
@@ -151,6 +152,33 @@ exports.updateDocStatus = functions.firestore
   .onUpdate((change, context) => {
     const newValue = change.after.data();
     const previousValue = change.before.data();
+    // functions.logger.log("change before");
+    // functions.logger.log(change.before);
+    // functions.logger.log(change.before.data);
+    // functions.logger.log("previousValue");
+    // functions.logger.log(previousValue);
+    // functions.logger.log("newValue");
+    // functions.logger.log(newValue);
+    // Find the document inside the user-events collection
+    // admin
+    //   .firestore()
+    //   .collection("users")
+    //   .doc(previousValue.userId)
+    //   .collection("events")
+    //   .get()
+    //   .then((querySnapshot) => {
+    //     querySnapshot.forEach((doc) => {
+    //       functions.logger.log(doc.id, " => ", doc.data());
+    //       const res = find(doc.data(), (event) => {
+    //         if (
+    //           event.documents[previousValue.documentName].documentId === previousValue.documentId
+    //         ) return true;
+    //         return false;
+    //       }); // find
+    //       functions.logger.log("res", res);
+    //     });
+    //   });
+    // current dev
 
     // TODO create document url
     const userDoc = admin
@@ -185,6 +213,32 @@ exports.updateDocStatus = functions.firestore
             },
           });
       });
+
+    functions.logger.log("previousValue");
+    functions.logger.log(previousValue);
+
+    // Find the document inside the user-events collection
+    admin
+      .firestore()
+      .collection("users")
+      .doc(previousValue.userId)
+      .collection("events")
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          functions.logger.log(doc.id, " => ", doc.data());
+          // const res = find(doc.data(), (event) => {
+          //   if (
+          //     event.documents[previousValue.documentName].documentId === previousValue.documentId
+          //   ) return true;
+          //   return false;
+          // }); // find
+          // functions.logger.log("res", res);
+        });
+      });
+    // current dev
+
+
     return userDoc;
   });
 

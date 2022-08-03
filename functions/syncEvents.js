@@ -88,8 +88,7 @@ exports.deleteRequest = eventTrigger.onDelete(async (change, context) => {
     .collection("mail")
     .add({
       to: user.email,
-      cc: "cmmu2009@yahoo.com.mx",
-      bcc: "marco.santana@gmail.com",
+      cc: "marco.santana@gmail.com",
       template: {
         name: "eventDelete",
         data: {
@@ -179,8 +178,7 @@ exports.updateEventStatus = eventTrigger.onUpdate(async (change, context) => {
             .collection("mail")
             .add({
               toUids: [userId],
-              cc: "cmmu2009@yahoo.com.mx",
-              bcc: "marco.santana@gmail.com",
+              cc: "marco.santana@gmail.com",
               template: {
                 name: "eventStatusChange",
                 data: {
