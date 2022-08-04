@@ -342,14 +342,14 @@ exports.createUserListSheet = functions.https.onCall(async (data, context) => {
 
         if (userName != null && userName.length > 0) {
           documents.push([
-            firstName,
-            lastName,
-            hospital,
-            email,
-            graduationDate,
-            telephone,
             cellphone,
-            foo,
+            email,
+            firstName,
+            gender,
+            graduationDate,
+            hospital,
+            lastName,
+            telephone,
           ]);
         }
       });
