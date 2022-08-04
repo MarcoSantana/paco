@@ -1,4 +1,3 @@
-const { find } = require("lodash");
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const { google } = require("googleapis");
@@ -255,7 +254,6 @@ exports.syncDocuments = functions.firestore
       .then((userSnapshot) => userSnapshot.data())
       .then((res) => {
         const userDoc = res;
-
         const { documentId } = context.params;
         const documents = admin.firestore().collection("documents");
         return documents.add({

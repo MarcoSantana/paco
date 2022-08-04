@@ -1,15 +1,19 @@
 <template>
-  <v-sheet>
+  <v-sheet light class="black--text">
+    <v-sheet
+      class="title text-h4 text-capitalize text-center ma-3"
+      :color="requestStatus.color"
+      dark
+    >
+      {{ requestStatus.string }}
+    </v-sheet>
     <h2 v-if="model && model.errors" class="error">
       <ul v-for="error in model.errors" :key="error.field.label">
         <li>{{ error.field.label }} >> {{ error.error }}</li>
       </ul>
     </h2>
     <h2>
-      <v-card
-        v-if="currentUserEvent && currentUserEvent.completed"
-        class="error"
-      >
+      <v-card v-if="isRequestComplete" :class="requestStatus.color">
         <v-card-text class="white--text text-h5">
           Usted ya ha realizado esta solicitud.
           <br />
@@ -88,7 +92,6 @@
       </v-expansion-panel>
     </v-expansion-panels>
     <v-stepper
-      v-if="currentUserEvent && !currentUserEvent.completed"
       v-model="curr"
       color="primary"
       vertical
@@ -96,71 +99,85 @@
       non-linear
       elevation="0"
     >
-      <span v-for="(step, n) in steps" :key="n">
-        <v-stepper-header>
-          <v-stepper-step
-            :color="stepStatus(n + 1)"
-            :complete="stepComplete(n + 1)"
-            :rules="[value => !invalid]"
-            :step="n + 1"
-          >
-            {{ startCase($t('document.types')[step.name]) }}
-          </v-stepper-step>
-        </v-stepper-header>
-        <v-stepper-items>
-          <v-stepper-content :step="n + 1">
-            <validation-observer v-slot="{ invalid }">
-              <v-sheet v-if="step.description" hidden class="flat">
-                <p>{{ step.description }}</p>
-              </v-sheet>
-              <upload-document
-                v-if="step.upload"
-                :document="step"
-                :show-files="
-                  getEventFiles(
-                    currentUserEvent.documents &&
-                      currentUserEvent.documents[step.name]
-                      ? currentUserEvent.documents[step.name]
-                      : null
-                  )
-                "
-                @document-created="updateEvent"
-              ></upload-document>
-              <v-btn
-                v-if="n < steps.length - 1"
-                class="ma-3"
-                :disabled="step.required && !disableNext"
-                color="primary"
-                @click="
-                  nextStep(n)
-                  disableNext = false
-                "
+      <validation-observer v-slot="{ invalid }">
+        <span v-for="(step, n) in steps" :key="n">
+          <validation-provider v-slot="{ validate, reset }">
+            <v-stepper-header>
+              <v-stepper-step
+                :color="stepStatus(n + 1)"
+                :complete="isRequestComplete || stepComplete(n + 1)"
+                :rules="[value => !invalid]"
+                :step="n + 1"
               >
-                {{ $t('actions.continue') }}
-              </v-btn>
-              <v-btn
-                v-if="n + 1 === steps.length"
-                class="ma-3"
-                :disabled="invalid"
-                color="success"
-                @click="done()"
-              >
-                Terminar
-              </v-btn>
-              <v-btn
-                v-if="n > 0"
-                text
-                @click="
-                  curr = n
-                  disableNext = true
-                "
-              >
-                Atrás
-              </v-btn>
-            </validation-observer>
-          </v-stepper-content>
-        </v-stepper-items>
-      </span>
+                {{ startCase($t('document.types')[step.name]) }}
+              </v-stepper-step>
+            </v-stepper-header>
+            <v-stepper-items>
+              <v-stepper-content :step="n + 1">
+                <v-sheet v-if="step.description" hidden class="flat">
+                  <p>{{ step.description }}</p>
+                </v-sheet>
+                <v-sheet
+                  :color="documentStatus(document(step.name)).color"
+                  class="pa-3 primary--text"
+                >
+                  <p class="text-h4 text-capitalize">
+                    {{ documentStatus(document(step.name)).string }}
+                  </p>
+                  <upload-document
+                    v-if="
+                      documentStatus(document(step.name)).isEditable &&
+                        step.upload
+                    "
+                    :document="step"
+                    :show-files="
+                      getEventFiles(
+                        currentUserEvent.documents &&
+                          currentUserEvent.documents[step.name]
+                          ? currentUserEvent.documents[step.name]
+                          : null
+                      )
+                    "
+                    @document-created="updateEvent"
+                  ></upload-document>
+                </v-sheet>
+                <v-btn
+                  v-if="n < steps.length - 1"
+                  class="ma-3"
+                  :disabled="
+                    isNil(document(step.name)) && step.required && !disableNext
+                  "
+                  color="primary"
+                  @click="
+                    nextStep(n)
+                    disableNext = false
+                  "
+                >
+                  {{ $t('actions.continue') }}
+                </v-btn>
+                <v-btn
+                  v-if="n + 1 === steps.length"
+                  class="ma-3"
+                  color="success"
+                  @click="done()"
+                >
+                  Terminar
+                </v-btn>
+                <v-btn
+                  v-if="n > 0"
+                  text
+                  @click="
+                    curr = n
+                    disableNext = true
+                  "
+                >
+                  Atrás
+                </v-btn>
+              </v-stepper-content>
+            </v-stepper-items>
+          </validation-provider>
+        </span>
+      </validation-observer>
     </v-stepper>
     <!-- steps -->
   </v-sheet>
@@ -277,6 +294,7 @@ export default {
       },
       {
         longName: 'Último paso',
+        name: 'final',
         description:
           'Ha almacenado exitosamente los documentos una vez que sea aprobada su solicitud recibirá un correo electrónico informándole',
         required: false,
@@ -303,6 +321,23 @@ export default {
     currentUserEvent() {
       return this.getUserEvent(this.id)
     },
+
+    isRequestComplete() {
+      console.log('isRequestComplete')
+      console.log(this.currentUserEvent.status)
+      if (isNil(this.currentUserEvent)) return false
+      if (this.currentUserEvent.completed) return false
+      if (this.currentUserEvent.status !== 'accepted') return false
+      return true
+    }, // isComplete
+
+    requestStatus() {
+      return {
+        color: this.$t(`requests.colors.${this.currentUserEvent.status}`),
+        status: this.currentUserEvent.status,
+        string: this.$t(`requests.${this.currentUserEvent.status}`),
+      }
+    }, // requestStatus
     // TODO disableNext with getter and setter to add the required feature so the user can skip some steps
   },
   watch: {},
@@ -322,8 +357,45 @@ export default {
       'setCurrentEventComplete',
     ]),
     ...mapActions('documents', ['createUserDocument']),
+    document(name) {
+      if (isNil(name)) return null
+      if (isNil(this.currentUserEvent)) return null
+      if (isNil(this.currentUserEvent.documents)) return null
+      console.log('this.currentUserEvent')
+      console.log(this.currentUserEvent)
+      return this.currentUserEvent.documents[name]
+        ? this.currentUserEvent.documents[name]
+        : null
+    }, // document
+    documentStatus(document) {
+      if (!document) {
+        document = {
+          color: 'cyan lighten-1',
+          exists: false,
+          status: 5,
+          string: this.$t(`document.statusKey.new`),
+          isRejected: false,
+          isEditable: true,
+        }
+      }
+      return {
+        color: this.$t(`document.statusColor.${document.status}`),
+        exists: isNil(document),
+        status: document.status,
+        string: this.$t(`document.statusKey.${document.status}`),
+        isRejected: () => {
+          return document.status === 'rejected'
+        },
+        isEditable: () => {
+          return document.status !== 'accepted'
+        },
+      }
+    }, // documentStatus
     startCase(string) {
       return startCase(string)
+    },
+    isNil(value) {
+      return isNil(value)
     },
     async validateForm() {
       console.log('validating form from refs')

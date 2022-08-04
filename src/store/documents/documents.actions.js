@@ -68,7 +68,7 @@ export default {
       if (docUnique) {
         document.status = 1
         try {
-          createdDocument = await userDocumentDB.create(document)
+          createdDocument = await userDocumentDB.set(document, { merge: true })
           commit('addDocument', createdDocument)
           commit('setDocumentCreationPending', false)
           commit('setDocumentCreationMessage', {

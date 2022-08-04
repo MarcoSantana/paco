@@ -1,5 +1,5 @@
 <template>
-  <v-card max-width="500">
+  <v-card max-width="100%">
     <validation-observer v-slot="{ invalid }">
       <v-card-title class="text-h5 text-justify title">
         {{ document.longName }}

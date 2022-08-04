@@ -223,6 +223,9 @@ export default {
   asyncComputed: {
     documents() {
       const files = Object.keys(this.userData.documents).map(key => {
+        if((this.userData.documents[key])) {
+          return this.userData.documents[key] ? this.userData.documents[key] : []
+        }
         return this.userData.documents[key].files
       })
       return { ...cloneDeep(this.user.documents), files }
