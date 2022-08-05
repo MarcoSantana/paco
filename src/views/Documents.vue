@@ -1,9 +1,22 @@
 <template>
-  <div class="page-wrapper">
+  <v-container>
     <h1 class="document-page-title">Página de Documentos</h1>
-    <document-list class="document-list"></document-list>
-    <!-- <add-document v-if="networkOnLine"></add-document> -->
-  </div>
+    <v-card max-width="800">
+      <v-card-title>Estamos en mantenimiento</v-card-title>
+      <v-card-text>
+        Esta característica se encuentra en mantenimiento.
+        <p>Para administrar los documentos relacionados con alguna solicitud,
+        por favor
+        <br/>
+        <span class="font-weight-black text-h6">diríjase a la
+        sección de <v-btn class="ma-2 font-weight-black text-h6" color="info" to="request"
+        outlined> "Solicitar examen"</v-btn></span></p>
+    <v-img src="/img/IT_Support_Two_Color.svg" alt="" />
+      </v-card-text>
+    </v-card>
+    <document-list v-if="!maintenance" class="document-list"></document-list>
+    <!-- <v-sheet><add-document v-if="networkOnLine"></add-document></v-sheet> -->
+  </v-container>
 </template>
 
 <script>
@@ -15,6 +28,9 @@ export default {
   // components: { DocumentList, AddDocument },
   components: { DocumentList },
   computed: mapState('app', ['networkOnLine']),
+   data: () => ({
+     maintenance: true,
+   })
 }
 </script>
 
