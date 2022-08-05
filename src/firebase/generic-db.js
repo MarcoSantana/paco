@@ -181,10 +181,10 @@ export default class GenericDB {
     await (await firestore())
       .collection(this.collectionPath)
       .doc(id)
-      .update({
+      .set({
         ...clonedData,
         updateTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      })
+      }, { merge: true })
 
     return id
   }
