@@ -12,39 +12,78 @@ exports.logging = require("./logging");
 exports.deleteUsers = require("./deleteUsers");
 exports.syncEvents = require("./syncEvents");
 
-const syncUserEventDocument = async (change) => {
-  admin
-    .firestore()
-    .collection("users")
-    .doc(previousValue.userId)
-    .collection("events")
-    .get()
-    .then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        const foo = doc.data();
-        Object.keys(foo).forEach((key) => {
-          // console.log(key, "=>", foo[key]);
-          // console.log("newValue.name", newValue.name);
-          Object.values(foo.documents).forEach((fooDocument) => {
-            // console.log("fooDocument");
-            // console.log(fooDocument);
-            if (fooDocument.name === newValue.name) {
-              if (fooDocument.id === newValue.documentId) {
-                console.log("you are free");
-                console.log("doc>>", doc.data(), doc.id);
-                return doc.ref.update({
-                  documents: {
-                    ...foo.documents,
-                    ...newValue,
-                  },
-                });
-              }
-            }
-          });
-        });
-      });
-    });
-}; // syncUserEventDocument
+/**
+ * Gets the name and color of the document
+ * @param {string} statusKey
+ * @returns {Object} docStatus - The translated name and color for the given state
+ */
+const getDocStatus = (statusKey) => {
+  if (!statusKey) return statusKey;
+  const status = {
+    1: { text: "por revisar", color: "#CDDC39" },
+    2: { text: "en revisión", color: "#CDDC39" },
+    3: { text: "rechazado", color: "#FF5722" },
+    4: { text: "aceptado", color: "#4CAF50" },
+    5: { text: "nuevo", color: "" },
+  };
+  return status[statusKey];
+};
+const getDocName = (docName) => {
+  if (!docName) return docName;
+  const names = {
+    college: "universidad",
+    degree: "título",
+    degreeDiploma: "diploma universitario de licenciatura",
+    enarm: "comprobante ENARM o similar",
+    license: "cédula profesional",
+    mugshot: "fotografía personal",
+    pediatricVoucher: "comprobante de pediatría",
+    postGraduate: "institución de posgrado",
+    postDegreeCertificate: "constancia de residencia progresiva hospitalaria",
+    postDegreeDiploma: "diploma institucional de especialidad",
+    postgraduateUniversitaryDiploma: "diploma universitario de especialidad",
+    specialtyDiploma: "diploma universitario de especialidad",
+    specialtyUniversitaryDiploma:
+      "diploma institucional universitario de especialidad",
+    university: "universidad",
+    voucher: "comprobante de pago",
+  };
+  return names[docName];
+}; // getDocName
+
+// const syncUserEventDocument = async (change) => {
+//   admin
+//     .firestore()
+//     .collection("users")
+//     .doc(previousValue.userId)
+//     .collection("events")
+//     .get()
+//     .then((querySnapshot) => {
+//       querySnapshot.forEach((doc) => {
+//         const foo = doc.data();
+//         Object.keys(foo).forEach((key) => {
+//           // console.log(key, "=>", foo[key]);
+//           // console.log("newValue.name", newValue.name);
+//           Object.values(foo.documents).forEach((fooDocument) => {
+//             // console.log("fooDocument");
+//             // console.log(fooDocument);
+//             if (fooDocument.name === newValue.name) {
+//               if (fooDocument.id === newValue.documentId) {
+//                 console.log("you are free");
+//                 console.log("doc>>", doc.data(), doc.id);
+//                 return doc.ref.update({
+//                   documents: {
+//                     ...foo.documents,
+//                     ...newValue,
+//                   },
+//                 });
+//               }
+//             }
+//           });
+//         });
+//       });
+//     });
+// }; // syncUserEventDocument
 
 // Gives admin privileges to give user by email
 exports.addAdminRole = functions.https.onCall((data, context) => admin
@@ -204,7 +243,7 @@ exports.updateDocStatus = functions.firestore
           Object.values(foo).forEach(() => {
             Object.values(foo.documents).forEach((fooDocument) => {
               if (fooDocument.name === newValue.name) {
-                console.log("document files", fooDocument.files);
+                // console.log("document files", fooDocument.files);
                 if (fooDocument.id === newValue.documentId) {
                   doc.ref.set({
                     documents: {
@@ -246,10 +285,14 @@ exports.updateDocStatus = functions.firestore
           .add({
             to: "marco.santana@gmail.com",
             cc: userData.email,
-            message: {
-              subject: `Documento ${previousValue.name} cambio de estado`,
-              // eslint-disable-next-line max-len
-              html: `El documento: ${previousValue.name} ha cambiado de estado.  Por favor ingrese a la aplicación PAD para verificarlo. <div>${newValue.message}</div>`,
+            template: {
+              name: "documentStatusChange",
+              data: {
+                color: `${getDocStatus(newValue.status).color}`,
+                message: `Documento ${getDocName(previousValue.name)} cambio de estado`,
+                status: `${getDocStatus(newValue.status).text}`,
+                subject: `El documento ${getDocName(previousValue.name)} fué ${getDocStatus(newValue.status).text}`,
+              },
             },
           });
       });
