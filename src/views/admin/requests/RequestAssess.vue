@@ -15,7 +15,7 @@
         <v-col cols="2">
           <avatar :username="user.displayName" :src="user.photoURL" />
         </v-col>
-        <v-col cols="10" class="text-h5  text-center pt-5">
+        <v-col cols="10" class="text-h5 text-center pt-5">
           <v-expansion-panels inset>
             <v-expansion-panel>
               <v-expansion-panel-header class="text-h5 text-jsutify">
@@ -24,9 +24,7 @@
               <v-expansion-panel-content>
                 <p class="text--muted">{{ user.email }}</p>
                 <v-card class="pa-0 ma-0">
-                  <v-card-title>
-                    Último mensaje
-                  </v-card-title>
+                  <v-card-title>Último mensaje</v-card-title>
                   <v-card-text class="text-justify">
                     <v-list class="ma-0 pa-0">
                       <v-list-item>
@@ -95,9 +93,7 @@
                       color="info"
                       @click="resendLastMessage"
                     >
-                      <v-icon small class="pa-1">
-                        mdi-send
-                      </v-icon>
+                      <v-icon small class="pa-1">mdi-send</v-icon>
                       Reenviar
                     </v-btn>
                   </v-card-actions>
@@ -167,13 +163,28 @@
     <v-card-text>
       <v-row v-if="documents" dense>
         <v-col v-for="document in documents" :key="document.id" :md="3" :lg="4">
+          <v-alert
+            v-if="document.name"
+            border="top"
+            colored-border
+            class="text-capitalize"
+            :type="`${documentStatus(document).color}`"
+          >
+            {{ documentStatus(document).string }}
+          </v-alert>
           <show-document
-            v-if="document && document.files && document.files.length"
+            v-if="
+              document &&
+              document.name &&
+              document.files &&
+              document.files.length
+            "
             :id="document.id"
             :document="document"
             :title="true"
           />
         </v-col>
+        <v-divider />
       </v-row>
     </v-card-text>
     <v-card-actions>
@@ -187,7 +198,7 @@
 </template>
 
 <script lang="js">
-import { cloneDeep } from 'lodash'
+import { cloneDeep, isNil } from 'lodash'
 import { mapState, mapActions } from 'vuex'
 import { callUpdateDocumentStatus } from '@/firebase/functions'
 import capitalize from '@/filters/capitalize'
@@ -222,13 +233,18 @@ export default {
   }), // data
   asyncComputed: {
     documents() {
-      const files = Object.keys(this.userData.documents).map(key => {
-        if((this.userData.documents[key])) {
-          return this.userData.documents[key] ? this.userData.documents[key] : []
-        }
-        return this.userData.documents[key].files
+      const files = Object.keys(this.userData.documents).filter(key => {
+          return this.userData.documents[key].files.length > 0
       })
       return { ...cloneDeep(this.user.documents), files }
+
+      // const files = Object.keys(this.userData.documents).map(key => {
+      //   if((this.userData.documents[key])) {
+      //     return this.userData.documents[key] ? this.userData.documents[key] : null
+      //   }
+      //   return this.userData.documents[key].files
+      // })
+      // return { ...cloneDeep(this.user.documents), files }
     }, // end documents
   },
   computed: {
@@ -270,6 +286,31 @@ export default {
       })
     }, // changeDocumentStatus
 
+    documentStatus(document) {
+      if(!document.name) { return {}}
+      if (!document) {
+        document = {
+          color: 'cyan lighten-1',
+          exists: false,
+          status: 5,
+          string: this.$t(`document.statusKey.new`),
+          isRejected: false,
+          isEditable: true,
+        }
+      }
+      return {
+        color: this.$t(`document.statusColor.${document.status}`),
+        exists: isNil(document),
+        status: document.status,
+        string: this.$t(`document.statusKey.${document.status}`),
+        isRejected: () => {
+          return document.status === 'rejected'
+        },
+        isEditable: () => {
+          return document.status !== 'accepted'
+        },
+      }
+    }, // documentStatus
     getStatus(statusKey) {
       const status = {
         accepted: { color: "#4CAF50", text: "'aceptada'" },
