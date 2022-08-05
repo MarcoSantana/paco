@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+const { cloneDeep } = require("lodash");
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const { google } = require("googleapis");
@@ -9,6 +11,40 @@ exports.licenseAPI = require("./licenseCheck");
 exports.logging = require("./logging");
 exports.deleteUsers = require("./deleteUsers");
 exports.syncEvents = require("./syncEvents");
+
+const syncUserEventDocument = async (change) => {
+  admin
+    .firestore()
+    .collection("users")
+    .doc(previousValue.userId)
+    .collection("events")
+    .get()
+    .then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        const foo = doc.data();
+        Object.keys(foo).forEach((key) => {
+          // console.log(key, "=>", foo[key]);
+          // console.log("newValue.name", newValue.name);
+          Object.values(foo.documents).forEach((fooDocument) => {
+            // console.log("fooDocument");
+            // console.log(fooDocument);
+            if (fooDocument.name === newValue.name) {
+              if (fooDocument.id === newValue.documentId) {
+                console.log("you are free");
+                console.log("doc>>", doc.data(), doc.id);
+                return doc.ref.update({
+                  documents: {
+                    ...foo.documents,
+                    ...newValue,
+                  },
+                });
+              }
+            }
+          });
+        });
+      });
+    });
+}; // syncUserEventDocument
 
 // Gives admin privileges to give user by email
 exports.addAdminRole = functions.https.onCall((data, context) => admin
@@ -125,7 +161,11 @@ exports.deleteUserRequest = functions.https.onCall((data) => admin
 exports.docStatus = functions.firestore
   .document("documents/{documentId}")
   .onUpdate((snapshot, context) => {
-    //
+    console.log("snapshot.userId: ", snapshot.userId);
+    console.log("snsnapshot.documentId: ", snapshot.documentId);
+    console.log("snapshot.status: ", snapshot.status);
+    console.log("snapshot.message: ", snapshot.message);
+    // console.log("ref", snapshot.data().ref);
     // const userDocRef = snapshot.data().ref;
     const userDoc = admin
       .firestore()
@@ -148,38 +188,38 @@ exports.docStatus = functions.firestore
 // Test
 exports.updateDocStatus = functions.firestore
   .document("documents/{documentId}")
-  .onUpdate((change, context) => {
+  .onUpdate(async (change) => {
     const newValue = change.after.data();
     const previousValue = change.before.data();
-    // functions.logger.log("change before");
-    // functions.logger.log(change.before);
-    // functions.logger.log(change.before.data);
-    // functions.logger.log("previousValue");
-    // functions.logger.log(previousValue);
-    // functions.logger.log("newValue");
-    // functions.logger.log(newValue);
-    // Find the document inside the user-events collection
-    // admin
-    //   .firestore()
-    //   .collection("users")
-    //   .doc(previousValue.userId)
-    //   .collection("events")
-    //   .get()
-    //   .then((querySnapshot) => {
-    //     querySnapshot.forEach((doc) => {
-    //       functions.logger.log(doc.id, " => ", doc.data());
-    //       const res = find(doc.data(), (event) => {
-    //         if (
-    //           event.documents[previousValue.documentName].documentId === previousValue.documentId
-    //         ) return true;
-    //         return false;
-    //       }); // find
-    //       functions.logger.log("res", res);
-    //     });
-    //   });
-    // current dev
 
-    // TODO create document url
+    admin
+      .firestore()
+      .collection("users")
+      .doc(previousValue.userId)
+      .collection("events")
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          const foo = doc.data();
+          Object.values(foo).forEach(() => {
+            Object.values(foo.documents).forEach((fooDocument) => {
+              if (fooDocument.name === newValue.name) {
+                console.log("document files", fooDocument.files);
+                if (fooDocument.id === newValue.documentId) {
+                  doc.ref.set({
+                    documents: {
+                      ...cloneDeep(foo.documents),
+                      [`${fooDocument.name}`]: { ...cloneDeep(newValue) },
+                    },
+                  }, { merge: true });
+                }
+              }
+            });
+          });
+        });
+        // console.log("previousValue", previousValue.documentId);
+      }); // sync update userEventDocument
+
     const userDoc = admin
       .firestore()
       .collection("users")
@@ -191,12 +231,13 @@ exports.updateDocStatus = functions.firestore
         status: newValue.status,
         message: newValue.message,
       })
-      .then(() => {
+      .then(async () => {
         const userRef = admin
           .firestore()
           .collection("users")
           .doc(previousValue.userId);
-        return userRef.get().then((snapshot) => snapshot.data());
+        const snapshot = await userRef.get();
+        return snapshot.data();
       })
       .then((userData) => {
         admin
@@ -212,32 +253,6 @@ exports.updateDocStatus = functions.firestore
             },
           });
       });
-
-    functions.logger.log("previousValue");
-    functions.logger.log(previousValue);
-
-    // Find the document inside the user-events collection
-    admin
-      .firestore()
-      .collection("users")
-      .doc(previousValue.userId)
-      .collection("events")
-      .get()
-      .then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          functions.logger.log(doc.id, " => ", doc.data());
-          // const res = find(doc.data(), (event) => {
-          //   if (
-          //     event.documents[previousValue.documentName].documentId === previousValue.documentId
-          //   ) return true;
-          //   return false;
-          // }); // find
-          // functions.logger.log("res", res);
-        });
-      });
-    // current dev
-
-
     return userDoc;
   });
 
@@ -254,6 +269,7 @@ exports.syncDocuments = functions.firestore
       .then((userSnapshot) => userSnapshot.data())
       .then((res) => {
         const userDoc = res;
+        console.log("userDoc", userDoc);
         const { documentId } = context.params;
         const documents = admin.firestore().collection("documents");
         return documents.add({

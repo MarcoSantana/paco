@@ -421,9 +421,9 @@ export default {
       }
     },
     updateEvent(val) {
-      const data = {}
-      data.documents = val
-      this.updateUserEvent({ id: this.id, ...data })
+      // const data = {}
+      // data.documents = val
+      this.updateUserEvent({ id: this.id, documents: {...val} })
       this.disableNext = true
     },
     createLocalDocument(document, n) {

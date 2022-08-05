@@ -64,7 +64,7 @@ export default {
     delete document.upload
     try {
       // console.log('docUnique', docUnique)
-      userDocumentDB.upsert(document)
+      userDocumentDB.set({ ...document }, { merge: true })
       if (docUnique) {
         document.status = 1
         try {

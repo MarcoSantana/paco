@@ -40,16 +40,20 @@ export default {
    * Update event for user
    */
   updateUserEvent: async ({ rootState, commit }, data) => {
+    console.clear();
+    console.log('  updateUserEvent', data);
     const userEventsDb = new UserEventsDB(rootState.authentication.user.id)
     const currentUserEvent = { ...rootState.events.currentUserEvent, data }
     const { documents } = data
     delete data.documents
-    const refName = `documents.${documents.name}`
+    const refName = 'documents'
+    debugger
     const createdEvent = await userEventsDb.update({
       id: data.id,
       ...currentUserEvent,
-      [refName]: documents,
+      [refName]: { [documents.name]: { ...documents } }
     })
+    console.log('createdEvent: ', createdEvent)
     commit('addUserEvent', data)
     return createdEvent
   },
