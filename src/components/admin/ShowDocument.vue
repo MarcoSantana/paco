@@ -78,6 +78,7 @@
       </v-card-title>
       <show-file class="container" :url="url" />
       <v-divider />
+      <!-- fullscreen -->
       <v-dialog
         v-model="fullscreen"
         fullscreen
@@ -112,13 +113,14 @@
               <span v-else>Salir de pantalla completa</span>
             </v-tooltip>
             <show-file
-              :urls="urls"
+              :url="url"
               class="container"
               @toggleFullscreen="toggleFullscreen"
             />
           </v-sheet>
         </v-lazy>
       </v-dialog>
+      <!-- /fullscreen -->
     </v-card>
     <document-reject-dialog
       :document="document"
