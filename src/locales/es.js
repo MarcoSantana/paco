@@ -112,10 +112,12 @@ const translation = {
     missing: {
       data: 'datos faltantes',
       datas: 'datos faltantes',
+      date: 'fecha faltante',
       document: 'documento faltante',
       documents: 'documentos faltantes',
       event: 'evento faltante',
       events: 'eventos faltantes',
+      period: 'periodo faltante',
       photo: 'foto faltante',
       photos: 'fotos faltantes',
       user: 'usuario faltante',

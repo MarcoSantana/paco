@@ -6,12 +6,8 @@
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn color="secondary" fab small @click="isEditing = !isEditing">
-        <v-icon v-if="isEditing">
-          mdi-close
-        </v-icon>
-        <v-icon v-else>
-          mdi-pencil
-        </v-icon>
+        <v-icon v-if="isEditing">mdi-close</v-icon>
+        <v-icon v-else>mdi-pencil</v-icon>
       </v-btn>
     </v-toolbar>
     <v-card-text>
@@ -28,9 +24,8 @@
             <v-card-text>
               <v-card-title>
                 {{
-                  academicProfile.specialty.hospital.name ||
-                  specialty.hospital.name
-                    ? academicProfile.specialty.hospital.name
+                  localSpecialty.hospital.name || specialty.hospital.name
+                    ? localSpecialty.hospital.name
                     : 'Elija un hospital'
                 }}
               </v-card-title>
@@ -41,7 +36,7 @@
                 :disabled="!isEditing"
                 :items="hospitals"
                 :filter="customFilter"
-                :select="academicProfile.specialty.hospital.name"
+                :select="localSpecialty.hospital.name"
                 return-object
                 color="primary"
                 item-text="name"
@@ -60,18 +55,11 @@
               <v-spacer></v-spacer>
             </v-toolbar>
             <v-card-text>
-              <v-card-title>
-                {{
-                  new Date(
-                    academicProfile.specialty.startDate
-                  ).toLocaleDateString()
-                }}
-                -
-                {{
-                  new Date(
-                    academicProfile.specialty.endDate
-                  ).toLocaleDateString()
-                }}
+              <v-card-title v-show="!isEditing" class="text-capitalize">
+                Fecha de inicio: {{ formattedDate(localSpecialty.startDate) }}
+                <br />
+                Fecha de terminación:
+                {{ formattedDate(localSpecialty.endDate) }}
               </v-card-title>
               <v-row v-show="isEditing" class="mt-5" justify="space-around">
                 <v-sheet>
@@ -166,11 +154,21 @@ export default {
   computed: {
     ...mapState('academicProfile', ['academicProfile']),
     ...mapState('hospitals', ['hospitals']),
+    header() {
+      if (this.isEditing) return 'Elija un hospital'
+      return 'Foo'
+    },
     specialty() {
       return {
         hospital: { ...this.hospital },
         startDate: this.picker,
         endDate: this.picker2,
+      }
+    }, // specialty
+    localSpecialty() {
+      if (this.academicProfile.specialty) return this.academicProfile.specialty
+      return {
+        hospital: '',
       }
     },
   }, // computed
@@ -190,6 +188,10 @@ export default {
         textOne.indexOf(searchText) > -1 || textTwo.indexOf(searchText) > -1
       )
     }, // customFilter
+    formattedDate(dateString) {
+      if (!dateString) return this.$t('messages.missing.date')
+      return new Date(dateString).toLocaleDateString()
+    }, // formatted date
     save() {
       if (isNil(this.specialty.hospital.name)) {
         this.message = new Message({
