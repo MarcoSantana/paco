@@ -130,11 +130,11 @@ const router = new Router({
 
     // Admin routes
     // // Show all users
-    // {
-    //   path: '/users',
-    //   name: 'users',
-    //   component: () => import(/* webpackChunkName: "client-chunk-users-details" */ '@/components/admin/Users.vue'),
-    // },
+    {
+      path: '/users',
+      name: 'users',
+      component: () => import(/* webpackChunkName: "client-chunk-users-details" */ '@/views/admin/users/Main.vue'),
+    },
 
     // Main admin view
     {

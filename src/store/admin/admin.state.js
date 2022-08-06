@@ -4,10 +4,15 @@ export default {
   documentDeletionPending: [],
   documentCreationPending: false,
   dashboardCounters: {},
-  currentUser: {},
   currentEvent: {},
   currentEventMessage: {},
   currentDocument: {},
   mail: [],
+  /** @type {import('@/typedefs').Message} */
   globalMessage: {},
+
+  // User
+  currentUser: {},
+  /** @type {Array} */
+  users: [],
 }

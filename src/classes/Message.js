@@ -6,22 +6,33 @@ export default class Message {
   /**
    * Create a message
    * @param {Object} params
-   * @param {('success'|'error'|'info'|'warning')} type - The severity (color) of the message
+   * @param {('success','error','info','warning')} type - The severity (color) of the message
    * @param {string} message - The actual text
    */
   constructor({ type, message } = {}) {
-    /** @type {('success'|'error'|'info'|'warning')}  */
+    /** @type {['success','error','info','warning']}  */
     this.type = type
     /** @type {string} */
     this.message = message
   }
 
+
+  /**
+   * currentType
+   * @type {Message.type}
+   * @param {Message.type} newType 
+  */
   set currentType(newType) {
     this.type = newType
   }
 
-  set currentMessage(message) {
-    this.message = message
+  /**
+   * currentMessage
+   * @type {Message.message}
+   * @param {Message.type} newMessage
+  */
+  set currentMessage(newMessage) {
+    this.message = newMessage
   }
 
   /**

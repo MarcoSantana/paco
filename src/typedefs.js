@@ -73,8 +73,8 @@
 
 /** Message
  * @typedef {Object} Message
- * @property {('success'|'error'|'info'|'warning')} type - The severity (color) of the message
+ * @property {['success','error','info','warning']} type - The severity (color) of the message
  * @property {string} message - The actual text
  */
 
-export {}
+export { }
