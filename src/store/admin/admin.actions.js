@@ -203,10 +203,10 @@ export default {
     return message
   }, // getUserEventMessage
 
-  /**
-* @param  commit  - The admin (vuex) mutations
-* @param {Object} payload - The query with constraints
-*/
+  /** Populates state.users from db
+  * @param  commit  - The admin (vuex) mutations
+  * @param {Object} payload - The query with constraints
+  */
   getUsers: async ({ commit }, { constraints, limit, orderBy, startAt, endAt } = {}) => {
     console.log('constraints', constraints)
     const localMessage = new Message({ type: 'info', message: 'Inicializando búsqueda de usuarios' })
@@ -216,11 +216,6 @@ export default {
     //   // console.error("Error al generar consulta con: ", constraints)
     //   return []
     // }
-    console.log('constraints ', constraints)
-    console.log('limit', limit)
-    console.log('order', orderBy)
-    console.log('startAt', startAt)
-    console.log('endAt', endAt)
 
     commit('setGlobalMessage', localMessage)
     // localMessage.currentType = 'info'
@@ -228,13 +223,28 @@ export default {
     console.log('getAll users as admin')
     const usersDB = new UsersDB()
     const result = await usersDB
-      .readWithPagination(constraints, startAt, endAt, limit, orderBy)
-    commit('setUsers', result)
+      .readWithPagination(
+        constraints,
+        startAt,
+        endAt,
+        limit,
+        orderBy
+      )
+    commit('updateUsers', result)
     return result
     // localMessage.currentType = 'info'
     // localMessage.currentMessage = `Busqueda terminada con ${result.length} resultados`
     // commit('setGlobalMessage', localMessage)
   }, // getUsers
+
+  /** Initializes state.users
+  *
+  * @param  commit  - The admin (vuex) mutations
+  * @param state - The vuex global state
+  */
+  initUsers: async ({ commit }) => {
+    commit('setUsers', JSON.parse(localStorage.getItem('users')))
+  }, // initUsers
 
   /**
    * Sends a mail through firebase plugin

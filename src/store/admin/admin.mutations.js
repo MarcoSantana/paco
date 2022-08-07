@@ -49,6 +49,16 @@ export default {
   setGlobalMessage: (state, value) => (state.globalMessage = value),
   setCurrentUser: (state, value) => (state.currentUser = value),
   // TODO updateUsers
-  setUsers: (state, value) => (state.users = value),
+  setUsers: (state, value) => {
+    state.users = value
+    localStorage.setItem('users', JSON.stringify(state.users))
+  },
+  updateUsers: (state, value) => {
+    value.forEach(user => {
+      const index = state.users.findIndex(localuser => localuser.id === user.id)
+      if (index < 0) state.users.push(user)
+    })
+    localStorage.setItem('users', JSON.stringify(state.users))
+  }, // updateUsers
   setMails: (state, value) => (state.mails = value),
 }
