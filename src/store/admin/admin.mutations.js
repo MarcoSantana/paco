@@ -50,7 +50,12 @@ export default {
   setCurrentUser: (state, value) => (state.currentUser = value),
   // TODO updateUsers
   setUsers: (state, value) => {
-    state.users = value
+    const mergedUsers = [...state.users, ...value]
+    // remove duplicates
+    const uniqueUsers = mergedUsers.filter(
+      (user, index) => mergedUsers.findIndex(u => u.id === user.id) === index
+    )
+    state.users = uniqueUsers
     localStorage.setItem('users', JSON.stringify(state.users))
   },
   updateUsers: (state, value) => {

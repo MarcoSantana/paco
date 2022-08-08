@@ -33,7 +33,7 @@ export default {
       startAt,
       endAt,
       limit,
-      orderBy,
+      orderBy
     )
     console.log('documents', documents)
     // const documents = await documentsDb.readAllAsAdmin()
@@ -204,44 +204,27 @@ export default {
   }, // getUserEventMessage
 
   /** Populates state.users from db
-  * @param  commit  - The admin (vuex) mutations
-  * @param {Object} payload - The query with constraints
-  */
-  getUsers: async ({ commit }, { constraints, limit, orderBy, startAt, endAt } = {}) => {
-    console.log('constraints', constraints)
-    const localMessage = new Message({ type: 'info', message: 'Inicializando búsqueda de usuarios' })
-    // if (!constraints) {
-    //   // localMessage.currentType = 'error'
-    //   // localMessage.currentMessage = `Error al generar consulta`
-    //   // console.error("Error al generar consulta con: ", constraints)
-    //   return []
-    // }
-
+   * @param  commit  - The admin (vuex) mutations
+   * @param {Object} payload - The query with constraints
+   */
+  getUsers: async ({ commit }) => {
+    const localMessage = new Message({
+      type: 'info',
+      message: 'Inicializando búsqueda de usuarios',
+    })
     commit('setGlobalMessage', localMessage)
-    // localMessage.currentType = 'info'
-    // localMessage.currentMessage = `Iniciando búsqueda `
     console.log('getAll users as admin')
     const usersDB = new UsersDB()
-    const result = await usersDB
-      .readWithPagination(
-        constraints,
-        startAt,
-        endAt,
-        limit,
-        orderBy
-      )
+    const result = await usersDB.readAll()
     commit('updateUsers', result)
     return result
-    // localMessage.currentType = 'info'
-    // localMessage.currentMessage = `Busqueda terminada con ${result.length} resultados`
-    // commit('setGlobalMessage', localMessage)
   }, // getUsers
 
   /** Initializes state.users
-  *
-  * @param  commit  - The admin (vuex) mutations
-  * @param state - The vuex global state
-  */
+   *
+   * @param  commit  - The admin (vuex) mutations
+   * @param state - The vuex global state
+   */
   initUsers: async ({ commit }) => {
     commit('setUsers', JSON.parse(localStorage.getItem('users')))
   }, // initUsers
