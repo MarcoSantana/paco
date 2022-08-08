@@ -5,7 +5,15 @@
       :name="schema.inputName"
       :class="schema.fieldClasses"
     >
-      <select
+      <v-select
+        v-model="college.collegeId"
+        :items="selectOptions"
+        item-text="name"
+        item-value="id"
+        @change="onChange"
+      />
+      <!-- TODO Remove this field once is battle tested 202208.08-15.48 -->
+      <!-- <select
         v-model="college.collegeId"
         v-attributes="'input'"
         class="form-control"
@@ -21,7 +29,7 @@
         >
           {{
             selectOptions.noneSelectedText ||
-              '&lt;Seleccione una universidad&gt;'
+            '&lt;Seleccione una universidad&gt;'
           }}
         </option>
         <template v-for="item in selectOptions">
@@ -44,7 +52,7 @@
             {{ getItemName(item) }}
           </option>
         </template>
-      </select>
+      </select> -->
       <!-- Campus select -->
       <select
         v-if="campi && schema.campus"
@@ -87,171 +95,171 @@
   </div>
 </template>
 <script>
-import { isObject, isNil, find } from 'lodash'
-import { abstractField } from 'vue-form-generator'
-import { mapState } from 'vuex'
+  import { isObject, isNil, find } from 'lodash'
+  import { abstractField } from 'vue-form-generator'
+  import { mapState } from 'vuex'
 
-export default {
-  mixins: [abstractField],
-  data() {
-    return {
-      college: { collegeId: null, campusId: null },
-    }
-  },
-  computed: {
-    ...mapState('colleges', ['colleges', 'campi']),
-    ...mapState('products', ['products']),
-    ...mapState('app', ['networkOnLine']),
-    selectOptions() {
-      return this.schema.selectOptions || this.colleges
+  export default {
+    mixins: [abstractField],
+    data() {
+      return {
+        college: { collegeId: null, campusId: null },
+      }
     },
-  },
-  watch: {
-    college: {
-      handler(newVal) {
-        this.value = newVal
-        this.$store.dispatch('colleges/getCollegeCampi', this.college.collegeId)
+    computed: {
+      ...mapState('colleges', ['colleges', 'campi']),
+      ...mapState('products', ['products']),
+      ...mapState('app', ['networkOnLine']),
+      selectOptions() {
+        return this.schema.selectOptions || this.colleges
       },
-      deep: true,
     },
-  },
-  mounted() {
-    // Popullate colleges
-    this.$store.dispatch('colleges/getColleges', null, { root: true })
-  },
-  methods: {
-    formatValueToField(value) {
-      if (isNil(value)) {
-        return null
-      }
-      return value
+    watch: {
+      college: {
+        handler(newVal) {
+          this.value = newVal
+          this.$store.dispatch('colleges/getCollegeCampi', this.college.collegeId)
+        },
+        deep: true,
+      },
     },
-    groupValues(values) {
-      const array = []
-      let arrayElement = {}
-      values.forEach(item => {
-        arrayElement = null
-        if (item.group && isObject(item)) {
-          // There is in a group.
-          // Find element with this group.
-          arrayElement = find(array, i => i.group === item.group)
-          if (arrayElement) {
-            // There is such a group.
-            arrayElement.ops.push({
-              id: item.id,
-              name: item.name,
-            })
-          } else {
-            // There is not such a group.
-            // Initialising.
-            arrayElement = {
-              group: '',
-              ops: [],
+    mounted() {
+      // Popullate colleges
+      this.$store.dispatch('colleges/getColleges', null, { root: true })
+    },
+    methods: {
+      formatValueToField(value) {
+        if (isNil(value)) {
+          return null
+        }
+        return value
+      },
+      groupValues(values) {
+        const array = []
+        let arrayElement = {}
+        values.forEach((item) => {
+          arrayElement = null
+          if (item.group && isObject(item)) {
+            // There is in a group.
+            // Find element with this group.
+            arrayElement = find(array, (i) => i.group === item.group)
+            if (arrayElement) {
+              // There is such a group.
+              arrayElement.ops.push({
+                id: item.id,
+                name: item.name,
+              })
+            } else {
+              // There is not such a group.
+              // Initialising.
+              arrayElement = {
+                group: '',
+                ops: [],
+              }
+              // Set group.
+              arrayElement.group = item.group
+              // Set Group element.
+              arrayElement.ops.push({
+                id: item.id,
+                name: item.name,
+              })
+              // Add array.
+              array.push(arrayElement)
             }
-            // Set group.
-            arrayElement.group = item.group
-            // Set Group element.
-            arrayElement.ops.push({
-              id: item.id,
-              name: item.name,
-            })
-            // Add array.
-            array.push(arrayElement)
+          } else {
+            // There is not in a group.
+            array.push(item)
           }
+        })
+        // With Groups.
+        return array
+      },
+      getGroupName(item) {
+        if (item && item.group) {
+          return item.group
+        }
+        throw new Error(
+          'Group name is missing! https://icebob.gitbooks.io/vueformgenerator/content/fields/select.html#select-field-with-object-items'
+        )
+      },
+      // Refactor value to college
+      getItemValue(item) {
+        if (isObject(item)) {
+          if (
+            typeof this.schema.selectOptions !== 'undefined' &&
+            typeof this.schema.selectOptions.value !== 'undefined'
+          ) {
+            return item[this.schema.selectOptions.value]
+          }
+          // Use 'id' instead of 'value' cause of backward compatibility
+          if (typeof item.id !== 'undefined') {
+            return item.id
+          }
+          throw new Error(
+            '`id` is not defined. If you want to use another key name, add a `value` property under `selectOptions` in the schema. https://icebob.gitbooks.io/vueformgenerator/content/fields/select.html#select-field-with-object-items'
+          )
         } else {
-          // There is not in a group.
-          array.push(item)
+          return item
         }
-      })
-      // With Groups.
-      return array
-    },
-    getGroupName(item) {
-      if (item && item.group) {
-        return item.group
-      }
-      throw new Error(
-        'Group name is missing! https://icebob.gitbooks.io/vueformgenerator/content/fields/select.html#select-field-with-object-items'
-      )
-    },
-    // Refactor value to college
-    getItemValue(item) {
-      if (isObject(item)) {
-        if (
-          typeof this.schema.selectOptions !== 'undefined' &&
-          typeof this.schema.selectOptions.value !== 'undefined'
-        ) {
-          return item[this.schema.selectOptions.value]
+      },
+      getItemName(item) {
+        if (isObject(item)) {
+          if (
+            typeof this.schema.selectOptions !== 'undefined' &&
+            typeof this.schema.selectOptions.name !== 'undefined'
+          ) {
+            return item[this.schema.selectOptions.name]
+          }
+          if (typeof item.name !== 'undefined') {
+            return item.name
+          }
+          throw new Error(
+            '`name` is not defined. If you want to use another key name, add a `name` property under `selectOptions` in the schema. https://icebob.gitbooks.io/vueformgenerator/content/fields/select.html#select-field-with-object-items'
+          )
+        } else {
+          return item
         }
-        // Use 'id' instead of 'value' cause of backward compatibility
-        if (typeof item.id !== 'undefined') {
-          return item.id
-        }
-        throw new Error(
-          '`id` is not defined. If you want to use another key name, add a `value` property under `selectOptions` in the schema. https://icebob.gitbooks.io/vueformgenerator/content/fields/select.html#select-field-with-object-items'
-        )
-      } else {
-        return item
-      }
+      },
+      onChange(e) {
+        console.log('onChange', e.target.value)
+        this.$emit('input', e.target.value)
+      },
     },
-    getItemName(item) {
-      if (isObject(item)) {
-        if (
-          typeof this.schema.selectOptions !== 'undefined' &&
-          typeof this.schema.selectOptions.name !== 'undefined'
-        ) {
-          return item[this.schema.selectOptions.name]
-        }
-        if (typeof item.name !== 'undefined') {
-          return item.name
-        }
-        throw new Error(
-          '`name` is not defined. If you want to use another key name, add a `name` property under `selectOptions` in the schema. https://icebob.gitbooks.io/vueformgenerator/content/fields/select.html#select-field-with-object-items'
-        )
-      } else {
-        return item
-      }
-    },
-    onChange(e) {
-      console.log('onChange', e.target.value)
-      this.$emit('input', e.target.value)
-    },
-  },
-}
+  }
 </script>
 
 <style lang="scss">
-@import '@/theme/style.scss';
-@import '@/theme/variables.scss';
-.wrapper {
-  width: 100%;
-  height: auto;
-}
-
-.document-container {
-  border: 0;
-  // width: auto;
-  // height: auto;
-  max-height: 200px;
-  & span {
-    border: 1px dashed $light-accent;
-  }
-  @include respond(tablet) {
-    // responsive code for tablet viewport i.e. 600px
-    max-height: 50px;
-    width: 100%;
-  }
-
-  @include respond(mobile) {
-    // responsive code for mobile viewport i.e. 480px
-    font-size: 0.8rem;
-    max-height: 50px;
-  }
-}
-.vue-form-generator .field-image {
+  @import '@/theme/style.scss';
+  @import '@/theme/variables.scss';
   .wrapper {
     width: 100%;
-    max-height: 25%;
+    height: auto;
   }
-}
+
+  .document-container {
+    border: 0;
+    // width: auto;
+    // height: auto;
+    max-height: 200px;
+    & span {
+      border: 1px dashed $light-accent;
+    }
+    @include respond(tablet) {
+      // responsive code for tablet viewport i.e. 600px
+      max-height: 50px;
+      width: 100%;
+    }
+
+    @include respond(mobile) {
+      // responsive code for mobile viewport i.e. 480px
+      font-size: 0.8rem;
+      max-height: 50px;
+    }
+  }
+  .vue-form-generator .field-image {
+    .wrapper {
+      width: 100%;
+      max-height: 25%;
+    }
+  }
 </style>
