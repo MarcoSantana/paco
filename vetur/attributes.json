@@ -1,0 +1,8 @@
+{
+  "user-crud/user": {
+    "type": "import('vue').PropOptions<{name: string, id: string}>"
+  },
+  "UserCrud/user": {
+    "type": "import('vue').PropOptions<{name: string, id: string}>"
+  }
+}

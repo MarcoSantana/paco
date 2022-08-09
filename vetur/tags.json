@@ -1,0 +1,14 @@
+{
+  "user-crud": {
+    "attributes": [
+      "user"
+    ],
+    "description": ""
+  },
+  "UserCrud": {
+    "attributes": [
+      "user"
+    ],
+    "description": ""
+  }
+}

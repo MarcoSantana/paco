@@ -36,6 +36,32 @@
         show-select
         dense
       >
+        <template v-slot:top>
+          <v-dialog v-model="userDialog.show" max-width="500px" persistent>
+            <v-card>
+              <v-toolbar flat color="primary" dark>
+                <v-toolbar-title class="font-weight-light">
+                  <v-card-title v-if="userDialog.user">
+                    <span class="text-h5">
+                      {{ userDialog.user.displayName }}
+                    </span>
+                  </v-card-title>
+                </v-toolbar-title>
+
+                <v-spacer></v-spacer>
+                <v-btn color="error" icon small @click="showDialog = false">
+                  <v-icon>mdi-close</v-icon>
+                </v-btn>
+                <v-spacer></v-spacer>
+              </v-toolbar>
+              <component
+                :is="comp"
+                v-if="comp"
+                :user="userDialog.user"
+              ></component>
+            </v-card>
+          </v-dialog>
+        </template>
         <template v-slot:item.createTimestamp="{ item }">
           {{
             item.createTimestamp
@@ -85,10 +111,13 @@
         </template>
 
         <template v-slot:item.actions="{ item }">
-          <v-icon small class="mr-2" @click="editItem(item)">
+          <v-icon small class="mr-2" @click="showUser(item)">
+            mdi-eye
+          </v-icon>
+          <v-icon small class="mr-2" @click="editUser(item)">
             mdi-pencil
           </v-icon>
-          <v-icon small @click="deleteItem(item)">
+          <v-icon small @click="deleteUser(item)">
             mdi-delete
           </v-icon>
         </template>
@@ -108,7 +137,7 @@ export default {
   name: 'AdmminUsersView',
   data() {
     return {
-      // TODO add v-dialog for CRUD actions (users)
+      componentName: 'UserEdit',
       criteria: [
         { value: 'active', text: 'activo', type: 'boolean' },
         { value: 'email', text: 'correo electrónico', type: 'email' },
@@ -163,8 +192,11 @@ export default {
       ], // headers
       orderBy: 'license',
       queryConstraints: null,
+      /** @type {?string} */
       search: null,
       selectedUsers: [],
+      /** @type {boolean} */
+      showDialog: false,
       snackbar: {},
       specialSearch: null,
       startAt: null,
@@ -173,6 +205,9 @@ export default {
   }, // data
   computed: {
     ...mapState('admin', ['globalMessage', 'users']),
+    comp() {
+      return () => import(`./${this.componentName}.vue`)
+    },
     globalMessageSnackbar() {
       return {
         show: this.globalMessage.message,
@@ -181,6 +216,22 @@ export default {
         color: this.globalMessage.type,
       }
     }, // globalMessageSnackbar
+    /** Data needed to display an action dialog
+     * @returns {Object} UserDialog
+     * @returns {string} UserDialog.is
+     * @returns {boolean} UserDialog.show
+     * @returns {Object} UserDialog.user
+     */
+    userDialog() {
+      return {
+        /** @type {boolean} is */
+        is: this.componentName ? this.componentName : 'UserShow',
+        /** @type {string} show */
+        show: this.showDialog,
+        /** @type {Object} show */
+        user: this.selectedUsers[0],
+      }
+    }, // userDialog
   }, // computed
 
   beforeMount() {
@@ -196,6 +247,27 @@ export default {
     ...mapActions('admin', ['getUsers', 'initUsers', 'searchUser']),
     ...mapMutations('admin', ['setUsers']),
 
+    showUser(item) {
+      if (!item) return
+      this.componentName = 'UserShow'
+      this.showDialog = true
+      this.selectedUsers[0] = item
+    }, // showUser
+
+    editUser(item) {
+      if (!item) return
+      this.componentName = 'UserEdit'
+      this.showDialog = true
+      this.selectedUsers[0] = item
+    }, // editUser
+
+    deleteUser(item) {
+      if (!item) return
+      this.componentName = 'UserDelete'
+      this.showDialog = true
+      this.selectedUsers[0] = item
+    }, // editUser
+
     triggerDbSearch() {
       console.log('SpecialSearch', this.specialSearch)
       this.search = this.specialSearch
@@ -207,6 +279,13 @@ export default {
     triggerGetUsers() {
       this.getUsers(this.query)
     }, // triggerGetUsers
+
+    /** Factory
+     * @param {Object} userDialog
+     * @param {string} userDialog.is - The component to be loaded
+     * @param {boolean} show
+     * @param {Object} user - The user to be edited
+     */
   },
 }
 </script>
