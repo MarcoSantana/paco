@@ -203,6 +203,9 @@ export default {
     return message
   }, // getUserEventMessage
 
+  // **************************************************************************** */
+  // Users
+  // **************************************************************************** */
   /** Populates state.users from db
    * @param  commit  - The admin (vuex) mutations
    * @param {Object} payload - The query with constraints
@@ -228,6 +231,41 @@ export default {
   initUsers: async ({ commit }) => {
     commit('setUsers', JSON.parse(localStorage.getItem('users')))
   }, // initUsers
+
+  searchUser: async (
+    { commit },
+    /**  @type Array<Array<String> */
+    constraints
+  ) => {
+    commit(
+      'setGlobalMessage',
+      new Message({
+        type: 'info',
+        message: 'Iniciando la búsqueda',
+      })
+    )
+    if (!constraints) {
+      commit(
+        'setGlobalMessage',
+        new Message({ type: 'info', message: 'Iniciando la búsqueda' })
+      )
+      return
+    }
+    const usersDB = new UsersDB()
+
+    const result = await usersDB.readAll(constraints)
+    commit(
+      'setGlobalMessage',
+      new Message({ type: 'info', message: 'Búsqueda finalizada' })
+    )
+    /** @type Array<{Object}> | null */
+    console.log('Result', result)
+    commit('updateUsers', result)
+  }, // searchUser
+
+  // ********************************************************************************/
+  // Mail
+  // ********************************************************************************/
 
   /**
    * Sends a mail through firebase plugin

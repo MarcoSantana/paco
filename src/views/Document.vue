@@ -1,6 +1,9 @@
 <template>
   <div class="page-wrapper">
-    <document-detail v-if="currentDocument" :document="currentDocument"></document-detail>
+    <document-detail
+      v-if="currentDocument"
+      :document="currentDocument"
+    ></document-detail>
   </div>
 </template>
 

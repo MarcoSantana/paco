@@ -26,12 +26,12 @@ export default class GenericDB {
 
     const createPromise = isNil(id)
       ? // Create doc with generated id
-      collectionRef.add(dataToCreate).then(doc => doc.id)
+        collectionRef.add(dataToCreate).then(doc => doc.id)
       : // Create doc with custom id
-      collectionRef
-        .doc(id)
-        .set(dataToCreate)
-        .then(() => id)
+        collectionRef
+          .doc(id)
+          .set(dataToCreate)
+          .then(() => id)
 
     const docId = await createPromise
 
@@ -181,10 +181,13 @@ export default class GenericDB {
     await (await firestore())
       .collection(this.collectionPath)
       .doc(id)
-      .set({
-        ...clonedData,
-        updateTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      }, { merge: true })
+      .set(
+        {
+          ...clonedData,
+          updateTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        },
+        { merge: true }
+      )
 
     return id
   }
