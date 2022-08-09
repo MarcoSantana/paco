@@ -85,9 +85,7 @@
           <v-text-field
             v-model="specialSearch"
             :disabled="!select"
-            :label="
-              `${select.text ? select.text : 'Elija un criterio de búsqueda'}`
-            "
+            :label="select.text ? select.text : 'Elija un criterio de búsqueda'"
             :type="select.type"
             append-icon="mdi-magnify"
             hint="Búsqueda especializada"
@@ -101,9 +99,7 @@
                 color="primary"
                 @click="triggerDbSearch"
               >
-                <v-icon left>
-                  mdi-target
-                </v-icon>
+                <v-icon left>mdi-target</v-icon>
                 Buscar {{ select.text }}
               </v-btn>
             </template>
@@ -111,15 +107,9 @@
         </template>
 
         <template v-slot:item.actions="{ item }">
-          <v-icon small class="mr-2" @click="showUser(item)">
-            mdi-eye
-          </v-icon>
-          <v-icon small class="mr-2" @click="editUser(item)">
-            mdi-pencil
-          </v-icon>
-          <v-icon small @click="deleteUser(item)">
-            mdi-delete
-          </v-icon>
+          <v-icon small class="mr-2" @click="showUser(item)">mdi-eye</v-icon>
+          <v-icon small class="mr-2" @click="editUser(item)">mdi-pencil</v-icon>
+          <v-icon small @click="deleteUser(item)">mdi-delete</v-icon>
         </template>
         <template v-slot:no-data>
           Parece que no hay datos cargados.
@@ -144,6 +134,7 @@ export default {
         { value: 'incomplete', text: 'datos incompletos', type: 'boolean' },
         { value: 'lastname1', text: 'primer apellido', type: 'name' },
         { value: 'lastname2', text: 'segundo apellido', type: 'name' },
+        { value: 'displayName', text: 'nombre completo' },
         { value: 'license', text: 'cédula profesional', type: 'string' },
         { value: 'name', text: 'nombres' },
         { value: 'phonenumber', text: 'número de teléfono', type: 'tel' },
@@ -170,6 +161,12 @@ export default {
         },
         { text: 'Nombres ', value: 'name', filtereable: true, sortable: true },
         {
+          text: 'Nombre completo',
+          value: 'displayName',
+          filtereable: true,
+          sortable: true,
+        },
+        {
           text: 'Fecha de inscripción',
           value: 'createTimestamp',
           filtereable: false,
@@ -181,13 +178,6 @@ export default {
           filtereable: true,
           sortable: false,
         },
-        {
-          text: 'teléfono',
-          value: 'phonenumber',
-          filtereable: true,
-          sortable: false,
-        },
-        { text: 'incompletos', value: 'incomplete', filtereable: true },
         { text: 'Acciones', value: 'actions', sortable: false },
       ], // headers
       orderBy: 'license',
@@ -206,7 +196,7 @@ export default {
   computed: {
     ...mapState('admin', ['globalMessage', 'users']),
     comp() {
-      return () => import(`./${this.componentName}.vue`)
+      return () => import(`./dialogs/${this.componentName}.vue`)
     },
     globalMessageSnackbar() {
       return {
