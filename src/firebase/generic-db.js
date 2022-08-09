@@ -26,12 +26,12 @@ export default class GenericDB {
 
     const createPromise = isNil(id)
       ? // Create doc with generated id
-      collectionRef.add(dataToCreate).then(doc => doc.id)
+        collectionRef.add(dataToCreate).then(doc => doc.id)
       : // Create doc with custom id
-      collectionRef
-        .doc(id)
-        .set(dataToCreate)
-        .then(() => id)
+        collectionRef
+          .doc(id)
+          .set(dataToCreate)
+          .then(() => id)
 
     const docId = await createPromise
 
@@ -101,13 +101,19 @@ export default class GenericDB {
   ) {
     const collectionRef = (await firestore()).collection(this.collectionPath)
     let query = collectionRef
+
+    if (orderBy) {
+      orderBy.forEach(order => {
+        query = query.orderBy(...order)
+      })
+    }
     if (startAt) {
       query = query.orderBy(firebase.firestore.FieldPath.documentId())
-      query = query.startAfter(startAt)
+      query = query.startAt(startAt)
     }
     if (endAt) {
       query = query.orderBy(firebase.firestore.FieldPath.documentId())
-      query = query.endBefore(endAt)
+      query = query.endAt(endAt)
     }
     if (constraints) {
       constraints.forEach(constraint => {
@@ -121,12 +127,6 @@ export default class GenericDB {
           ...ref.data(),
         })
       )
-    if (orderBy) {
-      orderBy.forEach(order => {
-        console.log('orderBy', order)
-        query = query.orderBy(...order)
-      })
-    }
     if (limit) query = query.limit(limit)
     if (endAt) {
       try {
@@ -181,10 +181,13 @@ export default class GenericDB {
     await (await firestore())
       .collection(this.collectionPath)
       .doc(id)
-      .set({
-        ...clonedData,
-        updateTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      }, { merge: true })
+      .set(
+        {
+          ...clonedData,
+          updateTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        },
+        { merge: true }
+      )
 
     return id
   }

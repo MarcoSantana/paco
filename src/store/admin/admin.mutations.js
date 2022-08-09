@@ -46,6 +46,24 @@ export default {
   setCurrentDocument: (state, value) => (state.currentDocument = value),
   setCurrentEvent: (state, value) => (state.currentEvent = value),
   setCurrentEventMessage: (state, value) => (state.currentEventMessage = value),
+  setGlobalMessage: (state, value) => (state.globalMessage = value),
   setCurrentUser: (state, value) => (state.currentUser = value),
+  // TODO updateUsers
+  setUsers: (state, value) => {
+    const mergedUsers = [...state.users, ...value]
+    // remove duplicates
+    const uniqueUsers = mergedUsers.filter(
+      (user, index) => mergedUsers.findIndex(u => u.id === user.id) === index
+    )
+    state.users = uniqueUsers
+    localStorage.setItem('users', JSON.stringify(state.users))
+  },
+  updateUsers: (state, value) => {
+    value.forEach(user => {
+      const index = state.users.findIndex(localuser => localuser.id === user.id)
+      if (index < 0) state.users.push(user)
+    })
+    localStorage.setItem('users', JSON.stringify(state.users))
+  }, // updateUsers
   setMails: (state, value) => (state.mails = value),
 }

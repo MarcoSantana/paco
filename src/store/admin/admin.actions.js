@@ -1,12 +1,13 @@
 // <reference path='src/typedefs.js' />
 
 import UserDocumentsDB from '@/firebase/user-documents-db'
-// import UsersDB from '@/firebase/users-db'
+import UsersDB from '@/firebase/users-db'
 import DocumentsDB from '@/firebase/documents-db'
 import CountersDB from '@/firebase/counters-db'
 import MailsDB from '@/firebase/mails-db'
 import EventsDB from '@/firebase/events-db'
 import { storage } from 'firebase'
+import Message from '@/classes/Message'
 
 export default {
   /**
@@ -197,10 +198,74 @@ export default {
   getUserEventMessage: async ({ commit }, payload) => {
     const { eventId, userId } = payload
     const eventsDb = new EventsDB()
-    const message = await eventsDb.getUserMessage({ userId, eventId })
+    const message = eventsDb.getUserMessage({ userId, eventId })
     commit('setCurrentEventMessage', message)
     return message
   }, // getUserEventMessage
+
+  // **************************************************************************** */
+  // Users
+  // **************************************************************************** */
+  /** Populates state.users from db
+   * @param  commit  - The admin (vuex) mutations
+   * @param {Object} payload - The query with constraints
+   */
+  getUsers: async ({ commit }) => {
+    const localMessage = new Message({
+      type: 'info',
+      message: 'Inicializando búsqueda de usuarios',
+    })
+    commit('setGlobalMessage', localMessage)
+    console.log('getAll users as admin')
+    const usersDB = new UsersDB()
+    const result = await usersDB.readAll()
+    commit('updateUsers', result)
+    return result
+  }, // getUsers
+
+  /** Initializes state.users
+   *
+   * @param  commit  - The admin (vuex) mutations
+   * @param state - The vuex global state
+   */
+  initUsers: async ({ commit }) => {
+    commit('setUsers', JSON.parse(localStorage.getItem('users')))
+  }, // initUsers
+
+  searchUser: async (
+    { commit },
+    /**  @type Array<Array<String> */
+    constraints
+  ) => {
+    commit(
+      'setGlobalMessage',
+      new Message({
+        type: 'info',
+        message: 'Iniciando la búsqueda',
+      })
+    )
+    if (!constraints) {
+      commit(
+        'setGlobalMessage',
+        new Message({ type: 'info', message: 'Iniciando la búsqueda' })
+      )
+      return
+    }
+    const usersDB = new UsersDB()
+
+    const result = await usersDB.readAll(constraints)
+    commit(
+      'setGlobalMessage',
+      new Message({ type: 'info', message: 'Búsqueda finalizada' })
+    )
+    /** @type Array<{Object}> | null */
+    console.log('Result', result)
+    commit('updateUsers', result)
+  }, // searchUser
+
+  // ********************************************************************************/
+  // Mail
+  // ********************************************************************************/
 
   /**
    * Sends a mail through firebase plugin
