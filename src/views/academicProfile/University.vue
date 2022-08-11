@@ -5,7 +5,12 @@
     </v-card-title>
     <v-card-text>
       <v-row class="mb-3">
-        <v-alert v-if="localMessage && localMessage.message" :type="localMessage.type" dismissible outlined>
+        <v-alert
+          v-if="localMessage && localMessage.message"
+          :type="localMessage.type"
+          dismissible
+          outlined
+        >
           {{ localMessage.message }}
         </v-alert>
       </v-row>
@@ -16,7 +21,11 @@
               Universidad
             </v-card-title>
             <v-card-text>{{ fullCollege.college.name }}</v-card-text>
-            <span v-if="fullCollege.college.campus && fullCollege.college.campus.name">
+            <span
+              v-if="
+                fullCollege.college.campus && fullCollege.college.campus.name
+              "
+            >
               <v-card-title>Campus</v-card-title>
               <v-card-text>{{ fullCollege.college.campus.name }}</v-card-text>
             </span>
@@ -44,7 +53,12 @@
               {{ academicProfile.degree.college.name }}
             </v-card-text>
             <v-card-title>Campus</v-card-title>
-            <v-card-text v-if="academicProfile.degree.college && academicProfile.degree.college.campus">
+            <v-card-text
+              v-if="
+                academicProfile.degree.college &&
+                  academicProfile.degree.college.campus
+              "
+            >
               {{ academicProfile.degree.college.campus.name }}
             </v-card-text>
           </v-card>
@@ -53,12 +67,29 @@
       <v-sheet>
         <v-col rows="12">
           Seleccionar nueva universisdad
-          <v-select v-model="college" :items="colleges" item-text="name" persistent-hint return-object single-line
-            label="Universidad formativa" solo></v-select>
+          <v-select
+            v-model="college"
+            :items="colleges"
+            item-text="name"
+            persistent-hint
+            return-object
+            single-line
+            label="Universidad formativa"
+            solo
+          ></v-select>
         </v-col>
         <v-col rows="12">
-          <v-select v-if="college" v-model="campus" :items="campi" item-text="name" label="campus" persistent-hint
-            single-line return-object @change="hideFields = false"></v-select>
+          <v-select
+            v-if="college"
+            v-model="campus"
+            :items="campi"
+            item-text="name"
+            label="campus"
+            persistent-hint
+            single-line
+            return-object
+            @change="hideFields = false"
+          ></v-select>
         </v-col>
       </v-sheet>
     </v-card-text>

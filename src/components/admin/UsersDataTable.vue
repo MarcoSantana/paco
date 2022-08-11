@@ -37,7 +37,12 @@
         dense
       >
         <template v-slot:top>
-          <v-dialog v-model="userDialog.show" max-width="500px" persistent>
+          <v-dialog
+            v-model="userDialog.show"
+            :fullscreen="userDialog.fullscreen"
+            max-width="500px"
+            persistent
+          >
             <v-card>
               <v-toolbar flat color="primary" dark>
                 <v-toolbar-title class="font-weight-light">
@@ -47,12 +52,10 @@
                     </span>
                   </v-card-title>
                 </v-toolbar-title>
-
                 <v-spacer></v-spacer>
                 <v-btn color="error" icon small @click="showDialog = false">
                   <v-icon>mdi-close</v-icon>
                 </v-btn>
-                <v-spacer></v-spacer>
               </v-toolbar>
               <component
                 :is="comp"
@@ -127,7 +130,7 @@ export default {
   name: 'AdmminUsersView',
   data() {
     return {
-      componentName: 'UserEdit',
+      componentName: '',
       criteria: [
         { value: 'active', text: 'activo', type: 'boolean' },
         { value: 'email', text: 'correo electrónico', type: 'email' },
@@ -140,6 +143,7 @@ export default {
         { value: 'phonenumber', text: 'número de teléfono', type: 'tel' },
       ], // criteria
       endAt: null,
+      fullscreen: false,
       headers: [
         {
           text: 'Cédula (licenciatura)',
@@ -216,6 +220,8 @@ export default {
       return {
         /** @type {boolean} is */
         is: this.componentName ? this.componentName : 'UserShow',
+        /** @type {boolean} */
+        fullscreen: this.fullscreen,
         /** @type {string} show */
         show: this.showDialog,
         /** @type {Object} show */
@@ -235,27 +241,33 @@ export default {
 
   methods: {
     ...mapActions('admin', ['getUsers', 'initUsers', 'searchUser']),
-    ...mapMutations('admin', ['setUsers']),
+    ...mapMutations('admin', ['setUsers', 'setCurrentUser']),
 
     showUser(item) {
       if (!item) return
       this.componentName = 'UserShow'
-      this.showDialog = true
+      this.fullscreen = false
       this.selectedUsers[0] = item
+      this.setCurrentUser(item)
+      this.showDialog = true
     }, // showUser
 
     editUser(item) {
       if (!item) return
       this.componentName = 'UserEdit'
-      this.showDialog = true
+      this.fullscreen = true
       this.selectedUsers[0] = item
+      this.setCurrentUser(item)
+      this.showDialog = true
     }, // editUser
 
     deleteUser(item) {
       if (!item) return
       this.componentName = 'UserDelete'
-      this.showDialog = true
+      this.fullscreen = false
       this.selectedUsers[0] = item
+      this.setCurrentUser(item)
+      this.showDialog = true
     }, // editUser
 
     triggerDbSearch() {

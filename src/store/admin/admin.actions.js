@@ -263,6 +263,67 @@ export default {
     commit('updateUsers', result)
   }, // searchUser
 
+  /** Sets the current and populates the admin.users state with the given user data
+   * @param {string} userId
+   * @return {Object<User>}
+   */
+  // async function triggerSetCurrentUserWithProfile(userId) {
+  async triggerSetCurrentUserWithProfile({ commit, state }, id) {
+    if (typeof id !== 'string')
+      console.error('userId is not a string', typeof userId)
+    const usersDB = new UsersDB()
+    const result = await usersDB.getUserWithProfile(id)
+    const index = state.users.find((item, i) => {
+      if (result && item.id === result.id) {
+        state.users[i] = result
+        return true
+      }
+      return i
+    })
+    console.log('index', index)
+    if (result) {
+      commit('setCurrentUser', result)
+      commit('updateUsers', state.users)
+    }
+    return result
+  },
+
+  /** Updates only the main collection users/{userId}
+   * @param {<User>} user - The user data
+   * @param {{<Store{Commit}>}} commit
+   * @return {string} result - The updated user id
+   */
+  updateUserData({ commit }, user) {
+    commit(
+      'setGlobalMessage',
+      new Message({ type: 'warning', message: 'Iniciando la edición' })
+    )
+    if (!user || !user.id) {
+      commit(
+        'setGlobalMessage',
+        new Message({ type: 'error', message: 'Error al editar el usuario' })
+      )
+      return user
+    } // fi
+    const usersDB = new UsersDB(user.id)
+    return usersDB.update(user).then(id => {
+      if (!id)
+        commit(
+          'setGlobalMessage',
+          new Message({ type: 'error', message: 'Error crítico' })
+        )
+
+      commit(
+        'setGlobalMessage',
+        new Message({
+          type: 'success',
+          message: 'Usuario actualizado exitosamente',
+        })
+      )
+      return id
+    })
+  },
+
   // ********************************************************************************/
   // Mail
   // ********************************************************************************/

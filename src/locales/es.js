@@ -280,7 +280,8 @@ const translation = {
   },
   academicProfile: {
     license: {
-      componentName: 'Cedula profesional de especialista en medicina',
+      componentName: 'Cedula profesional de licenciatura',
+      documentName: 'Cedula (licenciatura)',
       curp: 'clave única de registro de población {item}',
       gender: 'Género {item}',
       institution: 'institución formativa {item}',
@@ -294,7 +295,9 @@ const translation = {
     },
     specialtyLicense: {
       componentName: 'Cedula profesional de especialista en medicina',
+      createTimestamp: 'Fecha de creación',
       curp: '@:academicProfile.license.curp {item}',
+      documentName: '@:academicProfile.specialtyLicense.componentName',
       gender: '@:academicProfile.license.gender {item}',
       institution: '@:academicProfile.license.institution {item}',
       lastname2: '@:userEdit.lastname2.label {item}',
@@ -304,6 +307,7 @@ const translation = {
       registrationYear: '@:academicProfile.license.registrationYear {item}',
       title: '@:academicProfile.license.title {item}',
       type: '@:academicProfile.license.type {item}',
+      updateTimestamp: 'Fecha de actualizacion',
     },
   },
 }

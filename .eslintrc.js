@@ -4,7 +4,8 @@ module.exports = {
     node: true,
     jest: true,
   },
-  extends: ['airbnb-base', 'eslint:recommended', 'plugin:vue/recommended', '@vue/prettier'],
+  // extends: ['airbnb-base', 'eslint:recommended', 'plugin:vue/recommended', '@vue/prettier'],
+  extends: ['eslint:recommended', 'plugin:vue/recommended', '@vue/prettier'],
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
