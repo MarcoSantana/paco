@@ -324,6 +324,44 @@ export default {
     })
   },
 
+  /** Updates only the main collection users/{userId}
+   * @param {Object} data - The user data
+   * @param {string} data.id
+   * @param {{<Store{Commit}>}} commit
+   * @return {string} result - The updated user id
+   */
+  updateUserPersonalProfile({ commit }, data) {
+    commit(
+      'setGlobalMessage',
+      new Message({ type: 'warning', message: 'Iniciando la edición' })
+    )
+    if (!data || !data.id) {
+      commit(
+        'setGlobalMessage',
+        new Message({ type: 'error', message: 'Error al editar el usuario' })
+      )
+      return data
+    } // fi
+    const usersDB = new UsersDB(data.id)
+    return usersDB.updatePersonalProfile(data).then(id => {
+      console.log(id)
+      if (!id)
+        commit(
+          'setGlobalMessage',
+          new Message({ type: 'error', message: 'Error crítico' })
+        )
+
+      commit(
+        'setGlobalMessage',
+        new Message({
+          type: 'success',
+          message: 'Usuario actualizado exitosamente',
+        })
+      )
+      return id
+    })
+  },
+
   // ********************************************************************************/
   // Mail
   // ********************************************************************************/

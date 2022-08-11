@@ -1,6 +1,6 @@
 import GenericDB from './generic-db'
-// import firebase from 'firebase/app'
 import firestore from './async-firestore'
+import { isNil } from 'lodash'
 
 export default class UsersDB extends GenericDB {
   constructor() {
@@ -23,14 +23,14 @@ export default class UsersDB extends GenericDB {
           console.log('profileRef', doc.id)
           console.log(doc.id, '=>', doc.data())
           this.convertObjectTimestampPropertiesToDate(doc.data())
-          profileRes.push({ id: doc.id, ...doc.data() })
+          profileRes.push({ ...doc.data(), id: doc.id })
         })
       })
       return profileRes
     } catch (error) {
       console.log('error fetching personal profile', error)
     }
-  }
+  } // getPersonalProfile
 
   /** Read user with profile
    * @param {string} id
@@ -46,8 +46,6 @@ export default class UsersDB extends GenericDB {
 
     await profileRef.get().then(snapShot => {
       snapShot.forEach(doc => {
-        console.log('profileRef', doc.id)
-        console.log(doc.id, '=>', doc.data())
         this.convertObjectTimestampPropertiesToDate(doc.data())
         profileRes.push({ documentName: doc.id, ...doc.data() })
       })
@@ -66,5 +64,24 @@ export default class UsersDB extends GenericDB {
     }
   }
 
-  // Here you can extend UserDB with custom methods
+  /**
+   * Update a document in the collection
+   * @param payload
+   */
+  async updatePersonalProfile(payload) {
+    const { id } = payload
+    const { data } = payload
+    delete payload.id
+    if (isNil(id)) throw new Error('id is required')
+    const ref = (await firestore())
+      .collection(this.collectionPath)
+      .doc(id)
+      .collection('personalProfile')
+
+    data.map(async item => {
+      await ref.doc(item.documentName).set({
+        ...item.documentValue,
+      })
+    })
+  }
 }

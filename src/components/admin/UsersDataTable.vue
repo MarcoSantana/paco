@@ -200,6 +200,7 @@ export default {
   computed: {
     ...mapState('admin', ['globalMessage', 'users']),
     comp() {
+      if (!this.componentName) return
       return () => import(`./dialogs/${this.componentName}.vue`)
     },
     globalMessageSnackbar() {

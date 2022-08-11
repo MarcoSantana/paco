@@ -1,5 +1,13 @@
 <template>
   <v-container>
+    globalMessage {{ globalMessage }}
+    <v-snackbar
+      v-model="globalMessage"
+      timeout="1000"
+      color="globalMessage.type"
+    >
+      {{ globalMessage.message }}
+    </v-snackbar>
     <v-card v-if="userForm">
       <span class="subtitle">ID: {{ user.id }}</span>
       <v-form ref="form" v-model="valid" lazy-validation>
@@ -37,16 +45,40 @@
           label="Correo electrónico"
           required
         ></v-text-field>
-        <vue-google-autocomplete
-          id="map"
-          label="Dirección personal"
-          classname="form-control"
-          placeholder="Busque su direcicón aquí"
-          @placechanged="getAddressData"
-        ></vue-google-autocomplete>
+        <div
+          class="v-inpu
+          v-input--is-label-active
+          v-input--is-dirty
+          theme--light
+          v-text-field
+          v-text-field--is-booted"
+        >
+          <div class="v-input__control">
+            <div class="v-input__slot">
+              <div class="v-text-field__slot">
+                <label
+                  for="map2"
+                  class="v-label v-label--active theme--light"
+                  style="left: 0px; right: auto; position: absolute;"
+                >
+                  Dirección personal
+                </label>
+                <vue-google-autocomplete
+                  id="map2"
+                  ref="address2"
+                  class="v-input v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted"
+                  classname="form-control"
+                  placeholder="Busque su dirección"
+                  country="mx"
+                  @placechanged="getAddressData"
+                ></vue-google-autocomplete>
+              </div>
+            </div>
+          </div>
+        </div>
 
-        <v-btn color="error" class="mr-4" dark outlined @click="reset">
-          Reiniciar
+        <v-btn color="success" class="mr-4" dark outlined @click="save">
+          {{ $t('actions.save') }}
         </v-btn>
       </v-form>
     </v-card>
@@ -68,11 +100,12 @@ export default {
 
   data: () => ({
     localUser: {},
-    personalProfile: {},
+    personalProfile: [],
+    valid: true,
   }), // props
 
   computed: {
-    ...mapState('admin', ['currentUser']),
+    ...mapState('admin', ['currentUser', 'globalMessage']),
     ...mapState('colleges', ['colleges', 'campi']),
     /** The user to be edited
      * @returns {Object}
@@ -100,22 +133,27 @@ export default {
     this.localUser = null
     console.log('this.curentsuer', this.currentUser)
     this.localUser = { ...this.user }
-  }, // data
+  }, // mounted
 
   beforeDestroy() {
     this.setCurrentuser({})
     this.localUser = null
+    this.personalProfile = {}
   },
 
   methods: {
     ...mapActions('admin', [
       'updateUserData',
+      'updateUserPersonalProfile',
       'triggerSetCurrentUserWithProfile',
     ]),
     ...mapMutations('admin', ['setCurrentuser']),
     getAddressData(e) {
       console.log('getAddressData', e)
-      this.personalProfile.address = e
+      this.personalProfile.push({
+        documentName: 'address',
+        documentValue: e,
+      })
     },
     userForm() {
       return {
@@ -190,8 +228,12 @@ export default {
       this.$refs.form.resetValidation()
     },
     save() {
-      if (!this.valid) return
-      this.updateUserData(this.localUser)
+      // if (!this.valid) return
+      // this.updateUserData(this.localUser)
+      this.updateUserPersonalProfile({
+        id: this.localUser.id,
+        data: [...this.personalProfile],
+      })
     },
   }, // methods
 }
