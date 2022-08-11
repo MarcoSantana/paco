@@ -1,98 +1,133 @@
 <template>
   <v-container>
-    globalMessage {{ globalMessage }}
     <v-snackbar
       v-model="globalMessage"
       timeout="1000"
-      color="globalMessage.type"
+      :color="globalMessage.type"
     >
       {{ globalMessage.message }}
     </v-snackbar>
-    <v-card v-if="userForm">
-      <span class="subtitle">ID: {{ user.id }}</span>
-      <v-form ref="form" v-model="valid" lazy-validation>
-        <v-text-field
-          v-model="localUser.license"
-          counter
-          :rules="userForm().license.rules"
-          label="Cédula profesional"
-          required
-        ></v-text-field>
-        <v-text-field
-          v-model="localUser.name"
-          :counter="30"
-          :rules="userForm().name.rules"
-          label="Nombre(s)"
-          required
-        ></v-text-field>
-        <v-text-field
-          v-model="localUser.lastname1"
-          :counter="30"
-          :rules="userForm().lastname1.rules"
-          label="Apellido (paterno)"
-          required
-        ></v-text-field>
-        <v-text-field
-          v-model="localUser.lastname2"
-          :counter="30"
-          :rules="userForm().lastname2.rules"
-          label="Apellido (materno)"
-          required
-        ></v-text-field>
-        <v-text-field
-          v-model="localUser.email"
-          :rules="userForm().email.rules"
-          label="Correo electrónico"
-          required
-        ></v-text-field>
-        <div
-          class="v-inpu
-          v-input--is-label-active
-          v-input--is-dirty
-          theme--light
-          v-text-field
-          v-text-field--is-booted"
-        >
-          <div class="v-input__control">
-            <div class="v-input__slot">
-              <div class="v-text-field__slot">
-                <label
-                  for="map2"
-                  class="v-label v-label--active theme--light"
-                  style="left: 0px; right: auto; position: absolute;"
-                >
-                  Dirección personal
-                </label>
-                <vue-google-autocomplete
-                  id="map2"
-                  ref="address2"
-                  class="v-input v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted"
-                  classname="form-control"
-                  placeholder="Busque su dirección"
-                  country="mx"
-                  @placechanged="getAddressData"
-                ></vue-google-autocomplete>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        <v-btn color="success" class="mr-4" dark outlined @click="save">
-          {{ $t('actions.save') }}
-        </v-btn>
-      </v-form>
-    </v-card>
+    <span class="subtitle">ID: {{ user.id }}</span>
+    <v-form ref="form" v-model="valid" lazy-validation>
+      <v-layout class="pa-2 ml-5 mt-5" row wrap>
+        <v-flex class="ma-1 pa-1" xs12 sm6 md6>
+          <v-card class="pa-1">
+            <v-card-title>
+              Datos personales
+            </v-card-title>
+            <v-card-text>
+              <v-text-field
+                v-model="localUser.license"
+                counter
+                :rules="userForm().license.rules"
+                label="Cédula profesional"
+                required
+              ></v-text-field>
+              <v-text-field
+                v-model="localUser.name"
+                :counter="30"
+                :rules="userForm().name.rules"
+                label="Nombre(s)"
+                required
+              ></v-text-field>
+              <v-text-field
+                v-model="localUser.lastname1"
+                :counter="30"
+                :rules="userForm().lastname1.rules"
+                label="Apellido (paterno)"
+                required
+              ></v-text-field>
+              <v-text-field
+                v-model="localUser.lastname2"
+                :counter="30"
+                :rules="userForm().lastname2.rules"
+                label="Apellido (materno)"
+                required
+              ></v-text-field>
+              <v-text-field
+                v-model="localUser.email"
+                :rules="userForm().email.rules"
+                label="Correo electrónico"
+                required
+              ></v-text-field>
+            </v-card-text>
+          </v-card>
+        </v-flex>
+
+        <v-flex class="ma-1 pa-1" xs12 sm6 md6>
+          <v-card>
+            <v-card-title class="text-subtitle text-capitalize">
+              {{ $t('userData.personalProfile.address.id') }}
+            </v-card-title>
+            <v-card-text
+              v-for="(val, key) in personalAddress"
+              :key="`personalAddress-${key}`"
+            >
+              <div v-if="key !== 'id'">
+                {{ $t(`userData.personalProfile.address.${key}`) }}:
+                {{ val }}
+              </div>
+            </v-card-text>
+            <address-field
+              id="personalAddress"
+              @address-data="getAddressData"
+            ></address-field>
+          </v-card>
+        </v-flex>
+
+        <v-flex class="ma-1 pa-1" xs12 sm6 md6>
+          <v-card class="ml-1">
+            <v-card-title>
+              {{ $t('userData.personalProfile.dob') }}
+            </v-card-title>
+            <v-card-text class="text-justify pl-3">
+              <div v-if="personalProfile.dob">
+                {{ personalProfile.dob }}
+              </div>
+              <div>
+                <v-date-picker
+                  v-model="localUser.personalProfile.dob"
+                  :rules="userForm().birthdate.rules"
+                  label="Fecha de nacimiento"
+                  required
+                ></v-date-picker>
+              </div>
+            </v-card-text>
+          </v-card>
+        </v-flex>
+
+        <v-flex class="ma-1 pa-1" xs12 sm6 md6>
+          <v-card class="ml-1">
+            <v-card-title>Lugar de nacimiento (nacionalidad)</v-card-title>
+            <v-card-text class="text-justify pl-3">
+              <address-field
+                id="pob"
+                :types="['(regions)']"
+                @address-data="localUser.personalProfile.pob = $event"
+              ></address-field>
+            </v-card-text>
+          </v-card>
+        </v-flex>
+
+        <v-flex class="ma-1 pa-1" xs12 sm12 md12>
+          <v-btn color="success" class="ma-4" block dark outlined @click="save">
+            {{ $t('actions.save') }}
+          </v-btn>
+        </v-flex>
+      </v-layout>
+    </v-form>
   </v-container>
 </template>
 
 <script>
 // @ts-check
 import { mapState, mapActions, mapMutations } from 'vuex'
-import VueGoogleAutocomplete from 'vue-google-autocomplete'
+import AddressField from '@/components/admin/dialogs/AddressField.vue'
 
 export default {
   name: 'UserEditDialog',
-  components: { VueGoogleAutocomplete },
+  components: { AddressField },
 
   props: {
     user: { type: Object, required: true },
@@ -107,9 +142,22 @@ export default {
   computed: {
     ...mapState('admin', ['currentUser', 'globalMessage']),
     ...mapState('colleges', ['colleges', 'campi']),
-    /** The user to be edited
-     * @returns {Object}
-     */
+
+    /**@returns {Array<Object>} personalData */
+    personalData() {
+      return Object.values(this.localUser.personalProfile)
+    }, // personalProfile
+
+    personalAddress() {
+      // return the item with id === 'address'
+      console.clear()
+      console.log(this.personalData)
+      return this.personalData.find(item => item.id === 'address')
+    }, // personalAddress
+
+    // personalAddress() {
+    //   return this.personalProfile.address
+    // }, // personalAddress
   }, // computed
 
   watch: {
@@ -117,7 +165,7 @@ export default {
       if (oldVal.id !== newVal.id) {
         // await this.triggerSetCurrentUserWithProfile(newVal.id)
         this.localUser = this.user
-        this.personalProfile = {}
+        // this.personalProfile = []
       }
     }, // user
   }, // watch
@@ -138,7 +186,7 @@ export default {
   beforeDestroy() {
     this.setCurrentuser({})
     this.localUser = null
-    this.personalProfile = {}
+    this.personalProfile = []
   },
 
   methods: {
@@ -165,6 +213,12 @@ export default {
               'La cédula debe ser de 7 a 10 caracteres',
           ], // rules
         }, // license
+        birthdate: {
+          rules: [
+            (/** @type {any} */ v) =>
+              !!v || 'La fecha de nacimiento es requerida',
+          ], // rules
+        }, // birthdate
         name: {
           rules: [
             (/** @type {any} */ v) => !!v || 'El nombre es requerido',

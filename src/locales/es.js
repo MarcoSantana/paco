@@ -99,6 +99,21 @@ const translation = {
     phone: 'teléfono',
     pob: 'lugar de nacimiento (nacionalidad)',
     rfc: 'RFC',
+    personalProfile: {
+      pob: 'lugar de nacimiento (nacionalidad)',
+      dob: 'fecha de nacimiento',
+      address: {
+        administrative_area_level_1: 'Entidad federativa',
+        country: 'País',
+        id: 'dirección personal',
+        latitude: 'Latitud',
+        locality: 'Locallidad',
+        longitude: 'Longitud',
+        postal_code: 'Código postal',
+        route: 'Calle',
+        street_number: 'Número de calle',
+      },
+    },
   },
   messages: {
     bye: 'sales bye',
