@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-snackbar
-      v-model="globalMessage"
+      v-model="globalMessage.message"
       timeout="1000"
       :color="globalMessage.type"
     >
@@ -10,8 +10,9 @@
 
     <span class="subtitle">ID: {{ user.id }}</span>
     <v-form ref="form" v-model="valid" lazy-validation>
-      <v-layout class="pa-2 ml-5 mt-5" row wrap>
-        <v-flex class="ma-1 pa-1" xs12 sm6 md6>
+      <!-- Vuetify two column layout -->
+      <v-layout row wrap>
+        <v-flex sm6 md6>
           <v-card class="pa-1">
             <v-card-title>
               Datos personales
@@ -54,8 +55,7 @@
             </v-card-text>
           </v-card>
         </v-flex>
-
-        <v-flex class="ma-1 pa-1" xs12 sm6 md6>
+        <v-flex xs12 sm6>
           <v-card>
             <v-card-title class="text-subtitle text-capitalize">
               {{ $t('userData.personalProfile.address.id') }}
@@ -75,17 +75,16 @@
             ></address-field>
           </v-card>
         </v-flex>
-
-        <v-flex class="ma-1 pa-1" xs12 sm6 md6>
+        <v-flex xs12 sm6>
           <v-card class="ml-1">
-            <v-card-title>
+            <v-card-title class="justify-center text-capitalize">
               {{ $t('userData.personalProfile.dob') }}
             </v-card-title>
-            <v-card-text class="text-justify pl-3">
+            <v-card-text class="justify-center pl-3">
               <div v-if="personalProfile.dob">
                 {{ personalProfile.dob }}
               </div>
-              <div>
+              <div class="pl-5 pr-0">
                 <v-date-picker
                   v-model="localUser.personalProfile.dob"
                   :rules="userForm().birthdate.rules"
@@ -96,8 +95,7 @@
             </v-card-text>
           </v-card>
         </v-flex>
-
-        <v-flex class="ma-1 pa-1" xs12 sm6 md6>
+        <v-flex xs12 sm6>
           <v-card class="ml-1">
             <v-card-title>Lugar de nacimiento (nacionalidad)</v-card-title>
             <v-card-text class="text-justify pl-3">
@@ -109,7 +107,7 @@
             </v-card-text>
           </v-card>
         </v-flex>
-
+        <v-divider />
         <v-flex class="ma-1 pa-1" xs12 sm12 md12>
           <v-btn color="success" class="ma-4" block dark outlined @click="save">
             {{ $t('actions.save') }}
@@ -154,10 +152,6 @@ export default {
       console.log(this.personalData)
       return this.personalData.find(item => item.id === 'address')
     }, // personalAddress
-
-    // personalAddress() {
-    //   return this.personalProfile.address
-    // }, // personalAddress
   }, // computed
 
   watch: {
@@ -282,6 +276,7 @@ export default {
       this.$refs.form.resetValidation()
     },
     save() {
+      // THIS IS INCOMPLETE DOES NOT SAVE THE PERSONAL PROFILE
       // if (!this.valid) return
       // this.updateUserData(this.localUser)
       this.updateUserPersonalProfile({
