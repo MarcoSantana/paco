@@ -294,6 +294,51 @@ const translation = {
     },
   },
   academicProfile: {
+    documentName: 'Perfil académico',
+    degree: {
+      componentName: 'título',
+      documentName: 'título',
+      icon: 'mdi-book-open-variant',
+    },
+    college: {
+      componentName: 'Universidad',
+      documentName: 'Diploma universitario de licenciatura',
+      hint: 'Nombre de la universidad',
+      icon: 'mdi-school',
+      label: 'Universidad',
+      placeholder: 'Nombre de la universidad',
+      campus: {
+        name: 'Campus',
+      },
+    },
+    updateTimestamp: {
+      componentName: 'Fecha de actualización',
+      documentName: 'Fecha de actualización',
+    },
+    createTimestamp: {
+      componentName: 'Fecha de creación',
+      documentName: 'Fecha de creación',
+    },
+    curp: {
+      componentName: 'Clave Única de Registro de Población',
+      documentName: 'CURP',
+    },
+    registrationYear: {
+      componentName: 'Año de registro',
+      documentName: 'Año de registro',
+    },
+    name: {
+      componentName: '@:userEdit.name',
+      documentName: '@:userEdit.name',
+    },
+    lastname1: {
+      componentName: '@:userEdit.lastname1.label',
+      documentName: '@:userEdit.lastname1.label',
+    },
+    lastname2: {
+      componentName: '@:userEdit.lastname2.label',
+      documentName: '@:userEdit.lastname2.label',
+    },
     license: {
       componentName: 'Cedula profesional de licenciatura',
       documentName: 'Cedula (licenciatura)',

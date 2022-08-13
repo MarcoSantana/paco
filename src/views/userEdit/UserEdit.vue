@@ -4,7 +4,7 @@
     <info-dialog />
     <v-row>
       <v-sheet class="col-sm-12 col-md-4">
-        <profile-photo :model="localUser" @done="(console.log('done'))" />
+        <profile-photo :model="localUser" @done="console.log('done')" />
       </v-sheet>
       <v-sheet class="col-sm-12 col-md-8">
         <v-card class="px-5" width="100%">
@@ -24,7 +24,13 @@
                 rules="required|email"
                 type="email"
               />
-              <user-field :model="localUser" name="name" rules="required|length:2,30" type="text" />
+
+              <user-field
+                :model="localUser"
+                name="name"
+                rules="required|length:2,30"
+                type="text"
+              />
               <user-field
                 :model="localUser"
                 name="lastname1"
@@ -52,7 +58,9 @@
                     outlined
                     tile
                     @click="save"
-                  >Guardar cambios</v-btn>
+                  >
+                    Guardar cambios
+                  </v-btn>
                   <v-btn
                     :disabled="!changed"
                     class="mx-3"
@@ -60,7 +68,9 @@
                     outlined
                     tile
                     @click="resetForm"
-                  >Reiniciar formulario</v-btn>
+                  >
+                    Reiniciar formulario
+                  </v-btn>
                 </v-sheet>
               </v-card-actions>
             </form>
@@ -78,12 +88,9 @@
     >
       {{ snackbar.message }}
       <template v-slot:action="{ attrs }">
-        <v-btn
-          color="blue"
-          text
-          v-bind="attrs"
-          @click="snackbar.show = false"
-        >{{ $t('actions.close') }}</v-btn>
+        <v-btn color="blue" text v-bind="attrs" @click="snackbar.show = false">
+          {{ $t('actions.close') }}
+        </v-btn>
       </template>
     </v-snackbar>
   </v-container>
@@ -129,11 +136,19 @@ export default {
       this.updateUser({ incomplete: false })
       this.setUser(this.localUser)
       this.resetForm()
-      this.snackbar = { ...this.snackbar, show: true, message: 'Cambios almacenados' }
+      this.snackbar = {
+        ...this.snackbar,
+        show: true,
+        message: 'Cambios almacenados',
+      }
     },
     resetForm() {
       this.$refs.form.reset()
-      this.snackbar = { ...this.snackbar, show: true, message: 'Formulario reiniciado' }
+      this.snackbar = {
+        ...this.snackbar,
+        show: true,
+        message: 'Formulario reiniciado',
+      }
       this.localUser = { ...this.user }
     },
   },

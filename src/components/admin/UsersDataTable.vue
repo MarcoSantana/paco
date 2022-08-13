@@ -60,6 +60,7 @@
               <component
                 :is="comp"
                 v-if="comp"
+                :key="userDialog.user.id"
                 :user="userDialog.user"
               ></component>
             </v-card>

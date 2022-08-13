@@ -10,110 +10,165 @@
 
     <span class="subtitle">ID: {{ user.id }}</span>
     <v-form ref="form" v-model="valid" lazy-validation>
-      <!-- Vuetify two column layout -->
-      <v-layout row wrap>
-        <v-flex sm6 md6>
-          <v-card class="pa-1">
-            <v-card-title>
-              Datos personales
-            </v-card-title>
-            <v-card-text>
+      <v-card>
+        <v-layout row wrap>
+          <v-flex sm6 md6>
+            <v-card class="pa-1">
+              <v-card-title>
+                Datos personales
+              </v-card-title>
+              <!-- vue2 v-for with key val -->
+
               <v-text-field
-                v-model="localUser.license"
-                counter
-                :rules="userForm().license.rules"
-                label="Cédula profesional"
-                required
+                v-model="user[key]"
+                :label="key"
+                :rules="[
+                  v => !!v || 'Este campo es requerido',
+                  v =>
+                    (v && v.length <= 255) ||
+                    'Este campo debe tener menos de 255 caracteres',
+                ]"
               ></v-text-field>
-              <v-text-field
-                v-model="localUser.name"
-                :counter="30"
-                :rules="userForm().name.rules"
-                label="Nombre(s)"
-                required
-              ></v-text-field>
-              <v-text-field
-                v-model="localUser.lastname1"
-                :counter="30"
-                :rules="userForm().lastname1.rules"
-                label="Apellido (paterno)"
-                required
-              ></v-text-field>
-              <v-text-field
-                v-model="localUser.lastname2"
-                :counter="30"
-                :rules="userForm().lastname2.rules"
-                label="Apellido (materno)"
-                required
-              ></v-text-field>
-              <v-text-field
-                v-model="localUser.email"
-                :rules="userForm().email.rules"
-                label="Correo electrónico"
-                required
-              ></v-text-field>
-            </v-card-text>
-          </v-card>
-        </v-flex>
-        <v-flex xs12 sm6>
-          <v-card>
-            <v-card-title class="text-subtitle text-capitalize">
-              {{ $t('userData.personalProfile.address.id') }}
-            </v-card-title>
-            <v-card-text
-              v-for="(val, key) in personalAddress"
-              :key="`personalAddress-${key}`"
-            >
-              <div v-if="key !== 'id'">
-                {{ $t(`userData.personalProfile.address.${key}`) }}:
-                {{ val }}
-              </div>
-            </v-card-text>
-            <address-field
-              id="personalAddress"
-              @address-data="getAddressData"
-            ></address-field>
-          </v-card>
-        </v-flex>
-        <v-flex xs12 sm6>
-          <v-card class="ml-1">
-            <v-card-title class="justify-center text-capitalize">
-              {{ $t('userData.personalProfile.dob') }}
-            </v-card-title>
-            <v-card-text class="justify-center pl-3">
-              <div v-if="personalProfile.dob">
-                {{ personalProfile.dob }}
-              </div>
-              <div class="pl-5 pr-0">
-                <v-date-picker
-                  v-model="localUser.personalProfile.dob"
-                  :rules="userForm().birthdate.rules"
-                  label="Fecha de nacimiento"
+              <v-card-text>
+                <v-text-field
+                  v-model="localUser.license"
+                  counter
+                  :rules="userForm().license.rules"
+                  label="Cédula profesional"
                   required
-                ></v-date-picker>
-              </div>
-            </v-card-text>
-          </v-card>
-        </v-flex>
-        <v-flex xs12 sm6>
-          <v-card class="ml-1">
-            <v-card-title>Lugar de nacimiento (nacionalidad)</v-card-title>
-            <v-card-text class="text-justify pl-3">
+                ></v-text-field>
+                <v-text-field
+                  v-model="localUser.name"
+                  :counter="30"
+                  :rules="userForm().name.rules"
+                  label="Nombre(s)"
+                  required
+                ></v-text-field>
+                <v-text-field
+                  v-model="localUser.lastname1"
+                  :counter="30"
+                  :rules="userForm().lastname1.rules"
+                  label="Apellido (paterno)"
+                  required
+                ></v-text-field>
+                <v-text-field
+                  v-model="localUser.lastname2"
+                  :counter="30"
+                  :rules="userForm().lastname2.rules"
+                  label="Apellido (materno)"
+                  required
+                ></v-text-field>
+                <v-text-field
+                  v-model="localUser.email"
+                  :rules="userForm().email.rules"
+                  label="Correo electrónico"
+                  required
+                ></v-text-field>
+              </v-card-text>
+            </v-card>
+          </v-flex>
+          <v-flex xs12 sm6>
+            <v-card>
+              <v-card-title class="text-subtitle text-capitalize">
+                {{ $t('userData.personalProfile.address.id') }}
+              </v-card-title>
+              <v-card-text
+                v-for="(val, key) in personalAddress"
+                :key="`personalAddress-${key}`"
+              >
+                <div v-if="key !== 'id'">
+                  {{ $t(`userData.personalProfile.address.${key}`) }}:
+                  {{ val }}
+                </div>
+              </v-card-text>
               <address-field
-                id="pob"
-                :types="['(regions)']"
-                @address-data="localUser.personalProfile.pob = $event"
+                id="personalAddress"
+                @address-data="getAddressData"
               ></address-field>
-            </v-card-text>
-          </v-card>
-        </v-flex>
-        <v-divider />
-        <v-flex class="ma-1 pa-1" xs12 sm12 md12>
-          <v-btn color="success" class="ma-4" block dark outlined @click="save">
-            {{ $t('actions.save') }}
-          </v-btn>
-        </v-flex>
-      </v-layout>
+            </v-card>
+          </v-flex>
+          <v-flex xs12 sm6>
+            <v-card class="ml-1">
+              <v-card-title class="justify-center text-capitalize">
+                {{ $t('userData.personalProfile.dob') }}
+              </v-card-title>
+              <v-card-text class="justify-center pl-3">
+                <div v-if="personalProfile.dob">
+                  {{ personalProfile.dob }}
+                </div>
+                <div class="pl-5 pr-0">
+                  <v-date-picker
+                    v-model="localUser.personalProfile.dob"
+                    :rules="userForm().birthdate.rules"
+                    label="Fecha de nacimiento"
+                    required
+                  ></v-date-picker>
+                </div>
+              </v-card-text>
+            </v-card>
+          </v-flex>
+          <v-flex xs12 sm6>
+            <v-card class="ml-1">
+              <v-card-title>Lugar de nacimiento (nacionalidad)</v-card-title>
+              <v-card-text class="text-justify pl-3">
+                <address-field
+                  id="pob"
+                  :types="['(regions)']"
+                  @address-data="localUser.personalProfile.pob = $event"
+                ></address-field>
+              </v-card-text>
+            </v-card>
+          </v-flex>
+
+          <v-flex sm12 class="pa-3">
+            <v-sheet class="justify-center ma-3">
+              <v-card-title class="justify-center text-capitalize">
+                {{ $t(`academicProfile.documentName`) }}
+              </v-card-title>
+
+              <v-layout row wrap>
+                <v-flex sm12 md6 lg4>
+                  <v-card class="ma-2 pa-1 justify-center">
+                    <v-card-title>
+                      {{ $t(`academicProfile.degree.documentName`) }}
+                    </v-card-title>
+                    <v-card-text>
+                      <div
+                        v-for="(item, index) in academicProfile"
+                        :key="index"
+                      >
+                        {{ index }}>> {{ item }}
+                        {{ academicProfile[0] }}
+                      </div>
+                    </v-card-text>
+                  </v-card>
+                </v-flex>
+
+                <v-flex sm12 md6 lg4>
+                  <v-sheet class="ma-1 justify-center">
+                    <v-card
+                      v-for="document in academicProfile"
+                      :key="document.documentName"
+                    ></v-card>
+                  </v-sheet>
+                </v-flex>
+              </v-layout>
+            </v-sheet>
+          </v-flex>
+          <v-flex class="ma-1 pa-1" xs12 sm12 md12>
+            <v-btn
+              color="success"
+              class="ma-4"
+              block
+              dark
+              outlined
+              @click="save"
+            >
+              {{ $t('actions.save') }}
+            </v-btn>
+          </v-flex>
+        </v-layout>
+      </v-card>
     </v-form>
   </v-container>
 </template>
@@ -151,6 +206,10 @@ export default {
       console.clear()
       console.log(this.personalData)
       return this.personalData.find(item => item.id === 'address')
+    }, // personalAddress
+
+    academicProfile() {
+      return this.sortAcademicDocument(Object.values(this.localUser.profile))
     }, // personalAddress
   }, // computed
 
@@ -282,6 +341,13 @@ export default {
       this.updateUserPersonalProfile({
         id: this.localUser.id,
         data: [...this.personalProfile],
+      })
+    },
+    sortAcademicDocument(document) {
+      return document.sort((a, b) => {
+        if (a.documentName < b.documentName) return -1
+        if (a.documentName > b.documentName) return 1
+        return 0
       })
     },
   }, // methods
