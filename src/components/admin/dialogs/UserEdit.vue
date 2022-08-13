@@ -7,7 +7,6 @@
     >
       {{ globalMessage.message }}
     </v-snackbar>
-
     <span class="subtitle">ID: {{ user.id }}</span>
     <v-form ref="form" v-model="valid" lazy-validation>
       <v-card>
@@ -17,18 +16,6 @@
               <v-card-title>
                 Datos personales
               </v-card-title>
-              <!-- vue2 v-for with key val -->
-
-              <v-text-field
-                v-model="user[key]"
-                :label="key"
-                :rules="[
-                  v => !!v || 'Este campo es requerido',
-                  v =>
-                    (v && v.length <= 255) ||
-                    'Este campo debe tener menos de 255 caracteres',
-                ]"
-              ></v-text-field>
               <v-card-text>
                 <v-text-field
                   v-model="localUser.license"
@@ -72,18 +59,14 @@
               <v-card-title class="text-subtitle text-capitalize">
                 {{ $t('userData.personalProfile.address.id') }}
               </v-card-title>
+              {{ personalAddress }}
               <v-card-text
                 v-for="(val, key) in personalAddress"
                 :key="`personalAddress-${key}`"
-              >
-                <div v-if="key !== 'id'">
-                  {{ $t(`userData.personalProfile.address.${key}`) }}:
-                  {{ val }}
-                </div>
-              </v-card-text>
+              ></v-card-text>
               <address-field
                 id="personalAddress"
-                @address-data="getAddressData"
+                @address-data="localUser.personalProfile.address = $event"
               ></address-field>
             </v-card>
           </v-flex>
@@ -93,10 +76,10 @@
                 {{ $t('userData.personalProfile.dob') }}
               </v-card-title>
               <v-card-text class="justify-center pl-3">
-                <div v-if="personalProfile.dob">
+                <div v-if="personalProfile && personalProfile.dob">
                   {{ personalProfile.dob }}
                 </div>
-                <div class="pl-5 pr-0">
+                <div v-if="localUser.personalProfile" class="pl-5 pr-0">
                   <v-date-picker
                     v-model="localUser.personalProfile.dob"
                     :rules="userForm().birthdate.rules"
@@ -113,8 +96,8 @@
               <v-card-text class="text-justify pl-3">
                 <address-field
                   id="pob"
-                  :types="['(regions)']"
-                  @address-data="localUser.personalProfile.pob = $event"
+                  types="(regions)"
+                  @address-data="localUser.personalProfile['pob'] = $event"
                 ></address-field>
               </v-card-text>
             </v-card>
@@ -127,35 +110,45 @@
               </v-card-title>
 
               <v-layout row wrap>
-                <v-flex sm12 md6 lg4>
-                  <v-card class="ma-2 pa-1 justify-center">
-                    <v-card-title>
-                      {{ $t(`academicProfile.degree.documentName`) }}
-                    </v-card-title>
-                    <v-card-text>
-                      <div
-                        v-for="(item, index) in academicProfile"
-                        :key="index"
-                      >
-                        {{ index }}>> {{ item }}
-                        {{ academicProfile[0] }}
-                      </div>
-                    </v-card-text>
-                  </v-card>
-                </v-flex>
+                <v-flex v-if="license" sm12 md6>
+                  <v-card-title>
+                    Cédula profesional (licenciatura):
+                  </v-card-title>
 
-                <v-flex sm12 md6 lg4>
-                  <v-sheet class="ma-1 justify-center">
-                    <v-card
-                      v-for="document in academicProfile"
-                      :key="document.documentName"
-                    ></v-card>
-                  </v-sheet>
+                  <v-card-text>
+                    <div
+                      v-for="item in license.toArray()"
+                      :key="item"
+                      class="text-capitalize"
+                    >
+                      {{ item }}
+                    </div>
+                  </v-card-text>
+                </v-flex>
+                <v-flex v-if="specialtyLicense" sm12 md6>
+                  <v-card-title>
+                    Cédula profesional (especialidad):
+                  </v-card-title>
+                  <v-card-text>
+                    <div
+                      v-for="item in specialtyLicense.toArray()"
+                      :key="item"
+                      class="text-capitalize"
+                    >
+                      {{ item }}
+                    </div>
+                  </v-card-text>
                 </v-flex>
               </v-layout>
             </v-sheet>
           </v-flex>
           <v-flex class="ma-1 pa-1" xs12 sm12 md12>
+            <pre>
+              Localuser: {{ localUser.personalProfile }}
+              PersonalData: {{ personalData }}
+              POB: {{ localUser.personalProfile.pob }}
+              Personal Address: {{ personalAddress }}
+            </pre>
             <v-btn
               color="success"
               class="ma-4"
@@ -175,9 +168,20 @@
 
 <script>
 // @ts-check
+import { find } from 'lodash'
 import { mapState, mapActions, mapMutations } from 'vuex'
 import AddressField from '@/components/admin/dialogs/AddressField.vue'
+import createLicense from '@/classes/License'
 
+/**
+ * @vue-prop {Object} user - The user to edit
+ * @vue-data {Object} localUser - Current user data
+ * @vue-data {Boolean} valid - Form validity
+ * @vue-computed {Object} currentUser - The current user data from store
+ * @vue-computed {Object} globalMessage - A message delivered from the store
+ * @vue-computed {Array} personalData - The personal data of the user
+ * @vue-computed {Object} personalAddress - The personal address of the user
+ */
 export default {
   name: 'UserEditDialog',
   components: { AddressField },
@@ -196,21 +200,38 @@ export default {
     ...mapState('admin', ['currentUser', 'globalMessage']),
     ...mapState('colleges', ['colleges', 'campi']),
 
-    /**@returns {Array<Object>} personalData */
+    /**@returns {Array} personalData */
     personalData() {
+      if (!this.user.personalProfile) return []
       return Object.values(this.localUser.personalProfile)
     }, // personalProfile
 
     personalAddress() {
-      // return the item with id === 'address'
-      console.clear()
-      console.log(this.personalData)
-      return this.personalData.find(item => item.id === 'address')
+      return find(this.localUser.personalProfile, {
+        id: 'address',
+      })
+
+      // return this.personalData.find(item => item.id === 'address')
     }, // personalAddress
 
     academicProfile() {
+      // @ts-ignore
       return this.sortAcademicDocument(Object.values(this.localUser.profile))
     }, // personalAddress
+    license() {
+      if (!this.localUser.profile) return null
+      return createLicense(
+        find(this.localUser.profile, { documentName: 'license' })
+      )
+    },
+    specialtyLicense() {
+      if (!this.localUser.profile) return null
+      const res = find(this.localUser.profile, {
+        documentName: 'specialtyLicense',
+      })
+      if (!res) return null
+      return createLicense(res)
+    },
   }, // computed
 
   watch: {
@@ -224,7 +245,7 @@ export default {
   }, // watch
 
   async beforeMount() {
-    // await this.setCurrentUser(this.user)
+    // @ts-ignore
     await this.triggerSetCurrentUserWithProfile(this.user.id).then(
       () => (this.localUser = this.currentUser)
     )
@@ -237,6 +258,7 @@ export default {
   }, // mounted
 
   beforeDestroy() {
+    // @ts-ignore
     this.setCurrentuser({})
     this.localUser = null
     this.personalProfile = []
@@ -325,6 +347,7 @@ export default {
       }
     }, // userForm
     validate() {
+      // @ts-ignore
       this.$refs.form.validate()
     },
     reset() {
@@ -332,17 +355,31 @@ export default {
       this.$emit('close')
     },
     resetValidation() {
+      // @ts-ignore
       this.$refs.form.resetValidation()
     },
+    /** 
+      * Saves the user profile
+      @return void
+     */
     save() {
       // THIS IS INCOMPLETE DOES NOT SAVE THE PERSONAL PROFILE
       // if (!this.valid) return
       // this.updateUserData(this.localUser)
+      debugger
+      console.log('this.localUser', this.localUser.personalProfile)
+      debugger
+      // @ts-ignore
       this.updateUserPersonalProfile({
         id: this.localUser.id,
-        data: [...this.personalProfile],
+        data: [...this.localUser.personalProfile],
       })
     },
+    /**
+     * @param {Array} document
+     * @public
+     * @returns {Array}
+     */
     sortAcademicDocument(document) {
       return document.sort((a, b) => {
         if (a.documentName < b.documentName) return -1

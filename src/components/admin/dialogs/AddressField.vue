@@ -40,7 +40,7 @@ export default {
   props: {
     country: { type: String, required: false },
     id: { type: String, required: true },
-    types: { type: Array, default: () => ['geocode'] },
+    types: { type: String, default: 'geocode' },
   },
   methods: {
     /**

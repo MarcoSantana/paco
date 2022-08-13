@@ -6,7 +6,6 @@
 // Stardate: 202005.16
 // fileName: src/main.js
 
-// eslint-disable-next-line import/no-extraneous-dependencies
 import '@mdi/font/css/materialdesignicons.css'
 
 import Vue from 'vue'

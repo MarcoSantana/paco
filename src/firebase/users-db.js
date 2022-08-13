@@ -60,7 +60,7 @@ export default class UsersDB extends GenericDB {
     return {
       ...user,
       profile: profileRes,
-      personalProfile: { ...personalProfile },
+      personalProfile: [...personalProfile],
     }
   }
 
@@ -72,6 +72,10 @@ export default class UsersDB extends GenericDB {
     const { id } = payload
     const { data } = payload
     delete payload.id
+    debugger
+    console.log('payload', payload)
+    console.table(payload)
+    debugger
     if (isNil(id)) throw new Error('id is required')
     const ref = (await firestore())
       .collection(this.collectionPath)
@@ -79,9 +83,12 @@ export default class UsersDB extends GenericDB {
       .collection('personalProfile')
 
     data.map(async item => {
-      await ref.doc(item.documentName).set({
-        ...item.documentValue,
-      })
+      await ref.doc(item.documentName).set(
+        {
+          ...item.documentValue,
+        },
+        { merge: true }
+      )
     })
   }
 }

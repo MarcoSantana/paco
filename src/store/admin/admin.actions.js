@@ -343,6 +343,9 @@ export default {
       return data
     } // fi
     const usersDB = new UsersDB(data.id)
+    debugger
+
+    console.log('data', data)
     return usersDB.updatePersonalProfile(data).then(id => {
       console.log(id)
       if (!id)
