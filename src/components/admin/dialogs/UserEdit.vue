@@ -66,7 +66,7 @@
               ></v-card-text>
               <address-field
                 id="personalAddress"
-                @address-data="localUser.personalProfile.address = $event"
+                @address-data="setPersonalAddress"
               ></address-field>
             </v-card>
           </v-flex>
@@ -94,6 +94,14 @@
             <v-card class="ml-1">
               <v-card-title>Lugar de nacimiento (nacionalidad)</v-card-title>
               <v-card-text class="text-justify pl-3">
+                <div
+                  v-if="
+                    localUser.personalProfile && localUser.personalProfile.pob
+                  "
+                >
+                  POB: {{ localUser.personalProfile.pob }}
+                  {{ localUser.personalProfile.pob }}
+                </div>
                 <address-field
                   id="pob"
                   types="(regions)"
@@ -146,7 +154,6 @@
             <pre>
               Localuser: {{ localUser.personalProfile }}
               PersonalData: {{ personalData }}
-              POB: {{ localUser.personalProfile }}
               Personal Address: {{ personalAddress }}
             </pre>
             <v-btn
@@ -167,7 +174,6 @@
 </template>
 
 <script>
-// @ts-check
 import { find } from 'lodash'
 import { mapState, mapActions, mapMutations } from 'vuex'
 import AddressField from '@/components/admin/dialogs/AddressField.vue'
@@ -210,14 +216,13 @@ export default {
       return find(this.localUser.personalProfile, {
         id: 'address',
       })
-
-      // return this.personalData.find(item => item.id === 'address')
     }, // personalAddress
 
     academicProfile() {
       // @ts-ignore
       return this.sortAcademicDocument(Object.values(this.localUser.profile))
     }, // personalAddress
+
     license() {
       if (!this.localUser.profile) return null
       return createLicense(
@@ -271,13 +276,6 @@ export default {
       'triggerSetCurrentUserWithProfile',
     ]),
     ...mapMutations('admin', ['setCurrentuser']),
-    getAddressData(e) {
-      console.log('getAddressData', e)
-      this.personalProfile.push({
-        documentName: 'address',
-        documentValue: e,
-      })
-    },
     userForm() {
       return {
         license: {
@@ -354,6 +352,7 @@ export default {
 
     reset() {
       // this.$refs.form.reset()
+      // @ts-ignore
       this.$emit('close')
     },
 
@@ -362,26 +361,34 @@ export default {
       this.$refs.form.resetValidation()
     },
 
-    /** 
+    /**
      * Sets the place of birth to be saved
+     *@param {Object} e -- The name of the country as per Google
+     *@returns void
      */
     setPOB(e) {
-      debugger
-      console.clear()
-      console.log('setPOB', e)
-      debugger
-      this.localUser.personalProfile.pob = {documentName: 'pob', ...e.country}
-      console.log('localUser.personalProfile.pob', this.localUser.personalProfile.pob)
+      // @ts-ignore
+      this.localUser.personalProfile.pob = {
+        documentName: 'pob',
+        country: e.country,
+      }
     },
 
-    /** 
+    /**
      * Sets the personal address to be saved
      *@param {Object} e - Google address
      *@returns void
      */
     setPersonalAddress(e) {
-      this.localUser.personalProfile.address = e
+      this.localUser.personalProfile.address = { documentName: 'address', ...e }
+      // @ts-ignore
+      // this.localUser.personalProfile = {
+      //   // @ts-ignore
+      //   ...this.localUser.personalProfile,
+      //   address: { documentName: 'address', ...e },
+      // }
     },
+
     /** 
       * Saves the user profile
       @return void
@@ -390,15 +397,13 @@ export default {
       // THIS IS INCOMPLETE DOES NOT SAVE THE PERSONAL PROFILE
       // if (!this.valid) return
       // this.updateUserData(this.localUser)
-      debugger
-      console.log('this.localUser', this.localUser.personalProfile)
-      debugger
       // @ts-ignore
       this.updateUserPersonalProfile({
-        id: this.localUser.id,
-        data: [...this.localUser.personalProfile],
+        id: this.currentUser.id,
+        data: { ...this.localUser.personalProfile },
       })
     },
+
     /**
      * @param {Array} document
      * @public
@@ -410,7 +415,7 @@ export default {
         if (a.documentName > b.documentName) return 1
         return 0
       })
-    },
-  }, // methods
+    }, // methods
+  }, // sortAcademicDocument
 }
 </script>

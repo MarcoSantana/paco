@@ -73,7 +73,7 @@ export default class UsersDB extends GenericDB {
     const { data } = payload
     delete payload.id
     debugger
-    console.log('payload', payload)
+    console.log('payload')
     console.table(payload)
     debugger
     if (isNil(id)) throw new Error('id is required')
@@ -82,13 +82,36 @@ export default class UsersDB extends GenericDB {
       .doc(id)
       .collection('personalProfile')
 
-    data.map(async item => {
-      await ref.doc(item.documentName).set(
-        {
-          ...item.documentValue,
-        },
-        { merge: true }
-      )
-    })
+    console.clear()
+    console.log('updatePersonalProfile', data)
+
+    for (const [key, value] of Object.entries(data)) {
+      console.log(`${key}: ${value}`);
+      await ref.doc(key)
+        .set({ ...value }, { merge: true })
+        .then(res => {
+          console.log('res', res)
+          console.log("Document successfully written!")
+        })
+        .catch((error) => {
+          console.error("Error writing document: ", error);
+        })
+    } // for
+
+    // Object.entries(data).forEach(async item => {
+    //   console.log('item', item)
+    //   debugger
+    //   if (item.documentName) {
+    //     console.log('documentName', item.documentName)
+    //     await ref.doc(item.documentName)
+    //       .set(
+    //         {
+    //           ...item,
+    //         },
+    //         { merge: true }
+    //       ) // set
+    //     debugger
+    //   } // fi
+    // }) // foreach
   }
 }
