@@ -97,7 +97,7 @@
                 <address-field
                   id="pob"
                   types="(regions)"
-                  @address-data="localUser.personalProfile['pob'] = $event"
+                  @address-data="setPOB"
                 ></address-field>
               </v-card-text>
             </v-card>
@@ -146,7 +146,7 @@
             <pre>
               Localuser: {{ localUser.personalProfile }}
               PersonalData: {{ personalData }}
-              POB: {{ localUser.personalProfile.pob }}
+              POB: {{ localUser.personalProfile }}
               Personal Address: {{ personalAddress }}
             </pre>
             <v-btn
@@ -346,17 +346,41 @@ export default {
         }, // phoneNumber
       }
     }, // userForm
+
     validate() {
       // @ts-ignore
       this.$refs.form.validate()
     },
+
     reset() {
       // this.$refs.form.reset()
       this.$emit('close')
     },
+
     resetValidation() {
       // @ts-ignore
       this.$refs.form.resetValidation()
+    },
+
+    /** 
+     * Sets the place of birth to be saved
+     */
+    setPOB(e) {
+      debugger
+      console.clear()
+      console.log('setPOB', e)
+      debugger
+      this.localUser.personalProfile.pob = {documentName: 'pob', ...e.country}
+      console.log('localUser.personalProfile.pob', this.localUser.personalProfile.pob)
+    },
+
+    /** 
+     * Sets the personal address to be saved
+     *@param {Object} e - Google address
+     *@returns void
+     */
+    setPersonalAddress(e) {
+      this.localUser.personalProfile.address = e
     },
     /** 
       * Saves the user profile
