@@ -58,13 +58,26 @@
             <v-card>
               <v-card-title class="text-subtitle text-capitalize">
                 {{ $t('userData.personalProfile.address.id') }}
+                <v-btn
+                  text
+                  icon
+                  @click="editPersonalAddress = !editPersonalAddress"
+                >
+                  <v-icon small>mdi-pencil</v-icon>
+                </v-btn>
               </v-card-title>
-              {{ personalAddress }}
               <v-card-text
                 v-for="(val, key) in personalAddress"
                 :key="`personalAddress-${key}`"
-              ></v-card-text>
+              >
+                <div
+                  v-if="key !== 'documentName' && key !== 'id' && key && val"
+                >
+                  {{ $t(`userData.personalProfile.address.${key}`) }}: {{ val }}
+                </div>
+              </v-card-text>
               <address-field
+                v-if="editPersonalAddress"
                 id="personalAddress"
                 @address-data="setPersonalAddress"
               ></address-field>
@@ -74,16 +87,23 @@
             <v-card class="ml-1">
               <v-card-title class="justify-center text-capitalize">
                 {{ $t('userData.personalProfile.dob') }}
+                <v-btn text icon @click="editPersonalDOB = !editPersonalDOB">
+                  <v-icon small>mdi-pencil</v-icon>
+                </v-btn>
               </v-card-title>
               <v-card-text class="justify-center pl-3">
                 <div v-if="personalProfile && personalProfile.dob">
                   {{ personalProfile.dob }}
                 </div>
-                <div v-if="localUser.personalProfile" class="pl-5 pr-0">
+                <div
+                  v-if="localUser && localUser.personalProfile"
+                  class="pl-5 pr-0"
+                >
                   <v-date-picker
+                    v-if="editPersonalDOB"
                     v-model="localUser.personalProfile.dob"
                     :rules="userForm().birthdate.rules"
-                    label="Fecha de nacimiento"
+                    :label="$t('userData.personalProfile.dob')"
                     required
                   ></v-date-picker>
                 </div>
@@ -92,19 +112,27 @@
           </v-flex>
           <v-flex xs12 sm6>
             <v-card class="ml-1">
-              <v-card-title>Lugar de nacimiento (nacionalidad)</v-card-title>
+              <v-card-title class="justify-center text-capitalize">
+                {{ $t('userData.personalProfile.pob') }}
+                <v-btn text icon @click="editPersonalPOB = !editPersonalPOB">
+                  <v-icon small>mdi-pencil</v-icon>
+                </v-btn>
+              </v-card-title>
               <v-card-text class="text-justify pl-3">
                 <div
                   v-if="
                     localUser.personalProfile && localUser.personalProfile.pob
                   "
                 >
-                  POB: {{ localUser.personalProfile.pob }}
-                  {{ localUser.personalProfile.pob }}
+                  <div class="subtitle">
+                    {{ localUser.personalProfile.pob }}
+                  </div>
                 </div>
                 <address-field
+                  v-if="editPersonalPOB"
                   id="pob"
                   types="(regions)"
+                  :value="localUser.personalProfile.pob"
                   @address-data="setPOB"
                 ></address-field>
               </v-card-text>
@@ -151,11 +179,6 @@
             </v-sheet>
           </v-flex>
           <v-flex class="ma-1 pa-1" xs12 sm12 md12>
-            <pre>
-              Localuser: {{ localUser.personalProfile }}
-              PersonalData: {{ personalData }}
-              Personal Address: {{ personalAddress }}
-            </pre>
             <v-btn
               color="success"
               class="ma-4"
@@ -199,6 +222,9 @@ export default {
   data: () => ({
     localUser: {},
     personalProfile: [],
+    editPersonalAddress: false,
+    editPersonalPOB: false,
+    editPersonalDOB: false,
     valid: true,
   }), // props
 
@@ -375,6 +401,19 @@ export default {
     },
 
     /**
+     * Sets the date of birth to be saved
+     *@param {Object} e -- The timestamp
+     *@returns void
+     */
+    setDOB(e) {
+      // @ts-ignore
+      this.localUser.personalProfile.dob = {
+        documentName: 'dob',
+        dob: e,
+      }
+    },
+
+    /**
      * Sets the personal address to be saved
      *@param {Object} e - Google address
      *@returns void
@@ -396,8 +435,7 @@ export default {
     save() {
       // THIS IS INCOMPLETE DOES NOT SAVE THE PERSONAL PROFILE
       // if (!this.valid) return
-      // this.updateUserData(this.localUser)
-      // @ts-ignore
+      this.updateUserData(this.localUser)
       this.updateUserPersonalProfile({
         id: this.currentUser.id,
         data: { ...this.localUser.personalProfile },
