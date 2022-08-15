@@ -35,29 +35,30 @@ export default {
     /**@type {Object[]} */
     const acceptedUsers = await Promise.all(acceptedRequests.map(async item => {
       if (item && item.userId)
-        return await usersDb.read(item.userId)
+        return await usersDb.getUserWithAcademicProfile(item.userId)
     }))
 
-    debugger
     console.log('acceptedUsers', acceptedUsers)
-    debugger
 
     const csvString = [
       [
         'id',
         'displayName',
-        'email'],
+        'email',
+        'license'
+      ],
       ...acceptedUsers.map(item => {
-        console.log('item.id', item.id)
-        console.log('item.displayName', item.displayName)
-        return [
-          item.id,
-          item.displayName,
-          item.email,
-        ]
+        if (item) {
+          return [
+            item.id,
+            item.displayName,
+            item.email,
+            item.profile.license && item.profile.license ? item.profile.license.licenseNumber : 'Sin datos'
+          ]
+        } // fi
       })
     ]
-      .map(e => e.join(","))
+      .map(e => { if (e) return e.join(",") })
       .join("\n");
     console.log('result', csvString)
     debugger

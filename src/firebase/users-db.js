@@ -32,6 +32,27 @@ export default class UsersDB extends GenericDB {
     }
   } // getPersonalProfile
 
+  async getUserWithAcademicProfile(id) {
+    /** @type {Object<firebase.firestore.DocumentReference>} */
+    const ref = (await firestore())
+      .collection(this.collectionPath)
+      .doc(id)
+
+    const profileRes = []
+
+    const user = await this.read(id)
+    await ref.collection('profile')
+      .get()
+      .then(snapShot =>
+        snapShot.forEach(doc => {
+          profileRes[doc.id] = { ...doc.data(), id: doc.id }
+        }))
+    return {
+      ...user,
+      profile: { ...profileRes }
+    }
+  }
+
   /** Read user with profile
    * @param {string} id
    */
