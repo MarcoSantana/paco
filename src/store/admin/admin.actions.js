@@ -320,6 +320,16 @@ export default {
           message: 'Usuario actualizado exitosamente',
         })
       )
+      commit('updateCurrentUser', user)
+
+      commit(
+        'setGlobalMessage',
+        new Message({
+          type: 'success',
+          message: 'Listado general de usuarios actualizado',
+        })
+      )
+      commit('updateUsers', [user])
       return id
     })
   },
@@ -331,17 +341,22 @@ export default {
    * @return {string} result - The updated user id
    */
   updateUserPersonalProfile({ commit }, data) {
+    debugger
+    console.log('updatePersonalProfile', data)
     commit(
       'setGlobalMessage',
       new Message({ type: 'warning', message: 'Iniciando la edición' })
     )
     if (!data || !data.id) {
+      console.error('Missing data', data.id, data)
       commit(
         'setGlobalMessage',
         new Message({ type: 'error', message: 'Error al editar el usuario' })
       )
       return data
     } // fi
+    debugger
+    console.log('updatePersonalProfile', data)
     const usersDB = new UsersDB(data.id)
     return usersDB.updatePersonalProfile(data).then(id => {
       if (!id)

@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container v-if="!loading">
     <v-snackbar
       v-model="globalMessage.message"
       timeout="1000"
@@ -7,7 +7,6 @@
     >
       {{ globalMessage.message }}
     </v-snackbar>
-    <span class="subtitle">ID: {{ user.id }}</span>
     <v-form ref="form" v-model="valid" lazy-validation>
       <v-card>
         <v-layout row wrap>
@@ -22,6 +21,13 @@
                   counter
                   :rules="userForm().license.rules"
                   label="Cédula profesional"
+                  required
+                ></v-text-field>
+                <v-text-field
+                  v-model="localUser.displayName"
+                  :counter="30"
+                  :rules="userForm().displayName.rules"
+                  label="Nombre completo"
                   required
                 ></v-text-field>
                 <v-text-field
@@ -56,6 +62,7 @@
           </v-flex>
           <v-flex xs12 sm6>
             <v-card>
+              <span class="subtitle">ID: {{ user.id }}</span>
               <v-card-title class="text-subtitle text-capitalize">
                 {{ $t('userData.personalProfile.address.id') }}
                 <v-btn
@@ -87,25 +94,34 @@
             <v-card class="ml-1">
               <v-card-title class="justify-center text-capitalize">
                 {{ $t('userData.personalProfile.dob') }}
-                <v-btn text icon @click="editPersonalDOB = !editPersonalDOB">
+                <div v-if="personalProfile && personalProfile.dob">
+                  {{ personalProfile.dob.dob }}
+                </div>
+                <v-btn
+                  text
+                  icon
+                  @click="
+                    editPersonalDOB = !editPersonalDOB
+                    personalProfile.dob = null
+                  "
+                >
                   <v-icon small>mdi-pencil</v-icon>
                 </v-btn>
               </v-card-title>
               <v-card-text class="justify-center pl-3">
                 <div v-if="personalProfile && personalProfile.dob">
-                  {{ personalProfile.dob }}
+                  {{ dob }}
                 </div>
-                <div
-                  v-if="localUser && localUser.personalProfile"
-                  class="pl-5 pr-0"
-                >
-                  <v-date-picker
-                    v-if="editPersonalDOB"
-                    v-model="localUser.personalProfile.dob"
+                <div v-if="dob">
+                  {{ dob }}
+                </div>
+                <div v-if="personalProfile" class="pl-5 pr-0">
+                  <dob-field
+                    :show="editPersonalDOB"
+                    :dob="dob.dob"
                     :rules="userForm().birthdate.rules"
-                    :label="$t('userData.personalProfile.dob')"
-                    required
-                  ></v-date-picker>
+                    @setDOB="dob = $event"
+                  />
                 </div>
               </v-card-text>
             </v-card>
@@ -119,20 +135,16 @@
                 </v-btn>
               </v-card-title>
               <v-card-text class="text-justify pl-3">
-                <div
-                  v-if="
-                    localUser.personalProfile && localUser.personalProfile.pob
-                  "
-                >
+                <div v-if="personalProfile && personalProfile.pob">
                   <div class="subtitle">
-                    {{ localUser.personalProfile.pob }}
+                    {{ personalProfile.pob }}
                   </div>
                 </div>
                 <address-field
                   v-if="editPersonalPOB"
                   id="pob"
                   types="(regions)"
-                  :value="localUser.personalProfile.pob"
+                  :value="personalProfile.pob"
                   @address-data="setPOB"
                 ></address-field>
               </v-card-text>
@@ -198,9 +210,10 @@
 
 <script>
 import { find } from 'lodash'
+import createLicense from '@/classes/License'
 import { mapState, mapActions, mapMutations } from 'vuex'
 import AddressField from '@/components/admin/dialogs/AddressField.vue'
-import createLicense from '@/classes/License'
+import DobField from '@/components/admin/dialogs/DobField.vue'
 
 /**
  * @vue-prop {Object} user - The user to edit
@@ -213,13 +226,14 @@ import createLicense from '@/classes/License'
  */
 export default {
   name: 'UserEditDialog',
-  components: { AddressField },
+  components: { AddressField, DobField },
 
   props: {
     user: { type: Object, required: true },
-  }, // mounted
+  }, // props
 
   data: () => ({
+    loading: true,
     localUser: {},
     personalProfile: [],
     editPersonalAddress: false,
@@ -234,30 +248,63 @@ export default {
 
     /**@returns {Array} personalData */
     personalData() {
-      if (!this.user.personalProfile) return []
-      return Object.values(this.localUser.personalProfile)
+      if (!this.currentUser.profile) return []
+      return Object.values(this.currentUser.profile)
     }, // personalProfile
 
     personalAddress() {
-      return find(this.localUser.personalProfile, {
+      return find(this.currentUser.profile, {
         id: 'address',
       })
     }, // personalAddress
 
+    dob: {
+      set: function(value) {
+        console.log('setting computed dob')
+        console.log('value', value)
+        this.personalProfile.dob = { documentName: 'dob', dob: value }
+        console.log('this.personalProfile.dob', this.personalProfile.dob)
+        debugger
+        // return this.localUser.personalProfile.dob
+      },
+
+      get: function() {
+        const localDOB = find(this.currentUser.profile, {
+          id: 'dob',
+        })
+        console.log('computed dob')
+        console.log(this.personalProfile.dob)
+        console.log('this.currentUser.profile.dob')
+        console.log(this.currentUser)
+        if (!this.personalProfile.dob)
+          return {
+            documentName: 'dob',
+            dob: localDOB,
+          }
+
+        return this.personalProfile.dob
+        // return {
+        //   documentName: 'dob',
+        //   dob: this.personalProfile.dob,
+        // }
+        // // return this.currentUser.dob
+      },
+    },
+
     academicProfile() {
       // @ts-ignore
-      return this.sortAcademicDocument(Object.values(this.localUser.profile))
+      return this.sortAcademicDocument(Object.values(this.currentUser.profile))
     }, // personalAddress
 
     license() {
-      if (!this.localUser.profile) return null
+      if (!this.user.profile) return null
       return createLicense(
-        find(this.localUser.profile, { documentName: 'license' })
+        find(this.currentUser.profile, { documentName: 'license' })
       )
     },
     specialtyLicense() {
-      if (!this.localUser.profile) return null
-      const res = find(this.localUser.profile, {
+      if (!this.currentUser.profile) return null
+      const res = find(this.user.profile, {
         documentName: 'specialtyLicense',
       })
       if (!res) return null
@@ -268,24 +315,25 @@ export default {
   watch: {
     async user(newVal, oldVal) {
       if (oldVal.id !== newVal.id) {
-        // await this.triggerSetCurrentUserWithProfile(newVal.id)
         this.localUser = this.user
-        // this.personalProfile = []
       }
     }, // user
   }, // watch
 
-  async beforeMount() {
-    // @ts-ignore
-    await this.triggerSetCurrentUserWithProfile(this.user.id).then(
-      () => (this.localUser = this.currentUser)
-    )
-  },
+  // async beforeMount() {
+  //   // @ts-ignore
+  //   await this.triggerSetCurrentUserWithProfile(this.user.id).then(
+  //     () => (this.localUser = this.currentUser)
+  //   )
+  // },
 
-  mounted() {
-    this.localUser = null
-    console.log('this.curentsuer', this.currentUser)
-    this.localUser = { ...this.user }
+  async mounted() {
+    this.loading = true
+    await this.triggerSetCurrentUserWithProfile(this.user.id)
+      .then(() => (this.localUser = this.currentUser))
+      .then(() => (this.loading = false))
+    console.log('this.currentUser', this.currentUser)
+    this.personalProfile = this.currentUser.personalProfile
   }, // mounted
 
   beforeDestroy() {
@@ -318,6 +366,14 @@ export default {
               !!v || 'La fecha de nacimiento es requerida',
           ], // rules
         }, // birthdate
+        displayName: {
+          rules: [
+            (/** @type {any} */ v) => !!v || 'El nombre es requerido',
+            (/** @type {string | any[]} */ v) =>
+              (v && v.length > 2) ||
+              'El completo debe tener al menos 2 carcateres',
+          ],
+        }, // name
         name: {
           rules: [
             (/** @type {any} */ v) => !!v || 'El nombre es requerido',
@@ -372,17 +428,20 @@ export default {
     }, // userForm
 
     validate() {
+      // FIXME
       // @ts-ignore
       this.$refs.form.validate()
     },
 
     reset() {
+      // FIXME
       // this.$refs.form.reset()
       // @ts-ignore
       this.$emit('close')
     },
 
     resetValidation() {
+      // FIXME
       // @ts-ignore
       this.$refs.form.resetValidation()
     },
@@ -393,23 +452,9 @@ export default {
      *@returns void
      */
     setPOB(e) {
-      // @ts-ignore
-      this.localUser.personalProfile.pob = {
+      this.personalProfile.pob = {
         documentName: 'pob',
         country: e.country,
-      }
-    },
-
-    /**
-     * Sets the date of birth to be saved
-     *@param {Object} e -- The timestamp
-     *@returns void
-     */
-    setDOB(e) {
-      // @ts-ignore
-      this.localUser.personalProfile.dob = {
-        documentName: 'dob',
-        dob: e,
       }
     },
 
@@ -419,26 +464,24 @@ export default {
      *@returns void
      */
     setPersonalAddress(e) {
-      this.localUser.personalProfile.address = { documentName: 'address', ...e }
-      // @ts-ignore
-      // this.localUser.personalProfile = {
-      //   // @ts-ignore
-      //   ...this.localUser.personalProfile,
-      //   address: { documentName: 'address', ...e },
-      // }
+      this.personalProfile.address = { documentName: 'address', ...e }
     },
 
-    /** 
+    /**
       * Saves the user profile
       @return void
      */
     save() {
-      // THIS IS INCOMPLETE DOES NOT SAVE THE PERSONAL PROFILE
+      // TODO complete this validation
       // if (!this.valid) return
-      this.updateUserData(this.localUser)
+      // TODO complete user data edit
+      // this.updateUserData({
+      //   id: this.currentUser.id,
+      //   data: { ...userData },
+      // })
       this.updateUserPersonalProfile({
         id: this.currentUser.id,
-        data: { ...this.localUser.personalProfile },
+        data: { ...this.personalProfile },
       })
     },
 
