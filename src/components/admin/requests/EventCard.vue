@@ -21,6 +21,7 @@
         <slot name="header">
           <v-icon v-show="icon" left>mdi-information</v-icon>
           {{ localEvent.name ? localEvent.name : 'Evento sin titulo' }}
+          {{ localEvent.id }}
         </slot>
       </span>
     </v-card-title>
@@ -41,6 +42,9 @@
           >
             <v-icon left>mdi-eye</v-icon>
             pendientes
+          </v-btn>
+          <v-btn x-small text @click="downloadCSV">
+            downloadCSV
           </v-btn>
         </v-col>
         <v-col cols="6">
@@ -290,13 +294,19 @@ export default {
       }
     },
   },
-  mounted() {},
+  mounted() {
+    // if (this.localEvent && this.localEvent.id)
+    //   this.getEventSpreadsheet(this.localEvent.id)
+  },
   methods: {
-    ...mapActions('admin', ['triggerSetCurrentEvent']),
+    ...mapActions('admin', ['triggerSetCurrentEvent', 'getEventSpreadsheet']),
     ...mapActions('events', ['updateEvent']),
     ...mapMutations('events', ['setCurrentEvent']),
     input(event) {
       console.log(event)
+    },
+    downloadCSV() {
+      this.getEventSpreadsheet(this.localEvent.id)
     },
     save() {
       console.log('save', this.localEvent)

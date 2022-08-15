@@ -1,5 +1,6 @@
 // <reference path='src/typedefs.js' />
 
+import { saveAs } from 'file-saver'
 import UserDocumentsDB from '@/firebase/user-documents-db'
 import UsersDB from '@/firebase/users-db'
 import DocumentsDB from '@/firebase/documents-db'
@@ -10,6 +11,69 @@ import { storage } from 'firebase'
 import Message from '@/classes/Message'
 
 export default {
+  //   getEventSpreadsheet: aysnc({ _ }, eventId) => {
+  //   debugger
+  //   console.log('getEventSpreadsheet', eventId)
+  //   const users = getAcceptedRequest(eventId)
+  // },
+
+  getEventSpreadsheet: async ({ rootState, commit }, eventId) => {
+
+    console.log(rootState)
+    console.log(commit)
+    const eventsDb = new EventsDB()
+
+    const usersDb = new UsersDB()
+    /**@type {Object[]} - The result from querying all user in a request */
+    const res = await eventsDb.getUsers(eventId)
+
+    /**@type {Object[]} */
+    const acceptedRequests = res.filter(user => {
+      return user.status === 'accepted' && user.userId
+    })
+
+    /**@type {Object[]} */
+    const acceptedUsers = await Promise.all(acceptedRequests.map(async item => {
+      if (item && item.userId)
+        return await usersDb.read(item.userId)
+    }))
+
+    debugger
+    console.log('acceptedUsers', acceptedUsers)
+    debugger
+
+    const csvString = [
+      [
+        'id',
+        'displayName',
+        'email'],
+      ...acceptedUsers.map(item => {
+        console.log('item.id', item.id)
+        console.log('item.displayName', item.displayName)
+        return [
+          item.id,
+          item.displayName,
+          item.email,
+        ]
+      })
+    ]
+      .map(e => e.join(","))
+      .join("\n");
+    console.log('result', csvString)
+    debugger
+    const blob = new Blob([csvString], { type: "text/plain;charset=utf-8" });
+    saveAs(blob, `${eventId}-compressedCSV.csv`)
+
+    // const zip = new JSZip()
+    // zip
+    //   .file(`${eventId}-accpetedList.csv`, result)
+    //   .generateAsync({ type: 'blob' })
+    //   .then(res => saveAs(res, `${eventId}-compressedCSV.zip`))
+    // console.log('res', csvString)
+
+    // return the final data
+    // return csvString
+  }, // getEventSpreadsheet 
   /**
    * Fetch documents of current loggedin user
    */
