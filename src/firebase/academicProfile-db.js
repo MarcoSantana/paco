@@ -1,32 +1,29 @@
-import { firestore } from 'firebase'
-import { isNil } from 'lodash'
+// import { isNil } from 'lodash'
+// import { firestore } from 'firebase'
 import GenericDB from './generic-db'
+import firestore from './async-firestore'
+import firebase from 'firebase/app'
 
 export default class AcademicProfileDB extends GenericDB {
   constructor(userId) {
     super(`users/${userId}/profile`)
     this.userId = userId
+    this.id = userId
   }
 
-  // asyn update firestore document
   async update(data) {
-    if (isNil(this.userId)) return null
-    if (isNil(data)) return null
-    if (isNil(data.documentName)) return null
+    const ref = (await firestore())
+      .collection('users')
+      .doc(this.userId)
+      .collection('profile')
+      .doc(data.documentName)
 
-    try {
-      return firestore()
-        .collection('users')
-        .doc(this.userId)
-        .collection('profile')
-        .doc(data.documentName)
-        .set({
-          ...data,
-          updateTimestamp: firestore.FieldValue.serverTimestamp()
-        })
-    } catch (error) {
-      console.error('Error updating the profile', error)
-    }
-    return data
+    await ref
+      .set({
+        ...data,
+        updateTimestamp: firebase.firestore.FieldValue.serverTimestamp()
+      },
+        { merge: true })
+      .catch(err => console.error("error updating profile", err))
   }
 }

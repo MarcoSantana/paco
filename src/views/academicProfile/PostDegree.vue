@@ -22,6 +22,12 @@
               <v-spacer></v-spacer>
             </v-toolbar>
             <v-card-text>
+              <!-- <div v-if="localSpecialty"> -->
+              <!--   academicProfile {{ academicProfile }} -->
+              <!-- </div> -->
+              <div v-if="hospital">
+                {{ hospital }}
+              </div>
               <v-card-title>
                 {{
                   localSpecialty.hospital.name || specialty.hospital.name
@@ -152,6 +158,7 @@ export default {
   },
 
   computed: {
+    ...mapState('authentication', ['user']),
     ...mapState('academicProfile', ['academicProfile']),
     ...mapState('hospitals', ['hospitals']),
     header() {
@@ -165,6 +172,12 @@ export default {
         endDate: this.picker2,
       }
     }, // specialty
+    hopital() {
+      return this.academicProfile
+      // return Object.entries().find(item => {
+      //   item.documentName = 'specialty'
+      // })
+    }, // hospital
     localSpecialty() {
       if (this.academicProfile.specialty) return this.academicProfile.specialty
       return {
@@ -175,9 +188,15 @@ export default {
 
   async mounted() {
     if (isNil(this.hospitals)) this.getHospitals()
+    if (isNil(this.academicProfile.specialty)) this.getAcademicProfile()
+    console.log('mounted academicProfile', this.academicProfile)
   }, // mounted
+
   methods: {
-    ...mapActions('academicProfile', ['triggerUpdateAcademicProfile']),
+    ...mapActions('academicProfile', [
+      'getAcademicProfile',
+      'triggerUpdateAcademicProfile',
+    ]),
     ...mapActions('hospitals', ['getHospitals']),
     customFilter(item, queryText) {
       const textOne = item.name.toLowerCase()
