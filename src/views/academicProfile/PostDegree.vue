@@ -152,6 +152,7 @@ export default {
   },
 
   computed: {
+    ...mapState('authentication', ['user']),
     ...mapState('academicProfile', ['academicProfile']),
     ...mapState('hospitals', ['hospitals']),
     header() {

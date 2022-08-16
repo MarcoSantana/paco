@@ -40,7 +40,7 @@ export default {
         rootState.authentication.user.id
       )
       await academicProfileDb
-        .update({ ...data })
+        .update({ ...data, id: rootState.authentication.user.id, userId: rootState.authentication.user.id })
         .then(() =>
           commit('updateAcademicProfile', { [data.documentName]: { ...data } })
         )
