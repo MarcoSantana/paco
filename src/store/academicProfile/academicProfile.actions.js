@@ -16,7 +16,7 @@ export default {
       .then(arr =>
         arr.map(doc => {
           const temp = {
-            [doc.id]: { ...doc },
+            [doc.documentName]: { ...doc },
           }
           unset(temp, `${doc.id}.id`)
           unset(temp, `${doc.id}.documentName`)
