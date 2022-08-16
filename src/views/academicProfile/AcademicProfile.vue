@@ -2,28 +2,28 @@
   <v-container>
     <h3 class="text-h3 pb-3">Perfil académico</h3>
     <v-row>
-      <v-col cols="sm-6">
-        <v-card outlined class="pa-3">
-          <v-card-title class="title">Cédula de licenciatura</v-card-title>
-          <v-list dense>
-            <v-list-item
-              v-for="(item, key) in academicProfile.license"
-              :key="key"
-              two-line
-            >
-              <v-list-item-content class="text-capitalize">
-                <v-list-item-title class="font-weight-bold">
-                  {{ item | genderize | missingData }}
-                </v-list-item-title>
-                <v-list-item-subtitle>
-                  {{ $t(`academicProfile.license.${key}`, {}) }}
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </v-card>
-      </v-col>
-      <v-col cols="sm-6">
+      <!-- <v-col cols="sm-6"> -->
+      <!--   <v-card outlined class="pa-3"> -->
+      <!--     <v-card-title class="title">Cédula de licenciatura</v-card-title> -->
+      <!--     <v-list dense> -->
+      <!--       <v-list-item -->
+      <!--         v-for="(item, key) in academicProfile.license" -->
+      <!--         :key="key" -->
+      <!--         two-line -->
+      <!--       > -->
+      <!--         <v-list-item-content class="text-capitalize"> -->
+      <!--           <v-list-item-title class="font-weight-bold"> -->
+      <!--             {{ item | genderize | missingData }} -->
+      <!--           </v-list-item-title> -->
+      <!--           <v-list-item-subtitle> -->
+      <!--             {{ $t(`academicProfile.license.${key}`, {}) }} -->
+      <!--           </v-list-item-subtitle> -->
+      <!--         </v-list-item-content> -->
+      <!--       </v-list-item> -->
+      <!--     </v-list> -->
+      <!--   </v-card> -->
+      <!-- </v-col> -->
+      <v-col class="md-4 sm-12">
         <v-card outlined class="pa-3">
           <v-card-title class="title">Cédula de especialidad</v-card-title>
           <!-- TODO stop using this model use the info from the academicProfile -->
@@ -52,10 +52,10 @@
           </v-card-actions>
         </v-card>
       </v-col>
-      <v-col cols="12">
+      <v-col class="sm-12 xs-12">
         <university :user="user" :academic-profile="academicProfile" />
       </v-col>
-      <v-col cols="12">
+      <v-col class="sm-12 xs-12">
         <post-degree :user="user" :academic-profile="academicProfile" />
       </v-col>
     </v-row>
