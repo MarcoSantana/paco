@@ -141,9 +141,9 @@
                 </v-btn>
               </v-card-title>
               <v-card-text class="text-justify pl-3">
-                <div v-if="personalProfile && personalProfile.pob">
+                <div v-if="pob">
                   <div class="subtitle">
-                    {{ personalProfile.pob }}
+                    {{ pob }}
                   </div>
                 </div>
                 <address-field
@@ -151,7 +151,7 @@
                   id="pob"
                   types="(regions)"
                   :value="personalProfile.pob"
-                  @address-data="setPOB"
+                  @address-data="pob = $event"
                 ></address-field>
               </v-card-text>
             </v-card>
@@ -268,6 +268,7 @@ export default {
 
     dob: {
       set: function(value) {
+        // TODO How can I make it dryer?
         this.personalProfile.dob = {
           documentName: 'dob',
           id: 'dob',
@@ -276,6 +277,7 @@ export default {
       },
 
       get: function() {
+        // FIXME make me a one liner
         const localDOB = find(this.personalProfile, {
           id: 'dob',
         })
@@ -283,7 +285,26 @@ export default {
 
         return this.personalProfile.dob.dob
       },
-    },
+    }, //dob
+    pob: {
+      set(value) {
+        this.personalProfile.pob = {
+          pob: value,
+          documentName: 'pob',
+          id: 'pob',
+        }
+      }, // set
+
+      get() {
+        // FIXME make me a one liner
+        const localPOB = find(this.personalProfile, {
+          id: 'pob',
+        })
+        if (!this.personalProfile.pob) return localPOB.country
+
+        return this.personalProfile.pob.country
+      },
+    }, // pob
 
     academicProfile() {
       // @ts-ignore
@@ -438,18 +459,6 @@ export default {
       // FIXME
       // @ts-ignore
       this.$refs.form.resetValidation()
-    },
-
-    /**
-     * Sets the place of birth to be saved
-     *@param {Object} e -- The name of the country as per Google
-     *@returns void
-     */
-    setPOB(e) {
-      this.personalProfile.pob = {
-        documentName: 'pob',
-        country: e.country,
-      }
     },
 
     /**
