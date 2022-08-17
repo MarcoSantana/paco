@@ -398,7 +398,6 @@ export default {
    * @return {string} result - The updated user id
    */
   updateUserPersonalProfile({ commit }, data) {
-    debugger
     console.log('updatePersonalProfile', data)
     commit(
       'setGlobalMessage',

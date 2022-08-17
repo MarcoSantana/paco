@@ -98,15 +98,21 @@ export default class UsersDB extends GenericDB {
       .collection(this.collectionPath)
       .doc(id)
       .collection('personalProfile')
-
-    for (const [key, value] of Object.entries(data)) {
-      console.log(`${key}: ${value}`);
-      await ref.doc(key)
-        .set({ ...value }, { merge: true })
-        .then(() => console.log("Document successfully written!"))
-        .catch((error) => {
-          console.error("Error writing document: ", error);
+    Object.keys(data).forEach(async key => {
+      await ref.doc(data[key].documentName)
+        .set({ ...data[key] }, { merge: true }).catch(err => {
+          console.error('Error updating user personal profile', err)
         })
-    } // for
+    })
+
+    // for (const [key, value] of Object.entries(data)) {
+    //   console.log(`${key}: ${value}`);
+    //   await ref.doc(value.documentName)
+    //     .set({ ...value }, { merge: true })
+    //     .then(() => console.log("Document successfully written!"))
+    //     .catch((error) => {
+    //       console.error("Error writing document: ", error);
+    // } // for
+    //     })
   }
 }

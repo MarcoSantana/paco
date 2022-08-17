@@ -289,7 +289,9 @@ export default {
     pob: {
       set(value) {
         this.personalProfile.pob = {
-          pob: value,
+          pob: value.country,
+          latitude: value.latitude,
+          longitude: value.longitude,
           documentName: 'pob',
           id: 'pob',
         }
