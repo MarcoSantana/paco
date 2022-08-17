@@ -12,8 +12,11 @@
         <v-layout row wrap>
           <v-flex sm6 md6>
             <v-card class="pa-1">
-              <v-card-title>
+              <v-card-title class="d-flex">
                 Datos personales
+                <small class="ml-3 subtitle-2 font-weight-thin">
+                  ID: {{ user.id }}
+                </small>
               </v-card-title>
               <v-card-text>
                 <v-text-field
@@ -63,7 +66,6 @@
 
           <v-flex xs12 sm6>
             <v-card>
-              <span class="subtitle">ID: {{ user.id }}</span>
               <v-card-title class="text-subtitle text-capitalize">
                 {{ $t('userData.personalProfile.address.id') }}
                 <v-btn
@@ -102,9 +104,7 @@
             <v-card class="ml-1">
               <v-card-title class="justify-center text-capitalize">
                 {{ $t('userData.personalProfile.dob') }}
-                <div v-if="personalProfile && personalProfile.dob">
-                  {{ personalProfile.dob.dob }}
-                </div>
+                <div v-if="dob">{{ dob.dob }}</div>
                 <v-btn
                   text
                   icon
@@ -123,7 +123,7 @@
                 <div v-if="personalProfile" class="pl-5 pr-0">
                   <dob-field
                     :show="editPersonalDOB"
-                    :dob="dob.dob"
+                    :dob="dob"
                     :rules="userForm().birthdate.rules"
                     @setDOB="dob = $event"
                   />
@@ -251,7 +251,6 @@ export default {
 
   computed: {
     ...mapState('admin', ['currentUser', 'globalMessage']),
-    ...mapGetters('admin', ['currentUserPersonalProfile']),
     ...mapState('colleges', ['colleges', 'campi']),
 
     /**@returns {Array} personalData */
@@ -269,34 +268,20 @@ export default {
 
     dob: {
       set: function(value) {
-        console.log('setting computed dob')
-        console.log('value', value)
-        this.personalProfile.dob = { documentName: 'dob', dob: value }
-        console.log('this.personalProfile.dob', this.personalProfile.dob)
-        debugger
-        // return this.localUser.personalProfile.dob
+        this.personalProfile.dob = {
+          documentName: 'dob',
+          id: 'dob',
+          dob: value,
+        }
       },
 
       get: function() {
-        const localDOB = find(this.currentUser.profile, {
+        const localDOB = find(this.personalProfile, {
           id: 'dob',
         })
-        console.log('computed dob')
-        console.log(this.personalProfile.dob)
-        console.log('this.currentUser.profile.dob')
-        console.log(this.currentUser)
-        if (!this.personalProfile.dob)
-          return {
-            documentName: 'dob',
-            dob: localDOB,
-          }
+        if (!this.personalProfile.dob) return localDOB
 
-        return this.personalProfile.dob
-        // return {
-        //   documentName: 'dob',
-        //   dob: this.personalProfile.dob,
-        // }
-        // // return this.currentUser.dob
+        return this.personalProfile.dob.dob
       },
     },
 
