@@ -20,4 +20,6 @@ export default {
     )
     return pendingRequest
   },
+
+  currentUserPersonalProfile: state => state.personalProfile
 }

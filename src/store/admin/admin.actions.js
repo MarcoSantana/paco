@@ -65,16 +65,8 @@ export default {
     const blob = new Blob([csvString], { type: "text/plain;charset=utf-8" });
     saveAs(blob, `${eventId}-compressedCSV.csv`)
 
-    // const zip = new JSZip()
-    // zip
-    //   .file(`${eventId}-accpetedList.csv`, result)
-    //   .generateAsync({ type: 'blob' })
-    //   .then(res => saveAs(res, `${eventId}-compressedCSV.zip`))
-    // console.log('res', csvString)
-
-    // return the final data
-    // return csvString
   }, // getEventSpreadsheet 
+
   /**
    * Fetch documents of current loggedin user
    */
@@ -197,7 +189,7 @@ export default {
   },
 
   /**
-   * Fetch from database a counter document ans commit to storage
+   * Fetch from database a counter document and commit to storage
    */
   getRequestsCounter: async ({ commit }, type) => {
     console.log('admin.actions getRequestsCounter')

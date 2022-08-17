@@ -60,6 +60,7 @@
               </v-card-text>
             </v-card>
           </v-flex>
+
           <v-flex xs12 sm6>
             <v-card>
               <span class="subtitle">ID: {{ user.id }}</span>
@@ -78,7 +79,13 @@
                 :key="`personalAddress-${key}`"
               >
                 <div
-                  v-if="key !== 'documentName' && key !== 'id' && key && val"
+                  v-if="
+                    key !== 'documentName' &&
+                      key !== 'id' &&
+                      key &&
+                      val &&
+                      val !== ''
+                  "
                 >
                   {{ $t(`userData.personalProfile.address.${key}`) }}: {{ val }}
                 </div>
@@ -90,6 +97,7 @@
               ></address-field>
             </v-card>
           </v-flex>
+
           <v-flex xs12 sm6>
             <v-card class="ml-1">
               <v-card-title class="justify-center text-capitalize">
@@ -112,9 +120,6 @@
                 <div v-if="personalProfile && personalProfile.dob">
                   {{ dob }}
                 </div>
-                <div v-if="dob">
-                  {{ dob }}
-                </div>
                 <div v-if="personalProfile" class="pl-5 pr-0">
                   <dob-field
                     :show="editPersonalDOB"
@@ -126,6 +131,7 @@
               </v-card-text>
             </v-card>
           </v-flex>
+
           <v-flex xs12 sm6>
             <v-card class="ml-1">
               <v-card-title class="justify-center text-capitalize">
@@ -190,6 +196,7 @@
               </v-layout>
             </v-sheet>
           </v-flex>
+
           <v-flex class="ma-1 pa-1" xs12 sm12 md12>
             <v-btn
               color="success"
@@ -244,18 +251,20 @@ export default {
 
   computed: {
     ...mapState('admin', ['currentUser', 'globalMessage']),
+    ...mapGetters('admin', ['currentUserPersonalProfile']),
     ...mapState('colleges', ['colleges', 'campi']),
 
     /**@returns {Array} personalData */
     personalData() {
-      if (!this.currentUser.profile) return []
       return Object.values(this.currentUser.profile)
     }, // personalProfile
 
     personalAddress() {
-      return find(this.currentUser.profile, {
+      const res = find(this.personalProfile, {
         id: 'address',
       })
+      console.log('personalAddress', { res })
+      return res
     }, // personalAddress
 
     dob: {
@@ -327,7 +336,7 @@ export default {
   //   )
   // },
 
-  async mounted() {
+  async beforeMount() {
     this.loading = true
     await this.triggerSetCurrentUserWithProfile(this.user.id)
       .then(() => (this.localUser = this.currentUser))
