@@ -302,9 +302,8 @@ export default {
         const localPOB = find(this.personalProfile, {
           id: 'pob',
         })
-        if (!this.personalProfile.pob) return localPOB.country
-
-        return this.personalProfile.pob.country
+        if (!localPOB) return 'Por favor seleccione un lugar'
+        return localPOB.pob
       },
     }, // pob
 
