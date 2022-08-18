@@ -1,5 +1,6 @@
 // <reference path='src/typedefs.js' />
 
+import { saveAs } from 'file-saver'
 import UserDocumentsDB from '@/firebase/user-documents-db'
 import UsersDB from '@/firebase/users-db'
 import DocumentsDB from '@/firebase/documents-db'
@@ -10,6 +11,62 @@ import { storage } from 'firebase'
 import Message from '@/classes/Message'
 
 export default {
+  //   getEventSpreadsheet: aysnc({ _ }, eventId) => {
+  //   debugger
+  //   console.log('getEventSpreadsheet', eventId)
+  //   const users = getAcceptedRequest(eventId)
+  // },
+
+  getEventSpreadsheet: async ({ rootState, commit }, eventId) => {
+
+    console.log(rootState)
+    console.log(commit)
+    const eventsDb = new EventsDB()
+
+    const usersDb = new UsersDB()
+    /**@type {Object[]} - The result from querying all user in a request */
+    const res = await eventsDb.getUsers(eventId)
+
+    /**@type {Object[]} */
+    const acceptedRequests = res.filter(user => {
+      return user.status === 'accepted' && user.userId
+    })
+
+    /**@type {Object[]} */
+    const acceptedUsers = await Promise.all(acceptedRequests.map(async item => {
+      if (item && item.userId)
+        return await usersDb.getUserWithAcademicProfile(item.userId)
+    }))
+
+    console.log('acceptedUsers', acceptedUsers)
+
+    const csvString = [
+      [
+        'id',
+        'displayName',
+        'email',
+        'license'
+      ],
+      ...acceptedUsers.map(item => {
+        if (item) {
+          return [
+            item.id,
+            item.displayName,
+            item.email,
+            item.profile.license && item.profile.license ? item.profile.license.licenseNumber : 'Sin datos'
+          ]
+        } // fi
+      })
+    ]
+      .map(e => { if (e) return e.join(",") })
+      .join("\n");
+    console.log('result', csvString)
+    debugger
+    const blob = new Blob([csvString], { type: "text/plain;charset=utf-8" });
+    saveAs(blob, `${eventId}-compressedCSV.csv`)
+
+  }, // getEventSpreadsheet 
+
   /**
    * Fetch documents of current loggedin user
    */
@@ -132,7 +189,7 @@ export default {
   },
 
   /**
-   * Fetch from database a counter document ans commit to storage
+   * Fetch from database a counter document and commit to storage
    */
   getRequestsCounter: async ({ commit }, type) => {
     console.log('admin.actions getRequestsCounter')
@@ -341,7 +398,6 @@ export default {
    * @return {string} result - The updated user id
    */
   updateUserPersonalProfile({ commit }, data) {
-    debugger
     console.log('updatePersonalProfile', data)
     commit(
       'setGlobalMessage',

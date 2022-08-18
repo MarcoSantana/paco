@@ -21,13 +21,13 @@
         <slot name="header">
           <v-icon v-show="icon" left>mdi-information</v-icon>
           {{ localEvent.name ? localEvent.name : 'Evento sin titulo' }}
+          {{ localEvent.id }}
         </slot>
       </span>
     </v-card-title>
-    <v-list class="px-3" :color="`${color} lighten-4`" dense>
-      <v-list-item>
-        <v-col cols="6">
-          <!-- TODO Link to see all related requests 202206.20-16.45 -->
+    <v-card-text class="pa-5">
+      <v-layout class="pa-2" row wrap>
+        <v-flex xs3 class="mx-2">
           <v-btn
             x-small
             plain
@@ -42,9 +42,9 @@
             <v-icon left>mdi-eye</v-icon>
             pendientes
           </v-btn>
-        </v-col>
-        <v-col cols="6">
-          <!-- TODO Link to see all related requests 202206.20-16.45 -->
+        </v-flex>
+
+        <v-flex xs3>
           <v-btn
             x-small
             plain
@@ -59,8 +59,16 @@
             <v-icon left>mdi-eye</v-icon>
             todas
           </v-btn>
-        </v-col>
-      </v-list-item>
+        </v-flex>
+        <v-flex xs3 class="mx-1">
+          <v-btn x-small text @click="downloadCSV">
+            <v-icon left>mdi-google-spreadsheet</v-icon>
+            descargar aceptadas
+          </v-btn>
+        </v-flex>
+      </v-layout>
+    </v-card-text>
+    <v-list class="px-3" :color="`${color} lighten-4`" dense>
       <slot name="description">
         <span>
           <v-form :disabled="!edit">
@@ -290,13 +298,19 @@ export default {
       }
     },
   },
-  mounted() {},
+  mounted() {
+    // if (this.localEvent && this.localEvent.id)
+    //   this.getEventSpreadsheet(this.localEvent.id)
+  },
   methods: {
-    ...mapActions('admin', ['triggerSetCurrentEvent']),
+    ...mapActions('admin', ['triggerSetCurrentEvent', 'getEventSpreadsheet']),
     ...mapActions('events', ['updateEvent']),
     ...mapMutations('events', ['setCurrentEvent']),
     input(event) {
       console.log(event)
+    },
+    downloadCSV() {
+      this.getEventSpreadsheet(this.localEvent.id)
     },
     save() {
       console.log('save', this.localEvent)

@@ -12,8 +12,11 @@
         <v-layout row wrap>
           <v-flex sm6 md6>
             <v-card class="pa-1">
-              <v-card-title>
+              <v-card-title class="d-flex">
                 Datos personales
+                <small class="ml-3 subtitle-2 font-weight-thin">
+                  ID: {{ user.id }}
+                </small>
               </v-card-title>
               <v-card-text>
                 <v-text-field
@@ -60,9 +63,9 @@
               </v-card-text>
             </v-card>
           </v-flex>
+
           <v-flex xs12 sm6>
             <v-card>
-              <span class="subtitle">ID: {{ user.id }}</span>
               <v-card-title class="text-subtitle text-capitalize">
                 {{ $t('userData.personalProfile.address.id') }}
                 <v-btn
@@ -78,7 +81,13 @@
                 :key="`personalAddress-${key}`"
               >
                 <div
-                  v-if="key !== 'documentName' && key !== 'id' && key && val"
+                  v-if="
+                    key !== 'documentName' &&
+                      key !== 'id' &&
+                      key &&
+                      val &&
+                      val !== ''
+                  "
                 >
                   {{ $t(`userData.personalProfile.address.${key}`) }}: {{ val }}
                 </div>
@@ -90,13 +99,12 @@
               ></address-field>
             </v-card>
           </v-flex>
+
           <v-flex xs12 sm6>
             <v-card class="ml-1">
               <v-card-title class="justify-center text-capitalize">
                 {{ $t('userData.personalProfile.dob') }}
-                <div v-if="personalProfile && personalProfile.dob">
-                  {{ personalProfile.dob.dob }}
-                </div>
+                <div v-if="dob">{{ dob.dob }}</div>
                 <v-btn
                   text
                   icon
@@ -112,13 +120,10 @@
                 <div v-if="personalProfile && personalProfile.dob">
                   {{ dob }}
                 </div>
-                <div v-if="dob">
-                  {{ dob }}
-                </div>
                 <div v-if="personalProfile" class="pl-5 pr-0">
                   <dob-field
                     :show="editPersonalDOB"
-                    :dob="dob.dob"
+                    :dob="dob"
                     :rules="userForm().birthdate.rules"
                     @setDOB="dob = $event"
                   />
@@ -126,6 +131,7 @@
               </v-card-text>
             </v-card>
           </v-flex>
+
           <v-flex xs12 sm6>
             <v-card class="ml-1">
               <v-card-title class="justify-center text-capitalize">
@@ -135,9 +141,9 @@
                 </v-btn>
               </v-card-title>
               <v-card-text class="text-justify pl-3">
-                <div v-if="personalProfile && personalProfile.pob">
+                <div v-if="pob">
                   <div class="subtitle">
-                    {{ personalProfile.pob }}
+                    {{ pob }}
                   </div>
                 </div>
                 <address-field
@@ -145,7 +151,7 @@
                   id="pob"
                   types="(regions)"
                   :value="personalProfile.pob"
-                  @address-data="setPOB"
+                  @address-data="pob = $event"
                 ></address-field>
               </v-card-text>
             </v-card>
@@ -156,40 +162,64 @@
               <v-card-title class="justify-center text-capitalize">
                 {{ $t(`academicProfile.documentName`) }}
               </v-card-title>
-
               <v-layout row wrap>
-                <v-flex v-if="license" sm12 md6>
+                <v-flex v-if="userLicense" sm12 md4>
                   <v-card-title>
-                    Cédula profesional (licenciatura):
+                    {{ $t(`academicProfile.license.documentName`, { item }) }}:
                   </v-card-title>
 
                   <v-card-text>
                     <div
-                      v-for="item in license.toArray()"
+                      v-for="(item, key) in userLicense"
                       :key="item"
                       class="text-capitalize"
                     >
-                      {{ item }}
+                      {{ $t(`academicProfile.license.${key}`, { item }) }}
                     </div>
                   </v-card-text>
                 </v-flex>
-                <v-flex v-if="specialtyLicense" sm12 md6>
+                <v-flex v-if="userSpecialtyLicense" sm12 md4>
                   <v-card-title>
-                    Cédula profesional (especialidad):
+                    {{
+                      $t(`academicProfile.specialtyLicense.documentName`, {
+                        item,
+                      })
+                    }}:
                   </v-card-title>
                   <v-card-text>
                     <div
-                      v-for="item in specialtyLicense.toArray()"
+                      v-for="(item, key) in userSpecialtyLicense"
                       :key="item"
                       class="text-capitalize"
                     >
-                      {{ item }}
+                      {{
+                        $t(`academicProfile.specialtyLicense.${key}`, { item })
+                      }}
+                    </div>
+                  </v-card-text>
+                </v-flex>
+                <v-flex v-if="userSpecialty" sm12 md4>
+                  <v-card-title>
+                    {{
+                      $t(`academicProfile.specialty.documentName`, {
+                        item,
+                      })
+                    }}:
+                  </v-card-title>
+                  <v-card-text>
+                    <div
+                      v-for="(item, key) in userSpecialty"
+                      :key="item"
+                      class="text-capitalize"
+                    >
+                      {{ $t(`academicProfile.specialty.${key}`, { item }) }}
                     </div>
                   </v-card-text>
                 </v-flex>
               </v-layout>
             </v-sheet>
           </v-flex>
+
           <v-flex class="ma-1 pa-1" xs12 sm12 md12>
             <v-btn
               color="success"
@@ -211,7 +241,7 @@
 <script>
 import { find } from 'lodash'
 import createLicense from '@/classes/License'
-import { mapState, mapActions, mapMutations } from 'vuex'
+import { mapState, mapActions, mapMutations, mapGetters } from 'vuex'
 import AddressField from '@/components/admin/dialogs/AddressField.vue'
 import DobField from '@/components/admin/dialogs/DobField.vue'
 
@@ -245,51 +275,66 @@ export default {
   computed: {
     ...mapState('admin', ['currentUser', 'globalMessage']),
     ...mapState('colleges', ['colleges', 'campi']),
+    ...mapGetters('admin', [
+      'userLicense',
+      'userDegree',
+      'userSpecialtyLicense',
+      'userSpecialty',
+    ]),
 
     /**@returns {Array} personalData */
     personalData() {
-      if (!this.currentUser.profile) return []
       return Object.values(this.currentUser.profile)
     }, // personalProfile
 
     personalAddress() {
-      return find(this.currentUser.profile, {
+      const res = find(this.personalProfile, {
         id: 'address',
       })
+      console.log('personalAddress', { res })
+      return res
     }, // personalAddress
 
     dob: {
       set: function(value) {
-        console.log('setting computed dob')
-        console.log('value', value)
-        this.personalProfile.dob = { documentName: 'dob', dob: value }
-        console.log('this.personalProfile.dob', this.personalProfile.dob)
-        debugger
-        // return this.localUser.personalProfile.dob
+        // TODO How can I make it dryer?
+        this.personalProfile.dob = {
+          documentName: 'dob',
+          id: 'dob',
+          dob: value,
+        }
       },
 
       get: function() {
-        const localDOB = find(this.currentUser.profile, {
+        // FIXME make me a one liner
+        const localDOB = find(this.personalProfile, {
           id: 'dob',
         })
-        console.log('computed dob')
-        console.log(this.personalProfile.dob)
-        console.log('this.currentUser.profile.dob')
-        console.log(this.currentUser)
-        if (!this.personalProfile.dob)
-          return {
-            documentName: 'dob',
-            dob: localDOB,
-          }
+        if (!this.personalProfile.dob) return localDOB
 
-        return this.personalProfile.dob
-        // return {
-        //   documentName: 'dob',
-        //   dob: this.personalProfile.dob,
-        // }
-        // // return this.currentUser.dob
+        return this.personalProfile.dob.dob
       },
-    },
+    }, //dob
+    pob: {
+      set(value) {
+        this.personalProfile.pob = {
+          pob: value.country,
+          latitude: value.latitude,
+          longitude: value.longitude,
+          documentName: 'pob',
+          id: 'pob',
+        }
+      }, // set
+
+      get() {
+        // FIXME make me a one liner
+        const localPOB = find(this.personalProfile, {
+          id: 'pob',
+        })
+        if (!localPOB) return 'Por favor seleccione un lugar'
+        return localPOB.pob
+      },
+    }, // pob
 
     academicProfile() {
       // @ts-ignore
@@ -327,7 +372,7 @@ export default {
   //   )
   // },
 
-  async mounted() {
+  async beforeMount() {
     this.loading = true
     await this.triggerSetCurrentUserWithProfile(this.user.id)
       .then(() => (this.localUser = this.currentUser))
@@ -444,18 +489,6 @@ export default {
       // FIXME
       // @ts-ignore
       this.$refs.form.resetValidation()
-    },
-
-    /**
-     * Sets the place of birth to be saved
-     *@param {Object} e -- The name of the country as per Google
-     *@returns void
-     */
-    setPOB(e) {
-      this.personalProfile.pob = {
-        documentName: 'pob',
-        country: e.country,
-      }
     },
 
     /**

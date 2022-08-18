@@ -32,6 +32,27 @@ export default class UsersDB extends GenericDB {
     }
   } // getPersonalProfile
 
+  async getUserWithAcademicProfile(id) {
+    /** @type {Object<firebase.firestore.DocumentReference>} */
+    const ref = (await firestore())
+      .collection(this.collectionPath)
+      .doc(id)
+
+    const profileRes = []
+
+    const user = await this.read(id)
+    await ref.collection('profile')
+      .get()
+      .then(snapShot =>
+        snapShot.forEach(doc => {
+          profileRes[doc.id] = { ...doc.data(), id: doc.id }
+        }))
+    return {
+      ...user,
+      profile: { ...profileRes }
+    }
+  }
+
   /** Read user with profile
    * @param {string} id
    */
@@ -77,15 +98,21 @@ export default class UsersDB extends GenericDB {
       .collection(this.collectionPath)
       .doc(id)
       .collection('personalProfile')
-
-    for (const [key, value] of Object.entries(data)) {
-      console.log(`${key}: ${value}`);
-      await ref.doc(key)
-        .set({ ...value }, { merge: true })
-        .then(() => console.log("Document successfully written!"))
-        .catch((error) => {
-          console.error("Error writing document: ", error);
+    Object.keys(data).forEach(async key => {
+      await ref.doc(data[key].documentName)
+        .set({ ...data[key] }, { merge: true }).catch(err => {
+          console.error('Error updating user personal profile', err)
         })
-    } // for
+    })
+
+    // for (const [key, value] of Object.entries(data)) {
+    //   console.log(`${key}: ${value}`);
+    //   await ref.doc(value.documentName)
+    //     .set({ ...value }, { merge: true })
+    //     .then(() => console.log("Document successfully written!"))
+    //     .catch((error) => {
+    //       console.error("Error writing document: ", error);
+    // } // for
+    //     })
   }
 }
