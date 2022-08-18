@@ -162,34 +162,57 @@
               <v-card-title class="justify-center text-capitalize">
                 {{ $t(`academicProfile.documentName`) }}
               </v-card-title>
-
               <v-layout row wrap>
-                <v-flex v-if="license" sm12 md6>
+                <v-flex v-if="userLicense" sm12 md4>
                   <v-card-title>
-                    Cédula profesional (licenciatura):
+                    {{ $t(`academicProfile.license.documentName`, { item }) }}:
                   </v-card-title>
 
                   <v-card-text>
                     <div
-                      v-for="item in license.toArray()"
+                      v-for="(item, key) in userLicense"
                       :key="item"
                       class="text-capitalize"
                     >
-                      {{ item }}
+                      {{ $t(`academicProfile.license.${key}`, { item }) }}
                     </div>
                   </v-card-text>
                 </v-flex>
-                <v-flex v-if="specialtyLicense" sm12 md6>
+                <v-flex v-if="userSpecialtyLicense" sm12 md4>
                   <v-card-title>
-                    Cédula profesional (especialidad):
+                    {{
+                      $t(`academicProfile.specialtyLicense.documentName`, {
+                        item,
+                      })
+                    }}:
                   </v-card-title>
                   <v-card-text>
                     <div
-                      v-for="item in specialtyLicense.toArray()"
+                      v-for="(item, key) in userSpecialtyLicense"
                       :key="item"
                       class="text-capitalize"
                     >
-                      {{ item }}
+                      {{
+                        $t(`academicProfile.specialtyLicense.${key}`, { item })
+                      }}
+                    </div>
+                  </v-card-text>
+                </v-flex>
+                <v-flex v-if="userSpecialty" sm12 md4>
+                  <v-card-title>
+                    {{
+                      $t(`academicProfile.specialty.documentName`, {
+                        item,
+                      })
+                    }}:
+                  </v-card-title>
+                  <v-card-text>
+                    <div
+                      v-for="(item, key) in userSpecialty"
+                      :key="item"
+                      class="text-capitalize"
+                    >
+                      {{ $t(`academicProfile.specialty.${key}`, { item }) }}
                     </div>
                   </v-card-text>
                 </v-flex>
@@ -218,7 +241,7 @@
 <script>
 import { find } from 'lodash'
 import createLicense from '@/classes/License'
-import { mapState, mapActions, mapMutations } from 'vuex'
+import { mapState, mapActions, mapMutations, mapGetters } from 'vuex'
 import AddressField from '@/components/admin/dialogs/AddressField.vue'
 import DobField from '@/components/admin/dialogs/DobField.vue'
 
@@ -252,6 +275,12 @@ export default {
   computed: {
     ...mapState('admin', ['currentUser', 'globalMessage']),
     ...mapState('colleges', ['colleges', 'campi']),
+    ...mapGetters('admin', [
+      'userLicense',
+      'userDegree',
+      'userSpecialtyLicense',
+      'userSpecialty',
+    ]),
 
     /**@returns {Array} personalData */
     personalData() {
