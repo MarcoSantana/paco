@@ -52,21 +52,24 @@ export default {
       const zip = new JSZip()
       const zipFiles = zip.folder('archivos')
       zip.file(
-        `${this.user.license ? this.user.license : this.user.displayName
+        `${
+          this.user.license ? this.user.license : this.user.displayName
         }-${this.$t(`document.types.${this.document.name}`)}.txt`,
         `Nombre del documento: ${this.$t(
           `document.types.${this.document.name}`
-        )},\nUsuario: ${this.user.displayName
+        )},\nUsuario: ${
+          this.user.displayName
         },\nFecha de descarga: ${new Date().toLocaleString(
           'es-MX'
         )}\nCantidad de archivos: ${files.length}`
       )
       files.forEach(item => {
-        console.log('file object', item)
         zipFiles.file(
-          `${this.user.license ? this.user.license : this.user.displayName
-          }-${this.$t(`document.types.${this.document.name}`)}
-          .${item.type.split("/").pop()}`,
+          `${
+            this.user.license ? this.user.license : this.user.displayName
+          }-${this.$t(
+            `document.types.${this.document.name}`
+          )}.${item.type.split('/').pop()}`,
           item,
           {
             base64: true,
@@ -144,7 +147,8 @@ export default {
     save(compressedFile) {
       return saveAs(
         compressedFile,
-        `${this.user.license ? this.user.license : this.user.displayName
+        `${
+          this.user.license ? this.user.license : this.user.displayName
         }-${this.$t(`document.types.${this.document.name}`)}.zip`
       )
     }, // save
@@ -162,5 +166,4 @@ export default {
 }
 </script>
 
-<style>
-</style>
+<style></style>
