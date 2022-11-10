@@ -2,7 +2,7 @@
   <v-layout row wrap>
     <v-flex xs12 class="pa-3">
       <v-card
-        color="grey darken-3"
+        color="grey darken-2"
         class="white--text"
         width="100%"
         height="auto"
@@ -46,31 +46,81 @@
             </v-badge>
           </v-flex>
         </v-layout>
-        <v-divider light></v-divider>
-        <v-card-text v-if="currentUser.profile">
-          <div v-for="record in currentUser.profile" :key="record.id">
-            <div
-              v-for="(value, name) in record"
-              :key="`${name}-${record.documentName}`"
-            >
-              <div>
-                <div
-                  v-if="name !== 'documentName'"
-                  class="subtitle-1 text-capitalize"
-                >
-                  {{ value }}
-                </div>
-                <p
-                  v-if="name !== 'documentName' || name !== 'curp'"
-                  class="text-lowercase subtitle-2"
-                >
-                  {{ $t(`academicProfile.${record.documentName}.${name}`, {}) }}
-                </p>
-              </div>
-            </div>
-            <v-divider />
-          </div>
-        </v-card-text>
+        <v-divider dark />
+        <v-row dense>
+          <v-col cols="12">
+            <v-card color="#385F73" dark>
+              <v-card-title class="text-h5">
+                Datos personales
+              </v-card-title>
+
+              <v-card-subtitle>
+                Listen to your favorite artists and albums whenever and
+                wherever, online and offline.
+              </v-card-subtitle>
+              <v-card-text>
+                <v-list color="#385F73">
+                  <v-list-item>
+                    <v-list-item-content>
+                      <v-list-item-title>Nombre</v-list-item-title>
+                      <v-list-item-subtitle>
+                        <v-row>
+                          <v-col cols="4">
+                            {{ currentUser.name }}
+                          </v-col>
+                          <v-col cols="4">
+                            {{ currentUser.lastname1 }}
+                          </v-col>
+                          <v-col cols="4">
+                            {{ currentUser.lastname2 }}
+                          </v-col>
+                        </v-row>
+                      </v-list-item-subtitle>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-list-item>
+                    <v-list-item-content>
+                      <v-list-item-title>Datos de contacto</v-list-item-title>
+                      <v-list-item-subtitle>
+                        {{ currentUser.phoneNumber }}
+                      </v-list-item-subtitle>
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-list>
+              </v-card-text>
+
+              <v-card-actions>
+                <v-btn text>
+                  Listen Now
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+        </v-row>
+        <!-- <v-card-text v-if="currentUser.profile"> -->
+        <!--   <div v-for="record in currentUser.profile" :key="record.id"> -->
+        <!--     <div -->
+        <!--       v-for="(value, name) in record" -->
+        <!--       :key="`${name}-${record.documentName}`" -->
+        <!--     > -->
+        <!--       <div> -->
+        <!--         <div -->
+        <!--           v-if="name !== 'documentName'" -->
+        <!--           class="subtitle-1 text-capitalize" -->
+        <!--         > -->
+        <!--           {{ value }} -->
+        <!--         </div> -->
+        <!--         <p -->
+        <!--           v-if="name !== 'documentName' || name !== 'curp'" -->
+        <!--           class="text-lowercase subtitle-2" -->
+        <!--         > -->
+        <!--           {{ $t(`academicProfile.${record.documentName}.${name}`, {}) }} -->
+        <!--         </p> -->
+        <!--       </div> -->
+        <!--     </div> -->
+        <!--     <v-divider /> -->
+        <!--   </div> -->
+        <!-- </v-card-text> -->
         <v-card-actions class="pa-3"></v-card-actions>
       </v-card>
     </v-flex>
