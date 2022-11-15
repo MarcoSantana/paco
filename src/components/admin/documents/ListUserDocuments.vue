@@ -23,8 +23,11 @@
                   >
                     <v-list-item-content>
                       <v-list-item-title>
-                        {{ document.name }}
+                        {{ $t(`document.types.${document.name}`) | capitalize }}
                       </v-list-item-title>
+                      <v-list-item-subtitle class="caption">
+                        {{ document.updateTimestamp | toLocaleDateString }}
+                      </v-list-item-subtitle>
                     </v-list-item-content>
                   </v-list-item>
                 </v-list>
@@ -40,10 +43,13 @@
 //@ts-check
 
 import { mapActions, mapState, mapGetters, mapMutations} from 'vuex'
+import capitalize from '@/filters/capitalize'
+import toLocaleDateString from '@/filters/toLocaleDateString'
 
 export default {
     name: 'ListUserDocuments', // mounted
     components: {}, // components
+    filters: { capitalize, toLocaleDateString }, // filters
     props: {
         user: { type: Object, required: true},
         // TODO add tag
@@ -62,6 +68,5 @@ export default {
         ]),
        ...mapMutations('documents', ['resetDocuments'])
     }, // methods
-
 }
 </script>
