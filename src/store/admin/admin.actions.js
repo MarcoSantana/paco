@@ -18,7 +18,6 @@ export default {
   // },
 
   getEventSpreadsheet: async ({ rootState, commit }, eventId) => {
-
     console.log(rootState)
     console.log(commit)
     const eventsDb = new EventsDB()
@@ -28,44 +27,44 @@ export default {
     const res = await eventsDb.getUsers(eventId)
 
     /**@type {Object[]} */
-    const acceptedRequests = res.filter(user => {
+    const acceptedRequests = res.filter((user) => {
       return user.status === 'accepted' && user.userId
     })
 
     /**@type {Object[]} */
-    const acceptedUsers = await Promise.all(acceptedRequests.map(async item => {
-      if (item && item.userId)
-        return await usersDb.getUserWithAcademicProfile(item.userId)
-    }))
+    const acceptedUsers = await Promise.all(
+      acceptedRequests.map(async (item) => {
+        if (item && item.userId)
+          return await usersDb.getUserWithAcademicProfile(item.userId)
+      })
+    )
 
     console.log('acceptedUsers', acceptedUsers)
 
     const csvString = [
-      [
-        'id',
-        'displayName',
-        'email',
-        'license'
-      ],
-      ...acceptedUsers.map(item => {
+      ['id', 'displayName', 'email', 'license'],
+      ...acceptedUsers.map((item) => {
         if (item) {
           return [
             item.id,
             item.displayName,
             item.email,
-            item.profile.license && item.profile.license ? item.profile.license.licenseNumber : 'Sin datos'
+            item.profile.license && item.profile.license
+              ? item.profile.license.licenseNumber
+              : 'Sin datos',
           ]
         } // fi
-      })
+      }),
     ]
-      .map(e => { if (e) return e.join(",") })
-      .join("\n");
+      .map((e) => {
+        if (e) return e.join(',')
+      })
+      .join('\n')
     console.log('result', csvString)
     debugger
-    const blob = new Blob([csvString], { type: "text/plain;charset=utf-8" });
+    const blob = new Blob([csvString], { type: 'text/plain;charset=utf-8' })
     saveAs(blob, `${eventId}-compressedCSV.csv`)
-
-  }, // getEventSpreadsheet 
+  }, // getEventSpreadsheet
 
   /**
    * Fetch documents of current loggedin user
@@ -127,12 +126,12 @@ export default {
         const storageRef = storage().ref(
           `documents/${rootState.authentication.user.id}`
         )
-        document.files.forEach(element => {
+        document.files.forEach((element) => {
           console.log('element :>> ', element)
           const documentRef = storageRef
             .child(`${document.name}/${element}`)
             .putString(upload[element], 'data_url')
-            .then(snapshot => console.log(snapshot))
+            .then((snapshot) => console.log(snapshot))
           console.log('documentRef :>> ', documentRef)
         })
         commit('addDocument', createdDocument)
@@ -197,13 +196,13 @@ export default {
     const requestsCounter = new CountersDB()
     await requestsCounter
       .fetchRequestsByType(type)
-      .then(data =>
+      .then((data) =>
         commit(
           `set${type[0].toUpperCase()}${type.slice(1)}RequestsCounter`,
           data
         )
       )
-      .catch(err => console.error(err))
+      .catch((err) => console.error(err))
   },
 
   /**
@@ -363,7 +362,7 @@ export default {
       return user
     } // fi
     const usersDB = new UsersDB(user.id)
-    return usersDB.update(user).then(id => {
+    return usersDB.update(user).then((id) => {
       if (!id)
         commit(
           'setGlobalMessage',
@@ -414,7 +413,7 @@ export default {
     debugger
     console.log('updatePersonalProfile', data)
     const usersDB = new UsersDB(data.id)
-    return usersDB.updatePersonalProfile(data).then(id => {
+    return usersDB.updatePersonalProfile(data).then((id) => {
       if (!id)
         commit(
           'setGlobalMessage',
@@ -446,8 +445,7 @@ export default {
     /** @type {import('@/typedefs').Message} */
     const result = await mailDB
       .send({ to, cc, template })
-      .then(mailMessage => mailMessage)
-    console.log('result', result)
+      .then((mailMessage) => mailMessage)
     return result
   }, // sendMail
 }
