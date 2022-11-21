@@ -1,4 +1,5 @@
 // @ts-check
+import Handlebars from 'handlebars'
 import MailsDB from '@/firebase/mails-db'
 
 const mailDb = new MailsDB()
@@ -61,9 +62,7 @@ const sendMail = (to, cc, bcc, template) => {
  * @returns {String} The mail preview in html format
  */
 const showPreview = async (to, cc, bcc, template) => {
-  // Get the template html from db
   const rawTemplate = await mailDb.getRawTemplate
-  // parse the handlebars
-  // return finished html
-  // add message to store (vuex)
+  const handlebarsTemplate = Handlebars.compile(rawTemplate)
+  return handlebarsTemplate(...template.data)
 } // showPreview
