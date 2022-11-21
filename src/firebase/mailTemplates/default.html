@@ -1,0 +1,112 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office"
+    xmlns:v="urn:schemas-microsoft-com:vml" lang="en">
+
+<head>
+    <link rel="stylesheet" type="text/css" hs-webfonts="true"
+        href="https://fonts.googleapis.com/css?family=Lato|Lato:i,b,bi">
+    <title>Bienvenido a Plataforma Administradora de Documentos</title>
+    <meta property="og:title" content="Email template">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        a {
+            text-decoration: underline;
+            color: inherit;
+            font-weight: bold;
+            color: #253342;
+        }
+
+        h1 {
+            font-size: 56px;
+        }
+
+        h2 {
+            font-size: 28px;
+            font-weight: 900;
+        }
+
+        p {
+            font-weight: 100;
+        }
+
+        td {
+            vertical-align: top;
+        }
+
+        #email {
+            margin: auto;
+            width: 600px;
+            background-color: white;
+        }
+
+        button {
+            font: inherit;
+            background-color: #ff7a59;
+            border: none;
+            padding: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 900;
+            color: white;
+            border-radius: 5px;
+            box-shadow: 3px 3px #d94c53;
+        }
+
+        .subtle-link {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #cbd6e2;
+        }
+    </style>
+</head>
+
+<body bgcolor="#F5F8FA"
+    style="width: 100%; margin: auto 0; padding:0; font-family:Lato, sans-serif; font-size:18px; color:#33475B; word-break:break-word">
+    <! Banner -->
+        <table role="presentation" width="100%">
+            <tr>
+                <td bgcolor="#00A4BD" align="center" style="color: white;"> <img alt="CMMU logo"
+                        src="https://paco-1a08b.web.app/img/logo_cmmu.9ca8d5e0.png" width="200px" height="200px" align="middle">
+                    <h1>Bienvenido</h1>
+                </td>
+            </tr>
+        </table>
+        <! First Row -->
+            <table role="presentation" border="0" cellpadding="0" cellspacing="10px"
+                style="padding: 30px 30px 30px 60px;">
+                <tr>
+                    <td>
+                        <h2>Hola {{displayName}}</h2>
+                        <p>{{#if message }}{{message}} {{/if}} </p>
+                    </td>
+                </tr>
+            </table>
+            <! Second Row with Two Columns-->
+                <! Banner Row -->
+                    <table role="presentation" bgcolor="#EAF0F6" width="100%" style="margin-top: 50px;">
+                        <tr>
+                            <td align="center" style="padding: 30px 30px;">
+                                <h2> Consejo Mexicano de Medicina de Urgencias</h2>
+                                <p>Canal de Miramontes 1664 Col. Campestre Churubusco <br /> Alcaldía Coyoacán <br />
+                                    Ciudad de México <br /> CP 04200 </p>
+                                <p> <a href="mailto:info@cmmu.org.mx?cc=cmmu2009@yahoo.com.mx">Evíenos un correo
+                                        (aquí)</a> ó a: cmmu2009@yahoo.com.mx </p>
+                                <p> <a href="tel:5555491186"> (55) 5549-1186 </a> </p>
+                            </td>
+                        </tr>
+                    </table>
+                    <! Unsubscribe Footer -->
+                        <table role="presentation" bgcolor="#F5F8FA" width="100%">
+                            <tr>
+                                <td align="left" style="padding: 30px 30px;">
+                                    <p style="color:#99ACC2"> Elaborado con &hearts; por SiLiCo </p>
+                                </td>
+                            </tr>
+                        </table>
+</body>
+
+</html>
