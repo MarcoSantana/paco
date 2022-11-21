@@ -16,12 +16,11 @@ export default class Message {
     this.message = message
   }
 
-
   /**
    * currentType
    * @type {Message.type}
-   * @param {Message.type} newType 
-  */
+   * @param {Message.type} newType
+   */
   set currentType(newType) {
     this.type = newType
   }
@@ -30,7 +29,7 @@ export default class Message {
    * currentMessage
    * @type {Message.message}
    * @param {Message.type} newMessage
-  */
+   */
   set currentMessage(newMessage) {
     this.message = newMessage
   }
