@@ -11,6 +11,7 @@ import forms from './forms'
 import hospitals from './hospitals'
 import products from './products'
 import user from './user'
+import mail from './mail'
 
 Vue.use(Vuex)
 
@@ -19,15 +20,16 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   strict: process.env.NODE_ENV !== 'production',
   modules: {
-    admin,
     app,
     academicProfile,
+    admin,
     authentication,
     colleges,
     documents,
     events,
     forms,
     hospitals,
+    mail,
     products,
     user,
   },
