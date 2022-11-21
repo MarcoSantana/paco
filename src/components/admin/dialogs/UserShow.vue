@@ -42,6 +42,7 @@
                   <v-list-item-title>Correo electrónico</v-list-item-title>
                   <v-list-item-subtitle v-if="user.email" class="text-downcase">
                     {{ user.email }}
+                    <mail />
                     <v-tooltip right color="primary">
                       <template v-slot:activator="{ on, attrs }">
                         <v-icon dark v-bind="attrs" v-on="on">
@@ -99,10 +100,11 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import ListUserDocuments from '@/components/admin/documents/ListUserDocuments'
+import Mail from '@/components/Mail'
 
 export default {
   name: 'UserShowDialog',
-  components: { ListUserDocuments },
+  components: { ListUserDocuments, Mail },
   props: {
     user: { type: Object, required: true },
   },
