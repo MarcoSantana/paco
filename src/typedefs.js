@@ -69,6 +69,8 @@
  * @property {Object} data - This is passed as `handlebars` to the template
  * @property {string} data.message - This is variable inside the template
  * @property {string} data.subject - This is variable inside the template
+ * @property {string} [data.username] - This is variable inside the template
+ * @property {string} [data.name = "default"] - The name of the template to be used
  * */
 
 /** Message
@@ -77,4 +79,4 @@
  * @property {string} message - The actual text
  */
 
-export { }
+export {}
