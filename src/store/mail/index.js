@@ -1,12 +1,12 @@
-import state from './mail.state'
-import mutations from './mail.mutations'
+// import state from './mail.state'
+// import mutations from './mail.mutations'
 import actions from './mail.actions'
-import getters from './mail.getters'
+// import getters from './mail.getters'
 
 export default {
   namespaced: true,
-  state,
-  mutations,
+  //   state,
+  //   mutations,
   actions,
-  getters,
+  //   getters,
 }

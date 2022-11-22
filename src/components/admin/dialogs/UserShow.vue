@@ -42,15 +42,12 @@
                   <v-list-item-title>Correo electrónico</v-list-item-title>
                   <v-list-item-subtitle v-if="user.email" class="text-downcase">
                     {{ user.email }}
-                    <mail />
-                    <v-tooltip right color="primary">
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-icon dark v-bind="attrs" v-on="on">
-                          mdi-email-arrow-right
-                        </v-icon>
-                      </template>
-                      <span>Enviar correo electrónico</span>
-                    </v-tooltip>
+                    <mail-send
+                      :to="user.email"
+                      subject="Foo"
+                      message="Some message"
+                      :button="true"
+                    />
                   </v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
@@ -100,11 +97,11 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import ListUserDocuments from '@/components/admin/documents/ListUserDocuments'
-import Mail from '@/components/Mail'
+import MailSend from '@/components/MailSend'
 
 export default {
   name: 'UserShowDialog',
-  components: { ListUserDocuments, Mail },
+  components: { ListUserDocuments, MailSend },
   props: {
     user: { type: Object, required: true },
   },

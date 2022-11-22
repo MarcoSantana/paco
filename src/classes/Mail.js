@@ -10,14 +10,14 @@ const mailDb = new MailsDB()
  * @param {String} [cc]
  * @param {String} [bcc]
  * @param {import('../typedefs').MailTemplate} template - The template used by the plugin
- * @return {import('../typedefs').Mail} mailData - A mail
+ * @returns {import('../typedefs').Mail} mailData - A mail
  */
-export const mailFactory = ({ to, cc, bcc, template }) => {
+export default function createMail({ to, cc, bcc, template }) {
   return {
     to,
     cc,
     bcc,
-    template: templateFactory(template),
+    template: createTemplate(template),
     // getSendStatus
     sendMail,
     showPreview,
@@ -28,16 +28,14 @@ export const mailFactory = ({ to, cc, bcc, template }) => {
  * Constructs a mail.template object, to be used inside mail
  * @return {import('../typedefs').MailTemplate}
  */
-const templateFactory = ({ message, subject, username, name }) => {
-  return {
-    message,
-    subject,
-    username,
-    name: () => {
-      name ? name : 'default'
-    },
-  }
-} // templateFactory
+const createTemplate = ({ message, subject, username, name }) => ({
+  message,
+  subject,
+  username,
+  name: (() => {
+    name ? name : 'default'
+  })(),
+}) // templateFactory
 
 /**
  * Calls the given action from firebase mails-db
@@ -62,7 +60,12 @@ const sendMail = (to, cc, bcc, template) => {
  * @returns {String} The mail preview in html format
  */
 const showPreview = async (to, cc, bcc, template) => {
-  const rawTemplate = await mailDb.getRawTemplate
+  const rawTemplate = await mailDb.getRawTemplate()
   const handlebarsTemplate = Handlebars.compile(rawTemplate)
   return handlebarsTemplate(...template.data)
 } // showPreview
+
+// export default {
+//   mailFactory: createMail,
+//   templateFactory: createTemplate,
+// }

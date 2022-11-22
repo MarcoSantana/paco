@@ -10,7 +10,8 @@ export default {
    * Sends a email to the specified address
    * @param {import('../../typedefs').Mail} mailData - A mail
    */
-  sendMail: async ({ rootState, commit }, mailData) => {
+  sendMail: async ({ rootState }, mailData) => {
+    console.log(rootState)
     if (!Object.prototype.hasOwnProperty.call(mailData, 'template')) {
       // use template factory
       // Does the factory has the 'default' built in?

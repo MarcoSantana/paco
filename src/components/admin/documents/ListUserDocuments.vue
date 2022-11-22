@@ -42,6 +42,10 @@
 <script lang="js">
 //@ts-check
 
+/**
+ * @vue-data {import('@/typedefs').Mail} mailData - Mail message
+ */
+
 import { mapActions, mapState, mapGetters, mapMutations} from 'vuex'
 import capitalize from '@/filters/capitalize'
 import toLocaleDateString from '@/filters/toLocaleDateString'
@@ -54,6 +58,7 @@ export default {
         user: { type: Object, required: true},
         // TODO add tag
     }, // props
+    data: () => ({ }), // data
     computed: {
       ...mapState('documents', ['documents']),
       ...mapGetters('documents', ['pendingDocuments']),
@@ -66,7 +71,8 @@ export default {
         ...mapActions('documents', [
             'getUserDocumentsById'
         ]),
-       ...mapMutations('documents', ['resetDocuments'])
+        ...mapActions('admin', 'sendMail'),
+       ...mapMutations('documents', ['resetDocuments']),
     }, // methods
 }
 </script>
