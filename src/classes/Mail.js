@@ -1,4 +1,4 @@
-// @ts-check
+//@ts-check
 import Handlebars from 'handlebars'
 import MailsDB from '@/firebase/mails-db'
 
@@ -6,11 +6,11 @@ const mailDb = new MailsDB()
 
 /**
  * Constructs a mail object to be set by Firebase plugin
- * @param {String} to
- * @param {String} [cc]
- * @param {String} [bcc]
+ * @vue-param {String} to
+ * @vue-param {String} [cc]
+ * @vue-param {String} [bcc]
  * @param {import('../typedefs').MailTemplate} template - The template used by the plugin
- * @returns {import('../typedefs').Mail} mailData - A mail
+ * @returns {import('../typedefs').Mailer} mailer - A mail object
  */
 export default function createMail({ to, cc, bcc, template }) {
   return {
@@ -59,13 +59,10 @@ const sendMail = (to, cc, bcc, template) => {
  * @param {import('../typedefs')} template
  * @returns {String} The mail preview in html format
  */
-const showPreview = async (to, cc, bcc, template) => {
-  const rawTemplate = await mailDb.getRawTemplate()
+const showPreview = async (template) => {
+  const rawTemplate = await mailDb.getRawTemplate(template)
   const handlebarsTemplate = Handlebars.compile(rawTemplate)
-  return handlebarsTemplate(...template.data)
+  const result = handlebarsTemplate(rawTemplate.html)
+  console.log('result', result)
+  return result
 } // showPreview
-
-// export default {
-//   mailFactory: createMail,
-//   templateFactory: createTemplate,
-// }

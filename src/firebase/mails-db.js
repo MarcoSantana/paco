@@ -47,10 +47,11 @@ export default class MailsDB extends GenericDB {
    */
   async getRawTemplate(template) {
     try {
+      const mailTemplateDB = new GenericDB('email_templates')
       const localTemplate =
         template == undefined || template == null ? 'default' : template
-      const result = this.read(localTemplate)
-      return result.data
+      const result = await mailTemplateDB.read(localTemplate)
+      return result.html
     } catch (err) {
       return new Message({ type: 'error', message: err })
     }

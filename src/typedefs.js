@@ -62,6 +62,13 @@
  * @property {MailTemplate} [template] - A {MailTemplate} {@link MailTemplate}
  * */
 
+/** 
+ * Mailer
+ * @typedef {Mail} Mailer
+ * @property {sendMail}
+ * @property {showPreview}
+ */
+
 /**
  * Mail template to be used in Firebase email plugin
  * @typedef {Object} MailTemplate
@@ -79,4 +86,4 @@
  * @property {string} message - The actual text
  */
 
-export {}
+export { }

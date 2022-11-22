@@ -71,8 +71,8 @@ export default {
   },
   methods: {
     ...mapActions('admin', ['sendMail']),
-    showPreview: function () {
-      console.log('preview', this.mailData.showPreview())
+    showPreview: async function () {
+      console.log('preview', await this.mailData.showPreview())
     },
   },
 }
