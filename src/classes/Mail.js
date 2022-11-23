@@ -20,7 +20,11 @@ export default function createMail({ to, cc, bcc, template }) {
     template: createTemplate(template),
     // getSendStatus
     sendMail,
-    showPreview,
+    showPreview: async () => {
+      const rawTemplate = await mailDb.getRawTemplate(template.name)
+      const handlebarsTemplate = Handlebars.compile(rawTemplate)
+      return handlebarsTemplate({ message: template.message })
+    },
   }
 } // mailFactory
 
@@ -53,16 +57,17 @@ const sendMail = (to, cc, bcc, template) => {
 
 /**
  * Shows the mail preview using the given template
- * @param {String} to
- * @param {String} cc
- * @param {String | null} [bcc]
  * @param {import('../typedefs')} template
  * @returns {String} The mail preview in html format
  */
-const showPreview = async (template) => {
-  const rawTemplate = await mailDb.getRawTemplate(template)
-  const handlebarsTemplate = Handlebars.compile(rawTemplate)
-  const result = handlebarsTemplate(rawTemplate.html)
-  console.log('result', result)
-  return result
-} // showPreview
+// const showPreview = async function (template) {
+//   console.log('template: ' + template)
+//   debugger
+//   const rawTemplate = await mailDb.getRawTemplate('default')
+//   console.log('rawTemplate', rawTemplate)
+//   const handlebarsTemplate = Handlebars.compile(rawTemplate)
+//   console.log(handlebarsTemplate({ message: 'rocks!' })) // const template =
+//   const result = handlebarsTemplate({ message: 'rocks!' })
+//   console.log('result', result)
+//   return result
+// } // showPreview

@@ -2,11 +2,11 @@
 /**
  * @typedef {object} MailComponent
  * @vue-data {import('src/typedefs').Mail} mailData - A mail
- * @vue-prop {string} cc - The cc
- * @vue-prop {string} message - The message
- * @vue-prop {string} subject - The subject
- * @vue-prop {string} to - The email address
- * @vue-prop {boolean} button - Whether to show the button
+ * @vue-prop {String} cc - The cc
+ * @vue-data {String} message - The message
+ * @vue-data {String} subject - The subject
+ * @vue-prop {String} to - The email address
+ * @vue-prop {Boolean} button - Whether to show the button
  */
 
 import { mapActions } from 'vuex'
@@ -27,14 +27,14 @@ export default {
       type: String,
       required: false,
     },
-    subject: {
-      type: String,
-      required: true,
-    },
-    message: {
-      type: String,
-      required: true,
-    },
+    // subject: {
+    //   type: String,
+    //   required: true,
+    // },
+    // message: {
+    //   type: String,
+    //   required: true,
+    // },
     templateName: {
       type: String,
       required: false,
@@ -51,8 +51,17 @@ export default {
     },
   },
   data() {
-    return {}
+    return {
+      message: '',
+      dialog: false,
+      preview: false,
+    }
   }, // data
+  asyncComputed: {
+    mailPreview() {
+      if (this.preview) return this.mailData.showPreview()
+    },
+  }, // asyncComputed
   computed: {
     // This is going to become a Mail object created with the proper factory function
     /** @return {import('src/typedefs').Mail} mailData - A mail*/
@@ -74,16 +83,49 @@ export default {
     showPreview: async function () {
       console.log('preview', await this.mailData.showPreview())
     },
+    cancel: function () {
+      this.message = ''
+      this.preview = false
+      this.dialog = false
+    },
   },
 }
 </script>
 <template>
-  <v-tooltip v-if="button" right color="primary">
-    <template v-slot:activator="{ on, attrs }">
-      <v-icon dark v-bind="attrs" v-on="on" @click="showPreview">
-        mdi-email-arrow-right
-      </v-icon>
-    </template>
-    <span>Enviar correo electrónico a: {{ mailData.showPreview }}</span>
-  </v-tooltip>
+  <v-container>
+    <v-dialog v-model="dialog" width="500">
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn color="primary lighten-3" dark v-bind="attrs" v-on="on">
+          <v-icon dark v-bind="attrs" v-on="on" @click="dialog">
+            mdi-email-arrow-right
+          </v-icon>
+        </v-btn>
+      </template>
+
+      <v-card>
+        <v-card-title class="text-h5 grey lighten-1">
+          Mensaje para:
+          <div>{{ to }}</div>
+        </v-card-title>
+
+        <v-card-text>
+          <v-textarea
+            v-model="message"
+            name="message"
+            label="Texto del mensaje"
+          ></v-textarea>
+        </v-card-text>
+        {{/* eslint-disable-next-line vue/no-v-html  */}}
+        <div v-html="mailPreview"></div>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-btn color="error" text @click="cancel">Cancel</v-btn>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" text @click="preview = true">I accept</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-container>
 </template>
