@@ -11,9 +11,13 @@
 
 import { mapActions } from 'vuex'
 import createMail from '@/classes/Mail'
+import capitalize from '@/filters/capitalize'
 
 export default {
-  name: 'Mail',
+  name: 'Mail', // props
+  filters: {
+    capitalize,
+  }, // filters
   props: {
     to: {
       type: String,
@@ -41,7 +45,7 @@ export default {
       required: false,
       default: true,
     },
-  },
+  }, // props
   data() {
     return {
       message: '',
@@ -101,18 +105,22 @@ export default {
 
       <v-card>
         <v-card-title class="text-h5 grey lighten-1">
-          Mensaje para:
+          {{ $t('mail.to') | capitalize }}:
           <div>{{ to }}</div>
         </v-card-title>
         <v-card-actions>
-          <v-text-field v-model="subject" label="Asunto" clearable />
+          <v-text-field
+            v-model="subject"
+            :label="$t('mail.subject') | capitalize"
+            clearable
+          />
         </v-card-actions>
 
         <v-card-text>
           <v-textarea
             v-model="message"
             name="message"
-            label="Texto del mensaje"
+            :label="$t('mail.message') | capitalize"
             clearable
           ></v-textarea>
         </v-card-text>
@@ -122,15 +130,19 @@ export default {
         <v-divider></v-divider>
 
         <v-card-actions>
-          <v-btn color="error" text @click="cancel">Cancel</v-btn>
+          <v-btn color="error" text @click="cancel">
+            {{ $t('actions.cancel') }}
+          </v-btn>
           <v-spacer></v-spacer>
           <v-switch
             v-model="preview"
             color="warning"
-            label="Vista previa"
+            :label="$t('actions.preview') | capitalize"
           ></v-switch>
           <v-spacer></v-spacer>
-          <v-btn color="primary" text @click="sendMail">I accept</v-btn>
+          <v-btn color="primary" text @click="sendMail">
+            {{ $t('actions.send') }}
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
