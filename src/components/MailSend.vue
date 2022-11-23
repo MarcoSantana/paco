@@ -27,14 +27,6 @@ export default {
       type: String,
       required: false,
     },
-    // subject: {
-    //   type: String,
-    //   required: true,
-    // },
-    // message: {
-    //   type: String,
-    //   required: true,
-    // },
     templateName: {
       type: String,
       required: false,
@@ -55,6 +47,7 @@ export default {
       message: '',
       dialog: false,
       preview: false,
+      subject: 'Mensaje del Consejo Mexicano de Urgencias',
     }
   }, // data
   asyncComputed: {
@@ -73,6 +66,9 @@ export default {
         template: {
           message: this.message,
           name: this.templateName,
+          subject: () => {
+            return this.subject ? this.subject : 'Mensaje de CMMU'
+          },
           username: this.username,
         },
       })
@@ -80,15 +76,16 @@ export default {
   },
   methods: {
     ...mapActions('admin', ['sendMail']),
-    showPreview: async function () {
+    showPreview: async function() {
       console.log('preview', await this.mailData.showPreview())
     },
-    cancel: function () {
+    cancel: function() {
       this.message = ''
+      this.subject = ''
       this.preview = false
       this.dialog = false
     },
-  },
+  }, //methods
 }
 </script>
 <template>
@@ -107,12 +104,16 @@ export default {
           Mensaje para:
           <div>{{ to }}</div>
         </v-card-title>
+        <v-card-actions>
+          <v-text-field v-model="subject" label="Asunto" clearable />
+        </v-card-actions>
 
         <v-card-text>
           <v-textarea
             v-model="message"
             name="message"
             label="Texto del mensaje"
+            clearable
           ></v-textarea>
         </v-card-text>
         {{/* eslint-disable-next-line vue/no-v-html  */}}
@@ -123,7 +124,13 @@ export default {
         <v-card-actions>
           <v-btn color="error" text @click="cancel">Cancel</v-btn>
           <v-spacer></v-spacer>
-          <v-btn color="primary" text @click="preview = true">I accept</v-btn>
+          <v-switch
+            v-model="preview"
+            color="warning"
+            label="Vista previa"
+          ></v-switch>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" text @click="sendMail">I accept</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
