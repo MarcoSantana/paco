@@ -90,7 +90,7 @@
     "flow-bin": "^0.151.0",
     "jsdoc": "^4.0.0",
     "jsdoc-vuejs": "^4.0.0",
-    "node-sass": "^4.14.0",
+    "node-sass": "^7.0.0",
     "prerender-spa-plugin": "^3.4.0",
     "sass": "~1.32.0",
     "sass-loader": "^10.0.0",
