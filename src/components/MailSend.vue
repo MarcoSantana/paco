@@ -69,7 +69,7 @@ export default {
         bcc: this.bcc,
         template: {
           message: this.message,
-          name: this.templateName,
+          name: this.templateName ? this.templateName : 'default',
           subject: this.subject ? this.subject : 'Mensaje de CMMU',
           username: this.username,
         },
@@ -87,6 +87,10 @@ export default {
       this.preview = false
       this.dialog = false
     },
+    sendMail() {
+     this.mailData.send() 
+     // TODO show message; if succeed, toast and close else display error 
+    }, // sendMail
   }, //methods
 }
 </script>

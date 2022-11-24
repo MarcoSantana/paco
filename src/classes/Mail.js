@@ -1,4 +1,3 @@
-//@ts-check
 import Handlebars from 'handlebars'
 import MailsDB from '@/firebase/mails-db'
 
@@ -9,17 +8,18 @@ const mailDb = new MailsDB()
  * @vue-param {String} to
  * @vue-param {String} [cc]
  * @vue-param {String} [bcc]
+ * @vue-param {String} [username]
  * @param {import('../typedefs').MailTemplate} template - The template used by the plugin
  * @returns {import('../typedefs').Mailer} mailer - A mail object
  */
 export default function createMail({ to, cc, bcc, template }) {
   return {
     to,
-    cc,
-    bcc,
+    cc: (() => cc ? cc : '')(),
+    bcc: (() => bcc ? bcc : '')(),
     template: createTemplate(template),
     // getSendStatus
-    sendMail,
+    send,
     showPreview: async () => {
       const rawTemplate = await mailDb.getRawTemplate(template.name)
       const handlebarsTemplate = Handlebars.compile(rawTemplate)
@@ -35,10 +35,8 @@ export default function createMail({ to, cc, bcc, template }) {
 const createTemplate = ({ message, subject, username, name }) => ({
   message,
   subject,
-  username,
-  name: (() => {
-    name ? name : 'default'
-  })(),
+  username: (() => username ? username : '')(),
+  name: (() => name ? name : 'default')(),
 }) // templateFactory
 
 /**
@@ -48,26 +46,10 @@ const createTemplate = ({ message, subject, username, name }) => ({
  * @param {String | null} [bcc]
  * @param {import('../typedefs')} template
  */
-const sendMail = (to, cc, bcc, template) => {
-  mailDb.sendMail(to, cc, bcc, template).then((message) => {
+const send = function() {
+  debugger
+  mailDb.send(this).then((message) => {
     // store message in  Vuex
     console.log(message)
   })
 } // sendMail
-
-/**
- * Shows the mail preview using the given template
- * @param {import('../typedefs')} template
- * @returns {String} The mail preview in html format
- */
-// const showPreview = async function (template) {
-//   console.log('template: ' + template)
-//   debugger
-//   const rawTemplate = await mailDb.getRawTemplate('default')
-//   console.log('rawTemplate', rawTemplate)
-//   const handlebarsTemplate = Handlebars.compile(rawTemplate)
-//   console.log(handlebarsTemplate({ message: 'rocks!' })) // const template =
-//   const result = handlebarsTemplate({ message: 'rocks!' })
-//   console.log('result', result)
-//   return result
-// } // showPreview
