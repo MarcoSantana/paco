@@ -5,7 +5,7 @@
         <v-expansion-panels>
           <v-expansion-panel>
             <v-expansion-panel-header>
-              Documentos pendientes
+              {{ $t('document.pending') | capitalize }}
               <template v-slot:actions>
                 <v-badge
                   color="red"

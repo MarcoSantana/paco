@@ -204,6 +204,7 @@ const translation = {
     id: 'identificador',
     longName: 'descripción',
     name: 'nombre',
+    pending: 'documentos pendientes',
     status: 'estado',
     statusKey: {
       1: 'por revisar',
