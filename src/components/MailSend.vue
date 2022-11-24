@@ -122,8 +122,13 @@ export default {
             clearable
           ></v-textarea>
         </v-card-text>
-        {{/* eslint-disable-next-line vue/no-v-html  */}}
-        <div v-html="mailPreview"></div>
+        <iframe
+          v-if="preview"
+          :srcdoc="mailPreview"
+          width="100%"
+          height="auto"
+          style="border: none"
+        />
 
         <v-divider></v-divider>
 
