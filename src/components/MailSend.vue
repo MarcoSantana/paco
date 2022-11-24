@@ -70,9 +70,7 @@ export default {
         template: {
           message: this.message,
           name: this.templateName,
-          subject: () => {
-            return this.subject ? this.subject : 'Mensaje de CMMU'
-          },
+          subject: this.subject ? this.subject : 'Mensaje de CMMU',
           username: this.username,
         },
       })
