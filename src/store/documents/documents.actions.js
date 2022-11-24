@@ -10,12 +10,21 @@ export default {
    * Fetch documents of current loggedin user
    */
   getUserDocuments: async ({ rootState, commit }) => {
-    console.log('Get User Documents')
     const userDocumentDb = new UserDocumentsDB(rootState.authentication.user.id)
-
     const documents = await userDocumentDb.readAll()
     commit('setDocuments', documents)
   },
+
+  /**
+   * Fetch documents for the user
+   * @param {string} userId
+   * @return void
+   */
+  getUserDocumentsById: async ({ commit }, userId) => {
+    const userDocumentDB = new UserDocumentsDB(userId)
+    const documents = await userDocumentDB.readAllAsAdmin()
+    commit('setDocuments', documents)
+  }, // getUserDocumentsById
 
   /*
    * Fetch all documents if logged user is admin
@@ -122,7 +131,7 @@ export default {
                 })
                 .then(() => {
                   try {
-                    documentsRef.map(documentRef => {
+                    documentsRef.map((documentRef) => {
                       const node = `files.${documentName}`
                       return userDocumentDB.update(
                         {
@@ -186,7 +195,7 @@ export default {
       const { upload, ...restDocument } = document
       const createdDocument = await userDocumentDB
         .upsert(restDocument)
-        .then(doc => userDocumentDB.upload(doc, upload))
+        .then((doc) => userDocumentDB.upload(doc, upload))
       commit('setDocumentCreationPending', false)
       commit('setDocumentCreationMessage', {
         type: 'success',
@@ -227,7 +236,7 @@ this is fixed so de user can not accept her own documents
     const userDocumentDb = new UserDocumentsDB(rootState.authentication.user.id)
     const res = await userDocumentDb
       .update(data)
-      .then(result => {
+      .then((result) => {
         // TODO Sedn message back to caller 202108.08-13.32
         return result
       })
@@ -278,11 +287,11 @@ this is fixed so de user can not accept her own documents
     const documentsDB = new DocumentsDB()
     return documentsDB
       .reject(documentId, message)
-      .then(document => {
+      .then((document) => {
         commit('removeDocumentRejectionPending', documentId)
         commit('setCurrentDocument', document)
       })
-      .catch(error => {
+      .catch((error) => {
         commit('setDocumentRejectionMessage', { type: 'error', message: error })
         commit('removeDocumentRejectionPending', documentId)
         return { type: 'error', message: error }
@@ -303,11 +312,11 @@ this is fixed so de user can not accept her own documents
     const documentsDB = new DocumentsDB()
     return documentsDB
       .accept(documentId)
-      .then(document => {
+      .then((document) => {
         // commit('removeDocumentAcceptationPending', documentId)
         commit('setCurrentDocument', document)
       })
-      .catch(error => {
+      .catch((error) => {
         commit('setDocumentAcceptMessage', {
           type: 'error',
           message: error,
@@ -334,7 +343,7 @@ this is fixed so de user can not accept her own documents
         // commit('removeDocumentById', documentId)
         commit('setCurrentDocument', null)
       })
-      .catch(error => {
+      .catch((error) => {
         commit('setDocumentDeleteMessage', {
           type: 'error',
           message: error,

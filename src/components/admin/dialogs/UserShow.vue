@@ -2,125 +2,93 @@
   <v-layout row wrap>
     <v-flex xs12 class="pa-3">
       <v-card
-        color="grey darken-2"
+        color="secondary darken-2"
         class="white--text"
-        width="100%"
+        width="auto"
         height="auto"
-        dark
       >
-        <v-layout row>
+        <v-layout col>
           <v-flex xs7>
-            <v-card-title>
-              <div v-if="user.email" class="text-downcase subtitle-2 ml-5 mt-5">
-                {{ user.email }}
-              </div>
-              <div
-                v-if="user.phoneNumber"
-                class="text-downcase subtitle-2 ml-5 mt-5"
-              >
-                {{ user.phoneNumber }}
-              </div>
-            </v-card-title>
+            <v-card-title class="text-h5">Datos personales</v-card-title>
+            <v-list color="secondary darken-2" dark>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>Nombre</v-list-item-title>
+                  <v-list-item-subtitle>
+                    {{ currentUser.name }}
+                    {{ currentUser.lastname1 }}
+                    {{ currentUser.lastname2 }}
+                  </v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>Datos de contacto</v-list-item-title>
+                  <v-list-item-subtitle>
+                    {{ currentUser.phoneNumber }}
+                  </v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>Cédula profesional</v-list-item-title>
+                  <v-list-item-subtitle>
+                    {{ user.license }}
+                  </v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>Correo electrónico</v-list-item-title>
+                  <v-list-item-subtitle v-if="user.email" class="text-downcase">
+                    {{ user.email }}
+                    <mail-send
+                      :to="user.email"
+                      subject="Foo"
+                      message="Some message"
+                      :button="true"
+                    />
+                  </v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>Teléfono</v-list-item-title>
+                  <v-list-item-subtitle
+                    v-if="user.phoneNumber"
+                    class="text-downcase"
+                  >
+                    {{ user.phoneNumber }}
+                  </v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
           </v-flex>
-          <v-flex xs5 class="pl-5">
-            <v-badge overlap color="error" class="ma-5">
-              <template
-                v-if="user.incomplete == undefined || user.incomplete"
-                v-slot:badge
-                class="pb-1"
-              >
-                <v-icon>mdi-alert</v-icon>
-              </template>
-              <v-avatar :color="randomColor" size="62">
-                <v-img
-                  v-if="user.photoURL"
-                  max-height="125px"
-                  max-width="125px"
-                  :src="user.photoURL"
-                />
-
-                <span v-else class="white--text text-h5">
-                  {{ user.name[0] }}{{ user.lastname1[0] }}
-                </span>
-              </v-avatar>
-            </v-badge>
+          <v-flex xs3 class="pt-5 pl-5 pr-5">
+            <v-avatar :color="randomColor" size="128">
+              <v-img
+                v-if="user.photoURL"
+                max-height="125px"
+                max-width="125px"
+                :src="user.photoURL"
+              />
+              <span v-else class="white--text text-h5">
+                {{ user.name[0] }}{{ user.lastname1[0] }}
+              </span>
+            </v-avatar>
           </v-flex>
         </v-layout>
         <v-divider dark />
         <v-row dense>
           <v-col cols="12">
-            <v-card color="#385F73" dark>
-              <v-card-title class="text-h5">
-                Datos personales
-              </v-card-title>
-
-              <v-card-subtitle>
-                Listen to your favorite artists and albums whenever and
-                wherever, online and offline.
-              </v-card-subtitle>
+            <v-card color="#003148" dark>
+              <v-card-title>Información</v-card-title>
               <v-card-text>
-                <v-list color="#385F73">
-                  <v-list-item>
-                    <v-list-item-content>
-                      <v-list-item-title>Nombre</v-list-item-title>
-                      <v-list-item-subtitle>
-                        <v-row>
-                          <v-col cols="4">
-                            {{ currentUser.name }}
-                          </v-col>
-                          <v-col cols="4">
-                            {{ currentUser.lastname1 }}
-                          </v-col>
-                          <v-col cols="4">
-                            {{ currentUser.lastname2 }}
-                          </v-col>
-                        </v-row>
-                      </v-list-item-subtitle>
-                    </v-list-item-content>
-                  </v-list-item>
-                  <v-list-item>
-                    <v-list-item-content>
-                      <v-list-item-title>Datos de contacto</v-list-item-title>
-                      <v-list-item-subtitle>
-                        {{ currentUser.phoneNumber }}
-                      </v-list-item-subtitle>
-                    </v-list-item-content>
-                  </v-list-item>
-                </v-list>
+                <list-user-documents :user="currentUser"></list-user-documents>
               </v-card-text>
-
-              <v-card-actions>
-                <v-btn text>
-                  Listen Now
-                </v-btn>
-              </v-card-actions>
             </v-card>
           </v-col>
         </v-row>
-        <!-- <v-card-text v-if="currentUser.profile"> -->
-        <!--   <div v-for="record in currentUser.profile" :key="record.id"> -->
-        <!--     <div -->
-        <!--       v-for="(value, name) in record" -->
-        <!--       :key="`${name}-${record.documentName}`" -->
-        <!--     > -->
-        <!--       <div> -->
-        <!--         <div -->
-        <!--           v-if="name !== 'documentName'" -->
-        <!--           class="subtitle-1 text-capitalize" -->
-        <!--         > -->
-        <!--           {{ value }} -->
-        <!--         </div> -->
-        <!--         <p -->
-        <!--           v-if="name !== 'documentName' || name !== 'curp'" -->
-        <!--           class="text-lowercase subtitle-2" -->
-        <!--         > -->
-        <!--           {{ $t(`academicProfile.${record.documentName}.${name}`, {}) }} -->
-        <!--         </p> -->
-        <!--       </div> -->
-        <!--     </div> -->
-        <!--     <v-divider /> -->
-        <!--   </div> -->
-        <!-- </v-card-text> -->
         <v-card-actions class="pa-3"></v-card-actions>
       </v-card>
     </v-flex>
@@ -128,9 +96,12 @@
 </template>
 <script>
 import { mapState, mapActions } from 'vuex'
+import ListUserDocuments from '@/components/admin/documents/ListUserDocuments'
+import MailSend from '@/components/MailSend'
 
 export default {
   name: 'UserShowDialog',
+  components: { ListUserDocuments, MailSend },
   props: {
     user: { type: Object, required: true },
   },

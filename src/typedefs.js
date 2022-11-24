@@ -62,6 +62,13 @@
  * @property {MailTemplate} [template] - A {MailTemplate} {@link MailTemplate}
  * */
 
+/** 
+ * Mailer
+ * @typedef {Mail} Mailer
+ * @property {sendMail}
+ * @property {showPreview}
+ */
+
 /**
  * Mail template to be used in Firebase email plugin
  * @typedef {Object} MailTemplate
@@ -69,6 +76,8 @@
  * @property {Object} data - This is passed as `handlebars` to the template
  * @property {string} data.message - This is variable inside the template
  * @property {string} data.subject - This is variable inside the template
+ * @property {string} [data.username] - This is variable inside the template
+ * @property {string} [data.name = "default"] - The name of the template to be used
  * */
 
 /** Message

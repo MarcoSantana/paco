@@ -12,6 +12,7 @@ export default {
   globalMessage: {},
 
   // User
+  /** @type {Object} */
   currentUser: {},
   /** @type {Array} */
   users: [],

@@ -11,7 +11,7 @@ export default class MailsDB extends GenericDB {
    * @param {import('src/typedefs').Mail} payload - A mail
    * @returns {Message}
    */
-  async send({ to, cc = 'cmmu2009@yahoo.com.mx', template }) {
+  async send({ to, cc, bcc, template }) {
     try {
       if (!to) {
         return new Message({
@@ -22,7 +22,7 @@ export default class MailsDB extends GenericDB {
       if (!template) {
         return new Message({
           type: 'error',
-          message: 'Es necesario el contenido del correo',
+          message: 'Es necesaria la plantilla del correo',
         })
       } // if
 
@@ -30,13 +30,30 @@ export default class MailsDB extends GenericDB {
       const data = {
         to,
         cc,
-        // bcc: 'marco.santana@gmail.com',
+        bcc,
         template,
       }
-      await this.create(data).then(res => res)
+      await this.create(data).then((res) => res)
       return new Message({ type: 'success', message: 'mail.sent' })
     } catch (err) {
       return new Message({ type: 'error', message: err })
     }
   } // send
+
+  /**
+   * Gets the html from the given template
+   * @param {string} template
+   * @return {string} The html from the template (not parsed)
+   */
+  async getRawTemplate(template) {
+    try {
+      const mailTemplateDB = new GenericDB('email_templates')
+      const localTemplate =
+        template == undefined || template == null ? 'default' : template
+      const result = await mailTemplateDB.read(localTemplate)
+      return result.html
+    } catch (err) {
+      return new Message({ type: 'error', message: err })
+    }
+  } // getRawTemplate
 }

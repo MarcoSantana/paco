@@ -61,4 +61,6 @@ export default {
 
   setDocumentDeleteMessage: (state, payload) =>
     (state.documentDeleteMessage = payload),
+
+  resetDocuments: (state) => (state.documents = [] )
 }

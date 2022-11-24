@@ -44,6 +44,14 @@ const translation = {
       rejected: 'error',
     },
   },
+  mail: {
+    cc: 'con copia',
+    bcc: 'con copia oculta',
+    to: 'destinatario',
+    subject: 'asunto',
+    body: 'cuerpo del mensaje',
+    message: 'mensaje',
+  },
   status: 'estado',
   startDate: 'fecha de inicio',
   user: 'usuario',
@@ -196,6 +204,7 @@ const translation = {
     id: 'identificador',
     longName: 'descripción',
     name: 'nombre',
+    pending: 'documentos pendientes',
     status: 'estado',
     statusKey: {
       1: 'por revisar',
