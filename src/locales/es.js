@@ -51,6 +51,7 @@ const translation = {
     subject: 'asunto',
     body: 'cuerpo del mensaje',
     message: 'mensaje',
+    sent: 'correo enviado',
   },
   status: 'estado',
   startDate: 'fecha de inicio',

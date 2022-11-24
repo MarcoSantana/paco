@@ -15,11 +15,12 @@ const mailDb = new MailsDB()
 export default function createMail({ to, cc, bcc, template }) {
   return {
     to,
-    cc: (() => cc ? cc : '')(),
-    bcc: (() => bcc ? bcc : '')(),
+    cc: (() => (cc ? cc : ''))(),
+    bcc: (() => (bcc ? bcc : ''))(),
     template: createTemplate(template),
     // getSendStatus
-    send,
+    // send: async () => mailDb.send({ to, cc, bcc, template }),
+    send: () => send({ to, cc, bcc, template }),
     showPreview: async () => {
       const rawTemplate = await mailDb.getRawTemplate(template.name)
       const handlebarsTemplate = Handlebars.compile(rawTemplate)
@@ -35,8 +36,8 @@ export default function createMail({ to, cc, bcc, template }) {
 const createTemplate = ({ message, subject, username, name }) => ({
   message,
   subject,
-  username: (() => username ? username : '')(),
-  name: (() => name ? name : 'default')(),
+  username: (() => (username ? username : ''))(),
+  name: (() => (name ? name : 'default'))(),
 }) // templateFactory
 
 /**
@@ -46,10 +47,7 @@ const createTemplate = ({ message, subject, username, name }) => ({
  * @param {String | null} [bcc]
  * @param {import('../typedefs')} template
  */
-const send = function() {
-  debugger
-  mailDb.send(this).then((message) => {
-    // store message in  Vuex
-    console.log(message)
-  })
+const send = function ({ to, cc, bcc, template }) {
+  const result = mailDb.send({ to, cc, bcc, template })
+  return result
 } // sendMail
