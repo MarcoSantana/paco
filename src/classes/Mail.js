@@ -23,7 +23,7 @@ export default function createMail({ to, cc, bcc, template }) {
     showPreview: async () => {
       const rawTemplate = await mailDb.getRawTemplate(template.name)
       const handlebarsTemplate = Handlebars.compile(rawTemplate)
-      return handlebarsTemplate({ message: template.message })
+      return handlebarsTemplate({ ...template })
     },
   }
 } // mailFactory
