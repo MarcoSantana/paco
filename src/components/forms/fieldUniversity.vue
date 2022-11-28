@@ -6,7 +6,7 @@
       :class="schema.fieldClasses"
     >
       <v-select
-        v-model="collegeId"
+        v-model="college.collegeId"
         label="Seleccione una universidad"
         hint="Universidad"
         :items="selectOptions"
@@ -145,7 +145,7 @@ export default {
     },
     onChange(e) {
       console.log('onChange', e)
-      this.$emit('input', this.collegeId)
+      this.$emit('input', this.college.collegeId)
     },
   },
 }
