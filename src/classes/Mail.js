@@ -21,9 +21,15 @@ export default function createMail({ to, cc, bcc, template }) {
     // getSendStatus
     // send: async () => mailDb.send({ to, cc, bcc, template }),
     send: () => send({ to, cc, bcc, template }),
+
+    /** Constructs a preview using Handlebars
+      * @async
+      * @returns {Promise<import('../typedefs').Mailer}> mailer - A mail object
+      */
     showPreview: async () => {
       const rawTemplate = await mailDb.getRawTemplate(template.name)
       const handlebarsTemplate = Handlebars.compile(rawTemplate)
+      console.log('result in preview', handlebarsTemplate({ ...template }))
       return handlebarsTemplate({ ...template })
     },
   }
@@ -34,10 +40,14 @@ export default function createMail({ to, cc, bcc, template }) {
  * @return {import('../typedefs').MailTemplate}
  */
 const createTemplate = ({ message, subject, username, name }) => ({
-  message,
-  subject,
-  username: (() => (username ? username : ''))(),
+  // The current issue is that I am requesting and passing the incorrect params
+  // ~data~ must contain the name and the template, and I am destructuring wrong
   name: (() => (name ? name : 'default'))(),
+  data: {
+    message,
+    subject,
+    username: (() => (username ? username : ''))(),
+  }, /// data
 }) // templateFactory
 
 /**
@@ -45,9 +55,24 @@ const createTemplate = ({ message, subject, username, name }) => ({
  * @param {String} to
  * @param {String} cc
  * @param {String | null} [bcc]
- * @param {import('../typedefs')} template
+ * @param {import('../typedefs').MailTemplate} template
  */
-const send = function ({ to, cc, bcc, template }) {
-  const result = mailDb.send({ to, cc, bcc, template })
+const send = function({ to, cc, bcc, template }) {
+  console.log('Mail.send template', template.data)
+  console.log('Mail.send', to, cc, bcc, {
+    name: template.name,
+    data: template.data,
+  })
+  const result = mailDb.send({
+    to,
+    cc,
+    bcc,
+    template: {
+      name: template.name,
+      data: template.data,
+    },
+  })
   return result
+  // const result = mailDb.send({ to, cc, bcc, template })
+  // return result
 } // sendMail

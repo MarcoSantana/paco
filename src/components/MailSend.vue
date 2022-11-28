@@ -65,11 +65,7 @@ export default {
       },
     }
   }, // data
-  asyncComputed: {
-    mailPreview() {
-      if (this.preview) return this.mailData.showPreview()
-    },
-  }, // asyncComputed
+  asyncComputed: { }, // asyncComputed
   computed: {
     // This is going to become a Mail object created with the proper factory function
     /** @return {import('src/typedefs').Mail} mailData - A mail*/
@@ -79,23 +75,23 @@ export default {
         cc: this.cc,
         bcc: this.bcc,
         template: {
-          message: this.body,
-          name: this.templateName ? this.templateName : 'default',
-          subject: this.subject ? this.subject : 'Mensaje de CMMU',
-          username: this.username,
+          // name: this.templateName ? this.templateName : 'default',
+          name: this.templateName || 'default',
+          data: {
+            message: this.body,
+            // subject: this.subject ? this.subject : 'Mensaje de CMMU',
+            subject: this.subject || 'Mensaje de CMMU',
+            username: this.username,
+          },
         },
       })
     }, // mailData
   },
   methods: {
     ...mapActions('admin', ['sendMail']),
-    showPreview: async function () {
-      console.log('preview', await this.mailData.showPreview())
-    },
     cancel: function () {
       this.message = ''
       this.subject = ''
-      this.preview = false
       this.dialog = false
     },
     async sendMail() {
@@ -165,26 +161,12 @@ export default {
             clearable
           ></v-textarea>
         </v-card-text>
-        <iframe
-          v-if="preview"
-          :srcdoc="mailPreview"
-          width="100%"
-          height="auto"
-          style="border: none"
-        />
-
         <v-divider></v-divider>
-
         <v-card-actions>
           <v-btn color="error" text @click="cancel">
             {{ $t('actions.cancel') }}
           </v-btn>
           <v-spacer></v-spacer>
-          <v-switch
-            v-model="preview"
-            color="warning"
-            :label="$t('actions.preview') | capitalize"
-          ></v-switch>
           <v-spacer></v-spacer>
           <v-btn color="primary" text @click="sendMail">
             {{ $t('actions.send') }}
