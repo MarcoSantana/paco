@@ -48,6 +48,7 @@
             rules="required|size:2000"
           >
             <v-file-input
+              v-if="document.upload"
               :key="`${document.name}-${item - 1}-${inputsArray[item - 1]}`"
               :ref="`fileInput-${item - 1}`"
               v-model="files[item - 1]"
@@ -86,6 +87,7 @@
         </keep-alive>
         <v-card-text class="text-right">
           <v-btn
+            v-if="document.upload"
             class="pa-5"
             fab
             dark

@@ -125,10 +125,7 @@
                     {{ documentStatus(document(step.name)).string }}
                   </p>
                   <upload-document
-                    v-if="
-                      documentStatus(document(step.name)).isEditable &&
-                        step.upload
-                    "
+                    v-if="documentStatus(document(step.name)).isEditable"
                     :document="step"
                     :show-files="
                       getEventFiles(
@@ -205,11 +202,36 @@ export default {
     // <!--TODO: Move this elsewhere-->
     steps: [
       {
+        longName: 'Sede de aplicación',
+        name: 'examLocation',
+        placeholder: 'Luagr de aplicación de examen',
+        upload: false,
+        required: false,
+        fields: [
+          {
+            label: 'examLocation',
+            name: 'examLocation',
+            placeholder: 'Lugar de aplicación de examen',
+            type: 'fieldExamLocation',
+            rules: { required: true },
+          },
+        ], // fields
+      },
+      {
         longName: 'Fotografía del sustentante',
         name: 'mugshot',
         placeholder: 'Fotografía',
         required: true,
         upload: true,
+        // fields: [
+        //   {
+        //     label: 'examLocation',
+        //     name: 'examLocation',
+        //     placeholder: 'Lugar de aplicación de examen',
+        //     type: 'fieldExamLocation',
+        //     rules: { required: true },
+        //   },
+        // ], // fields
       },
       {
         longName: 'Comprobante de donativo',
@@ -423,7 +445,7 @@ export default {
     updateEvent(val) {
       // const data = {}
       // data.documents = val
-      this.updateUserEvent({ id: this.id, documents: {...val} })
+      this.updateUserEvent({ id: this.id, documents: { ...val } })
       this.disableNext = true
     },
     createLocalDocument(document, n) {
