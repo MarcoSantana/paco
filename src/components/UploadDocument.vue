@@ -128,11 +128,10 @@ import { startCase, isNil } from 'lodash'
 import { mapState, mapActions, mapMutations } from 'vuex'
 import { storage } from 'firebase'
 import ShowFile from '@/components/ShowFile'
-import FieldUniversity from '@/components/forms/fieldUniversity'
-import CommentField from '@/components/forms/CommentField'
+import formFields from '@/components/forms'
 
 export default {
-  components: { CommentField, ShowFile, FieldUniversity },
+  components: { ...formFields, ShowFile },
   props: {
     document: {
       type: Object,
@@ -181,6 +180,7 @@ export default {
     ]),
   },
   mounted() {
+    console.log('formFields', formFields)
     this.setDocumentCreationMessage({})
     this.populateRemoteFiles(this.showFiles)
   },

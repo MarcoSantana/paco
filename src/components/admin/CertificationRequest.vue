@@ -3,7 +3,8 @@
     <v-card>
       <v-card-title
         class="text-h5 white--text justify-center mb-2 indigo lighten-3"
-      >{{ $t('documentDetails') | capitalize }}</v-card-title>
+      >
+          {{ $t('documentDetails') | capitalize }}</v-card-title>
       <v-list>
         <v-list-item class="text-center">
           <document-file
