@@ -1,4 +1,3 @@
-//@ts-check
 import Handlebars from 'handlebars'
 import MailsDB from '@/firebase/mails-db'
 
@@ -9,20 +8,28 @@ const mailDb = new MailsDB()
  * @vue-param {String} to
  * @vue-param {String} [cc]
  * @vue-param {String} [bcc]
+ * @vue-param {String} [username]
  * @param {import('../typedefs').MailTemplate} template - The template used by the plugin
  * @returns {import('../typedefs').Mailer} mailer - A mail object
  */
 export default function createMail({ to, cc, bcc, template }) {
   return {
     to,
-    cc,
-    bcc,
+    cc: (() => (cc ? cc : ''))(),
+    bcc: (() => (bcc ? bcc : ''))(),
     template: createTemplate(template),
     // getSendStatus
-    sendMail,
+    // send: async () => mailDb.send({ to, cc, bcc, template }),
+    send: () => send({ to, cc, bcc, template }),
+
+    /** Constructs a preview using Handlebars
+      * @async
+      * @returns {Promise<import('../typedefs').Mailer}> mailer - A mail object
+      */
     showPreview: async () => {
       const rawTemplate = await mailDb.getRawTemplate(template.name)
       const handlebarsTemplate = Handlebars.compile(rawTemplate)
+      console.log('result in preview', handlebarsTemplate({ ...template }))
       return handlebarsTemplate({ ...template })
     },
   }
@@ -33,12 +40,14 @@ export default function createMail({ to, cc, bcc, template }) {
  * @return {import('../typedefs').MailTemplate}
  */
 const createTemplate = ({ message, subject, username, name }) => ({
-  message,
-  subject,
-  username,
-  name: (() => {
-    name ? name : 'default'
-  })(),
+  // The current issue is that I am requesting and passing the incorrect params
+  // ~data~ must contain the name and the template, and I am destructuring wrong
+  name: (() => (name ? name : 'default'))(),
+  data: {
+    message,
+    subject,
+    username: (() => (username ? username : ''))(),
+  }, /// data
 }) // templateFactory
 
 /**
@@ -46,28 +55,24 @@ const createTemplate = ({ message, subject, username, name }) => ({
  * @param {String} to
  * @param {String} cc
  * @param {String | null} [bcc]
- * @param {import('../typedefs')} template
+ * @param {import('../typedefs').MailTemplate} template
  */
-const sendMail = (to, cc, bcc, template) => {
-  mailDb.sendMail(to, cc, bcc, template).then((message) => {
-    // store message in  Vuex
-    console.log(message)
+const send = function({ to, cc, bcc, template }) {
+  console.log('Mail.send template', template.data)
+  console.log('Mail.send', to, cc, bcc, {
+    name: template.name,
+    data: template.data,
   })
+  const result = mailDb.send({
+    to,
+    cc,
+    bcc,
+    template: {
+      name: template.name,
+      data: template.data,
+    },
+  })
+  return result
+  // const result = mailDb.send({ to, cc, bcc, template })
+  // return result
 } // sendMail
-
-/**
- * Shows the mail preview using the given template
- * @param {import('../typedefs')} template
- * @returns {String} The mail preview in html format
- */
-// const showPreview = async function (template) {
-//   console.log('template: ' + template)
-//   debugger
-//   const rawTemplate = await mailDb.getRawTemplate('default')
-//   console.log('rawTemplate', rawTemplate)
-//   const handlebarsTemplate = Handlebars.compile(rawTemplate)
-//   console.log(handlebarsTemplate({ message: 'rocks!' })) // const template =
-//   const result = handlebarsTemplate({ message: 'rocks!' })
-//   console.log('result', result)
-//   return result
-// } // showPreview
