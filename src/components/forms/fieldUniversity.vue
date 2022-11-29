@@ -60,12 +60,12 @@ export default {
     groupValues(values) {
       const array = []
       let arrayElement = {}
-      values.forEach(item => {
+      values.forEach((item) => {
         arrayElement = null
         if (item.group && isObject(item)) {
           // There is in a group.
           // Find element with this group.
-          arrayElement = find(array, i => i.group === item.group)
+          arrayElement = find(array, (i) => i.group === item.group)
           if (arrayElement) {
             // There is such a group.
             arrayElement.ops.push({

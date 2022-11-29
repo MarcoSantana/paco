@@ -58,8 +58,6 @@ export default {
       :class="schema.fieldClasses"
     >
       <v-row align="center">
-        {{ schema }}
-        {{ activeLocations }}
         <v-col class="d-flex" cols="12" sm="12">
           <v-select
             v-model="foo"

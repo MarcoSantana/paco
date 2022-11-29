@@ -4,7 +4,8 @@
       <v-card-title
         class="text-h5 white--text justify-center mb-2 indigo lighten-3"
       >
-          {{ $t('documentDetails') | capitalize }}</v-card-title>
+        {{ $t('documentDetails') | capitalize }}
+      </v-card-title>
       <v-list>
         <v-list-item class="text-center">
           <document-file
@@ -24,18 +25,28 @@
           </v-list-item-subtitle>
         </v-list-item>
         <v-list-item>
-          <v-list-item-title>{{ $t('userData.dob') | capitalize }}</v-list-item-title>
+          <v-list-item-title>
+            {{ $t('userData.dob') | capitalize }}
+          </v-list-item-title>
           <v-list-item-subtitle @click="copyText($event)">
             {{ user.dob | intlDate }}
-            <small>{{ $t('userData.age') | capitalize }} {{ user.dob | age }}</small>
+            <small>
+              {{ $t('userData.age') | capitalize }} {{ user.dob | age }}
+            </small>
           </v-list-item-subtitle>
         </v-list-item>
         <v-list-item>
-          <v-list-item-title>{{ $t('userData.pob') | capitalize }}</v-list-item-title>
-          <v-list-item-subtitle @click="copyText($event)">{{ user.nacionality }}</v-list-item-subtitle>
+          <v-list-item-title>
+            {{ $t('userData.pob') | capitalize }}
+          </v-list-item-title>
+          <v-list-item-subtitle @click="copyText($event)">
+            {{ user.nacionality }}
+          </v-list-item-subtitle>
         </v-list-item>
         <v-list-item>
-          <v-list-item-title>{{ $t('userData.gender') | capitalize }}</v-list-item-title>
+          <v-list-item-title>
+            {{ $t('userData.gender') | capitalize }}
+          </v-list-item-title>
           <v-list-item-subtitle>
             {{ user.gender }}
             <i :class="user.gender | genderize"></i>
@@ -43,57 +54,97 @@
         </v-list-item>
         <v-list-item>
           <v-list-item-title>{{ $t('userData.curp') }}</v-list-item-title>
-          <v-list-item-subtitle @click="copyText($event)">{{ user.curp }}</v-list-item-subtitle>
+          <v-list-item-subtitle @click="copyText($event)">
+            {{ user.curp }}
+          </v-list-item-subtitle>
         </v-list-item>
         <v-list-item>
           <v-list-item-title>{{ $t('userData.rfc') }}</v-list-item-title>
-          <v-list-item-subtitle @click="copyText($event)">{{ user.rfc }}</v-list-item-subtitle>
+          <v-list-item-subtitle @click="copyText($event)">
+            {{ user.rfc }}
+          </v-list-item-subtitle>
         </v-list-item>
         <v-divider></v-divider>
         <v-list-item class="text-center">
-          <v-list-item-title>{{ $t('userData.contactData') | capitalize }}</v-list-item-title>
+          <v-list-item-title>
+            {{ $t('userData.contactData') | capitalize }}
+          </v-list-item-title>
         </v-list-item>
         <v-list-item>
-          <v-list-item-title>{{ $t('userData.email') | capitalize }}</v-list-item-title>
-          <v-list-item-subtitle @click="copyText($event)">{{ user.contact.email }}</v-list-item-subtitle>
+          <v-list-item-title>
+            {{ $t('userData.email') | capitalize }}
+          </v-list-item-title>
+          <v-list-item-subtitle @click="copyText($event)">
+            {{ user.contact.email }}
+          </v-list-item-subtitle>
         </v-list-item>
         <v-list-item>
-          <v-list-item-title>{{ $t('userData.cellphone') | capitalize }}</v-list-item-title>
-          <v-list-item-subtitle>{{ user.contact.cellphone }}</v-list-item-subtitle>
+          <v-list-item-title>
+            {{ $t('userData.cellphone') | capitalize }}
+          </v-list-item-title>
+          <v-list-item-subtitle>
+            {{ user.contact.cellphone }}
+          </v-list-item-subtitle>
         </v-list-item>
         <v-list-item>
-          <v-list-item-title>{{ $t('userData.phone') | capitalize }}</v-list-item-title>
-          <v-list-item-subtitle @click="copyText($event)">{{ user.contact.phone }}</v-list-item-subtitle>
+          <v-list-item-title>
+            {{ $t('userData.phone') | capitalize }}
+          </v-list-item-title>
+          <v-list-item-subtitle @click="copyText($event)">
+            {{ user.contact.phone }}
+          </v-list-item-subtitle>
         </v-list-item>
 
         <v-list-item>
-          <v-list-item-title>{{ $t('userData.fax') | capitalize }}</v-list-item-title>
-          <v-list-item-subtitle @click="copyText($event)">{{ user.contact.fax }}</v-list-item-subtitle>
+          <v-list-item-title>
+            {{ $t('userData.fax') | capitalize }}
+          </v-list-item-title>
+          <v-list-item-subtitle @click="copyText($event)">
+            {{ user.contact.fax }}
+          </v-list-item-subtitle>
         </v-list-item>
 
         <v-list-item>
-          <v-list-item-title>{{ $t('userData.address') | capitalize }}</v-list-item-title>
-          <v-list-item-subtitle @click="copyText($event)">{{ user.address }}</v-list-item-subtitle>
+          <v-list-item-title>
+            {{ $t('userData.address') | capitalize }}
+          </v-list-item-title>
+          <v-list-item-subtitle @click="copyText($event)">
+            {{ user.address }}
+          </v-list-item-subtitle>
         </v-list-item>
         <v-divider />
         <v-list-item>
-          <v-list-item-title class="text-center">{{ $t('request.details') | capitalize }}</v-list-item-title>
+          <v-list-item-title class="text-center">
+            {{ $t('request.details') | capitalize }}
+          </v-list-item-title>
         </v-list-item>
         <v-list-item>
-          <v-list-item-title>{{ $t('request.place') | capitalize }}</v-list-item-title>
-          <v-list-item-subtitle @click="copyText($event)">{{ request.address }}</v-list-item-subtitle>
+          <v-list-item-title>
+            {{ $t('request.place') | capitalize }}
+          </v-list-item-title>
+          <v-list-item-subtitle @click="copyText($event)">
+            {{ request.address }}
+          </v-list-item-subtitle>
         </v-list-item>
         <v-list-item>
-          <v-list-item-title>{{ $t('request.date') | capitalize }}</v-list-item-title>
+          <v-list-item-title>
+            {{ $t('request.date') | capitalize }}
+          </v-list-item-title>
           <v-list-item-subtitle>{{ request.date }}</v-list-item-subtitle>
         </v-list-item>
         <v-list-item>
-          <v-list-item-title>{{ $t('request.previous') | capitalize }}</v-list-item-title>
-          <v-list-item-subtitle>{{ request.previousExam }}</v-list-item-subtitle>
+          <v-list-item-title>
+            {{ $t('request.previous') | capitalize }}
+          </v-list-item-title>
+          <v-list-item-subtitle>
+            {{ request.previousExam }}
+          </v-list-item-subtitle>
         </v-list-item>
         <v-divider />
         <v-list-item class="text-center">
-          <v-list-item-title>{{ $t('request.voucher') | capitalize }}</v-list-item-title>
+          <v-list-item-title>
+            {{ $t('request.voucher') | capitalize }}
+          </v-list-item-title>
         </v-list-item>
         <v-list-item class="text-center">
           <document-file
@@ -107,10 +158,14 @@
         </v-list-item>
         <v-divider />
         <v-list-item>
-          <v-list-item-title class="text-center">{{ $t('request.degree') | capitalize }}</v-list-item-title>
+          <v-list-item-title class="text-center">
+            {{ $t('request.degree') | capitalize }}
+          </v-list-item-title>
         </v-list-item>
         <v-list-item>
-          <v-list-item-title>{{ $t('request.postDegreeDiploma') | capitalize }}</v-list-item-title>
+          <v-list-item-title>
+            {{ $t('request.postDegreeDiploma') | capitalize }}
+          </v-list-item-title>
         </v-list-item>
         <v-list-item class="text-center">
           <document-file
@@ -123,10 +178,14 @@
           />
         </v-list-item>
         <v-list-item>
-          <v-list-item-title class="text-center">{{ $t('request.degree') | capitalize }}</v-list-item-title>
+          <v-list-item-title class="text-center">
+            {{ $t('request.degree') | capitalize }}
+          </v-list-item-title>
         </v-list-item>
         <v-list-item>
-          <v-list-item-title>{{ $t('request.enarm') | capitalize }}</v-list-item-title>
+          <v-list-item-title>
+            {{ $t('request.enarm') | capitalize }}
+          </v-list-item-title>
         </v-list-item>
         <v-list-item class="text-center">
           <document-file
@@ -140,10 +199,14 @@
         </v-list-item>
         <v-divider />
         <v-list-item class="text-center">
-          <v-list-item-title>{{ $t('request.postDegree') | capitalize }}</v-list-item-title>
+          <v-list-item-title>
+            {{ $t('request.postDegree') | capitalize }}
+          </v-list-item-title>
         </v-list-item>
         <v-list-item>
-          <v-list-item-title>{{ $t('request.postgraduateUniversitaryDiploma') | capitalize }}</v-list-item-title>
+          <v-list-item-title>
+            {{ $t('request.postgraduateUniversitaryDiploma') | capitalize }}
+          </v-list-item-title>
         </v-list-item>
         <v-list-item class="text-center">
           <document-file
@@ -156,11 +219,17 @@
           />
         </v-list-item>
         <v-list-item>
-          <v-list-item-title>{{ $t('request.postDegreeLicense') | capitalize }}</v-list-item-title>
-          <v-list-item-subtitle @click="copyText($event)">{{ request.postgraduate.license }}</v-list-item-subtitle>
+          <v-list-item-title>
+            {{ $t('request.postDegreeLicense') | capitalize }}
+          </v-list-item-title>
+          <v-list-item-subtitle @click="copyText($event)">
+            {{ request.postgraduate.license }}
+          </v-list-item-subtitle>
         </v-list-item>
         <v-list-item class="text-center">
-          <v-list-item-title>{{ $t('request.license') | capitalize }}</v-list-item-title>
+          <v-list-item-title>
+            {{ $t('request.license') | capitalize }}
+          </v-list-item-title>
         </v-list-item>
         <v-list-item class="text-center">
           <document-file
@@ -174,20 +243,34 @@
         </v-list-item>
         <v-divider />
         <v-list-item>
-          <v-list-item-title>{{ $t('request.specialty') | capitalize }}</v-list-item-title>
-          <v-list-item-subtitle>{{ request.postgraduate.specialty }}</v-list-item-subtitle>
+          <v-list-item-title>
+            {{ $t('request.specialty') | capitalize }}
+          </v-list-item-title>
+          <v-list-item-subtitle>
+            {{ request.postgraduate.specialty }}
+          </v-list-item-subtitle>
         </v-list-item>
         <v-list-item>
-          <v-list-item-title>{{ $t('request.schoolHospital') | capitalize }}</v-list-item-title>
-          <v-list-item-subtitle @click="copyText($event)">{{ request.postgraduate.hospital }}</v-list-item-subtitle>
+          <v-list-item-title>
+            {{ $t('request.schoolHospital') | capitalize }}
+          </v-list-item-title>
+          <v-list-item-subtitle @click="copyText($event)">
+            {{ request.postgraduate.hospital }}
+          </v-list-item-subtitle>
         </v-list-item>
         <v-list-item>
-          <v-list-item-title>{{ $t('request.specialtyGraduationDate') | capitalize }}</v-list-item-title>
-          <v-list-item-subtitle>{{ request.postgraduate.graduationDate | intlDate }}</v-list-item-subtitle>
+          <v-list-item-title>
+            {{ $t('request.specialtyGraduationDate') | capitalize }}
+          </v-list-item-title>
+          <v-list-item-subtitle>
+            {{ request.postgraduate.graduationDate | intlDate }}
+          </v-list-item-subtitle>
         </v-list-item>
         <v-divider />
         <v-list-item class="text-center">
-          <v-list-item-title>{{ $t('request.postDegreeCertificate') | capitalize }}</v-list-item-title>
+          <v-list-item-title>
+            {{ $t('request.postDegreeCertificate') | capitalize }}
+          </v-list-item-title>
         </v-list-item>
         <v-list-item class="text-center">
           <document-file
@@ -198,7 +281,9 @@
           ></document-file>
         </v-list-item>
         <v-list-item class="text-center">
-          <v-list-item-title>{{ $t('request.postDegreeDiploma') | capitalize }}</v-list-item-title>
+          <v-list-item-title>
+            {{ $t('request.postDegreeDiploma') | capitalize }}
+          </v-list-item-title>
         </v-list-item>
         <v-list-item class="center">
           <document-file
@@ -210,21 +295,31 @@
         </v-list-item>
         <v-divider />
         <v-list-item>
-          <v-list-item-title>{{ $t('request.profesionalPractice') | capitalize }}</v-list-item-title>
+          <v-list-item-title>
+            {{ $t('request.profesionalPractice') | capitalize }}
+          </v-list-item-title>
         </v-list-item>
         <v-list-item>
-          <v-list-item-title>{{ $t('request.professionalExerciseHospital') | capitalize }}</v-list-item-title>
-          <v-list-item-subtitle
-            @click="copyText($event)"
-          >{{ request.professionalExercise.hospital }}</v-list-item-subtitle>
+          <v-list-item-title>
+            {{ $t('request.professionalExerciseHospital') | capitalize }}
+          </v-list-item-title>
+          <v-list-item-subtitle @click="copyText($event)">
+            {{ request.professionalExercise.hospital }}
+          </v-list-item-subtitle>
         </v-list-item>
 
         <v-list-item>
-          <v-list-item-title>{{ $t('request.professionalExerciseLocation') | capitalize }}</v-list-item-title>
+          <v-list-item-title>
+            {{ $t('request.professionalExerciseLocation') | capitalize }}
+          </v-list-item-title>
         </v-list-item>
         <v-list-item>
-          <v-list-item-title>{{ $t('request.professionalExerciseCharge') | capitalize }}</v-list-item-title>
-          <v-list-item-subtitle @click="copyText($event)">{{ request.professionalExercise.charge }}</v-list-item-subtitle>
+          <v-list-item-title>
+            {{ $t('request.professionalExerciseCharge') | capitalize }}
+          </v-list-item-title>
+          <v-list-item-subtitle @click="copyText($event)">
+            {{ request.professionalExercise.charge }}
+          </v-list-item-subtitle>
         </v-list-item>
       </v-list>
       <v-snackbar v-model="copySnackbar" timeout="2000">
@@ -235,7 +330,9 @@
             text
             v-bind="attrs"
             @click="copySnackbar = false"
-          >{{ $t('actions.close') | capitalize }}</v-btn>
+          >
+            {{ $t('actions.close') | capitalize }}
+          </v-btn>
         </template>
       </v-snackbar>
     </v-card>

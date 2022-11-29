@@ -48,8 +48,8 @@
           v-show="allow"
           :disabled="
             documentDeleteMessage &&
-              (documentDeleteMessage.type === 'success' ||
-                documentDeleteMessage.type === 'error')
+            (documentDeleteMessage.type === 'success' ||
+              documentDeleteMessage.type === 'error')
           "
           outlined
           color="success"
@@ -83,6 +83,7 @@ export default {
       allow: false,
       documentDeleteReason: '',
       localLoading: false,
+      documentRejectionMessage: '',
     }
   }, // end of data
   asyncComputed: {
@@ -90,7 +91,7 @@ export default {
       const documentsDB = new DocumentsDB()
       return documentsDB
         .getByUserDocumentId(this.document.id)
-        .then(response => response[0])
+        .then((response) => response[0])
     }, // end of currentDocument
   }, // end of asyncComputed
   computed: {
@@ -122,7 +123,7 @@ export default {
       const userEventsDB = new UserEventsDB(this.currentUser.id)
       const documents = await userEventsDB
         .documents(this.currentEvent.id)
-        .then(res => res)
+        .then((res) => res)
       const reducedDocuments = reduce(
         documents,
         (acc, document) => {
@@ -153,7 +154,7 @@ export default {
           async () =>
             this.deleteDocument({
               documentId: this.localDocument.id,
-            }).then(res => res)
+            }).then((res) => res)
           // here put some extra cool message
         )
         .finally(() => {
