@@ -25,7 +25,7 @@ export default {
       // 'Michoacán de Ocampo',
       // 'Morelos',
       // 'Nayarit',
-      'Nuevo León',
+      /*       'Nuevo León', */
       // 'Oaxaca',
       // 'Puebla',
       // 'Querétaro',
