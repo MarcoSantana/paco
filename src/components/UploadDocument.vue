@@ -48,6 +48,7 @@
             rules="required|size:2000"
           >
             <v-file-input
+              v-if="document.upload"
               :key="`${document.name}-${item - 1}-${inputsArray[item - 1]}`"
               :ref="`fileInput-${item - 1}`"
               v-model="files[item - 1]"
@@ -86,6 +87,7 @@
         </keep-alive>
         <v-card-text class="text-right">
           <v-btn
+            v-if="document.upload"
             class="pa-5"
             fab
             dark
@@ -128,11 +130,10 @@ import { startCase, isNil } from 'lodash'
 import { mapState, mapActions, mapMutations } from 'vuex'
 import { storage } from 'firebase'
 import ShowFile from '@/components/ShowFile'
-import FieldUniversity from '@/components/forms/fieldUniversity'
-import CommentField from '@/components/forms/CommentField'
+import formFields from '@/components/forms'
 
 export default {
-  components: { CommentField, ShowFile, FieldUniversity },
+  components: { ...formFields, ShowFile },
   props: {
     document: {
       type: Object,
@@ -181,6 +182,7 @@ export default {
     ]),
   },
   mounted() {
+    console.log('formFields', formFields)
     this.setDocumentCreationMessage({})
     this.populateRemoteFiles(this.showFiles)
   },

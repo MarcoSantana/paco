@@ -226,6 +226,7 @@ const translation = {
       degree: 'título',
       degreeDiploma: 'diploma universitario de licenciatura',
       enarm: 'comprobante ENARM o similar',
+      examLocation: 'Lugar de aplicación del examen',
       license: 'cédula profesional',
       mugshot: 'fotografía personal',
       pediatricVoucher: 'comprobante de pediatría',
