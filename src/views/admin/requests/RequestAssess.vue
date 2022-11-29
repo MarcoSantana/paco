@@ -173,12 +173,7 @@
             {{ documentStatus(document).string }}
           </v-alert>
           <show-document
-            v-if="
-              document &&
-              document.name &&
-              document.files &&
-              document.files.length
-            "
+            v-if="document"
             :id="document.id"
             :document="document"
             :title="true"
