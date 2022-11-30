@@ -230,6 +230,7 @@ const translation = {
       license: 'cédula profesional',
       mugshot: 'fotografía personal',
       pediatricVoucher: 'comprobante de pediatría',
+      previousExam: 'examen previo',
       postGraduate: 'institución de posgrado',
       postDegreeCertificate: 'constancia de residencia progresiva hospitalaria',
       postDegreeDiploma: 'diploma institucional de especialidad',

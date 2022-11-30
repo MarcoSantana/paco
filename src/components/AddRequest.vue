@@ -106,7 +106,7 @@
               <v-stepper-step
                 :color="stepStatus(n + 1)"
                 :complete="isRequestComplete || stepComplete(n + 1)"
-                :rules="[value => !invalid]"
+                :rules="[(value) => !invalid]"
                 :step="n + 1"
               >
                 {{ startCase($t('document.types')[step.name]) }}
@@ -214,6 +214,21 @@ export default {
             placeholder: 'Lugar de aplicación de examen',
             type: 'fieldExamLocation',
             rules: { required: true },
+          },
+        ], // fields
+      },
+      {
+        longName: '¿Ha presentado el examen antes?',
+        name: 'previousExam',
+        required: false,
+        upload: false,
+        fields: [
+          {
+            label: 'previousExam',
+            name: 'previousExam',
+            placeholder: '¿Ha realizado previamente el examen?',
+            type: 'fieldPreviousExam',
+            rules: { required: false },
           },
         ], // fields
       },
