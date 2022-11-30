@@ -252,10 +252,8 @@ export default {
   }, // end of computed
   methods: {
     ...mapActions('admin', ['getUserEventMessage', 'sendMail']),
-    clicked(e) {
-      console.log('Click', e.target)
+    clicked() {
       this.documentRejectReasonDialog = true
-      console.log(this.documentRejectReasonDialog)
     },
 
     async changeDocumentStatus(document, status, messages) {
