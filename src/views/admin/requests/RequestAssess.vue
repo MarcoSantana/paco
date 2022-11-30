@@ -199,19 +199,15 @@ import { callUpdateDocumentStatus } from '@/firebase/functions'
 import capitalize from '@/filters/capitalize'
 import intlDate from '@/filters/intlDate'
 import Avatar from 'vue-avatar'
-import AcceptDialog from '@/components/admin/requests/AcceptDialog.vue'
-import DeleteDialog from '@/components/admin/requests/DeleteDialog.vue'
-import RejectDialog from '@/components/admin/requests/RejectDialog.vue'
+import Dialogs from '@/components/admin/requests'
 import ShowDocument from '@/components/admin/ShowDocument.vue'
 
 export default {
   name: 'RequestAssess',
   filters: { capitalize, intlDate },
   components: {
-    AcceptDialog,
+    ...Dialogs,
     Avatar,
-    DeleteDialog,
-    RejectDialog,
     ShowDocument,
   },
   props: {
@@ -232,14 +228,6 @@ export default {
           return this.userData.documents[key].files.length > 0
       })
       return { ...cloneDeep(this.user.documents), files }
-
-      // const files = Object.keys(this.userData.documents).map(key => {
-      //   if((this.userData.documents[key])) {
-      //     return this.userData.documents[key] ? this.userData.documents[key] : null
-      //   }
-      //   return this.userData.documents[key].files
-      // })
-      // return { ...cloneDeep(this.user.documents), files }
     }, // end documents
   },
   computed: {
