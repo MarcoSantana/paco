@@ -529,6 +529,7 @@ export default {
             })
             .then(() => {
               // Update successful
+              // TODO move this to a store action
               firestore()
                 .collection('users')
                 .doc(user.uid)
@@ -558,6 +559,7 @@ export default {
                 .doc(user.uid)
                 .set({ license: this.license })
             })
+          // TODO There is no vuex store call. Then a again this must be there
             .then(() => {
               this.$router.push('/checkLogin')
             })
@@ -567,6 +569,7 @@ export default {
               // ...
             })
 
+          // TODO check if we can delete this
             // const user = firebase.auth().currentUser
             // user
             //   .updateProfile({
