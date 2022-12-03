@@ -76,6 +76,7 @@ export default {
         ['mdi-account-question', 'Solicitar examen', { name: 'request' }],
         ['mdi-folder-account', 'Perfil académico', { name: 'academicProfile' }],
         ['mdi-account-edit', 'Datos personales', { name: 'userEdit' }],
+        ['mdi-cloud-download', 'Descargas', {name: 'userDownloads'}],
       ],
       adminLinks: [
         ['mdi-text-box-search-outline', 'Inicio', { name: 'adminHome' }],

@@ -38,3 +38,6 @@ certificationCheckList.md
 
 *.vue_
 src/views/admin/requests/.\#Request.vue
+
+# Static files
+public/downloads/*
