@@ -4,10 +4,4 @@ import EventCard from './EventCard.vue'
 import InfoCard from './InfoCard.vue'
 import RejectDialog from './RejectDialog.vue'
 
-export {
-  AcceptDialog,
-  DeleteDialog,
-  EventCard,
-  InfoCard,
-  RejectDialog
-}
+export { AcceptDialog, DeleteDialog, EventCard, InfoCard, RejectDialog }
