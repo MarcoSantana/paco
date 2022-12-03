@@ -83,6 +83,14 @@ const router = new Router({
         ),
     },
     {
+      path: '/downloads',
+      name: 'userDownloads',
+      component: () =>
+        import(
+          /* webpackChunkName: "client-chunk-downloads" */ '@/views/Downloads.vue'
+        ),
+    },
+    {
       path: '/documents',
       name: 'documents',
       component: () =>
@@ -133,7 +141,10 @@ const router = new Router({
     {
       path: '/users',
       name: 'users',
-      component: () => import(/* webpackChunkName: "client-chunk-users-details" */ '@/views/admin/users/Main.vue'),
+      component: () =>
+        import(
+          /* webpackChunkName: "client-chunk-users-details" */ '@/views/admin/users/Main.vue'
+        ),
     },
 
     // Main admin view
