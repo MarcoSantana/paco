@@ -1,6 +1,21 @@
 <template>
   <v-sheet light class="black--text">
+    <v-snackbar
+      v-model="snackbar.show"
+      :timeout="snackbar.timeout"
+      :centered="snackbar.centered"
+      :color="snackbar.color"
+    >
+      {{ $t(snackbar.message) | capitalize }}
+      {{ eventCreationMessage.message | capitalize }}
+      <template v-slot:action="{ attrs }">
+        <v-btn color="white" text v-bind="attrs" @click="snackbar.show = false">
+          {{ $t('actions.close') }}
+        </v-btn>
+      </template>
+    </v-snackbar>
     <v-sheet
+      v-if="!isNil(currentUserEvent.string)"
       class="title text-h4 text-capitalize text-center ma-3"
       :color="requestStatus.color"
       dark
@@ -13,7 +28,10 @@
       </ul>
     </h2>
     <h2>
-      <v-card v-if="isRequestComplete" :class="requestStatus.color">
+      <v-card
+        v-if="!isNil(currentUserEvent) && isRequestComplete"
+        :class="requestStatus.color"
+      >
         <v-card-text class="white--text text-h5">
           Usted ya ha realizado esta solicitud.
           <br />
@@ -92,6 +110,7 @@
       </v-expansion-panel>
     </v-expansion-panels>
     <v-stepper
+      v-if="!pendingCreation && !isNil(currentUserEvent)"
       v-model="curr"
       color="primary"
       vertical
@@ -177,6 +196,7 @@
       </validation-observer>
     </v-stepper>
     <!-- steps -->
+    <v-skeleton-loader v-else></v-skeleton-loader>
   </v-sheet>
 </template>
 <script>
@@ -184,9 +204,11 @@ import { startCase, isNil } from 'lodash'
 import { mapState, mapActions, mapGetters, mapMutations } from 'vuex'
 
 import UploadDocument from '@/components/UploadDocument.vue'
+import capitalize from '@/filters/capitalize'
 
 export default {
   components: { UploadDocument },
+  filters: { capitalize },
   props: {
     id: {
       type: String,
@@ -198,6 +220,15 @@ export default {
     invalid: true,
     disableNext: false,
     curr: 1,
+    loading: true,
+    snackbar: {
+      centered: true,
+      color: 'primary',
+      text: true,
+      message: '',
+      show: false,
+      timeout: 5000,
+    },
     files: [],
     // <!--TODO: Move this elsewhere-->
     steps: [
@@ -355,7 +386,13 @@ export default {
       'documentCreationMessage',
     ]),
     ...mapGetters('events', ['getUserEvent']),
+    pendingCreation() {
+      return this.eventCreationPending
+    },
     currentUserEvent() {
+      if (isNil(this.id)) {
+        this.setEvent(this.id)
+      }
       return this.getUserEvent(this.id)
     },
 
@@ -369,17 +406,23 @@ export default {
     }, // isComplete
 
     requestStatus() {
-      return {
-        color: this.$t(`requests.colors.${this.currentUserEvent.status}`),
-        status: this.currentUserEvent.status,
-        string: this.$t(`requests.${this.currentUserEvent.status}`),
-      }
+      if (!isNil(this.currentUserEvent))
+        return {
+          color: this.$t(`requests.colors.${this.currentUserEvent.status}`),
+          status: this.currentUserEvent.status,
+          string: this.$t(`requests.${this.currentUserEvent.status}`),
+        }
+      return {}
     }, // requestStatus
     // TODO disableNext with getter and setter to add the required feature so the user can skip some steps
   },
   watch: {},
+  beforeMount() {
+    this.loading = true
+    this.setUserEvent(this.id)
+  }, // beforeMount
   mounted() {
-    if (isNil(this.currentUserEvent)) this.setEvent()
+    this.loading = false
   },
   methods: {
     ...mapActions('documents', ['triggerAddDocumentAction']),
@@ -452,9 +495,16 @@ export default {
       this.isFinished = true
     },
     setEvent() {
-      console.log('running setEvent: ', this.id)
-      if (isNil(this.currentUserEvent)) {
+      if (isNil(this.getUserEvent(this.id))) {
+        this.snackbar.message = 'Creando evento'
+        this.snackbar.color = 'info'
+        this.snackbar.timeout = 5000
+        this.snackbar.show = true
         this.setUserEvent(this.id)
+        this.snackbar.message = this.eventCreationMessage.message
+        this.snackbar.color = this.eventCreationMessage.type
+        this.snackbar.timeout = 5000
+        this.snackbar.show = true
       }
     },
     updateEvent(val) {

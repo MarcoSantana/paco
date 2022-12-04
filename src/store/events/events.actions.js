@@ -40,8 +40,8 @@ export default {
    * Update event for user
    */
   updateUserEvent: async ({ rootState, commit }, data) => {
-    console.clear();
-    console.log('  updateUserEvent', data);
+    console.clear()
+    console.log('  updateUserEvent', data)
     const userEventsDb = new UserEventsDB(rootState.authentication.user.id)
     const currentUserEvent = { ...rootState.events.currentUserEvent, data }
     const { documents } = data
@@ -51,7 +51,7 @@ export default {
     const createdEvent = await userEventsDb.update({
       id: data.id,
       ...currentUserEvent,
-      [refName]: { [documents.name]: { ...documents } }
+      [refName]: { [documents.name]: { ...documents } },
     })
     console.log('createdEvent: ', createdEvent)
     commit('addUserEvent', data)
@@ -62,23 +62,17 @@ export default {
    * Gets the event details for the given user if not exists create
    */
   setUserEvent: async ({ rootState, commit }, id) => {
-    console.log('setUserEvent', id)
     const userEventsDb = new UserEventsDB(rootState.authentication.user.id)
     const eventsDB = new EventsDB(rootState)
-    console.log(eventsDB)
     const userEvent = await userEventsDb.read(id)
-
     commit('setCurrentEvent', userEvent)
-    console.log('currentEvent', rootState.events.currentEvent)
 
-    console.log('userEvent: ', userEvent)
     // TODO must create the userEvent using the data from the existing event
     if (!userEvent) {
       try {
         // Get the existing event to append it to the user
         const currentEvent = await eventsDB.read(id)
         const createdEvent = await userEventsDb.create(currentEvent, id)
-        console.log('createdEvent: ', createdEvent)
         commit('addUserEvent', createdEvent)
         commit('setEventCreationPending', false)
         commit('setEventCreationMessage', {

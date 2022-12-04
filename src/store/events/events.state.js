@@ -7,5 +7,5 @@ export default {
   eventUpdatePending: false,
   eventUpdateMessage: {},
   userEvents: [],
-  curentEvent: {},
+  currentEvent: {},
 }
