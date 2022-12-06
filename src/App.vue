@@ -96,13 +96,15 @@ export default {
         // ['mdi-account-circle', 'Perfil', 'profile'],
         // ['mdi-cog-outline', 'Configuración', 'settings'],
         // ['mdi-folder', 'Mis Documentos', { name: 'documents' }],
+
+        ['mdi-home', 'Inicio', { name: 'home' }],
         ['mdi-account-question', 'Solicitar examen', { name: 'request' }],
         ['mdi-cloud-download', 'Descargas', { name: 'userDownloads' }],
         ['mdi-folder-account', 'Perfil académico', { name: 'academicProfile' }],
         ['mdi-account-edit', 'Datos personales', { name: 'userEdit' }],
       ],
       adminLinks: [
-        ['mdi-text-box-search-outline', 'Inicio', { name: 'adminHome' }],
+        // ['mdi-text-box-search-outline', 'Inicio', { name: 'adminHome' }],
         ['mdi-view-dashboard', 'Centro de control', { name: 'adminDashboard' }],
         ['mdi-account-multiple', 'Usuarios', { name: 'users' }],
         [
