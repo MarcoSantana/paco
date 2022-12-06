@@ -68,7 +68,7 @@ export default {
       drawer: true,
       links: [
         // ['mdi-cloud-upload', 'Cargar documentos'],
-        ['mdi-home', 'Inicio', { name: 'home' }],
+        // ['mdi-home', 'Inicio', { name: 'home' }],
         // ['mdi-inbox-arrow-down', 'Mensajes', 'messages'],
         // ['mdi-account-circle', 'Perfil', 'profile'],
         // ['mdi-cog-outline', 'Configuración', 'settings'],
