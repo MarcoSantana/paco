@@ -5,18 +5,31 @@
       <nav-bar @toggleDrawer="toggleDrawer"></nav-bar>
       <router-view />
       <!-- Change me to vuetify toaster -->
-      <new-content-available-toastr v-if="newContentAvailable" class="new-content-available-toastr"
-        :refreshing-app="refreshingApp" @refresh="serviceWorkerSkipWaiting"></new-content-available-toastr>
-      <apple-add-to-home-screen-modal v-if="showAddToHomeScreenModalForApple" class="apple-add-to-home-screen-modal"
-        @close="closeAddToHomeScreenModalForApple(false)"></apple-add-to-home-screen-modal>
+      <new-content-available-toastr
+        v-if="newContentAvailable"
+        class="new-content-available-toastr"
+        :refreshing-app="refreshingApp"
+        @refresh="serviceWorkerSkipWaiting"
+      ></new-content-available-toastr>
+      <apple-add-to-home-screen-modal
+        v-if="showAddToHomeScreenModalForApple"
+        class="apple-add-to-home-screen-modal"
+        @close="closeAddToHomeScreenModalForApple(false)"
+      ></apple-add-to-home-screen-modal>
     </v-main>
-    <v-navigation-drawer v-if="user" v-model="drawer" app class="indigo lighten-4">
+    <v-navigation-drawer
+      v-if="user"
+      v-model="drawer"
+      app
+      class="indigo lighten-4"
+    >
       <v-sheet :color="isUserAdmin ? 'orange lighten-4' : ''" class="pa-4">
         <v-avatar class="mb-4" color="grey darken-1" size="64">
           <v-img v-if="user.photoURL" :src="user.photoURL"></v-img>
-          <v-img v-else :src="
-            `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${user.displayName}`
-          "></v-img>
+          <v-img
+            v-else
+            :src="`https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${user.displayName}`"
+          ></v-img>
         </v-avatar>
 
         <div>
@@ -27,7 +40,12 @@
 
       <v-divider></v-divider>
       <v-list v-if="!isUserAdmin" nav dense>
-        <v-list-item v-for="[icon, text, to] in links" :key="icon" link :to="to">
+        <v-list-item
+          v-for="[icon, text, to] in links"
+          :key="icon"
+          link
+          :to="to"
+        >
           <v-list-item-icon>
             <v-icon>{{ icon }}</v-icon>
           </v-list-item-icon>
@@ -37,7 +55,12 @@
         </v-list-item>
       </v-list>
       <v-list v-if="isUserAdmin">
-        <v-list-item v-for="[icon, text, to] in adminLinks" :key="icon" link :to="to">
+        <v-list-item
+          v-for="[icon, text, to] in adminLinks"
+          :key="icon"
+          link
+          :to="to"
+        >
           <v-list-item-icon>
             <v-icon>{{ icon }}</v-icon>
           </v-list-item-icon>
