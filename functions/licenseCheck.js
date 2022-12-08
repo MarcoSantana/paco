@@ -10,25 +10,36 @@ const app = express();
 app.use(cors({credentials: true}));
 
 const responseAPI = async (license) => {
-  const query = fetch("https://cedulaprofesional.sep.gob.mx/cedula/buscaCedulaJson.action", {
+
+    const queryHeaders = {
+        "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/99.0",
+        "Accept": "*/*",
+        "Accept-Language": "es-ES,es;q=0.8,en-US;q=0.5,en;q=0.3",
+        "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
+        "X-Requested-With": "XMLHttpRequest",
+        "Sec-Fetch-Dest": "empty",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Site": "same-origin",
+        "Sec-GPC": "1",
+    }; // queryHeaders
+
+  const result = fetch("https://cedulaprofesional.sep.gob.mx/cedula/buscaCedulaJson.action", {
     credentials: "include",
-    headers: {
-      "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/99.0",
-      "Accept": "*/*",
-      "Accept-Language": "es-ES,es;q=0.8,en-US;q=0.5,en;q=0.3",
-      "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
-      "X-Requested-With": "XMLHttpRequest",
-      "Sec-Fetch-Dest": "empty",
-      "Sec-Fetch-Mode": "cors",
-      "Sec-Fetch-Site": "same-origin",
-      "Sec-GPC": "1",
-    },
+    headers: queryHeaders,
     referrer: "https://cedulaprofesional.sep.gob.mx/cedula/presidencia/indexAvanzada.action",
     body: `json=%7B%22maxResult%22%3A%221000%22%2C%22nombre%22%3A%22%22%2C%22paterno%22%3A%22%22%2C%22materno%22%3A%22%22%2C%22idCedula%22%3A%22${license}%22%7D`,
     method: "POST",
     mode: "cors",
-  });
-  return (await query).json();
+  })
+        .then((response) => {
+            return response.arrayBuffer();
+        })
+        .then((bufffer) => {
+            const decoder = new TextDecoder('iso-8859-1');
+            const text = decoder.decode(bufffer);
+            return text;
+        });
+    return JSON.parse(await result);
 };
 
 const license = ({

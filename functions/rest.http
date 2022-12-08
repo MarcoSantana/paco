@@ -1,0 +1,3 @@
+# licenseCheck
+:license=09262626
+GET https://us-central1-paco-1a08b.cloudfunctions.net/licenseAPI-licenseAPI/:license
