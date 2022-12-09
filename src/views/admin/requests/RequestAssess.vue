@@ -243,6 +243,7 @@ export default {
     },
   },
   async mounted() {
+    console.log ('Dialogs', ...Dialogs)
     this.loading = true
     await this.getUserEventMessage({
       userId: this.currentUser.id,
