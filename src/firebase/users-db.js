@@ -18,8 +18,8 @@ export default class UsersDB extends GenericDB {
       /** @type {Array{Object}} */
       const profileRes = []
 
-      await ref.get().then(snapShot => {
-        snapShot.forEach(doc => {
+      await ref.get().then((snapShot) => {
+        snapShot.forEach((doc) => {
           console.log('profileRef', doc.id)
           console.log(doc.id, '=>', doc.data())
           this.convertObjectTimestampPropertiesToDate(doc.data())
@@ -34,22 +34,22 @@ export default class UsersDB extends GenericDB {
 
   async getUserWithAcademicProfile(id) {
     /** @type {Object<firebase.firestore.DocumentReference>} */
-    const ref = (await firestore())
-      .collection(this.collectionPath)
-      .doc(id)
+    const ref = (await firestore()).collection(this.collectionPath).doc(id)
 
     const profileRes = []
 
     const user = await this.read(id)
-    await ref.collection('profile')
+    await ref
+      .collection('profile')
       .get()
-      .then(snapShot =>
-        snapShot.forEach(doc => {
+      .then((snapShot) =>
+        snapShot.forEach((doc) => {
           profileRes[doc.id] = { ...doc.data(), id: doc.id }
-        }))
+        })
+      )
     return {
       ...user,
-      profile: { ...profileRes }
+      profile: { ...profileRes },
     }
   }
 
@@ -65,8 +65,8 @@ export default class UsersDB extends GenericDB {
 
     const profileRes = []
 
-    await profileRef.get().then(snapShot => {
-      snapShot.forEach(doc => {
+    await profileRef.get().then((snapShot) => {
+      snapShot.forEach((doc) => {
         this.convertObjectTimestampPropertiesToDate(doc.data())
         profileRes.push({ documentName: doc.id, ...doc.data() })
       })
@@ -86,6 +86,37 @@ export default class UsersDB extends GenericDB {
   }
 
   /**
+   * Get a user's event.
+   * @param {Object} params - The parameters.
+   * @param {string} params.userId - The user's ID.
+   * @param {string} params.eventId - The event's ID.
+   * @returns {Promise<Object>} - The user's event.
+   */
+  async getUserEvent({ userId, eventId }) {
+    /** @type {firebase.firestore.DocumentReference} */
+    const ref = (await firestore())
+      .collection('users')
+      .doc(userId)
+      .collection('events')
+      .doc(eventId)
+
+    /** @type {firebase.firestore.DocumentSnapshot} */
+    const snapshot = await ref.get()
+
+    if (!snapshot.exists) {
+      throw new Error(`Event with ID "${eventId}" not found.`)
+    }
+
+    /** @type {Object} */
+    const event = snapshot.data()
+    console.log('event', event)
+    return {
+      ...event,
+      id: snapshot.id,
+    }
+  } // getUserEvent
+
+  /**
    * Update a document in the collection
    * @param payload
    */
@@ -98,9 +129,11 @@ export default class UsersDB extends GenericDB {
       .collection(this.collectionPath)
       .doc(id)
       .collection('personalProfile')
-    Object.keys(data).forEach(async key => {
-      await ref.doc(data[key].documentName)
-        .set({ ...data[key] }, { merge: true }).catch(err => {
+    Object.keys(data).forEach(async (key) => {
+      await ref
+        .doc(data[key].documentName)
+        .set({ ...data[key] }, { merge: true })
+        .catch((err) => {
           console.error('Error updating user personal profile', err)
         })
     })
@@ -115,4 +148,25 @@ export default class UsersDB extends GenericDB {
     // } // for
     //     })
   }
+
+  // Get a user college
+  // ad jsdoc comment:
+  /**
+   * Gets the specified user specialty hospital
+   * @param {String} id the user's id
+   * @returns {Object | null}
+   */
+  async getUserSpecialtyHospital(id) {
+    if (isNil(id)) throw new Error('id is required')
+    /** @type {firebase.firestore.DocumentReference} */
+    const ref = (await firestore())
+      .collection(this.collectionPath)
+      .doc(id)
+      .collection('profile')
+      .doc('specialty')
+    /** @type {firebase.firestore.DocumentSnapshot} */
+    const result = await ref.get()
+
+    return result.exists ? result.data() : null
+  } // getUserSpecialtyHospital
 }

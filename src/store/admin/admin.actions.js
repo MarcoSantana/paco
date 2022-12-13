@@ -34,24 +34,38 @@ export default {
     /**@type {Object[]} */
     const acceptedUsers = await Promise.all(
       acceptedRequests.map(async (item) => {
-        if (item && item.userId)
-          return await usersDb.getUserWithAcademicProfile(item.userId)
+        if (item && item.userId) {
+          /**@type {Object[]} */
+          const userEvent = await usersDb.getUserEvent({
+            userId: item.userId,
+            eventId: eventId,
+          })
+
+          const specialtyHospital = await usersDb.getUserSpecialtyHospital(item.userId)
+          console.log('id', item.userId)
+
+          return {
+            ...(await usersDb.getUserWithAcademicProfile(item.userId)),
+            examLocation: userEvent.documents.examLocation.info.examLocation,
+            hospital: specialtyHospital?.hospital.name.replace('"', '').replace(',', ''),
+          }
+        }
       })
     )
 
-    console.log('acceptedUsers', acceptedUsers)
-
     const csvString = [
-      ['id', 'displayName', 'email', 'license'],
+      ['id', 'displayName', 'email', 'license', 'examLocation', 'hospital'],
       ...acceptedUsers.map((item) => {
         if (item) {
           return [
-            item.id,
-            item.displayName,
-            item.email,
-            item.profile.license && item.profile.license
+            item?.id,
+            item?.displayName,
+            item?.email,
+            item?.profile.license && item.profile.license
               ? item.profile.license.licenseNumber
               : 'Sin datos',
+            item?.examLocation || 'Sin datos',
+            item?.hospital || 'Sin datos',
           ]
         } // fi
       }),
@@ -60,8 +74,6 @@ export default {
         if (e) return e.join(',')
       })
       .join('\n')
-    console.log('result', csvString)
-    debugger
     const blob = new Blob([csvString], { type: 'text/plain;charset=utf-8' })
     saveAs(blob, `${eventId}-compressedCSV.csv`)
   }, // getEventSpreadsheet
