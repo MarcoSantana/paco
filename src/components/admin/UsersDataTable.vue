@@ -7,9 +7,7 @@
       center
       color="globalMessageSnackbar.type"
       top
-    >
-      {{ globalMessageSnackbar.text }}
-    </v-snackbar>
+    >{{ globalMessageSnackbar.text }}</v-snackbar>
     <!-- Add multiple selected users actions like delete or send some message (not delete, bc. it is too grave)-->
     <v-card class="mx-5 mt-3" max-with="800px">
       <v-card-title>
@@ -47,9 +45,7 @@
               <v-toolbar flat color="primary" dark>
                 <v-toolbar-title class="font-weight-light">
                   <v-card-title v-if="userDialog.user">
-                    <span class="text-h5">
-                      {{ userDialog.user.displayName }}
-                    </span>
+                    <span class="text-h5">{{ userDialog.user.displayName }}</span>
                   </v-card-title>
                 </v-toolbar-title>
                 <v-spacer></v-spacer>
@@ -57,24 +53,22 @@
                   <v-icon>mdi-close</v-icon>
                 </v-btn>
               </v-toolbar>
-              <component
-                :is="comp"
-                v-if="comp"
-                :key="userDialog.user.id"
-                :user="userDialog.user"
-              ></component>
+              <component :is="comp" v-if="comp" :key="userDialog.user.id" :user="userDialog.user"></component>
             </v-card>
           </v-dialog>
         </template>
         <template v-slot:item.createTimestamp="{ item }">
           {{
-            item.createTimestamp
-              ? new Date(item.createTimestamp).toLocaleDateString()
-              : $t(`${'errors.missingData'}`)
+          item.createTimestamp
+          ? new Date(item.createTimestamp).toLocaleDateString()
+          : $t(`${'errors.missingData'}`)
           }}
         </template>
         <template v-slot:no-results>
-          No encontramos resultados. Pruebe con la búsqueda especializada.
+          No encontramos resultados. Puede recargar e intentar de nuevo, ó usar la búsqueda especializada.
+          <div>
+            <v-btn color="primary" @click="triggerGetUsers">Recargar</v-btn>
+          </div>
           <v-select
             v-model="select"
             :items="criteria"
@@ -96,13 +90,7 @@
             required
           >
             <template v-slot:append>
-              <v-btn
-                v-if="specialSearch"
-                large
-                text
-                color="primary"
-                @click="triggerDbSearch"
-              >
+              <v-btn v-if="specialSearch" large text color="primary" @click="triggerDbSearch">
                 <v-icon left>mdi-target</v-icon>
                 Buscar {{ select.text }}
               </v-btn>
