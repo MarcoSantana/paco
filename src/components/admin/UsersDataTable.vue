@@ -75,6 +75,9 @@
         </template>
         <template v-slot:no-results>
           No encontramos resultados. Pruebe con la búsqueda especializada.
+          <div>
+            <v-btn color="primary" @click="triggerGetUsers">Recargar</v-btn>
+          </div>
           <v-select
             v-model="select"
             :items="criteria"
