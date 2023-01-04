@@ -7,6 +7,7 @@ import fieldPdf from './fieldPdf'
 import fieldPeriod from './fieldPeriod'
 import fieldUniversity from './fieldUniversity'
 import fieldPreviousExam from './fieldPreviousExam'
+import fieldPediatrics from './fieldPediatrics'
 
 export default {
   CommentField,
@@ -15,6 +16,7 @@ export default {
   fieldExamLocation,
   fieldHospital,
   fieldPdf,
+  fieldPediatrics,
   fieldPeriod,
   fieldPreviousExam,
   fieldUniversity,

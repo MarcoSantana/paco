@@ -264,20 +264,27 @@ export default {
         ], // fields
       },
       {
+        longName: '¿Pertenece a "Urgencias Médicas Pediatricas"?',
+        name: 'pediatrics',
+        required: true,
+        upload: false,
+        fields: [
+          {
+            label: 'pediatrics',
+            name: 'pediatrics',
+            placeholder: '¿Pertenece a "Urgencias Médicas Pediatricas"?',
+            type: 'fieldPediatrics',
+            rules: { required: true },
+            default: false,
+          },
+        ], // fields
+      },
+      {
         longName: 'Fotografía del sustentante',
         name: 'mugshot',
         placeholder: 'Fotografía',
         required: true,
         upload: true,
-        // fields: [
-        //   {
-        //     label: 'examLocation',
-        //     name: 'examLocation',
-        //     placeholder: 'Lugar de aplicación de examen',
-        //     type: 'fieldExamLocation',
-        //     rules: { required: true },
-        //   },
-        // ], // fields
       },
       {
         longName: 'Comprobante de donativo',
