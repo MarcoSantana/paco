@@ -1,4 +1,4 @@
->
+<template>
   <!--
   _______ _______
   |  |  | |______
@@ -8,62 +8,41 @@ createdAt 2020-05-17 13:56
 Stardate: 202005.17 13:56
   fileName: views/SignUp.vue-->
 
-<div class="page-wrapper"
-                                                                                  background-color="primary">
-                                                                                  <!-- Loader -->
-                                                                                  <div v-show="user === undefined"
-                                                                                                                                                                  data-test="loader">Autenticando...
-                                                                                  </div>
-<v-overlay id="loading-ovelay"
-                                                                                    data-test="registration-loading-overlay"
-                                                                                    :value="loading"
-                                                                                    opacity="0.8"
-                                                                                    color="secondary lighten-5">
-      <v-progress-circular color="secondary"
-                                                                                      rotate="180"
-                                                                                      indeterminate
-                                                                                      size="200"
-                                                                                      width="10">
-        <v-progress-circular size="160"
-                                                                                        color="editable"
-                                                                                        width="10"
-                                                                                        indeterminate
-                                                                                        rotate="90">
-          <v-progress-circular color="primary"
-                                                                                          rotate="270"
-                                                                                          indeterminate
-                                                                                          size="128"
-                                                                                          width="10">
-            <div class="text-capitalize font-weight-medium">
-              {{ $t('messages.processing') }}
-            </div>
+  <div class="page-wrapper" background-color="primary">
+    <!-- Loader -->
+    <div v-show="user === undefined" data-test="loader">Autenticando...</div>
+    <v-overlay
+      id="loading-ovelay"
+      data-test="registration-loading-overlay"
+      :value="loading"
+      opacity="0.8"
+      color="secondary lighten-5"
+    >
+      <v-progress-circular color="secondary" rotate="180" indeterminate size="200" width="10">
+        <v-progress-circular size="160" color="editable" width="10" indeterminate rotate="90">
+          <v-progress-circular color="primary" rotate="270" indeterminate size="128" width="10">
+            <div class="text-capitalize font-weight-medium">{{ $t('messages.processing') }}</div>
           </v-progress-circular>
         </v-progress-circular>
       </v-progress-circular>
     </v-overlay>
 
     <!-- Offline instruction -->
-<div v-show="!networkOnLine"
-                                                                                    data-test="offline-instruction">
+    <div v-show="!networkOnLine" data-test="offline-instruction">
       Por favor revise su conexión, la característica de ingreso no está
       disponible fuera de línea.
     </div>
 
-<p v-if="loginError">{{ loginError }}</p>
-<p v-if="apiError">{{ apiError }}</p>
+    <p v-if="loginError">{{ loginError }}</p>
+    <p v-if="apiError">{{ apiError }}</p>
     <!-- Auth UI -->
-<div v-show="user !== undefined && !user && networkOnLine"
-                                                                                    id="signup-form-container"
-                                                                                    class="signup-form-container"
-                                                                                    data-test="signup-form-container">
-      <v-btn fab
-                                                                                      dark
-                                                                                      small
-                                                                                      absolute
-                                                                                      fixed
-                                                                                      right
-                                                                                      color="primary"
-                                                                                      to="home">
+    <div
+      v-show="user !== undefined && !user && networkOnLine"
+      id="signup-form-container"
+      class="signup-form-container"
+      data-test="signup-form-container"
+    >
+      <v-btn fab dark small absolute fixed right color="primary" to="home">
         <v-icon>mdi-home</v-icon>
       </v-btn>
       <v-card class="pa-2 ma-3">
@@ -71,224 +50,234 @@ Stardate: 202005.17 13:56
           <form @submit.prevent="onSubmit">
             <v-card-title class="text-h4">Registrarse</v-card-title>
             <v-card-text class="pa-3 my-2">
-              <validation-provider v-slot="{ errors, valid }"
-                                                                                              rules="numeric|length:6,10|required">
+              <validation-provider v-slot="{ errors, valid }" rules="numeric|length:6,10|required">
                 {{ setValidLicense(valid) }}
-                <span id="registration-license-span"
-                                                                                                :class="{ error: errors[0] }">
-                  <v-text-field id="registration-license"
-                                                                                                  v-model="registrationData.license"
-                                                                                                  autocomplete="off"
-                                                                                                  class="my-1"
-                                                                                                  counter="30"
-                                                                                                  data-test="registration-license"
-                                                                                                  hide-details="auto"
-                                                                                                  hint="Cédula profesional"
-                                                                                                  label="Cédula profesional"
-                                                                                                  name="license"
-                                                                                                  placeholder="Cedula profesional de licenciatura"
-                                                                                                  prepend-inner-icon="mdi-badge-account"
-                                                                                                  type="text"
-                                                                                                  @keyup="debouncedLicenseCheck(licenseCheck)" />
-                  <span class="error--text error lighten-4">
-                    {{ errors[0] }}
-                  </span>
+                <span
+                  id="registration-license-span"
+                  :class="{ error: errors[0] }"
+                >
+                  <v-text-field
+                    id="registration-license"
+                    v-model="registrationData.license"
+                    autocomplete="off"
+                    class="my-1"
+                    counter="30"
+                    data-test="registration-license"
+                    hide-details="auto"
+                    hint="Cédula profesional"
+                    label="Cédula profesional"
+                    name="license"
+                    placeholder="Cedula profesional de licenciatura"
+                    prepend-inner-icon="mdi-badge-account"
+                    type="text"
+                    @keyup="debouncedLicenseCheck(licenseCheck)"
+                  />
+                  <span class="error--text error lighten-4">{{ errors[0] }}</span>
                 </span>
               </validation-provider>
             </v-card-text>
             <!-- license -->
-            <validation-provider v-slot="{ errors }"
-                                                                                            rules="required|length:3,30">
-              <span name="registration-name-span"
-                                                                                              :class="{ error: errors[0] }">
-                <v-text-field id="registration-name"
-                                                                                                v-model="registrationData.name"
-                                                                                                autocomplete="off"
-                                                                                                class="my-1"
-                                                                                                counter="30"
-                                                                                                data-test="registration-name"
-                                                                                                hide-details="auto"
-                                                                                                hint="ej. Juan Carlos"
-                                                                                                label="Nombre"
-                                                                                                name="name"
-                                                                                                placeholder="Nombres (ej. Juan Carlos)"
-                                                                                                prepend-icon="mdi-face"
-                                                                                                type="text" />
+            <validation-provider v-slot="{ errors }" rules="required|length:3,30">
+              <span name="registration-name-span" :class="{ error: errors[0] }">
+                <v-text-field
+                  id="registration-name"
+                  v-model="registrationData.name"
+                  autocomplete="off"
+                  class="my-1"
+                  counter="30"
+                  data-test="registration-name"
+                  hide-details="auto"
+                  hint="ej. Juan Carlos"
+                  label="Nombre"
+                  name="name"
+                  placeholder="Nombres (ej. Juan Carlos)"
+                  prepend-icon="mdi-face"
+                  type="text"
+                />
                 <span class="error--text error lighten-4">{{ errors[0] }}</span>
               </span>
             </validation-provider>
             <!-- name -->
-            <validation-provider v-slot="{ errors }"
-                                                                                            rules="required|length:3,30">
-              <span name="registration-lastname-1-span"
-                                                                                              :class="{ error: errors[0] }">
-                <v-text-field id="registration-lastname-1"
-                                                                                                v-model="registrationData.lastname1"
-                                                                                                autocomplete="off"
-                                                                                                class="my-1"
-                                                                                                counter="30"
-                                                                                                data-test="registration-lastname-1"
-                                                                                                hide-details="auto"
-                                                                                                hint="ej. Juan Carlos"
-                                                                                                label="Apellido Paterno"
-                                                                                                name="lastname-1"
-                                                                                                placeholder="Apellido Paterno (ej. González)"
-                                                                                                prepend-icon="mdi-form-textbox"
-                                                                                                type="text" />
+            <validation-provider v-slot="{ errors }" rules="required|length:3,30">
+              <span name="registration-lastname-1-span" :class="{ error: errors[0] }">
+                <v-text-field
+                  id="registration-lastname-1"
+                  v-model="registrationData.lastname1"
+                  autocomplete="off"
+                  class="my-1"
+                  counter="30"
+                  data-test="registration-lastname-1"
+                  hide-details="auto"
+                  hint="ej. Juan Carlos"
+                  label="Apellido Paterno"
+                  name="lastname-1"
+                  placeholder="Apellido Paterno (ej. González)"
+                  prepend-icon="mdi-form-textbox"
+                  type="text"
+                />
                 <span class="error--text error lighten-4">{{ errors[0] }}</span>
               </span>
             </validation-provider>
             <!-- last-name-1 -->
-            <validation-provider v-slot="{ errors }"
-                                                                                            rules="length:2,30">
-              <span name="regsitration-lastname-2-span"
-                                                                                              :class="{ error: errors[0] }">
-                <v-text-field id="registration-lastname-2"
-                                                                                                v-model="registrationData.lastname2"
-                                                                                                autocomplete="off"
-                                                                                                counter="30"
-                                                                                                data-test="registration-lastname-2"
-                                                                                                hint="Segundo apellido (opcional)"
-                                                                                                label="Apellido materno"
-                                                                                                name="lastname2"
-                                                                                                placeholder="Apellido Materno (ej. Silveti)"
-                                                                                                prepend-icon="mdi-form-textbox"
-                                                                                                type="text" />
+            <validation-provider v-slot="{ errors }" rules="length:2,30">
+              <span name="regsitration-lastname-2-span" :class="{ error: errors[0] }">
+                <v-text-field
+                  id="registration-lastname-2"
+                  v-model="registrationData.lastname2"
+                  autocomplete="off"
+                  counter="30"
+                  data-test="registration-lastname-2"
+                  hint="Segundo apellido (opcional)"
+                  label="Apellido materno"
+                  name="lastname2"
+                  placeholder="Apellido Materno (ej. Silveti)"
+                  prepend-icon="mdi-form-textbox"
+                  type="text"
+                />
                 <span class="error--text error lighten-4">{{ errors[0] }}</span>
               </span>
             </validation-provider>
             <!-- lastname-2 -->
 
-            <validation-provider v-slot="{ errors }"
-                                                                                            rules="required">
-              <span v-if="genders"
-                                                                                              name="registration-gender-span"
-                                                                                              :class="{ error: errors[0] }">
-                <v-select v-model="registrationData.gender"
-                                                                                                autocomplete="off"
-                                                                                                :items="genders"
-                                                                                                data-test="registration-gender"
-                                                                                                label="Género"
-                                                                                                :prepend-icon="
-                                                                                                  registrationData.gender
-                                                                                                    ? $options.filters.genderize(registrationData.gender)
-                                                                                                    : 'mdi-gender-male-female'
-                                                                                                ">
-                  <template v-slot:selection="{ item }">
-                    {{ item.text }}
-                  </template>
+            <validation-provider v-slot="{ errors }" rules="required">
+              <span v-if="genders" name="registration-gender-span" :class="{ error: errors[0] }">
+                <v-select
+                  v-model="registrationData.gender"
+                  autocomplete="off"
+                  :items="genders"
+                  data-test="registration-gender"
+                  label="Género"
+                  :prepend-icon="
+                    registrationData.gender
+                      ? $options.filters.genderize(registrationData.gender)
+                      : 'mdi-gender-male-female'
+                  "
+                >
+                  <template v-slot:selection="{ item }">{{ item.text }}</template>
                 </v-select>
                 <span class="error--text error lighten-4">{{ errors[0] }}</span>
               </span>
             </validation-provider>
             <!--gender-->
-            <validation-provider v-slot="{ errors }"
-                                                                                            rules="email|required"
-                                                                                            name="register-email-valitator">
-              <span name="registration-email-span"
-                                                                                              :class="{ error: errors[0] }">
-                <v-text-field id="registration-email"
-                                                                                                v-model="registrationData.email"
-                                                                                                autocomplete="off"
-                                                                                                label="Correo electrónico"
-                                                                                                hint="Debe ser una dirección válida"
-                                                                                                type="email"
-                                                                                                prepend-icon="mdi-email"
-                                                                                                name="email"
-                                                                                                placeholder="E-mail (ej. correoejemplo@dominio.com)"
-                                                                                                data-test="registration-email" />
+            <validation-provider
+              v-slot="{ errors }"
+              rules="email|required"
+              name="register-email-valitator"
+            >
+              <span name="registration-email-span" :class="{ error: errors[0] }">
+                <v-text-field
+                  id="registration-email"
+                  v-model="registrationData.email"
+                  autocomplete="off"
+                  label="Correo electrónico"
+                  hint="Debe ser una dirección válida"
+                  type="email"
+                  prepend-icon="mdi-email"
+                  name="email"
+                  placeholder="E-mail (ej. correoejemplo@dominio.com)"
+                  data-test="registration-email"
+                />
                 <span class="error--text error lighten-4">{{ errors[0] }}</span>
               </span>
             </validation-provider>
             <!-- email -->
-            <validation-provider v-slot="{ errors }"
-                                                                                            rules="required|confirmed:register-email-valitator">
-              <span name="registration-email-confirmation-span"
-                                                                                              :class="{ error: errors[0] }">
-                <v-text-field id="registration-email-confirmation"
-                                                                                                v-model="registrationData.emailConfirmation"
-                                                                                                autocomplete="off"
-                                                                                                data-test="registration-email-confirmation"
-                                                                                                hint="Debe ser una dirección válida"
-                                                                                                label="Confirmación de correo electrónico"
-                                                                                                name="email-confirmation"
-                                                                                                placeholder="Confirme su e-mail (ej. correoejemplo@dominio.com)"
-                                                                                                prepend-icon="mdi-email"
-                                                                                                type="email" />
+            <validation-provider
+              v-slot="{ errors }"
+              rules="required|confirmed:register-email-valitator"
+            >
+              <span name="registration-email-confirmation-span" :class="{ error: errors[0] }">
+                <v-text-field
+                  id="registration-email-confirmation"
+                  v-model="registrationData.emailConfirmation"
+                  autocomplete="off"
+                  data-test="registration-email-confirmation"
+                  hint="Debe ser una dirección válida"
+                  label="Confirmación de correo electrónico"
+                  name="email-confirmation"
+                  placeholder="Confirme su e-mail (ej. correoejemplo@dominio.com)"
+                  prepend-icon="mdi-email"
+                  type="email"
+                />
                 <span class="error--text error lighten-4">{{ errors[0] }}</span>
               </span>
             </validation-provider>
             <!-- email-confirmation -->
 
-            <validation-provider v-slot="{ errors }"
-                                                                                            rules="cellphone|required"
-                                                                                            name="cellphone-validator">
-              <span name="registration-cellphone-span"
-                                                                                              :class="{ error: errors[0] }">
-                <v-text-field id="registration-cellphone"
-                                                                                                v-model="registrationData.cellphone"
-                                                                                                prepend-icon="mdi-cellphone-basic"
-                                                                                                autocomplete="off"
-                                                                                                data-test="registration-cellphone"
-                                                                                                hint="Debe ser un teléfono celular válido en México"
-                                                                                                name="cellphone"
-                                                                                                label="Teléfono celular" />
+            <validation-provider
+              v-slot="{ errors }"
+              rules="cellphone|required"
+              name="cellphone-validator"
+            >
+              <span name="registration-cellphone-span" :class="{ error: errors[0] }">
+                <v-text-field
+                  id="registration-cellphone"
+                  v-model="registrationData.cellphone"
+                  prepend-icon="mdi-cellphone-basic"
+                  autocomplete="off"
+                  data-test="registration-cellphone"
+                  hint="Debe ser un teléfono celular válido en México"
+                  name="cellphone"
+                  label="Teléfono celular"
+                />
                 <span class="error--text error lighten-4">{{ errors[0] }}</span>
               </span>
             </validation-provider>
             <!-- cellphone -->
 
-            <validation-provider v-slot="{ errors }"
-                                                                                            rules="required|length:8,16|strong_password"
-                                                                                            name="password-validator">
-              <span name="registration-password-span"
-                                                                                              :class="{ error: errors[0] }">
-                <v-text-field id="registration-password"
-                                                                                                v-model="registrationData.password"
-                                                                                                :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                                                                                                autocomplete="off"
-                                                                                                data-test="registration-password"
-                                                                                                hint="Debe ser de al menos 8 caracteres e incluir mínimo un número y una letra mayúscula"
-                                                                                                label="Contraseña"
-                                                                                                name="password"
-                                                                                                placeholder="Contraseña"
-                                                                                                prepend-icon="mdi-form-textbox-password"
-                                                                                                :type="showPassword ? 'text' : 'password'"
-                                                                                                @click:append="showPassword = !showPassword" />
+            <validation-provider
+              v-slot="{ errors }"
+              rules="required|length:8,16|strong_password"
+              name="password-validator"
+            >
+              <span name="registration-password-span" :class="{ error: errors[0] }">
+                <v-text-field
+                  id="registration-password"
+                  v-model="registrationData.password"
+                  :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                  autocomplete="off"
+                  data-test="registration-password"
+                  hint="Debe ser de al menos 8 caracteres e incluir mínimo un número y una letra mayúscula"
+                  label="Contraseña"
+                  name="password"
+                  placeholder="Contraseña"
+                  prepend-icon="mdi-form-textbox-password"
+                  :type="showPassword ? 'text' : 'password'"
+                  @click:append="showPassword = !showPassword"
+                />
                 <span class="error--text error lighten-4">{{ errors[0] }}</span>
               </span>
             </validation-provider>
             <!-- password -->
 
-            <validation-provider v-slot="{ errors }"
-                                                                                            rules="confirmed:password-validator|required">
-              <span name="registration-password-span"
-                                                                                              :class="{ error: errors[0] }">
-                <v-text-field id="registration-password-confirmation"
-                                                                                                v-model="registrationData.passwordConfirmation"
-                                                                                                :append-icon="showConfirmPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                                                                                                autocomplete="off"
-                                                                                                data-test="registration-password-confirmation"
-                                                                                                data-vv-as="password"
-                                                                                                hint="Confirme su contraseña"
-                                                                                                label="Confirmación de contraseña"
-                                                                                                name="password-confirmation"
-                                                                                                placeholder="Confirme su contraseña"
-                                                                                                prepend-icon="mdi-form-textbox-password"
-                                                                                                :type="showConfirmPassword ? 'text' : 'password'"
-                                                                                                @click:append="showConfirmPassword = !showConfirmPassword" />
+            <validation-provider v-slot="{ errors }" rules="confirmed:password-validator|required">
+              <span name="registration-password-span" :class="{ error: errors[0] }">
+                <v-text-field
+                  id="registration-password-confirmation"
+                  v-model="registrationData.passwordConfirmation"
+                  :append-icon="showConfirmPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                  autocomplete="off"
+                  data-test="registration-password-confirmation"
+                  data-vv-as="password"
+                  hint="Confirme su contraseña"
+                  label="Confirmación de contraseña"
+                  name="password-confirmation"
+                  placeholder="Confirme su contraseña"
+                  prepend-icon="mdi-form-textbox-password"
+                  :type="showConfirmPassword ? 'text' : 'password'"
+                  @click:append="showConfirmPassword = !showConfirmPassword"
+                />
               </span>
             </validation-provider>
             <!-- password-confirmation -->
 
-            <v-btn ripple
-                                                                                            color="primary"
-                                                                                            type="submit"
-                                                                                            name="signup_submit"
-                                                                                            :disabled="invalid"
-                                                                                            data-test="signup-submit">
-              Registrarse
-            </v-btn>
+            <v-btn
+              ripple
+              color="primary"
+              type="submit"
+              name="signup_submit"
+              :disabled="invalid"
+              data-test="signup-submit"
+            >Registrarse</v-btn>
           </form>
         </validation-observer>
       </v-card>
@@ -412,7 +401,7 @@ export default {
       immediate: true,
     },
   },
-  mounted() { },
+  mounted() {},
   methods: {
     ...mapMutations('authentication', ['setUser']),
     ...mapMutations('app', ['setLoading', 'unsetLoading']),
